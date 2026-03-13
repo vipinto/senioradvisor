@@ -375,29 +375,30 @@ export default function ProviderProfile() {
             {provider.services?.length > 0 && (
               <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-4">Servicios</h2>
-                {provider.services.map((s, i) => (
-                  <div key={i} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl mb-3">
-                    <div>
-                      <span className="capitalize font-semibold text-[#33404f]">{s.service_type}</span>
-                      {s.description && <p className="text-sm text-gray-500 mt-0.5">{s.description}</p>}
-                      {s.pet_sizes?.length > 0 && (
-                        <div className="flex items-center gap-1 mt-2">
-                          <Dog className="w-4 h-4 text-gray-400" />
-                          {s.pet_sizes.map((size, j) => (
-                            <span key={j} className="px-2 py-0.5 bg-white border border-gray-200 text-gray-600 text-xs rounded-full capitalize">
-                              {PET_SIZE_LABELS[size] || size}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      {s.rules && <p className="text-xs text-gray-400 mt-1">{s.rules}</p>}
+                {provider.services.map((s, i) => {
+                  // Formatear nombre del servicio sin guiones
+                  const formatServiceName = (type) => {
+                    const names = {
+                      'residencias': 'Residencias',
+                      'cuidado-domicilio': 'Cuidado a Domicilio',
+                      'salud-mental': 'Salud Mental'
+                    };
+                    return names[type] || type;
+                  };
+                  return (
+                    <div key={i} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl mb-3">
+                      <div>
+                        <span className="font-semibold text-[#33404f]">{formatServiceName(s.service_type)}</span>
+                        {s.description && <p className="text-sm text-gray-500 mt-0.5">{s.description}</p>}
+                        {s.rules && <p className="text-xs text-gray-400 mt-1">{s.rules}</p>}
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[#33404f] font-bold text-lg">Desde ${s.price_from?.toLocaleString('es-CL')}</span>
+                        {s.availability && <p className="text-xs text-gray-400">{s.availability}</p>}
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <span className="text-[#00e7ff] font-bold text-lg">Desde ${s.price_from?.toLocaleString('es-CL')}</span>
-                      {s.availability && <p className="text-xs text-gray-400">{s.availability}</p>}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
