@@ -192,9 +192,17 @@ class Review(BaseModel):
     approved: bool = True
     created_at: datetime
 
+class ReviewCriteria(BaseModel):
+    personal: int = Field(ge=1, le=5, description="Trato y cuidado del personal")
+    instalaciones: int = Field(ge=1, le=5, description="Calidad de las instalaciones")
+    visitas: int = Field(ge=1, le=5, description="Tiempo para visitas")
+    comida: int = Field(ge=1, le=5, description="Comida y nutrición")
+    actividades: int = Field(ge=1, le=5, description="Actividades y bienestar")
+
 class ReviewCreate(BaseModel):
     provider_id: str
-    rating: int = Field(ge=1, le=5)
+    rating: float = Field(ge=1, le=5)  # Promedio calculado
+    criteria: Optional[ReviewCriteria] = None  # Los 5 criterios individuales
     comment: Optional[str] = None
     photos: Optional[List[str]] = []
 

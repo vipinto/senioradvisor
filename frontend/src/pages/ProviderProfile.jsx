@@ -1,45 +1,54 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, Shield, MapPin, Phone, MessageSquare, Heart, Lock, Camera, X, Dog, CalendarPlus, Crown, Home, PawPrint, Briefcase, Clock, UserCircle, Send, CheckCircle, Loader2 } from 'lucide-react';
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import api, { API_BASE } from '@/lib/api';
 import BookingForm from '@/components/BookingForm';
 import SubscriptionCard from '@/components/SubscriptionCard';
 
-const GOOGLE_MAPS_KEY = process.env.REACT_APP_GOOGLE_MAPS_KEY || '';
-const LIBRARIES = ['places'];
-
-const SafeMap = ({ lat, lng, isLoaded }) => {
-  if (!isLoaded || !lat || !lng) {
-    return (
-      <div className="h-[250px] bg-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-base">
-        <div className="text-center">
-          <MapPin className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-          <p>Cargando mapa...</p>
-        </div>
-      </div>
-    );
-  }
-  
+// Mapa desactivado temporalmente
+const SafeMap = ({ lat, lng }) => {
   return (
-    <GoogleMap
-      center={{ lat, lng }}
-      zoom={15}
-      mapContainerStyle={{ width: '100%', height: '250px', borderRadius: '12px' }}
-      options={{ 
-        disableDefaultUI: true, 
-        zoomControl: true, 
-        mapTypeControl: false, 
-        streetViewControl: false, 
-        fullscreenControl: false 
-      }}
-    >
-      <Marker position={{ lat, lng }} />
-    </GoogleMap>
+    <div className="h-[250px] bg-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-base">
+      <div className="text-center">
+        <MapPin className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+        <p>Ubicación disponible</p>
+      </div>
+    </div>
   );
 };
+
+// Criterios de evaluación
+const REVIEW_CRITERIA = [
+  { id: 'personal', label: 'Trato y cuidado del personal' },
+  { id: 'instalaciones', label: 'Calidad de las instalaciones' },
+  { id: 'visitas', label: 'Tiempo para visitas' },
+  { id: 'comida', label: 'Comida y nutrición' },
+  { id: 'actividades', label: 'Actividades y bienestar' }
+];
+
+// Componente de estrellas para cada criterio
+const StarRating = ({ value, onChange, size = 'md' }) => {
+  const sizeClass = size === 'lg' ? 'w-8 h-8' : 'w-6 h-6';
+  return (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <button
+          key={star}
+          type="button"
+          onClick={() => onChange(star)}
+          className="focus:outline-none transition-transform hover:scale-110"
+        >
+          <Star
+            className={`${sizeClass} ${star <= value ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+          />
+        </button>
+      ))}
+    </div>
+  );
+};
+
 const PET_SIZE_LABELS = { pequeno: 'Pequeno', mediano: 'Mediano', grande: 'Grande' };
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -55,7 +64,14 @@ export default function ProviderProfile() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [reviewText, setReviewText] = useState('');
-  const [reviewRating, setReviewRating] = useState(5);
+  // Estado para los 5 criterios de evaluación (0 = no seleccionado)
+  const [reviewCriteria, setReviewCriteria] = useState({
+    personal: 0,
+    instalaciones: 0,
+    visitas: 0,
+    comida: 0,
+    actividades: 0
+  });
   const [reviewPhotos, setReviewPhotos] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -64,10 +80,23 @@ export default function ProviderProfile() {
   const [contactMessage, setContactMessage] = useState('');
   const fileInputRef = useRef(null);
 
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: GOOGLE_MAPS_KEY,
-    libraries: LIBRARIES
-  });
+  // Calcular promedio de los criterios
+  const calculateAverageRating = () => {
+    const values = Object.values(reviewCriteria);
+    const filledValues = values.filter(v => v > 0);
+    if (filledValues.length === 0) return 0;
+    return filledValues.reduce((a, b) => a + b, 0) / filledValues.length;
+  };
+
+  // Verificar si todos los criterios están llenos
+  const allCriteriaFilled = () => {
+    return Object.values(reviewCriteria).every(v => v > 0);
+  };
+
+  // Verificar si el formulario está completo
+  const canSubmitReview = () => {
+    return allCriteriaFilled() && reviewText.trim().length > 0;
+  };
 
   useEffect(() => {
     loadProvider();
@@ -115,18 +144,35 @@ export default function ProviderProfile() {
   };
 
   const submitReview = async () => {
-    if (!reviewText.trim()) { toast.error('Escribe un comentario'); return; }
+    if (!allCriteriaFilled()) { 
+      toast.error('Debes evaluar todos los criterios'); 
+      return; 
+    }
+    if (!reviewText.trim()) { 
+      toast.error('Debes escribir un comentario'); 
+      return; 
+    }
+    
     setSubmitting(true);
+    const averageRating = calculateAverageRating();
+    
     try {
       await api.post('/reviews', {
         provider_id: providerId,
-        rating: reviewRating,
+        rating: Math.round(averageRating * 10) / 10, // Promedio con 1 decimal
+        criteria: reviewCriteria, // Enviar los 5 criterios individuales
         comment: reviewText,
         photos: reviewPhotos
       });
-      toast.success('Calificacion guardada. Se publicara cuando ambos califiquen o en 7 dias.');
+      toast.success('¡Gracias por tu reseña! Se publicará cuando sea aprobada.');
       setReviewText('');
-      setReviewRating(5);
+      setReviewCriteria({
+        personal: 0,
+        instalaciones: 0,
+        visitas: 0,
+        comida: 0,
+        actividades: 0
+      });
       setReviewPhotos([]);
       loadProvider();
     } catch (e) {
@@ -409,25 +455,44 @@ export default function ProviderProfile() {
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h2 className="text-xl font-bold mb-4">Reseñas</h2>
 
-              {/* Write Review */}
-              {user?.has_subscription && (
-                <div className="mb-6 p-4 bg-gray-50 rounded-xl" data-testid="review-form">
-                  <div className="flex gap-1 mb-3">
-                    {[1,2,3,4,5].map(s => (
-                      <button key={s} onClick={() => setReviewRating(s)}>
-                        <Star className={`w-6 h-6 ${s <= reviewRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
-                      </button>
+              {/* Write Review - Formulario con 5 criterios */}
+              {user && (
+                <div className="mb-6 p-6 bg-gray-50 rounded-xl" data-testid="review-form">
+                  <h3 className="text-lg font-bold text-[#33404f] mb-4">Deja tu reseña</h3>
+                  
+                  {/* 5 Criterios de evaluación */}
+                  <div className="space-y-4 mb-6">
+                    {REVIEW_CRITERIA.map((criterion) => (
+                      <div key={criterion.id} className="flex items-center justify-between py-2 border-b border-gray-200">
+                        <span className="text-base text-[#33404f] font-medium">{criterion.label}</span>
+                        <StarRating
+                          value={reviewCriteria[criterion.id]}
+                          onChange={(value) => setReviewCriteria(prev => ({ ...prev, [criterion.id]: value }))}
+                        />
+                      </div>
                     ))}
                   </div>
+
+                  {/* Promedio calculado */}
+                  {allCriteriaFilled() && (
+                    <div className="mb-4 p-3 bg-[#00e7ff]/10 rounded-lg text-center">
+                      <span className="text-[#33404f] font-semibold">
+                        Puntuación promedio: {calculateAverageRating().toFixed(1)} ⭐
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Comentario */}
                   <textarea
                     value={reviewText}
                     onChange={e => setReviewText(e.target.value)}
-                    placeholder="Cuenta tu experiencia con este cuidador..."
-                    className="w-full border rounded-xl p-3 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff] mb-3"
+                    placeholder="Ingresa tu comentario..."
+                    className="w-full border-2 border-gray-200 rounded-xl p-4 text-base min-h-[120px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff] focus:border-[#00e7ff] mb-4 text-[#33404f] placeholder-gray-400"
                     data-testid="review-text-input"
                   />
+
                   {/* Photo Upload */}
-                  <div className="flex flex-wrap gap-2 mb-3">
+                  <div className="flex flex-wrap gap-2 mb-4">
                     {reviewPhotos.map((url, i) => (
                       <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden border">
                         <img src={`${process.env.REACT_APP_BACKEND_URL}${url}`} alt="" className="w-full h-full object-cover" />
@@ -447,18 +512,27 @@ export default function ProviderProfile() {
                         data-testid="upload-photo-button"
                       >
                         <Camera className="w-5 h-5" />
-                        <span className="text-[10px] mt-0.5">{uploading ? 'Subiendo...' : 'Foto'}</span>
+                        <span className="text-xs mt-1">{uploading ? 'Subiendo...' : 'Añadir foto'}</span>
                       </button>
                     )}
                     <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handlePhotoUpload} />
                   </div>
+
+                  {/* Mensaje de validación */}
+                  {!canSubmitReview() && (
+                    <p className="text-sm text-gray-500 mb-3">
+                      * Debes evaluar todos los criterios y escribir un comentario para enviar tu reseña
+                    </p>
+                  )}
+
+                  {/* Botón de envío */}
                   <Button
                     onClick={submitReview}
-                    disabled={submitting}
-                    className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
+                    disabled={submitting || !canSubmitReview()}
+                    className={`w-full py-4 text-lg font-bold ${canSubmitReview() ? 'bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
                     data-testid="submit-review-button"
                   >
-                    {submitting ? 'Enviando...' : 'Publicar Resena'}
+                    {submitting ? 'Enviando...' : 'Publicar Reseña'}
                   </Button>
                 </div>
               )}
@@ -616,7 +690,7 @@ export default function ProviderProfile() {
                     <MapPin className="w-5 h-5 text-[#00e7ff]" /> Ubicación
                   </h3>
                 </div>
-                <SafeMap lat={provider.latitude} lng={provider.longitude} isLoaded={isLoaded && !loadError} />
+                <SafeMap lat={provider.latitude} lng={provider.longitude} />
               </div>
             )}
           </div>

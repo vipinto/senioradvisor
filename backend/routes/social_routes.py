@@ -159,16 +159,16 @@ async def upload_review_photo(file: UploadFile = File(...), request: Request = N
 
 @router.post("/reviews")
 async def create_review(review_data: ReviewCreate, request: Request):
-    """Client reviews a provider (blind: hidden until both sides review or 7 days)"""
+    """Client reviews a provider"""
     user = await get_current_user(request, db)
-    await require_subscription(user, db)
+    # Removido require_subscription - cualquier usuario logueado puede dejar reseña
 
     existing = await db.reviews.find_one({
         "user_id": user["user_id"],
         "provider_id": review_data.provider_id
     })
     if existing:
-        raise HTTPException(status_code=400, detail="Ya has resenado a este cuidador")
+        raise HTTPException(status_code=400, detail="Ya has reseñado este servicio")
 
     # Get provider's user_id for the blind pair
     provider = await db.providers.find_one({"provider_id": review_data.provider_id})
