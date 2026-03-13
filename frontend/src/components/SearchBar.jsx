@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, CalendarDays, Home, TreePine, Dog } from 'lucide-react';
+import { MapPin, CalendarDays, Home, Heart, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -8,21 +8,21 @@ import { es } from 'date-fns/locale';
 import { format } from 'date-fns';
 
 const SERVICE_TABS = [
-  { id: 'paseo', label: 'Paseo', icon: Dog },
-  { id: 'cuidado', label: 'Cuidado', icon: Home },
-  { id: 'daycare', label: 'Daycare', icon: TreePine },
+  { id: 'residencias', label: 'Residencias', icon: Home },
+  { id: 'cuidado-domicilio', label: 'Cuidado a Domicilio', icon: Heart },
+  { id: 'salud-mental', label: 'Salud Mental', icon: Brain },
 ];
 
 export default function SearchBar({ onSearch, initialService, initialAddress, compact }) {
   const navigate = useNavigate();
-  const [activeService, setActiveService] = useState(initialService || 'paseo');
+  const [activeService, setActiveService] = useState(initialService || 'residencias');
   const [address, setAddress] = useState(initialAddress || '');
   const [dateRange, setDateRange] = useState({ from: undefined, to: undefined });
   const [selectedDates, setSelectedDates] = useState([]);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
   const getDateLabel = () => {
-    if (activeService === 'cuidado') {
+    if (activeService === 'cuidado-domicilio') {
       if (dateRange.from && dateRange.to) {
         return `${format(dateRange.from, 'dd MMM', { locale: es })} - ${format(dateRange.to, 'dd MMM', { locale: es })}`;
       }
@@ -41,7 +41,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
     const params = new URLSearchParams();
     if (address.trim()) params.set('comuna', address);
     params.set('service', activeService);
-    if (activeService === 'cuidado' && dateRange.from) {
+    if (activeService === 'cuidado-domicilio' && dateRange.from) {
       params.set('from', dateRange.from.toISOString());
       if (dateRange.to) params.set('to', dateRange.to.toISOString());
     } else if (selectedDates.length > 0) {
@@ -72,7 +72,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
               }}
               className={`flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-base transition-all ${
                 isActive
-                  ? 'bg-[#E6202E] text-white shadow-md'
+                  ? 'bg-[#2B547E] text-white shadow-md'
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
               }`}
               data-testid={`service-tab-${tab.id}`}
@@ -95,7 +95,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
               placeholder="Dirección"
               value={address}
               onChange={e => setAddress(e.target.value)}
-              className="w-full pl-12 pr-4 h-16 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#E6202E] focus:border-transparent text-base"
+              className="w-full pl-12 pr-4 h-16 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2B547E] focus:border-transparent text-base"
               data-testid="search-address-input"
             />
           </div>
@@ -115,7 +115,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 z-50" align="start">
-              {activeService === 'cuidado' ? (
+              {activeService === 'cuidado-domicilio' ? (
                 <Calendar
                   mode="range"
                   selected={dateRange}
@@ -142,7 +142,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
           {/* Search Button */}
           <Button
             type="submit"
-            className="h-16 px-10 bg-[#E6202E] hover:bg-[#D31522] text-white font-bold text-lg rounded-xl whitespace-nowrap"
+            className="h-16 px-10 bg-[#2B547E] hover:bg-[#1E3A5F] text-white font-bold text-lg rounded-xl whitespace-nowrap"
             data-testid="search-submit-button"
           >
             Buscar

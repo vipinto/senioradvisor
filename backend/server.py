@@ -31,10 +31,10 @@ logging.basicConfig(
 )
 
 # Create the main app
-app = FastAPI(title="U-CAN API", version="1.0.0", redirect_slashes=False)
+app = FastAPI(title="SeniorAdvisor API", version="1.0.0", redirect_slashes=False)
 @app.get("/")
 async def app_root():
-    return {"message": "U-CAN backend running"}
+    return {"message": "SeniorAdvisor backend running"}
 
 # Serve uploaded files under /api/uploads prefix
 app.mount("/api/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
@@ -64,12 +64,12 @@ api_router.include_router(contact_request_router)
 
 @api_router.get("/")
 async def root():
-    return {"message": "U-CAN API", "version": "1.0.0"}
+    return {"message": "SeniorAdvisor API", "version": "1.0.0"}
 
 
 @api_router.get("/health")
 async def health_check():
-    return {"status": "healthy", "service": "U-CAN"}
+    return {"status": "healthy", "service": "SeniorAdvisor"}
 
 
 # Health check endpoints for K8s probes
@@ -87,7 +87,7 @@ async def graphql_health():
 
 @api_router.post("/")
 async def root_post():
-    return {"message": "U-CAN API", "version": "1.0.0"}
+    return {"message": "SeniorAdvisor API", "version": "1.0.0"}
 
 
 # Include the router in the main app
@@ -98,12 +98,12 @@ app.include_router(api_router)
 @app.post("/api")
 @app.get("/api")
 async def api_root_no_slash():
-    return {"message": "U-CAN API", "version": "1.0.0"}
+    return {"message": "SeniorAdvisor API", "version": "1.0.0"}
 
 # CORS Middleware
 cors_origins_str = os.getenv(
     "CORS_ORIGINS",
-    "https://u-can.cl,https://www.u-can.cl,http://localhost:3000"
+    "https://senioradvisor.cl,https://www.senioradvisor.cl,http://localhost:3000"
 )
 
 cors_origins = [origin.strip() for origin in cors_origins_str.split(",") if origin.strip()]

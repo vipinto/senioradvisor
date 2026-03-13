@@ -46,25 +46,25 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-28">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src="/ucan-logo-rojo.svg" alt="U-CAN" className="h-[100px]" data-testid="navbar-logo" />
+            <span className="text-2xl font-bold text-[#2B547E]" data-testid="navbar-logo">SeniorAdvisor</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/search" className="text-gray-700 hover:text-[#E6202E] font-medium transition-colors">
+            <Link to="/search" className="text-gray-700 hover:text-[#2B547E] font-medium transition-colors">
               Buscar Servicios
             </Link>
             
             {user ? (
               <>
-                <Link to="/favoritos" className="text-gray-700 hover:text-[#E6202E]">
+                <Link to="/favoritos" className="text-gray-700 hover:text-[#2B547E]">
                   <Heart className="w-5 h-5" />
                 </Link>
-                <Link to="/chat" className="text-gray-700 hover:text-[#E6202E]">
+                <Link to="/chat" className="text-gray-700 hover:text-[#2B547E]">
                   <MessageCircle className="w-5 h-5" />
                 </Link>
                 <div className="relative group">
-                  <button className="flex items-center space-x-2 text-gray-700 hover:text-[#E6202E] py-2">
+                  <button className="flex items-center space-x-2 text-gray-700 hover:text-[#2B547E] py-2">
                     {user.picture ? (
                       <img src={user.picture} alt={user.name} className="w-8 h-8 rounded-full" />
                     ) : (
@@ -117,12 +117,12 @@ const Navbar = () => {
               !loading && (
                 <>
                   <Link to="/login">
-                    <Button variant="outline" className="border-[#E6202E] text-[#E6202E] hover:bg-red-50">
+                    <Button variant="outline" className="border-[#2B547E] text-[#2B547E] hover:bg-blue-50">
                       Iniciar Sesión
                     </Button>
                   </Link>
                   <Link to="/register">
-                    <Button className="bg-[#E6202E] hover:bg-[#D31522] text-white">
+                    <Button className="bg-[#2B547E] hover:bg-[#1E3A5F] text-white">
                       Registrarse
                     </Button>
                   </Link>
@@ -134,7 +134,7 @@ const Navbar = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-gray-700 hover:text-[#E6202E]"
+            className="md:hidden text-gray-700 hover:text-[#2B547E]"
             data-testid="mobile-menu-button"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -144,42 +144,42 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden py-4 border-t">
-            <Link to="/search" className="block py-2 text-gray-700 hover:text-[#E6202E]">
+            <Link to="/search" className="block py-2 text-gray-700 hover:text-[#2B547E]">
               Buscar Servicios
             </Link>
             {user ? (
               <>
                 {user.role === 'provider' ? (
-                  <Link to="/provider/account" className="block py-2 text-gray-700 hover:text-[#E6202E]">
+                  <Link to="/provider/account" className="block py-2 text-gray-700 hover:text-[#2B547E]">
                     Mi Cuenta
                   </Link>
                 ) : (
-                  <Link to="/account" className="block py-2 text-gray-700 hover:text-[#E6202E]">
+                  <Link to="/account" className="block py-2 text-gray-700 hover:text-[#2B547E]">
                     Mi Cuenta
                   </Link>
                 )}
                 {user.role === 'client' && (
-                  <Link to="/dashboard" className="block py-2 text-gray-700 hover:text-[#E6202E]">
+                  <Link to="/dashboard" className="block py-2 text-gray-700 hover:text-[#2B547E]">
                     Panel Cliente
                   </Link>
                 )}
-                <Link to="/historial" className="block py-2 text-gray-700 hover:text-[#E6202E]">
+                <Link to="/historial" className="block py-2 text-gray-700 hover:text-[#2B547E]">
                   Historial y Facturas
                 </Link>
                 {user.role === 'provider' && (
-                  <Link to="/provider/dashboard" className="block py-2 text-gray-700 hover:text-[#E6202E]">
+                  <Link to="/provider/dashboard" className="block py-2 text-gray-700 hover:text-[#2B547E]">
                     Panel Cuidador
                   </Link>
                 )}
-                <Link to="/favoritos" className="block py-2 text-gray-700 hover:text-[#E6202E]">
+                <Link to="/favoritos" className="block py-2 text-gray-700 hover:text-[#2B547E]">
                   Favoritos
                 </Link>
-                <Link to="/chat" className="block py-2 text-gray-700 hover:text-[#E6202E]">
+                <Link to="/chat" className="block py-2 text-gray-700 hover:text-[#2B547E]">
                   Chat
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="block w-full text-left py-2 text-gray-700 hover:text-[#E6202E]"
+                  className="block w-full text-left py-2 text-gray-700 hover:text-[#2B547E]"
                 >
                   Cerrar Sesión
                 </button>
@@ -187,10 +187,10 @@ const Navbar = () => {
             ) : (
               !loading && (
                 <>
-                  <Link to="/login" className="block w-full text-left py-2 text-gray-700 hover:text-[#E6202E]">
+                  <Link to="/login" className="block w-full text-left py-2 text-gray-700 hover:text-[#2B547E]">
                     Iniciar Sesión
                   </Link>
-                  <Link to="/register" className="block w-full text-left py-2 text-[#E6202E] font-bold">
+                  <Link to="/register" className="block w-full text-left py-2 text-[#2B547E] font-bold">
                     Registrarse
                   </Link>
                 </>
