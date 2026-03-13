@@ -120,7 +120,7 @@ const ProviderDashboard = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
         <p className="text-gray-600 mb-6">No tienes perfil de cuidador.</p>
-        <Link to="/provider/register"><Button className="bg-[#00e7ff] hover:bg-[#00c4d4]">Crear Perfil</Button></Link>
+        <Link to="/provider/register"><Button className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">Crear Perfil</Button></Link>
       </div>
     </div>
   );
@@ -333,7 +333,7 @@ const ProviderDashboard = () => {
               <Button 
                 type="submit" 
                 disabled={savingProfile}
-                className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white"
+                className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
                 data-testid="save-profile-btn"
               >
                 {savingProfile ? 'Guardando...' : 'Guardar Cambios'}
@@ -673,7 +673,7 @@ const ProviderDashboard = () => {
                   }
                 }}
                 disabled={savingPersonalInfo}
-                className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white"
+                className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
                 data-testid="save-personal-info-btn"
               >
                 {savingPersonalInfo ? 'Guardando...' : 'Guardar Información Personal'}
@@ -732,7 +732,7 @@ const ProviderDashboard = () => {
               </div>
             )}
 
-            <Button onClick={saveAvailability} disabled={savingAvailability} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white" data-testid="save-availability-button">
+            <Button onClick={saveAvailability} disabled={savingAvailability} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="save-availability-button">
               {savingAvailability ? 'Guardando...' : 'Guardar Disponibilidad'}
             </Button>
           </div>
@@ -825,7 +825,7 @@ const ProviderDashboard = () => {
                             {givenReviews.find(r => r.client_user_id === client.user_id)?.published !== false ? 'Publicado' : 'Pendiente'}
                           </span>
                         ) : (
-                          <Button size="sm" variant={isFormOpen ? "outline" : "default"} onClick={() => { setShowReviewForm(isFormOpen ? null : client.user_id); setReviewForm({ rating: 5, punctuality: 5, pet_behavior: 5, communication: 5, comment: '' }); }} className={!isFormOpen ? 'bg-[#00e7ff] hover:bg-[#00c4d4]' : ''} data-testid={`rate-client-${client.user_id}`}>
+                          <Button size="sm" variant={isFormOpen ? "outline" : "default"} onClick={() => { setShowReviewForm(isFormOpen ? null : client.user_id); setReviewForm({ rating: 5, punctuality: 5, pet_behavior: 5, communication: 5, comment: '' }); }} className={!isFormOpen ? 'bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]' : ''} data-testid={`rate-client-${client.user_id}`}>
                             {isFormOpen ? 'Cancelar' : 'Calificar'}
                           </Button>
                         )}
@@ -865,7 +865,7 @@ const ProviderDashboard = () => {
                               setGivenReviews(res.data);
                             } catch (err) { toast.error(err.response?.data?.detail || 'Error al calificar'); }
                             finally { setSubmittingReview(false); }
-                          }} disabled={submittingReview} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4]" data-testid="submit-client-review">
+                          }} disabled={submittingReview} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="submit-client-review">
                             {submittingReview ? 'Enviando...' : 'Enviar Calificacion'}
                           </Button>
                         </div>

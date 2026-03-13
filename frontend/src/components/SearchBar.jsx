@@ -72,7 +72,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
               }}
               className={`flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-base transition-all ${
                 isActive
-                  ? 'bg-[#00e7ff] text-white shadow-md'
+                  ? 'bg-[#00e7ff] text-[#33404f] shadow-md'
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
               }`}
               data-testid={`service-tab-${tab.id}`}
@@ -142,7 +142,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
           {/* Search Button */}
           <Button
             type="submit"
-            className="h-16 px-10 bg-[#00e7ff] hover:bg-[#00c4d4] text-white font-bold text-lg rounded-xl whitespace-nowrap"
+            className="h-16 px-10 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold text-lg rounded-xl whitespace-nowrap"
             data-testid="search-submit-button"
           >
             Buscar

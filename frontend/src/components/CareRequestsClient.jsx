@@ -112,7 +112,7 @@ const ProposalCard = ({ proposal, onRespond }) => {
               <CheckCircle className="w-4 h-4 text-green-600" />
               <span className="text-sm text-green-700 font-medium">Chat desbloqueado</span>
               <Link to="/chat" className="ml-auto">
-                <Button size="sm" className="bg-[#00e7ff] hover:bg-[#00c4d4] text-xs">
+                <Button size="sm" className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-xs">
                   <MessageCircle className="w-3.5 h-3.5 mr-1" />Ir al Chat
                 </Button>
               </Link>
@@ -254,7 +254,7 @@ const CareRequestsClient = ({ pets = [] }) => {
         </h2>
         <Button 
           onClick={() => setShowForm(!showForm)} size="sm" 
-          className={showForm ? 'bg-gray-500' : 'bg-[#00e7ff] hover:bg-[#00c4d4]'}
+          className={showForm ? 'bg-gray-500' : 'bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]'}
           data-testid="new-care-request-btn"
         >
           {showForm ? 'Cancelar' : <><Plus className="w-4 h-4 mr-1" /> Nueva</>}
@@ -307,7 +307,7 @@ const CareRequestsClient = ({ pets = [] }) => {
               onChange={e => setFormData(prev => ({ ...prev, flexible_dates: e.target.checked }))} className="w-4 h-4 text-[#00e7ff] rounded" />
             <label htmlFor="flexible" className="text-sm text-gray-600">Tengo flexibilidad en las fechas</label>
           </div>
-          <Button type="submit" disabled={submitting || pets.length === 0} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4]" data-testid="submit-care-request">
+          <Button type="submit" disabled={submitting || pets.length === 0} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="submit-care-request">
             {submitting ? 'Creando...' : 'Crear Solicitud'}
           </Button>
         </form>
@@ -378,7 +378,7 @@ const CareRequestsClient = ({ pets = [] }) => {
                         <Send className="w-4 h-4" />
                         {reqProposals.length} propuesta{reqProposals.length > 1 ? 's' : ''} recibida{reqProposals.length > 1 ? 's' : ''}
                         {pendingCount > 0 && (
-                          <span className="px-2 py-0.5 bg-[#00e7ff] text-white text-xs rounded-full">{pendingCount} nueva{pendingCount > 1 ? 's' : ''}</span>
+                          <span className="px-2 py-0.5 bg-[#00e7ff] text-[#33404f] text-xs rounded-full">{pendingCount} nueva{pendingCount > 1 ? 's' : ''}</span>
                         )}
                       </span>
                       {isExpanded ? <ChevronUp className="w-4 h-4 text-blue-600" /> : <ChevronDown className="w-4 h-4 text-blue-600" />}

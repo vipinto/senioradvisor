@@ -87,7 +87,7 @@ const PetForm = ({ onSaved, onCancel }) => {
           <div className="flex gap-2">
             {PET_SIZES.map(s => (
               <button key={s.id} type="button" onClick={() => setForm({ ...form, size: s.id })}
-                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all ${form.size === s.id ? 'bg-[#00e7ff] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all ${form.size === s.id ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                 data-testid={`pet-size-${s.id}`}
               >{s.label}</button>
             ))}
@@ -98,7 +98,7 @@ const PetForm = ({ onSaved, onCancel }) => {
           <div className="flex gap-2">
             {PET_SEX.map(s => (
               <button key={s.id} type="button" onClick={() => setForm({ ...form, sex: s.id })}
-                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all ${form.sex === s.id ? 'bg-[#00e7ff] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all ${form.sex === s.id ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                 data-testid={`pet-sex-${s.id}`}
               >{s.label}</button>
             ))}
@@ -112,7 +112,7 @@ const PetForm = ({ onSaved, onCancel }) => {
 
       <div className="flex gap-3">
         {onCancel && <Button variant="outline" onClick={onCancel} className="flex-1" data-testid="pet-cancel-btn">Cancelar</Button>}
-        <Button onClick={handleSave} disabled={saving || uploading} className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4]" data-testid="pet-save-btn">
+        <Button onClick={handleSave} disabled={saving || uploading} className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="pet-save-btn">
           {saving ? 'Guardando...' : 'Guardar Mascota'}
         </Button>
       </div>
@@ -185,7 +185,7 @@ export default function PetSetup() {
 
         {/* Continue / Skip */}
         <div className="mt-8 space-y-3">
-          <Button onClick={handleContinue} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] py-6 text-lg" data-testid="continue-to-dashboard">
+          <Button onClick={handleContinue} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6 text-lg" data-testid="continue-to-dashboard">
             {pets.length > 0 ? 'Continuar' : 'Omitir por ahora'} <ChevronRight className="w-5 h-5 ml-2" />
           </Button>
           {pets.length === 0 && (

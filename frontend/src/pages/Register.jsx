@@ -160,7 +160,7 @@ const Register = () => {
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input type={showPassword ? 'text' : 'password'} placeholder="Confirmar contraseña" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="pl-10 py-6 rounded-xl border-gray-300" data-testid="register-confirm-password-input" />
             </div>
-            <Button type="submit" disabled={loading} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-6 text-lg rounded-xl font-bold" data-testid="register-submit-button">
+            <Button type="submit" disabled={loading} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6 text-lg rounded-xl font-bold" data-testid="register-submit-button">
               {loading ? 'Creando cuenta...' : role === 'provider' ? 'Continuar' : 'Crear Cuenta'}
             </Button>
           </form>

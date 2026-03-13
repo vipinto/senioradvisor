@@ -105,7 +105,7 @@ const PaymentResult = ({ status }) => {
           {status === 'success' && (
             <Button
               onClick={() => navigate('/search')}
-              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-6"
+              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6"
             >
               Buscar Cuidadores
             </Button>
@@ -114,7 +114,7 @@ const PaymentResult = ({ status }) => {
           {status === 'failure' && (
             <Button
               onClick={() => navigate('/planes')}
-              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-6"
+              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6"
             >
               Intentar de Nuevo
             </Button>
@@ -123,7 +123,7 @@ const PaymentResult = ({ status }) => {
           {status === 'pending' && (
             <Button
               onClick={() => navigate('/dashboard')}
-              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-6"
+              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6"
             >
               Ir a Mi Cuenta
             </Button>

@@ -57,7 +57,7 @@ const CookieConsent = () => {
           <Button
             size="sm"
             onClick={accept}
-            className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white text-xs"
+            className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-xs"
             data-testid="cookie-accept-btn"
           >
             Aceptar todas

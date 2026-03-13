@@ -107,7 +107,7 @@ function PlanModal({ plan, onClose, onSave }) {
         </label>
         <div className="flex gap-3 pt-2">
           <Button onClick={onClose} variant="outline" className="flex-1">Cancelar</Button>
-          <Button onClick={handleSave} disabled={saving} className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-white" data-testid="plan-save-button">
+          <Button onClick={handleSave} disabled={saving} className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="plan-save-button">
             {saving ? 'Guardando...' : 'Guardar'}
           </Button>
         </div>
@@ -293,7 +293,7 @@ export default function AdminPanel() {
                         {p.verified ? (
                           <Button size="sm" variant="outline" onClick={() => unverifyProvider(p.provider_id)}>Quitar Badge</Button>
                         ) : (
-                          <Button size="sm" onClick={() => verifyProvider(p.provider_id)} className="bg-[#00e7ff] hover:bg-[#00c4d4]"><Badge className="w-4 h-4 mr-1" />Verificar</Button>
+                          <Button size="sm" onClick={() => verifyProvider(p.provider_id)} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"><Badge className="w-4 h-4 mr-1" />Verificar</Button>
                         )}
                       </div>
                     </div>
@@ -305,7 +305,7 @@ export default function AdminPanel() {
             {activeTab === 'plans' && (
               <div className="space-y-4">
                 <div className="flex justify-end">
-                  <Button onClick={() => { setEditPlan(null); setShowPlanModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white" data-testid="create-plan-button">
+                  <Button onClick={() => { setEditPlan(null); setShowPlanModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="create-plan-button">
                     <Plus className="w-4 h-4 mr-1" />Nuevo Plan
                   </Button>
                 </div>
@@ -318,7 +318,7 @@ export default function AdminPanel() {
                         <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-bold text-lg">{p.name}</h3>
-                            {p.popular && <span className="bg-[#00e7ff] text-white text-xs px-2 py-0.5 rounded-full">Popular</span>}
+                            {p.popular && <span className="bg-[#00e7ff] text-[#33404f] text-xs px-2 py-0.5 rounded-full">Popular</span>}
                             {!p.active && <span className="bg-gray-500 text-white text-xs px-2 py-0.5 rounded-full">Inactivo</span>}
                           </div>
                           <p className="text-2xl font-bold text-[#00e7ff] mt-1">${p.price_clp?.toLocaleString('es-CL')} CLP</p>
@@ -424,7 +424,7 @@ export default function AdminPanel() {
                       finally { setSavingSos(false); }
                     }}
                     disabled={savingSos}
-                    className="bg-[#00e7ff] hover:bg-[#00c4d4]"
+                    className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
                     data-testid="save-sos-btn"
                   >
                     {savingSos ? 'Guardando...' : 'Guardar Configuracion SOS'}
@@ -448,7 +448,7 @@ export default function AdminPanel() {
       {viewingDocs && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" data-testid="verification-docs-modal">
           <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div className="p-4 border-b flex justify-between items-center bg-gradient-to-r from-[#00e7ff] to-[#00c4d4] text-white">
+            <div className="p-4 border-b flex justify-between items-center bg-gradient-to-r from-[#00e7ff] to-[#00c4d4] text-[#33404f]">
               <div>
                 <h3 className="text-xl font-bold">Documentos de Verificación</h3>
                 <p className="text-sm opacity-80">{viewingDocs.business_name}</p>

@@ -114,7 +114,7 @@ export default function MyBookings() {
               onClick={() => setFilter(key)}
               className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                 filter === key
-                  ? 'bg-[#00e7ff] text-white'
+                  ? 'bg-[#00e7ff] text-[#33404f]'
                   : 'bg-white text-gray-600 hover:bg-gray-100 border'
               }`}
               data-testid={`filter-${key}`}
@@ -135,7 +135,7 @@ export default function MyBookings() {
                 : 'No hay reservas con este filtro.'}
             </p>
             <Link to="/search">
-              <Button className="bg-[#00e7ff] hover:bg-[#00c4d4]">
+              <Button className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
                 Buscar Cuidadores
               </Button>
             </Link>
@@ -244,7 +244,7 @@ export default function MyBookings() {
                     
                     {booking.status === 'completed' && (
                       <Link to={`/provider/${booking.provider_id}`}>
-                        <Button className="bg-[#00e7ff] hover:bg-[#00c4d4]">
+                        <Button className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
                           Dejar Resena
                         </Button>
                       </Link>

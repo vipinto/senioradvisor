@@ -384,7 +384,7 @@ const ProviderAccount = () => {
                 />
               </div>
 
-              <Button type="submit" disabled={savingProfile} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white">
+              <Button type="submit" disabled={savingProfile} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
                 {savingProfile ? 'Guardando...' : 'Guardar Cambios'}
               </Button>
             </form>
@@ -437,7 +437,7 @@ const ProviderAccount = () => {
                         <div className="flex gap-2 mt-1">
                           {PET_SIZES.map(ps => (
                             <button key={ps.id} type="button" onClick={() => togglePetSize(id, ps.id)}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${svc.pet_sizes.includes(ps.id) ? 'bg-[#00e7ff] text-white' : 'bg-white border text-gray-600'}`}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${svc.pet_sizes.includes(ps.id) ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-white border text-gray-600'}`}
                             >{ps.label}</button>
                           ))}
                         </div>
@@ -465,7 +465,7 @@ const ProviderAccount = () => {
               <Button 
                 onClick={saveServices} 
                 disabled={savingServices || Object.keys(services).length === 0} 
-                className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white"
+                className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
               >
                 {savingServices ? 'Guardando...' : 'Guardar Servicios'}
               </Button>
@@ -634,7 +634,7 @@ const ProviderAccount = () => {
                 />
               </div>
 
-              <Button onClick={savePersonalInfo} disabled={savingPersonalInfo} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white">
+              <Button onClick={savePersonalInfo} disabled={savingPersonalInfo} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
                 {savingPersonalInfo ? 'Guardando...' : 'Guardar Información'}
               </Button>
             </div>
@@ -694,7 +694,7 @@ const ProviderAccount = () => {
               </div>
             )}
 
-            <Button onClick={saveAvailability} disabled={savingAvailability} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white">
+            <Button onClick={saveAvailability} disabled={savingAvailability} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
               {savingAvailability ? 'Guardando...' : 'Guardar Disponibilidad'}
             </Button>
           </div>

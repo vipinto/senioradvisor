@@ -93,7 +93,7 @@ const SelectRole = () => {
             }`}
           >
             <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-              selectedRole === 'client' ? 'bg-[#00e7ff] text-white' : 'bg-gray-100 text-gray-500'
+              selectedRole === 'client' ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-100 text-gray-500'
             }`}>
               <User className="w-6 h-6" />
             </div>
@@ -122,7 +122,7 @@ const SelectRole = () => {
               }`}
             >
               <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                selectedRole === 'provider' ? 'bg-[#00e7ff] text-white' : 'bg-gray-100 text-gray-500'
+                selectedRole === 'provider' ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-100 text-gray-500'
               }`}>
                 <Shield className="w-6 h-6" />
               </div>
@@ -144,7 +144,7 @@ const SelectRole = () => {
         <Button
           onClick={handleSelectRole}
           disabled={loading}
-          className="w-full h-12 bg-[#00e7ff] hover:bg-[#00c4d4] text-white font-semibold"
+          className="w-full h-12 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-semibold"
         >
           {loading ? 'Cargando...' : 'Continuar'}
         </Button>

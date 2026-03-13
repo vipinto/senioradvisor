@@ -155,7 +155,7 @@ const Dashboard = () => {
               onClick={() => setActiveTab(key)}
               className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
                 activeTab === key
-                  ? 'bg-[#00e7ff] text-white'
+                  ? 'bg-[#00e7ff] text-[#33404f]'
                   : 'text-gray-500 hover:bg-gray-100'
               }`}
             >
@@ -180,7 +180,7 @@ const Dashboard = () => {
                 <Dog className="w-5 h-5 text-[#00e7ff]" />
                 Mis Mascotas
               </h2>
-              <Button onClick={() => { setShowPetForm(true); setNewPet({ name: '', type: 'perro', breed: '', size: 'mediano', age: '', notes: '' }); }} className="bg-[#00e7ff] hover:bg-[#00c4d4]">
+              <Button onClick={() => { setShowPetForm(true); setNewPet({ name: '', type: 'perro', breed: '', size: 'mediano', age: '', notes: '' }); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
                 <Plus className="w-4 h-4 mr-2" /> Agregar
               </Button>
             </div>
@@ -205,7 +205,7 @@ const Dashboard = () => {
                   <Input placeholder="Notas (opcional)" value={newPet.notes} onChange={e => setNewPet(p => ({ ...p, notes: e.target.value }))} />
                 </div>
                 <div className="flex gap-2 mt-3">
-                  <Button onClick={handleAddPet} disabled={savingPet} className="bg-[#00e7ff] hover:bg-[#00c4d4]">
+                  <Button onClick={handleAddPet} disabled={savingPet} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
                     {savingPet ? 'Guardando...' : 'Guardar'}
                   </Button>
                   <Button variant="outline" onClick={() => setShowPetForm(false)}>Cancelar</Button>

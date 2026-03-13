@@ -169,7 +169,7 @@ const ProviderGallery = ({ editable = true }) => {
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
             size="sm"
-            className="bg-[#00e7ff] hover:bg-[#00c4d4]"
+            className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
             data-testid="upload-photo-btn"
           >
             {uploading ? (
@@ -282,7 +282,7 @@ const ProviderGallery = ({ editable = true }) => {
 
               {/* First photo badge */}
               {index === 0 && (
-                <div className="absolute top-2 right-2 px-2 py-1 bg-[#00e7ff] text-white text-xs font-bold rounded">
+                <div className="absolute top-2 right-2 px-2 py-1 bg-[#00e7ff] text-[#33404f] text-xs font-bold rounded">
                   Principal
                 </div>
               )}

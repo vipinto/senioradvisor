@@ -100,7 +100,7 @@ export default function ServiceHistory() {
                 <p className="text-gray-500 text-lg mb-2">Sin historial de servicios</p>
                 <p className="text-sm text-gray-400 mb-6">Tus servicios completados apareceran aqui</p>
                 <Link to="/search">
-                  <Button className="bg-[#00e7ff] hover:bg-[#00c4d4]">Buscar Cuidadores</Button>
+                  <Button className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">Buscar Cuidadores</Button>
                 </Link>
               </div>
             ) : (

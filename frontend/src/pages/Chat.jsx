@@ -367,7 +367,7 @@ const Chat = () => {
                     </p>
                   </div>
                   {conv.unread_count > 0 && (
-                    <span className="bg-[#00e7ff] text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
+                    <span className="bg-[#00e7ff] text-[#33404f] text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
                       {conv.unread_count}
                     </span>
                   )}
@@ -433,7 +433,7 @@ const Chat = () => {
                           <div
                             className={`max-w-[70%] rounded-2xl px-4 py-2 ${
                               isOwn
-                                ? 'bg-[#00e7ff] text-white rounded-br-none'
+                                ? 'bg-[#00e7ff] text-[#33404f] rounded-br-none'
                                 : 'bg-gray-100 text-[#33404f] rounded-bl-none'
                             }`}
                           >
@@ -467,7 +467,7 @@ const Chat = () => {
                   <Button 
                     type="submit" 
                     disabled={!newMessage.trim()}
-                    className="bg-[#00e7ff] hover:bg-[#00c4d4]"
+                    className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
                     data-testid="send-message-btn"
                   >
                     <Send className="w-5 h-5" />

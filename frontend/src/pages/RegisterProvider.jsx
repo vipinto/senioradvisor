@@ -284,7 +284,7 @@ export default function RegisterProvider() {
           <div 
             className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
               currentStep === step.id 
-                ? 'bg-[#00e7ff] text-white' 
+                ? 'bg-[#00e7ff] text-[#33404f]' 
                 : currentStep > step.id 
                   ? 'bg-green-500 text-white' 
                   : 'bg-gray-200 text-gray-500'
@@ -515,7 +515,7 @@ export default function RegisterProvider() {
                 <div className="flex gap-2 mt-1">
                   {PET_SIZES.map(ps => (
                     <button key={ps.id} type="button" onClick={() => togglePetSize(id, ps.id)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${svc.pet_sizes.includes(ps.id) ? 'bg-[#00e7ff] text-white' : 'bg-white border text-gray-600'}`}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${svc.pet_sizes.includes(ps.id) ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-white border text-gray-600'}`}
                     >{ps.label}</button>
                   ))}
                 </div>
@@ -583,7 +583,7 @@ export default function RegisterProvider() {
           onChange={e => setNewZone(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addZone())}
         />
-        <Button type="button" onClick={addZone} className="bg-[#00e7ff] hover:bg-[#00c4d4]">Agregar</Button>
+        <Button type="button" onClick={addZone} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">Agregar</Button>
       </div>
 
       {serviceZones.length > 0 ? (
@@ -692,7 +692,7 @@ export default function RegisterProvider() {
                       Omitir
                     </Button>
                   )}
-                  <Button type="button" onClick={nextStep} className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4]">
+                  <Button type="button" onClick={nextStep} className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
                     Siguiente <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 </>
@@ -701,7 +701,7 @@ export default function RegisterProvider() {
                   type="button" 
                   onClick={handleSubmit} 
                   disabled={submitting}
-                  className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] py-6"
+                  className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6"
                 >
                   {submitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Creando...</> : 'Crear Perfil de Cuidador'}
                 </Button>

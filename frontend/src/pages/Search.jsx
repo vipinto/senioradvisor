@@ -82,7 +82,7 @@ const Search = () => {
               <Filter className="w-4 h-4 mr-2" />
               Filtros
             </Button>
-            <Button type="submit" className="h-12 bg-[#00e7ff] hover:bg-[#00c4d4]">
+            <Button type="submit" className="h-12 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
               Buscar
             </Button>
           </form>
@@ -257,7 +257,7 @@ const Search = () => {
                 setMinRating('');
                 loadProviders();
               }}
-              className="mt-4 bg-[#00e7ff] hover:bg-[#00c4d4]"
+              className="mt-4 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
             >
               Limpiar filtros
             </Button>

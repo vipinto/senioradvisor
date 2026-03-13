@@ -87,7 +87,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" data-testid="booking-modal">
       <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="p-4 border-b flex items-center justify-between bg-gradient-to-r from-[#00e7ff] to-[#00c4d4] text-white">
+        <div className="p-4 border-b flex items-center justify-between bg-gradient-to-r from-[#00e7ff] to-[#00c4d4] text-[#33404f]">
           <div>
             <h2 className="text-xl font-bold">Nueva Reserva</h2>
             <p className="text-sm opacity-80">{provider.business_name}</p>
@@ -319,7 +319,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
                 }
                 setStep(step + 1);
               }}
-              className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4]"
+              className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
               data-testid="next-step-btn"
             >
               Siguiente
@@ -328,7 +328,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
             <Button
               onClick={handleSubmit}
               disabled={loading || selectedPets.length === 0}
-              className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4]"
+              className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
               data-testid="submit-booking-btn"
             >
               {loading ? 'Enviando...' : 'Confirmar Reserva'}

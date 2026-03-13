@@ -41,7 +41,7 @@ const Home = () => {
             />
           </div>
           <div className="md:w-8/12 flex items-center px-8 py-12 md:py-14 md:px-12">
-              <div className="text-white w-full">
+              <div className="text-[#33404f] w-full">
                 <h2 className="font-montserrat text-4xl font-bold uppercase tracking-wide mb-2 text-center">
                   El cuidado que merecen nuestros mayores
                 </h2>
@@ -50,22 +50,22 @@ const Home = () => {
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full border-2 border-white bg-white flex items-center justify-center mb-3">
-                      <HomeIcon className="w-9 h-9 text-[#00e7ff]" />
+                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-white flex items-center justify-center mb-3">
+                      <HomeIcon className="w-9 h-9 text-[#33404f]" />
                     </div>
                     <p className="font-bold text-2xl uppercase tracking-widest mb-1.5">Confort</p>
                     <p className="opacity-85 text-sm leading-relaxed">Espacios diseñados para su bienestar, con todas las comodidades y atención personalizada que necesitan.</p>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full border-2 border-white bg-white flex items-center justify-center mb-3">
-                      <Heart className="w-9 h-9 text-[#00e7ff]" />
+                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-white flex items-center justify-center mb-3">
+                      <Heart className="w-9 h-9 text-[#33404f]" />
                     </div>
                     <p className="font-bold text-2xl uppercase tracking-widest mb-1.5">Cariño</p>
                     <p className="opacity-85 text-sm leading-relaxed">Profesionales dedicados que brindan atención con amor y respeto, como parte de la familia.</p>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full border-2 border-white bg-white flex items-center justify-center mb-3">
-                      <Brain className="w-9 h-9 text-[#00e7ff]" />
+                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-white flex items-center justify-center mb-3">
+                      <Brain className="w-9 h-9 text-[#33404f]" />
                     </div>
                     <p className="font-bold text-2xl uppercase tracking-widest mb-1.5">Bienestar</p>
                     <p className="opacity-85 text-sm leading-relaxed">Atención integral que incluye salud física, mental y emocional para una vida plena.</p>
@@ -73,7 +73,7 @@ const Home = () => {
                 </div>
                 <div className="text-center">
                   <Link to="/search">
-                    <Button className="bg-white text-[#00e7ff] hover:bg-gray-100 px-8 py-4 text-base font-bold rounded-xl">
+                    <Button className="bg-[#33404f] text-white hover:bg-[#4a5568] px-8 py-4 text-base font-bold rounded-xl">
                       Buscar Servicios Ahora
                     </Button>
                   </Link>
@@ -151,11 +151,11 @@ const Home = () => {
 
       {/* CTA for Providers */}
       <section className="py-20 bg-gradient-to-r from-[#00e7ff] to-[#00c4d4]">
-        <div className="max-w-7xl mx-auto px-4 text-center text-white">
+        <div className="max-w-7xl mx-auto px-4 text-center text-[#33404f]">
           <h2 className="font-montserrat text-4xl font-bold mb-4">¿Ofreces servicios para adultos mayores?</h2>
           <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">Únete a SeniorAdvisor y conecta con miles de familias que buscan servicios de calidad como el tuyo.</p>
           <Link to="/provider/register">
-            <Button className="bg-white text-[#00e7ff] hover:bg-gray-100 px-12 py-6 text-lg font-bold rounded-xl">
+            <Button className="bg-[#33404f] text-white hover:bg-[#4a5568] px-12 py-6 text-lg font-bold rounded-xl">
               Registrar mi Servicio Gratis
             </Button>
           </Link>

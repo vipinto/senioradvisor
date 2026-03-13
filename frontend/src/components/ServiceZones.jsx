@@ -116,7 +116,7 @@ const ServiceZones = () => {
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="bg-[#00e7ff] hover:bg-[#00c4d4]"
+          className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
           data-testid="save-zones-btn"
         >
           {saving ? (

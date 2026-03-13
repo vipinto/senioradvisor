@@ -113,7 +113,7 @@ const ClientAccount = () => {
                 {user.picture ? (
                   <img src={getPhotoUrl(user.picture)} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-[#00e7ff] text-white flex items-center justify-center text-3xl font-bold">
+                  <div className="w-full h-full bg-[#00e7ff] text-[#33404f] flex items-center justify-center text-3xl font-bold">
                     {user.name?.[0] || 'U'}
                   </div>
                 )}
@@ -183,7 +183,7 @@ const ClientAccount = () => {
               />
             </div>
 
-            <Button type="submit" disabled={savingProfile} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white">
+            <Button type="submit" disabled={savingProfile} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
               {savingProfile ? 'Guardando...' : 'Guardar Cambios'}
             </Button>
           </form>

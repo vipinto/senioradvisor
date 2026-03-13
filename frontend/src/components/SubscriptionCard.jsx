@@ -182,7 +182,7 @@ const SubscriptionCard = ({ userType = 'client', hasSubscription = false, onSubs
           <Button
             onClick={handleSubscribe}
             disabled={subscribing}
-            className="w-full sm:w-auto px-8 py-6 text-lg font-bold bg-[#00e7ff] hover:bg-[#00c4d4]"
+            className="w-full sm:w-auto px-8 py-6 text-lg font-bold bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
             data-testid="subscribe-now-btn"
           >
             {subscribing ? (

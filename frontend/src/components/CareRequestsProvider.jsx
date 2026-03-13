@@ -87,7 +87,7 @@ const ProposalForm = ({ requestId, onSubmit, onCancel }) => {
         <Button type="button" variant="outline" size="sm" onClick={onCancel} data-testid="proposal-cancel-btn">
           Cancelar
         </Button>
-        <Button type="submit" size="sm" disabled={submitting} className="bg-[#00e7ff] hover:bg-[#00c4d4]" data-testid="proposal-submit-btn">
+        <Button type="submit" size="sm" disabled={submitting} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="proposal-submit-btn">
           {submitting ? 'Enviando...' : <><Send className="w-3.5 h-3.5 mr-1" />Enviar Propuesta</>}
         </Button>
       </div>
@@ -307,7 +307,7 @@ const CareRequestsProvider = ({ hasSubscription = false }) => {
                             ) : (
                               <Button
                                 size="sm"
-                                className="text-xs bg-[#00e7ff] hover:bg-[#00c4d4]"
+                                className="text-xs bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
                                 onClick={() => setExpandedForm(expandedForm === req.request_id ? null : req.request_id)}
                                 data-testid={`send-proposal-btn-${req.request_id}`}
                               >

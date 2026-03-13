@@ -114,7 +114,7 @@ const Login = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-6 text-lg rounded-xl font-bold shadow-md hover:shadow-lg transition-all"
+              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6 text-lg rounded-xl font-bold shadow-md hover:shadow-lg transition-all"
               data-testid="email-login-button"
             >
               {loading ? 'Ingresando...' : 'Iniciar Sesión'}

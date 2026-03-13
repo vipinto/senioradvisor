@@ -458,7 +458,7 @@ export default function ProviderProfile() {
                   <Button
                     onClick={submitReview}
                     disabled={submitting}
-                    className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white"
+                    className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
                     data-testid="submit-review-button"
                   >
                     {submitting ? 'Enviando...' : 'Publicar Resena'}
@@ -512,7 +512,7 @@ export default function ProviderProfile() {
                   </div>
 
                   <Link to="/chat" className="block">
-                    <Button className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-5 text-base" data-testid="go-to-chat-btn">
+                    <Button className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-5 text-base" data-testid="go-to-chat-btn">
                       <MessageSquare className="w-5 h-5 mr-2" /> Ir al Chat
                     </Button>
                   </Link>
@@ -581,7 +581,7 @@ export default function ProviderProfile() {
                       }
                     }}
                     disabled={sendingContactRequest}
-                    className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-5 text-base"
+                    className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-5 text-base"
                     data-testid="send-contact-request-btn"
                   >
                     {sendingContactRequest ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Send className="w-5 h-5 mr-2" />}

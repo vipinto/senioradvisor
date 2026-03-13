@@ -138,7 +138,7 @@ export default function ProviderBookings() {
             onClick={() => setFilter(key)}
             className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
               filter === key
-                ? 'bg-[#00e7ff] text-white'
+                ? 'bg-[#00e7ff] text-[#33404f]'
                 : 'bg-white text-gray-600 hover:bg-gray-100 border'
             }`}
           >

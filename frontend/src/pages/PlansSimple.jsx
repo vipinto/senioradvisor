@@ -133,7 +133,7 @@ const Plans = () => {
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-[#00e7ff] text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                  <span className="bg-[#00e7ff] text-[#33404f] px-6 py-2 rounded-full text-sm font-bold shadow-lg">
                     MÁS POPULAR
                   </span>
                 </div>
@@ -167,7 +167,7 @@ const Plans = () => {
                 disabled={user?.has_subscription || processingPlan === plan.plan_id}
                 className={`w-full py-6 text-lg font-bold rounded-xl transition-all ${
                   plan.popular
-                    ? 'bg-[#00e7ff] hover:bg-[#00c4d4] text-white'
+                    ? 'bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]'
                     : 'bg-white border-2 border-[#00e7ff] text-[#00e7ff] hover:bg-red-50'
                 }`}
                 data-testid={`subscribe-btn-${plan.plan_id}`}

@@ -312,7 +312,7 @@ const SearchPage = () => {
           <div className="flex gap-2 mb-3">
             <button
               onClick={() => { setActiveService(''); setFilteredProviders(providers); }}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${!activeService ? 'bg-[#00e7ff] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${!activeService ? 'bg-[#00e7ff] text-[#33404f] shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
               data-testid="service-tab-all"
             >
               Todos
@@ -331,7 +331,7 @@ const SearchPage = () => {
                     setFilteredProviders(providers.filter(p => p.services?.some(s => s.service_type === tab.id)));
                   }
                 }}
-                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${activeService === tab.id ? 'bg-[#00e7ff] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${activeService === tab.id ? 'bg-[#00e7ff] text-[#33404f] shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                 data-testid={`service-tab-${tab.id}`}
               >
                 {tab.label}
@@ -414,7 +414,7 @@ const SearchPage = () => {
 
             <Button
               type="submit"
-              className="h-12 px-6 bg-[#00e7ff] hover:bg-[#00c4d4]"
+              className="h-12 px-6 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
               data-testid="search-submit"
             >
               <Search className="w-5 h-5" />
@@ -519,7 +519,7 @@ const SearchPage = () => {
 
                       <Link
                         to={`/provider/${selectedProvider.provider_id}`}
-                        className="mt-3 block w-full text-center py-2 bg-[#00e7ff] text-white text-sm font-medium rounded-lg hover:bg-[#00c4d4]"
+                        className="mt-3 block w-full text-center py-2 bg-[#00e7ff] text-[#33404f] text-sm font-medium rounded-lg hover:bg-[#00c4d4]"
                       >
                         Ver perfil
                       </Link>
@@ -532,7 +532,7 @@ const SearchPage = () => {
                 onClick={() => setIsMapSearchActive(!isMapSearchActive)}
                 className={`absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full shadow-lg font-medium text-sm transition-all ${
                   isMapSearchActive
-                    ? 'bg-[#00e7ff] text-white'
+                    ? 'bg-[#00e7ff] text-[#33404f]'
                     : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
                 }`}
                 data-testid="dynamic-search-toggle"
