@@ -43,69 +43,69 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50" data-testid="navbar">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-24">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-16" data-testid="navbar-logo" />
+            <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-14 md:h-16" data-testid="navbar-logo" />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/search" className="text-gray-700 hover:text-[#00e7ff] font-medium transition-colors">
+          <div className="hidden md:flex items-center space-x-6">
+            <Link to="/search" className="text-[#33404f] hover:text-[#00b8c9] text-lg font-semibold transition-colors">
               Buscar Servicios
             </Link>
             
             {user ? (
               <>
-                <Link to="/favoritos" className="text-gray-700 hover:text-[#00e7ff]">
-                  <Heart className="w-5 h-5" />
+                <Link to="/favoritos" className="text-[#33404f] hover:text-[#00b8c9] p-2">
+                  <Heart className="w-7 h-7" />
                 </Link>
-                <Link to="/chat" className="text-gray-700 hover:text-[#00e7ff]">
-                  <MessageCircle className="w-5 h-5" />
+                <Link to="/chat" className="text-[#33404f] hover:text-[#00b8c9] p-2">
+                  <MessageCircle className="w-7 h-7" />
                 </Link>
                 <div className="relative group">
-                  <button className="flex items-center space-x-2 text-gray-700 hover:text-[#00e7ff] py-2">
+                  <button className="flex items-center space-x-2 text-[#33404f] hover:text-[#00b8c9] py-2">
                     {user.picture ? (
-                      <img src={user.picture} alt={user.name} className="w-8 h-8 rounded-full" />
+                      <img src={user.picture} alt={user.name} className="w-10 h-10 rounded-full" />
                     ) : (
-                      <User className="w-5 h-5" />
+                      <User className="w-7 h-7" />
                     )}
-                    <span className="font-medium">{user.name}</span>
+                    <span className="font-semibold text-lg">{user.name}</span>
                   </button>
-                  <div className="absolute right-0 top-full pt-2 w-48 invisible group-hover:visible">
+                  <div className="absolute right-0 top-full pt-2 w-56 invisible group-hover:visible">
                     <div className="bg-white rounded-lg shadow-lg py-2 border">
                     {user.role === 'provider' ? (
-                      <Link to="/provider/account" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
+                      <Link to="/provider/account" className="block px-4 py-3 text-[#33404f] text-lg hover:bg-gray-50">
                         Mi Cuenta
                       </Link>
                     ) : (
-                      <Link to="/account" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
+                      <Link to="/account" className="block px-4 py-3 text-[#33404f] text-lg hover:bg-gray-50">
                         Mi Cuenta
                       </Link>
                     )}
                     {user.role === 'client' && (
-                      <Link to="/dashboard" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
+                      <Link to="/dashboard" className="block px-4 py-3 text-[#33404f] text-lg hover:bg-gray-50">
                         Panel Cliente
                       </Link>
                     )}
-                    <Link to="/historial" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
+                    <Link to="/historial" className="block px-4 py-3 text-[#33404f] text-lg hover:bg-gray-50">
                       Historial y Facturas
                     </Link>
                     {user.role === 'provider' && (
-                      <Link to="/provider/dashboard" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
-                        Panel Cuidador
+                      <Link to="/provider/dashboard" className="block px-4 py-3 text-[#33404f] text-lg hover:bg-gray-50">
+                        Panel Proveedor
                       </Link>
                     )}
                     {user.role === 'admin' && (
-                      <Link to="/admin" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
+                      <Link to="/admin" className="block px-4 py-3 text-[#33404f] text-lg hover:bg-gray-50">
                         Administración
                       </Link>
                     )}
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
+                      className="w-full text-left px-4 py-3 text-[#33404f] text-lg hover:bg-gray-50 flex items-center space-x-2"
                     >
-                      <LogOut className="w-4 h-4" />
+                      <LogOut className="w-5 h-5" />
                       <span>Cerrar Sesión</span>
                     </button>
                     </div>
@@ -117,12 +117,12 @@ const Navbar = () => {
               !loading && (
                 <>
                   <Link to="/login">
-                    <Button variant="outline" className="border-[#00e7ff] text-[#00e7ff] hover:bg-cyan-50">
+                    <Button variant="outline" className="border-2 border-[#33404f] text-[#33404f] hover:bg-gray-100 text-lg px-6 py-3 h-auto font-semibold">
                       Iniciar Sesión
                     </Button>
                   </Link>
                   <Link to="/register">
-                    <Button className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
+                    <Button className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-lg px-6 py-3 h-auto font-semibold">
                       Registrarse
                     </Button>
                   </Link>
@@ -134,10 +134,10 @@ const Navbar = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-gray-700 hover:text-[#00e7ff]"
+            className="md:hidden text-[#33404f] hover:text-[#00b8c9] p-2"
             data-testid="mobile-menu-button"
           >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
           </button>
         </div>
 

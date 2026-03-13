@@ -57,7 +57,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
   return (
     <div className="w-full" data-testid="search-bar-component">
       {/* Service Tabs */}
-      <div className="flex gap-3 mb-4">
+      <div className="flex flex-wrap gap-3 mb-6 justify-center">
         {SERVICE_TABS.map(tab => {
           const Icon = tab.icon;
           const isActive = activeService === tab.id;
@@ -70,14 +70,14 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
                 setDateRange({ from: undefined, to: undefined });
                 setSelectedDates([]);
               }}
-              className={`flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-base transition-all ${
+              className={`flex items-center gap-3 px-6 py-4 rounded-xl font-bold text-lg transition-all ${
                 isActive
-                  ? 'bg-[#00e7ff] text-[#33404f] shadow-md'
-                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                  ? 'bg-[#00e7ff] text-[#33404f] shadow-lg'
+                  : 'bg-white text-[#33404f] hover:bg-gray-100 border-2 border-gray-300'
               }`}
               data-testid={`service-tab-${tab.id}`}
             >
-              <Icon className="w-5 h-5" />
+              <Icon className="w-6 h-6" />
               {tab.label}
             </button>
           );
@@ -85,17 +85,17 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
       </div>
 
       {/* Search Form */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg border border-gray-200 p-3">
-        <div className="flex flex-col sm:flex-row items-stretch gap-3">
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-4">
+        <div className="flex flex-col sm:flex-row items-stretch gap-4">
           {/* Address */}
           <div className="flex-1 relative">
-            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#33404f]" />
             <input
               type="text"
-              placeholder="Dirección"
+              placeholder="Ingresa tu dirección o comuna"
               value={address}
               onChange={e => setAddress(e.target.value)}
-              className="w-full pl-12 pr-4 h-16 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00e7ff] focus:border-transparent text-base"
+              className="w-full pl-14 pr-4 h-16 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00e7ff] focus:border-[#00e7ff] text-lg text-[#33404f] placeholder-gray-500"
               data-testid="search-address-input"
             />
           </div>
@@ -105,11 +105,11 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
             <PopoverTrigger asChild>
               <button
                 type="button"
-                className="flex-1 flex items-center gap-3 px-4 h-16 border border-gray-200 rounded-xl text-left hover:bg-gray-50 transition-colors min-w-[260px]"
+                className="flex-1 flex items-center gap-3 px-4 h-16 border-2 border-gray-300 rounded-xl text-left hover:bg-gray-50 transition-colors min-w-[280px]"
                 data-testid="date-picker-trigger"
               >
-                <CalendarDays className="w-5 h-5 text-gray-400 flex-shrink-0" />
-                <span className={`text-base truncate ${(dateRange.from || selectedDates.length > 0) ? 'text-[#33404f] font-medium' : 'text-gray-400'}`}>
+                <CalendarDays className="w-6 h-6 text-[#33404f] flex-shrink-0" />
+                <span className={`text-lg truncate ${(dateRange.from || selectedDates.length > 0) ? 'text-[#33404f] font-semibold' : 'text-gray-500'}`}>
                   {getDateLabel()}
                 </span>
               </button>
@@ -142,7 +142,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
           {/* Search Button */}
           <Button
             type="submit"
-            className="h-16 px-10 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold text-lg rounded-xl whitespace-nowrap"
+            className="h-16 px-12 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold text-xl rounded-xl whitespace-nowrap shadow-lg"
             data-testid="search-submit-button"
           >
             Buscar

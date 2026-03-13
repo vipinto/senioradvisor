@@ -307,12 +307,12 @@ const SearchPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50" data-testid="search-page">
-      <div className="bg-white border-b shadow-sm sticky top-16 z-40">
-        <div className="max-w-screen-2xl mx-auto px-4 py-3">
-          <div className="flex gap-2 mb-3">
+      <div className="bg-white border-b shadow-sm sticky top-24 z-40">
+        <div className="max-w-screen-2xl mx-auto px-4 py-4">
+          <div className="flex flex-wrap gap-3 mb-4">
             <button
               onClick={() => { setActiveService(''); setFilteredProviders(providers); }}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${!activeService ? 'bg-[#00e7ff] text-[#33404f] shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              className={`px-6 py-3 rounded-xl text-lg font-bold transition-all ${!activeService ? 'bg-[#00e7ff] text-[#33404f] shadow-lg' : 'bg-gray-100 text-[#33404f] hover:bg-gray-200 border-2 border-gray-300'}`}
               data-testid="service-tab-all"
             >
               Todos
@@ -331,7 +331,7 @@ const SearchPage = () => {
                     setFilteredProviders(providers.filter(p => p.services?.some(s => s.service_type === tab.id)));
                   }
                 }}
-                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${activeService === tab.id ? 'bg-[#00e7ff] text-[#33404f] shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                className={`px-6 py-3 rounded-xl text-lg font-bold transition-all ${activeService === tab.id ? 'bg-[#00e7ff] text-[#33404f] shadow-lg' : 'bg-gray-100 text-[#33404f] hover:bg-gray-200 border-2 border-gray-300'}`}
                 data-testid={`service-tab-${tab.id}`}
               >
                 {tab.label}
@@ -339,25 +339,25 @@ const SearchPage = () => {
             ))}
           </div>
 
-          <form onSubmit={handleSearch} className="flex items-center gap-2">
+          <form onSubmit={handleSearch} className="flex items-center gap-3">
             <div className="flex-1 relative">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#33404f]" />
               <input
                 ref={inputRef}
                 type="text"
                 placeholder="Buscar por dirección o comuna..."
                 value={searchAddress}
                 onChange={(e) => setSearchAddress(e.target.value)}
-                className="w-full pl-12 pr-10 h-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00e7ff] focus:border-transparent"
+                className="w-full pl-14 pr-10 h-14 text-lg border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00e7ff] focus:border-[#00e7ff] text-[#33404f] placeholder-gray-500"
                 data-testid="search-input"
               />
               {searchAddress && (
                 <button
                   type="button"
                   onClick={clearSearch}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#33404f]"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-6 h-6" />
                 </button>
               )}
             </div>
@@ -367,17 +367,17 @@ const SearchPage = () => {
                 <PopoverTrigger asChild>
                   <button
                     type="button"
-                    className="flex items-center gap-2 px-3 h-12 border border-gray-200 rounded-xl hover:bg-gray-50 min-w-[160px]"
+                    className="flex items-center gap-3 px-4 h-14 border-2 border-gray-300 rounded-xl hover:bg-gray-50 min-w-[180px]"
                     data-testid="search-date-trigger"
                   >
-                    <Search className="w-4 h-4 text-gray-400" />
-                    <span className={`text-sm truncate ${(dateRange.from || selectedDates.length > 0) ? 'text-[#33404f] font-medium' : 'text-gray-400'}`}>
+                    <Search className="w-5 h-5 text-[#33404f]" />
+                    <span className={`text-base truncate ${(dateRange.from || selectedDates.length > 0) ? 'text-[#33404f] font-semibold' : 'text-gray-500'}`}>
                       {getDateLabel()}
                     </span>
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0 z-50" align="start">
-                  {activeService === 'alojamiento' ? (
+                  {activeService === 'cuidado-domicilio' ? (
                     <Calendar
                       mode="range"
                       selected={dateRange}
@@ -405,19 +405,19 @@ const SearchPage = () => {
               variant="outline"
               onClick={getCurrentLocation}
               disabled={locationLoading}
-              className="h-12 px-4 border-gray-200 hover:bg-gray-50"
+              className="h-14 px-5 border-2 border-gray-300 hover:bg-gray-50 text-[#33404f] text-base font-semibold"
               data-testid="location-button"
             >
-              <Navigation className={`w-5 h-5 ${locationLoading ? 'animate-pulse' : ''}`} />
+              <Navigation className={`w-6 h-6 ${locationLoading ? 'animate-pulse' : ''}`} />
               <span className="hidden sm:inline ml-2">Mi ubicación</span>
             </Button>
 
             <Button
               type="submit"
-              className="h-12 px-6 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
+              className="h-14 px-8 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-lg font-bold"
               data-testid="search-submit"
             >
-              <Search className="w-5 h-5" />
+              <Search className="w-6 h-6" />
               <span className="hidden sm:inline ml-2">Buscar</span>
             </Button>
           </form>

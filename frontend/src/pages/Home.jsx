@@ -10,20 +10,20 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-cyan-50 via-white to-cyan-50 pt-20 pb-16 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-cyan-50 via-white to-cyan-50 pt-16 pb-12 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto" data-testid="hero-section">
-            <h1 className="font-montserrat text-5xl lg:text-6xl font-extrabold text-[#33404f] uppercase tracking-wide leading-tight mb-6">
+            <h1 className="font-montserrat text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#33404f] uppercase tracking-wide leading-tight mb-6">
               Encuentra el mejor
-              <span className="block text-[#00e7ff]">cuidado</span>
+              <span className="block text-[#008b9a]">cuidado</span>
               para adultos mayores
             </h1>
-            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto mb-10">
-              Conectamos familias con <span className="font-semibold text-[#00e7ff]">residencias</span>, <span className="font-semibold">cuidado a domicilio</span> y servicios de <span className="font-semibold text-[#00e7ff]">salud mental</span> de confianza.
+            <p className="text-xl md:text-2xl text-[#33404f] leading-relaxed max-w-3xl mx-auto mb-10">
+              Conectamos familias con <span className="font-bold text-[#008b9a]">residencias</span>, <span className="font-bold">cuidado a domicilio</span> y servicios de <span className="font-bold text-[#008b9a]">salud mental</span> de confianza.
             </p>
 
             {/* SearchBar - Full Width */}
-            <div className="bg-white rounded-3xl shadow-2xl p-6 border border-gray-100 mb-8">
+            <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200 mb-8">
               <SearchBar />
             </div>
           </div>
@@ -33,19 +33,19 @@ const Home = () => {
       {/* Banner de llamado de atencion */}
       <section className="bg-[#00e7ff]" data-testid="cta-banner">
         <div className="flex flex-col md:flex-row items-stretch">
-          <div className="md:w-4/12 relative min-h-[300px] md:min-h-0">
+          <div className="md:w-4/12 relative min-h-[350px] md:min-h-0">
             <img
               src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=800"
               alt="Adulto mayor feliz"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
           </div>
-          <div className="md:w-8/12 flex items-center px-8 py-12 md:py-14 md:px-12">
+          <div className="md:w-8/12 flex items-center px-8 py-14 md:py-16 md:px-12">
               <div className="text-[#33404f] w-full">
-                <h2 className="font-montserrat text-4xl font-bold uppercase tracking-wide mb-2 text-center">
+                <h2 className="font-montserrat text-3xl md:text-4xl font-bold uppercase tracking-wide mb-4 text-center">
                   El cuidado que merecen nuestros mayores
                 </h2>
-                <p className="text-base md:text-lg opacity-90 leading-relaxed mb-8 text-center">
+                <p className="text-lg md:text-xl leading-relaxed mb-10 text-center">
                   En SeniorAdvisor, te ayudamos a encontrar la mejor opción de cuidado. Porque ellos lo merecen:
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
