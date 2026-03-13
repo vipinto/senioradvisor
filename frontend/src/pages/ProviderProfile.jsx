@@ -366,7 +366,7 @@ export default function ProviderProfile() {
               <h2 className="text-xl font-bold mb-4">Reseñas</h2>
 
               {/* Write Review - Formulario con 5 criterios */}
-              {user && (
+              {user ? (
                 <div className="mb-6 p-6 bg-gray-50 rounded-xl" data-testid="review-form">
                   <h3 className="text-lg font-bold text-[#33404f] mb-4">Deja tu reseña</h3>
                   
@@ -444,6 +444,11 @@ export default function ProviderProfile() {
                   >
                     {submitting ? 'Enviando...' : 'Publicar Reseña'}
                   </Button>
+                </div>
+              ) : (
+                <div className="mb-6 p-5 bg-gray-50 rounded-xl text-center" data-testid="review-login-prompt">
+                  <p className="text-[#33404f] font-medium mb-2">Para dejar una reseña debes iniciar sesión</p>
+                  <a href="/login" className="text-[#00e7ff] font-bold hover:underline">Iniciar Sesión</a>
                 </div>
               )}
 
