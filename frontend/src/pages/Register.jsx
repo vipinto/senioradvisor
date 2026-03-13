@@ -75,22 +75,22 @@ const Register = () => {
         <div className="max-w-lg w-full space-y-8">
           <div className="text-center">
                         <Link to="/"><img src="/ucan-logo-rojo.svg" alt="U-CAN" className="h-16 mx-auto mb-6" /></Link>
-            <h2 className="font-montserrat text-4xl font-extrabold text-gray-900 uppercase">Crear Cuenta</h2>
+            <h2 className="font-montserrat text-4xl font-extrabold text-[#33404f] uppercase">Crear Cuenta</h2>
             <p className="mt-2 text-gray-600">Elige como quieres usar U-CAN</p>
           </div>
 
           <div className="space-y-4">
             <button
               onClick={() => setRole('client')}
-              className="w-full bg-white rounded-2xl shadow-lg p-6 border-2 border-transparent hover:border-[#E6202E] transition-all group text-left"
+              className="w-full bg-white rounded-2xl shadow-lg p-6 border-2 border-transparent hover:border-[#00e7ff] transition-all group text-left"
               data-testid="register-as-client"
             >
               <div className="flex items-center gap-5">
-                <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center group-hover:bg-[#E6202E] transition-colors">
-                  <Heart className="w-8 h-8 text-[#E6202E] group-hover:text-white transition-colors" />
+                <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center group-hover:bg-[#00e7ff] transition-colors">
+                  <Heart className="w-8 h-8 text-[#00e7ff] group-hover:text-white transition-colors" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-900">Busco un Cuidador</h3>
+                  <h3 className="text-xl font-bold text-[#33404f]">Busco un Cuidador</h3>
                   <p className="text-gray-500 text-sm mt-1">Encuentra el cuidador perfecto para tu mascota</p>
                 </div>
               </div>
@@ -98,15 +98,15 @@ const Register = () => {
 
             <button
               onClick={() => setRole('provider')}
-              className="w-full bg-white rounded-2xl shadow-lg p-6 border-2 border-transparent hover:border-[#E6202E] transition-all group text-left"
+              className="w-full bg-white rounded-2xl shadow-lg p-6 border-2 border-transparent hover:border-[#00e7ff] transition-all group text-left"
               data-testid="register-as-provider"
             >
               <div className="flex items-center gap-5">
-                <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center group-hover:bg-[#E6202E] transition-colors">
-                  <Shield className="w-8 h-8 text-[#E6202E] group-hover:text-white transition-colors" />
+                <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center group-hover:bg-[#00e7ff] transition-colors">
+                  <Shield className="w-8 h-8 text-[#00e7ff] group-hover:text-white transition-colors" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-900">Quiero ser Cuidador</h3>
+                  <h3 className="text-xl font-bold text-[#33404f]">Quiero ser Cuidador</h3>
                   <p className="text-gray-500 text-sm mt-1">Ofrece tus servicios de cuidado de mascotas</p>
                 </div>
               </div>
@@ -115,7 +115,7 @@ const Register = () => {
 
           <div className="text-center text-sm text-gray-600">
             Ya tienes cuenta?{' '}
-            <Link to="/login" className="text-[#E6202E] hover:underline font-semibold">Inicia sesion</Link>
+            <Link to="/login" className="text-[#00e7ff] hover:underline font-semibold">Inicia sesion</Link>
           </div>
         </div>
       </div>
@@ -128,13 +128,13 @@ const Register = () => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
                       <Link to="/"><img src="/ucan-logo-rojo.svg" alt="U-CAN" className="h-16 mx-auto mb-6" /></Link>
-          <h2 className="font-montserrat text-4xl font-extrabold text-gray-900 uppercase" data-testid="register-title">
+          <h2 className="font-montserrat text-4xl font-extrabold text-[#33404f] uppercase" data-testid="register-title">
             {role === 'provider' ? 'Registro Cuidador' : 'Crear Cuenta'}
           </h2>
           <p className="mt-2 text-gray-600">
             {role === 'provider' ? 'Paso 1: Crea tu cuenta' : 'Regístrate para encontrar cuidadores'}
           </p>
-          <button onClick={() => setRole(null)} className="mt-1 text-sm text-[#E6202E] hover:underline" data-testid="back-to-role-selection">
+          <button onClick={() => setRole(null)} className="mt-1 text-sm text-[#00e7ff] hover:underline" data-testid="back-to-role-selection">
             Cambiar tipo de cuenta
           </button>
         </div>
@@ -160,7 +160,7 @@ const Register = () => {
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input type={showPassword ? 'text' : 'password'} placeholder="Confirmar contraseña" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="pl-10 py-6 rounded-xl border-gray-300" data-testid="register-confirm-password-input" />
             </div>
-            <Button type="submit" disabled={loading} className="w-full bg-[#E6202E] hover:bg-[#D31522] text-white py-6 text-lg rounded-xl font-bold" data-testid="register-submit-button">
+            <Button type="submit" disabled={loading} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-6 text-lg rounded-xl font-bold" data-testid="register-submit-button">
               {loading ? 'Creando cuenta...' : role === 'provider' ? 'Continuar' : 'Crear Cuenta'}
             </Button>
           </form>
@@ -184,7 +184,7 @@ const Register = () => {
 
           <div className="text-center text-sm text-gray-600">
             Ya tienes cuenta?{' '}
-            <Link to="/login" className="text-[#E6202E] hover:underline font-semibold" data-testid="login-link">Inicia sesion</Link>
+            <Link to="/login" className="text-[#00e7ff] hover:underline font-semibold" data-testid="login-link">Inicia sesion</Link>
           </div>
         </div>
       </div>

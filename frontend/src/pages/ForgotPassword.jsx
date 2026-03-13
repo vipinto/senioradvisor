@@ -33,7 +33,7 @@ const ForgotPassword = () => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
                     <Link to="/"><img src="/ucan-logo-rojo.svg" alt="U-CAN" className="h-16 mx-auto mb-6" /></Link>
-          <h2 className="font-montserrat text-3xl font-extrabold text-gray-900 uppercase" data-testid="forgot-password-title">
+          <h2 className="font-montserrat text-3xl font-extrabold text-[#33404f] uppercase" data-testid="forgot-password-title">
             Recuperar Contraseña
           </h2>
         </div>
@@ -42,7 +42,7 @@ const ForgotPassword = () => {
           {sent ? (
             <div className="text-center space-y-4" data-testid="forgot-password-success">
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
-              <h3 className="text-xl font-semibold text-gray-900">Correo enviado</h3>
+              <h3 className="text-xl font-semibold text-[#33404f]">Correo enviado</h3>
               <p className="text-gray-600">
                 Si el correo <strong>{email}</strong> está registrado, recibirás un enlace para restablecer tu contraseña.
               </p>
@@ -68,7 +68,7 @@ const ForgotPassword = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#E6202E] hover:bg-[#D31522] text-white py-6 text-lg rounded-xl font-bold"
+                  className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-6 text-lg rounded-xl font-bold"
                   data-testid="forgot-password-submit"
                 >
                   {loading ? 'Enviando...' : 'Enviar enlace de recuperación'}
@@ -78,7 +78,7 @@ const ForgotPassword = () => {
           )}
 
           <div className="text-center">
-            <Link to="/login" className="text-sm text-[#E6202E] hover:underline inline-flex items-center gap-1" data-testid="back-to-login-link">
+            <Link to="/login" className="text-sm text-[#00e7ff] hover:underline inline-flex items-center gap-1" data-testid="back-to-login-link">
               <ArrowLeft className="w-4 h-4" /> Volver al inicio de sesión
             </Link>
           </div>

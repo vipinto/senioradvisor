@@ -6,14 +6,14 @@ export default function Privacy() {
       <div className="max-w-3xl mx-auto px-4">
         
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">Política de Privacidad</h1>
+          <h1 className="text-4xl font-bold text-[#33404f] mb-3">Política de Privacidad</h1>
           <p className="text-gray-500">Última actualización: Febrero 2026</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm p-6 sm:p-10 space-y-8 text-gray-700 leading-relaxed text-sm">
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">1. Introducción</h2>
+            <h2 className="text-xl font-bold text-[#33404f] mb-3">1. Introducción</h2>
             <p>
               En U-CAN nos comprometemos a proteger la privacidad y seguridad de la información personal de nuestros usuarios.
               Esta Política de Privacidad describe cómo recopilamos, utilizamos, almacenamos y protegemos los datos personales
@@ -26,7 +26,7 @@ export default function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">2. Información que Recopilamos</h2>
+            <h2 className="text-xl font-bold text-[#33404f] mb-3">2. Información que Recopilamos</h2>
             <p>
               Para ofrecer nuestros servicios, podemos recopilar distintos tipos de información personal, incluyendo:
             </p>
@@ -53,7 +53,7 @@ export default function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">3. Uso de la Información</h2>
+            <h2 className="text-xl font-bold text-[#33404f] mb-3">3. Uso de la Información</h2>
 
             <p>La información recopilada se utiliza para:</p>
 
@@ -70,7 +70,7 @@ export default function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">4. Suscripciones y Pagos</h2>
+            <h2 className="text-xl font-bold text-[#33404f] mb-3">4. Suscripciones y Pagos</h2>
 
             <p>
               U-CAN opera bajo un modelo de suscripción mensual que permite a los usuarios acceder a los datos de contacto
@@ -85,7 +85,7 @@ export default function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">5. Compartir Información</h2>
+            <h2 className="text-xl font-bold text-[#33404f] mb-3">5. Compartir Información</h2>
 
             <p>
               U-CAN no vende ni comercializa datos personales de sus usuarios.
@@ -104,7 +104,7 @@ export default function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">6. Seguridad de la Información</h2>
+            <h2 className="text-xl font-bold text-[#33404f] mb-3">6. Seguridad de la Información</h2>
 
             <p>
               Implementamos medidas razonables de seguridad técnica y organizativa para proteger los datos personales
@@ -119,7 +119,7 @@ export default function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">7. Datos de Verificación de Cuidadores</h2>
+            <h2 className="text-xl font-bold text-[#33404f] mb-3">7. Datos de Verificación de Cuidadores</h2>
 
             <p>
               Los documentos enviados por cuidadores para procesos de verificación (certificado de antecedentes,
@@ -135,7 +135,7 @@ export default function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">8. Derechos del Usuario</h2>
+            <h2 className="text-xl font-bold text-[#33404f] mb-3">8. Derechos del Usuario</h2>
 
             <p>
               Los usuarios pueden solicitar en cualquier momento:
@@ -154,7 +154,7 @@ export default function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">9. Cambios en la Política de Privacidad</h2>
+            <h2 className="text-xl font-bold text-[#33404f] mb-3">9. Cambios en la Política de Privacidad</h2>
 
             <p>
               U-CAN se reserva el derecho de modificar esta Política de Privacidad cuando sea necesario.
@@ -164,14 +164,14 @@ export default function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">10. Contacto</h2>
+            <h2 className="text-xl font-bold text-[#33404f] mb-3">10. Contacto</h2>
 
             <p>
               Si tienes preguntas sobre esta Política de Privacidad o sobre el tratamiento de tus datos personales,
               puedes contactarnos en:
             </p>
 
-            <p className="mt-2 font-medium text-[#E6202E]">
+            <p className="mt-2 font-medium text-[#00e7ff]">
               contacto@u-can.cl
             </p>
 

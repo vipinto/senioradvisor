@@ -61,14 +61,14 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-white py-12 px-4 sm:px-6 lg:px-8">
-      <Link to="/" className="fixed top-6 left-6 flex items-center gap-2 text-gray-500 hover:text-[#E6202E] transition-colors bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border" data-testid="back-home-link">
+      <Link to="/" className="fixed top-6 left-6 flex items-center gap-2 text-gray-500 hover:text-[#00e7ff] transition-colors bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border" data-testid="back-home-link">
         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         <span className="text-sm font-medium">Volver al Inicio</span>
       </Link>
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
                     <Link to="/"><img src="/ucan-logo-rojo.svg" alt="U-CAN" className="h-16 mx-auto mb-6" /></Link>
-          <h2 className="font-montserrat text-4xl font-extrabold text-gray-900 uppercase" data-testid="login-title">
+          <h2 className="font-montserrat text-4xl font-extrabold text-[#33404f] uppercase" data-testid="login-title">
             Iniciar Sesión
           </h2>
           <p className="mt-2 text-gray-600">Accede a tu cuenta de U-CAN</p>
@@ -107,14 +107,14 @@ const Login = () => {
               </button>
             </div>
             <div className="text-right">
-              <Link to="/forgot-password" className="text-sm text-[#E6202E] hover:underline" data-testid="forgot-password-link">
+              <Link to="/forgot-password" className="text-sm text-[#00e7ff] hover:underline" data-testid="forgot-password-link">
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#E6202E] hover:bg-[#D31522] text-white py-6 text-lg rounded-xl font-bold shadow-md hover:shadow-lg transition-all"
+              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-6 text-lg rounded-xl font-bold shadow-md hover:shadow-lg transition-all"
               data-testid="email-login-button"
             >
               {loading ? 'Ingresando...' : 'Iniciar Sesión'}
@@ -149,7 +149,7 @@ const Login = () => {
 
           <div className="text-center text-sm text-gray-600">
             ¿No tienes cuenta?{' '}
-            <Link to="/register" className="text-[#E6202E] hover:underline font-semibold" data-testid="register-link">
+            <Link to="/register" className="text-[#00e7ff] hover:underline font-semibold" data-testid="register-link">
               Regístrate aquí
             </Link>
           </div>

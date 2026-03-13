@@ -53,7 +53,7 @@ const ProposalForm = ({ requestId, onSubmit, onCancel }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-3 p-4 bg-blue-50 rounded-xl border border-blue-200 space-y-3" data-testid={`proposal-form-${requestId}`}>
+    <form onSubmit={handleSubmit} className="mt-3 p-4 bg-cyan-50 rounded-xl border border-blue-200 space-y-3" data-testid={`proposal-form-${requestId}`}>
       <p className="text-sm font-medium text-blue-800">Enviar propuesta al cliente</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
@@ -66,7 +66,7 @@ const ProposalForm = ({ requestId, onSubmit, onCancel }) => {
               onChange={e => setPrice(e.target.value)}
               placeholder="15000"
               min="1000"
-              className="w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#E6202E] focus:outline-none text-sm"
+              className="w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:outline-none text-sm"
               data-testid="proposal-price-input"
             />
           </div>
@@ -79,7 +79,7 @@ const ProposalForm = ({ requestId, onSubmit, onCancel }) => {
           onChange={e => setMessage(e.target.value)}
           placeholder="Hola! Me encantaria cuidar a tu mascota. Tengo experiencia con..."
           rows={3}
-          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#E6202E] focus:outline-none text-sm resize-none"
+          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:outline-none text-sm resize-none"
           data-testid="proposal-message-input"
         />
       </div>
@@ -87,7 +87,7 @@ const ProposalForm = ({ requestId, onSubmit, onCancel }) => {
         <Button type="button" variant="outline" size="sm" onClick={onCancel} data-testid="proposal-cancel-btn">
           Cancelar
         </Button>
-        <Button type="submit" size="sm" disabled={submitting} className="bg-[#E6202E] hover:bg-[#D31522]" data-testid="proposal-submit-btn">
+        <Button type="submit" size="sm" disabled={submitting} className="bg-[#00e7ff] hover:bg-[#00c4d4]" data-testid="proposal-submit-btn">
           {submitting ? 'Enviando...' : <><Send className="w-3.5 h-3.5 mr-1" />Enviar Propuesta</>}
         </Button>
       </div>
@@ -166,7 +166,7 @@ const CareRequestsProvider = ({ hasSubscription = false }) => {
     <div className="bg-white rounded-2xl p-6 shadow-sm border mb-8" data-testid="care-requests-provider-section">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-bold text-xl flex items-center gap-2">
-          <Dog className="w-5 h-5 text-[#E6202E]" />
+          <Dog className="w-5 h-5 text-[#00e7ff]" />
           Clientes Buscando Cuidador
           <span className="text-sm font-normal text-gray-500">({requests.length})</span>
         </h2>
@@ -206,7 +206,7 @@ const CareRequestsProvider = ({ hasSubscription = false }) => {
           value={comunaFilter}
           onChange={e => setComunaFilter(e.target.value)}
           placeholder="Filtrar por comuna"
-          className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#E6202E] focus:outline-none text-sm"
+          className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:outline-none text-sm"
         />
         <Button type="submit" variant="outline" size="sm">
           <Filter className="w-4 h-4" />
@@ -239,14 +239,14 @@ const CareRequestsProvider = ({ hasSubscription = false }) => {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="px-2 py-0.5 text-xs font-medium bg-red-100 text-[#E6202E] rounded-full capitalize">
+                      <span className="px-2 py-0.5 text-xs font-medium bg-red-100 text-[#00e7ff] rounded-full capitalize">
                         {SERVICE_LABELS[req.service_type] || req.service_type}
                       </span>
                       <span className="text-xs text-gray-500">
                         {req.pet_species} {req.pet_size ? `• ${PET_SIZE_LABELS[req.pet_size] || req.pet_size}` : ''}
                       </span>
                       {req.flexible_dates && (
-                        <span className="px-2 py-0.5 text-xs bg-blue-100 text-blue-700 rounded-full">Fechas flexibles</span>
+                        <span className="px-2 py-0.5 text-xs bg-cyan-100 text-blue-700 rounded-full">Fechas flexibles</span>
                       )}
                       {req.proposal_count > 0 && (
                         <span className="px-2 py-0.5 text-xs bg-purple-100 text-purple-700 rounded-full">
@@ -256,7 +256,7 @@ const CareRequestsProvider = ({ hasSubscription = false }) => {
                     </div>
 
                     <div className="flex items-center gap-2 mb-1">
-                      <p className="font-bold text-gray-900">{req.pet_name}</p>
+                      <p className="font-bold text-[#33404f]">{req.pet_name}</p>
                       {req.pet_breed && <span className="text-sm text-gray-500">({req.pet_breed})</span>}
                     </div>
                     <p className="text-sm text-gray-700 mb-2 line-clamp-2">{req.description}</p>
@@ -307,7 +307,7 @@ const CareRequestsProvider = ({ hasSubscription = false }) => {
                             ) : (
                               <Button
                                 size="sm"
-                                className="text-xs bg-[#E6202E] hover:bg-[#D31522]"
+                                className="text-xs bg-[#00e7ff] hover:bg-[#00c4d4]"
                                 onClick={() => setExpandedForm(expandedForm === req.request_id ? null : req.request_id)}
                                 data-testid={`send-proposal-btn-${req.request_id}`}
                               >

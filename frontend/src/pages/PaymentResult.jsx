@@ -79,7 +79,7 @@ const PaymentResult = ({ status }) => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Loader2 className="w-16 h-16 text-[#E6202E] animate-spin mx-auto mb-4" />
+          <Loader2 className="w-16 h-16 text-[#00e7ff] animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Verificando tu pago...</p>
         </div>
       </div>
@@ -93,7 +93,7 @@ const PaymentResult = ({ status }) => {
           {content.icon}
         </div>
         
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+        <h1 className="text-3xl font-bold text-[#33404f] mb-4">
           {content.title}
         </h1>
         
@@ -105,7 +105,7 @@ const PaymentResult = ({ status }) => {
           {status === 'success' && (
             <Button
               onClick={() => navigate('/search')}
-              className="w-full bg-[#E6202E] hover:bg-[#D31522] text-white py-6"
+              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-6"
             >
               Buscar Cuidadores
             </Button>
@@ -114,7 +114,7 @@ const PaymentResult = ({ status }) => {
           {status === 'failure' && (
             <Button
               onClick={() => navigate('/planes')}
-              className="w-full bg-[#E6202E] hover:bg-[#D31522] text-white py-6"
+              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-6"
             >
               Intentar de Nuevo
             </Button>
@@ -123,7 +123,7 @@ const PaymentResult = ({ status }) => {
           {status === 'pending' && (
             <Button
               onClick={() => navigate('/dashboard')}
-              className="w-full bg-[#E6202E] hover:bg-[#D31522] text-white py-6"
+              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-6"
             >
               Ir a Mi Cuenta
             </Button>

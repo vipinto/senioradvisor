@@ -10,7 +10,7 @@ const STATUS_CONFIG = {
   pending: { label: 'Pendiente', color: 'bg-yellow-100 text-yellow-700', icon: Clock },
   confirmed: { label: 'Confirmada', color: 'bg-green-100 text-green-700', icon: CheckCircle },
   rejected: { label: 'Rechazada', color: 'bg-red-100 text-red-700', icon: XCircle },
-  completed: { label: 'Completada', color: 'bg-blue-100 text-blue-700', icon: CheckCircle },
+  completed: { label: 'Completada', color: 'bg-cyan-100 text-blue-700', icon: CheckCircle },
   cancelled: { label: 'Cancelada', color: 'bg-gray-100 text-gray-600', icon: XCircle }
 };
 
@@ -99,7 +99,7 @@ export default function ProviderBookings() {
   if (loading) {
     return (
       <div className="flex justify-center py-8">
-        <div className="w-8 h-8 border-2 border-[#E6202E] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#00e7ff] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -114,7 +114,7 @@ export default function ProviderBookings() {
             { key: 'confirmed', label: 'Confirmadas', color: 'text-green-600' },
             { key: 'completed', label: 'Completadas', color: 'text-blue-600' },
             { key: 'cancelled', label: 'Canceladas', color: 'text-gray-500' },
-            { key: 'total', label: 'Total', color: 'text-[#E6202E]' }
+            { key: 'total', label: 'Total', color: 'text-[#00e7ff]' }
           ].map(({ key, label, color }) => (
             <div key={key} className="bg-white rounded-xl p-4 shadow-sm">
               <p className="text-xs text-gray-500">{label}</p>
@@ -138,7 +138,7 @@ export default function ProviderBookings() {
             onClick={() => setFilter(key)}
             className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
               filter === key
-                ? 'bg-[#E6202E] text-white'
+                ? 'bg-[#00e7ff] text-white'
                 : 'bg-white text-gray-600 hover:bg-gray-100 border'
             }`}
           >
@@ -214,7 +214,7 @@ export default function ProviderBookings() {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <PawPrint className="w-4 h-4 text-[#E6202E]" />
+                              <PawPrint className="w-4 h-4 text-[#00e7ff]" />
                             )}
                           </div>
                         ))}
@@ -231,7 +231,7 @@ export default function ProviderBookings() {
                     {booking.pets?.length > 0 && (
                       <div className="mb-4">
                         <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1">
-                          <PawPrint className="w-4 h-4 text-[#E6202E]" />
+                          <PawPrint className="w-4 h-4 text-[#00e7ff]" />
                           Mascotas ({booking.pets.length})
                         </h4>
                         <div className="grid sm:grid-cols-2 gap-2">
@@ -245,7 +245,7 @@ export default function ProviderBookings() {
                                 />
                               ) : (
                                 <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
-                                  <PawPrint className="w-6 h-6 text-[#E6202E]" />
+                                  <PawPrint className="w-6 h-6 text-[#00e7ff]" />
                                 </div>
                               )}
                               <div>
@@ -288,7 +288,7 @@ export default function ProviderBookings() {
                           value={responseNotes}
                           onChange={(e) => setResponseNotes(e.target.value)}
                           placeholder="Mensaje para el cliente (opcional)..."
-                          className="w-full border rounded-xl p-3 text-sm min-h-[60px] focus:outline-none focus:ring-2 focus:ring-[#E6202E]"
+                          className="w-full border rounded-xl p-3 text-sm min-h-[60px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
                         />
                         <div className="flex gap-2">
                           <Button
@@ -324,7 +324,7 @@ export default function ProviderBookings() {
                         <Button
                           onClick={() => completeBooking(booking.booking_id)}
                           disabled={processingId === booking.booking_id}
-                          className="w-full bg-blue-600 hover:bg-blue-700"
+                          className="w-full bg-blue-600 hover:bg-cyan-700"
                           data-testid={`complete-booking-${booking.booking_id}`}
                         >
                           {processingId === booking.booking_id ? (

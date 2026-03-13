@@ -101,7 +101,7 @@ const Plans = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-[#E6202E] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -111,7 +111,7 @@ const Plans = () => {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="font-montserrat text-4xl sm:text-5xl font-bold text-gray-900 uppercase mb-4">
+          <h1 className="font-montserrat text-4xl sm:text-5xl font-bold text-[#33404f] uppercase mb-4">
             Elige tu Plan
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
@@ -126,14 +126,14 @@ const Plans = () => {
               key={plan.plan_id}
               className={`bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:shadow-xl ${
                 plan.popular 
-                  ? 'border-2 border-[#E6202E] scale-105 relative' 
+                  ? 'border-2 border-[#00e7ff] scale-105 relative' 
                   : 'border border-gray-100'
               }`}
               data-testid={`plan-card-${plan.plan_id}`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-[#E6202E] text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                  <span className="bg-[#00e7ff] text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
                     MÁS POPULAR
                   </span>
                 </div>
@@ -142,7 +142,7 @@ const Plans = () => {
               <div className="text-center mb-8 pt-4">
                 <h3 className="text-2xl font-bold mb-4">{plan.name}</h3>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-5xl font-bold text-[#E6202E]">
+                  <span className="text-5xl font-bold text-[#00e7ff]">
                     ${plan.price_clp?.toLocaleString('es-CL')}
                   </span>
                 </div>
@@ -155,7 +155,7 @@ const Plans = () => {
                 {plan.features?.map((feature, idx) => (
                   <li key={idx} className="flex items-start gap-3">
                     <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-[#E6202E]" />
+                      <Check className="w-3 h-3 text-[#00e7ff]" />
                     </div>
                     <span className="text-gray-700">{feature}</span>
                   </li>
@@ -167,8 +167,8 @@ const Plans = () => {
                 disabled={user?.has_subscription || processingPlan === plan.plan_id}
                 className={`w-full py-6 text-lg font-bold rounded-xl transition-all ${
                   plan.popular
-                    ? 'bg-[#E6202E] hover:bg-[#D31522] text-white'
-                    : 'bg-white border-2 border-[#E6202E] text-[#E6202E] hover:bg-red-50'
+                    ? 'bg-[#00e7ff] hover:bg-[#00c4d4] text-white'
+                    : 'bg-white border-2 border-[#00e7ff] text-[#00e7ff] hover:bg-red-50'
                 }`}
                 data-testid={`subscribe-btn-${plan.plan_id}`}
               >
@@ -195,7 +195,7 @@ const Plans = () => {
           <div className="inline-flex items-center gap-3 bg-white px-6 py-4 rounded-xl shadow-sm border border-gray-100">
             <Shield className="w-6 h-6 text-green-600" />
             <div className="text-left">
-              <p className="font-semibold text-gray-900">Pago seguro con Mercado Pago</p>
+              <p className="font-semibold text-[#33404f]">Pago seguro con Mercado Pago</p>
               <p className="text-sm text-gray-500">Tus datos están protegidos</p>
             </div>
             <img 
@@ -216,7 +216,7 @@ const Plans = () => {
                   const redirectUrl = window.location.origin + '/planes';
                   window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
                 }}
-                className="text-[#E6202E] font-semibold hover:underline"
+                className="text-[#00e7ff] font-semibold hover:underline"
               >
                 Regístrate aquí
               </button>

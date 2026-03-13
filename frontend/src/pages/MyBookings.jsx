@@ -11,7 +11,7 @@ const STATUS_CONFIG = {
   pending: { label: 'Pendiente', color: 'bg-yellow-100 text-yellow-700', icon: Clock },
   confirmed: { label: 'Confirmada', color: 'bg-green-100 text-green-700', icon: CheckCircle },
   rejected: { label: 'Rechazada', color: 'bg-red-100 text-red-700', icon: XCircle },
-  completed: { label: 'Completada', color: 'bg-blue-100 text-blue-700', icon: CheckCircle },
+  completed: { label: 'Completada', color: 'bg-cyan-100 text-blue-700', icon: CheckCircle },
   cancelled: { label: 'Cancelada', color: 'bg-gray-100 text-gray-600', icon: XCircle }
 };
 
@@ -81,7 +81,7 @@ export default function MyBookings() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-[#E6202E] border-t-transparent rounded-full animate-spin" />
+        <div className="w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -114,7 +114,7 @@ export default function MyBookings() {
               onClick={() => setFilter(key)}
               className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                 filter === key
-                  ? 'bg-[#E6202E] text-white'
+                  ? 'bg-[#00e7ff] text-white'
                   : 'bg-white text-gray-600 hover:bg-gray-100 border'
               }`}
               data-testid={`filter-${key}`}
@@ -135,7 +135,7 @@ export default function MyBookings() {
                 : 'No hay reservas con este filtro.'}
             </p>
             <Link to="/search">
-              <Button className="bg-[#E6202E] hover:bg-[#D31522]">
+              <Button className="bg-[#00e7ff] hover:bg-[#00c4d4]">
                 Buscar Cuidadores
               </Button>
             </Link>
@@ -155,7 +155,7 @@ export default function MyBookings() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center">
-                        <Calendar className="w-6 h-6 text-[#E6202E]" />
+                        <Calendar className="w-6 h-6 text-[#00e7ff]" />
                       </div>
                       <div>
                         <h3 className="font-bold text-lg">{booking.provider_name}</h3>
@@ -193,7 +193,7 @@ export default function MyBookings() {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <PawPrint className="w-4 h-4 text-[#E6202E]" />
+                              <PawPrint className="w-4 h-4 text-[#00e7ff]" />
                             )}
                           </div>
                         ))}
@@ -212,7 +212,7 @@ export default function MyBookings() {
                   )}
 
                   {booking.provider_notes && (
-                    <div className="bg-blue-50 rounded-xl p-3 mb-4">
+                    <div className="bg-cyan-50 rounded-xl p-3 mb-4">
                       <p className="text-xs text-blue-700 font-medium mb-1">Mensaje del cuidador</p>
                       <p className="text-sm text-blue-800">{booking.provider_notes}</p>
                     </div>
@@ -244,7 +244,7 @@ export default function MyBookings() {
                     
                     {booking.status === 'completed' && (
                       <Link to={`/provider/${booking.provider_id}`}>
-                        <Button className="bg-[#E6202E] hover:bg-[#D31522]">
+                        <Button className="bg-[#00e7ff] hover:bg-[#00c4d4]">
                           Dejar Resena
                         </Button>
                       </Link>

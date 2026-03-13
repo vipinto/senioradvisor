@@ -160,7 +160,7 @@ const ProviderGallery = ({ editable = true }) => {
     <div className="bg-white rounded-2xl p-6 shadow-sm border" data-testid="provider-gallery">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-bold text-xl flex items-center gap-2">
-          <Camera className="w-5 h-5 text-[#E6202E]" />
+          <Camera className="w-5 h-5 text-[#00e7ff]" />
           Galería de Fotos
           <span className="text-sm font-normal text-gray-500">({gallery.length}/10)</span>
         </h2>
@@ -169,7 +169,7 @@ const ProviderGallery = ({ editable = true }) => {
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
             size="sm"
-            className="bg-[#E6202E] hover:bg-[#D31522]"
+            className="bg-[#00e7ff] hover:bg-[#00c4d4]"
             data-testid="upload-photo-btn"
           >
             {uploading ? (
@@ -202,7 +202,7 @@ const ProviderGallery = ({ editable = true }) => {
 
       {/* Upload progress */}
       {uploadProgress && (
-        <div className="mb-4 p-3 bg-blue-50 rounded-xl">
+        <div className="mb-4 p-3 bg-cyan-50 rounded-xl">
           <div className="flex items-center gap-2 text-sm text-blue-700">
             <Loader2 className="w-4 h-4 animate-spin" />
             <span>Subiendo {uploadProgress.current}/{uploadProgress.total}: {uploadProgress.filename}</span>
@@ -225,7 +225,7 @@ const ProviderGallery = ({ editable = true }) => {
             <Button
               onClick={() => fileInputRef.current?.click()}
               variant="outline"
-              className="border-[#E6202E] text-[#E6202E]"
+              className="border-[#00e7ff] text-[#00e7ff]"
             >
               <Camera className="w-4 h-4 mr-2" />
               Subir primera foto
@@ -282,7 +282,7 @@ const ProviderGallery = ({ editable = true }) => {
 
               {/* First photo badge */}
               {index === 0 && (
-                <div className="absolute top-2 right-2 px-2 py-1 bg-[#E6202E] text-white text-xs font-bold rounded">
+                <div className="absolute top-2 right-2 px-2 py-1 bg-[#00e7ff] text-white text-xs font-bold rounded">
                   Principal
                 </div>
               )}

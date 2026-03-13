@@ -6,7 +6,7 @@ import api from '@/lib/api';
 
 const STATUS_MAP = {
   completed: { label: 'Completado', color: 'bg-green-100 text-green-700', icon: CheckCircle },
-  confirmed: { label: 'Confirmado', color: 'bg-blue-100 text-blue-700', icon: Clock },
+  confirmed: { label: 'Confirmado', color: 'bg-cyan-100 text-blue-700', icon: Clock },
   rejected: { label: 'Rechazado', color: 'bg-red-100 text-red-700', icon: XCircle },
   cancelled: { label: 'Cancelado', color: 'bg-gray-100 text-gray-600', icon: XCircle },
 };
@@ -52,7 +52,7 @@ export default function ServiceHistory() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-16 h-16 border-4 border-[#E6202E] border-t-transparent rounded-full" />
+        <div className="animate-spin w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -69,7 +69,7 @@ export default function ServiceHistory() {
             onClick={() => setActiveTab('history')}
             className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
               activeTab === 'history'
-                ? 'border-[#E6202E] text-[#E6202E]'
+                ? 'border-[#00e7ff] text-[#00e7ff]'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
             data-testid="tab-history"
@@ -81,7 +81,7 @@ export default function ServiceHistory() {
             onClick={() => setActiveTab('invoices')}
             className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
               activeTab === 'invoices'
-                ? 'border-[#E6202E] text-[#E6202E]'
+                ? 'border-[#00e7ff] text-[#00e7ff]'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
             data-testid="tab-invoices"
@@ -100,7 +100,7 @@ export default function ServiceHistory() {
                 <p className="text-gray-500 text-lg mb-2">Sin historial de servicios</p>
                 <p className="text-sm text-gray-400 mb-6">Tus servicios completados apareceran aqui</p>
                 <Link to="/search">
-                  <Button className="bg-[#E6202E] hover:bg-[#D31522]">Buscar Cuidadores</Button>
+                  <Button className="bg-[#00e7ff] hover:bg-[#00c4d4]">Buscar Cuidadores</Button>
                 </Link>
               </div>
             ) : (
@@ -116,11 +116,11 @@ export default function ServiceHistory() {
                     >
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
-                          <Dog className="w-6 h-6 text-[#E6202E]" />
+                          <Dog className="w-6 h-6 text-[#00e7ff]" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2 mb-1">
-                            <h3 className="font-bold text-gray-900 truncate">
+                            <h3 className="font-bold text-[#33404f] truncate">
                               {SERVICE_LABELS[b.service_type] || b.service_type}
                             </h3>
                             <span className={`px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1 whitespace-nowrap ${statusInfo.color}`}>
@@ -183,8 +183,8 @@ export default function ServiceHistory() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
-                            <h3 className="font-bold text-gray-900">{inv.plan_name}</h3>
-                            <span className="text-[#E6202E] font-bold text-lg">
+                            <h3 className="font-bold text-[#33404f]">{inv.plan_name}</h3>
+                            <span className="text-[#00e7ff] font-bold text-lg">
                               ${inv.amount?.toLocaleString('es-CL')}
                             </span>
                           </div>

@@ -87,7 +87,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" data-testid="booking-modal">
       <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="p-4 border-b flex items-center justify-between bg-gradient-to-r from-[#E6202E] to-[#D31522] text-white">
+        <div className="p-4 border-b flex items-center justify-between bg-gradient-to-r from-[#00e7ff] to-[#00c4d4] text-white">
           <div>
             <h2 className="text-xl font-bold">Nueva Reserva</h2>
             <p className="text-sm opacity-80">{provider.business_name}</p>
@@ -109,7 +109,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
               onClick={() => num < step && setStep(num)}
               className={`flex-1 py-3 text-sm font-medium transition-colors ${
                 step === num 
-                  ? 'text-[#E6202E] border-b-2 border-[#E6202E]' 
+                  ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' 
                   : step > num 
                     ? 'text-green-600' 
                     : 'text-gray-400'
@@ -134,14 +134,14 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
                     onClick={() => setSelectedService(service.service_type)}
                     className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
                       selectedService === service.service_type
-                        ? 'border-[#E6202E] bg-red-50'
+                        ? 'border-[#00e7ff] bg-red-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                     data-testid={`service-option-${service.service_type}`}
                   >
                     <div className="flex justify-between items-start">
                       <div>
-                        <span className="font-semibold text-gray-900 capitalize">
+                        <span className="font-semibold text-[#33404f] capitalize">
                           {SERVICE_LABELS[service.service_type] || service.service_type}
                         </span>
                         {service.description && (
@@ -157,7 +157,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
                           </div>
                         )}
                       </div>
-                      <span className="text-[#E6202E] font-bold whitespace-nowrap">
+                      <span className="text-[#00e7ff] font-bold whitespace-nowrap">
                         ${service.price_from?.toLocaleString('es-CL')}
                       </span>
                     </div>
@@ -205,7 +205,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
               {startDate && (
                 <div className="mt-4 p-3 bg-gray-50 rounded-xl">
                   <div className="flex items-center gap-2 text-sm">
-                    <Calendar className="w-4 h-4 text-[#E6202E]" />
+                    <Calendar className="w-4 h-4 text-[#00e7ff]" />
                     <span className="font-medium">
                       {isMultiDay && endDate 
                         ? `${format(startDate, 'dd MMM yyyy', { locale: es })} - ${format(endDate, 'dd MMM yyyy', { locale: es })}`
@@ -224,7 +224,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
               
               {loadingPets ? (
                 <div className="flex justify-center py-8">
-                  <div className="w-8 h-8 border-2 border-[#E6202E] border-t-transparent rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-2 border-[#00e7ff] border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : pets.length === 0 ? (
                 <div className="text-center py-8 bg-gray-50 rounded-xl">
@@ -246,14 +246,14 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
                       onClick={() => togglePet(pet.pet_id)}
                       className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 transition-all ${
                         selectedPets.includes(pet.pet_id)
-                          ? 'border-[#E6202E] bg-red-50'
+                          ? 'border-[#00e7ff] bg-red-50'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                       data-testid={`pet-option-${pet.pet_id}`}
                     >
                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                         selectedPets.includes(pet.pet_id)
-                          ? 'border-[#E6202E] bg-[#E6202E]'
+                          ? 'border-[#00e7ff] bg-[#00e7ff]'
                           : 'border-gray-300'
                       }`}>
                         {selectedPets.includes(pet.pet_id) && (
@@ -286,7 +286,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Información adicional para el cuidador..."
-                  className="w-full mt-1 border rounded-xl p-3 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#E6202E]"
+                  className="w-full mt-1 border rounded-xl p-3 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
                   data-testid="booking-notes"
                 />
               </div>
@@ -319,7 +319,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
                 }
                 setStep(step + 1);
               }}
-              className="flex-1 bg-[#E6202E] hover:bg-[#D31522]"
+              className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4]"
               data-testid="next-step-btn"
             >
               Siguiente
@@ -328,7 +328,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
             <Button
               onClick={handleSubmit}
               disabled={loading || selectedPets.length === 0}
-              className="flex-1 bg-[#E6202E] hover:bg-[#D31522]"
+              className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4]"
               data-testid="submit-booking-btn"
             >
               {loading ? 'Enviando...' : 'Confirmar Reserva'}

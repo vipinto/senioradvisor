@@ -206,7 +206,7 @@ const FaqItem = ({ question, answer }) => {
         className="w-full flex items-center justify-between py-5 text-left group"
         data-testid={`faq-item-${question.slice(0, 20).replace(/\s/g, '-').toLowerCase()}`}
       >
-        <span className="font-medium text-gray-900 group-hover:text-[#E6202E] transition-colors pr-4">{question}</span>
+        <span className="font-medium text-[#33404f] group-hover:text-[#00e7ff] transition-colors pr-4">{question}</span>
         <ChevronDown className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
@@ -223,14 +223,14 @@ export default function FAQ() {
     <div className="min-h-screen bg-gray-50 py-12" data-testid="faq-page">
       <div className="max-w-3xl mx-auto px-4">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">Preguntas Frecuentes</h1>
+          <h1 className="text-4xl font-bold text-[#33404f] mb-3">Preguntas Frecuentes</h1>
           <p className="text-gray-500 text-lg">Todo lo que necesitas saber sobre U-CAN</p>
         </div>
 
         <div className="space-y-8">
           {faqs.map((section) => (
             <div key={section.category} className="bg-white rounded-2xl shadow-sm p-6 sm:p-8" data-testid={`faq-section-${section.category.toLowerCase().replace(/\s/g, '-')}`}>
-              <h2 className="text-xl font-bold text-[#E6202E] mb-2">{section.category}</h2>
+              <h2 className="text-xl font-bold text-[#00e7ff] mb-2">{section.category}</h2>
               <div>
                 {section.questions.map((item) => (
                   <FaqItem key={item.q} question={item.q} answer={item.a} />
@@ -242,7 +242,7 @@ export default function FAQ() {
 
         <div className="text-center mt-12">
           <p className="text-gray-500">¿No encontraste lo que buscabas?</p>
-          <a href="mailto:contacto@u-can.cl" className="text-[#E6202E] font-semibold hover:underline mt-1 inline-block">Escríbenos a contacto@u-can.cl</a>
+          <a href="mailto:contacto@u-can.cl" className="text-[#00e7ff] font-semibold hover:underline mt-1 inline-block">Escríbenos a contacto@u-can.cl</a>
         </div>
       </div>
     </div>

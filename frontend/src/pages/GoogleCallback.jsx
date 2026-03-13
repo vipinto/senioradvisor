@@ -72,7 +72,7 @@ const GoogleCallback = () => {
           </>
         ) : (
           <>
-            <Loader2 className="w-10 h-10 mx-auto animate-spin text-[#E6202E]" />
+            <Loader2 className="w-10 h-10 mx-auto animate-spin text-[#00e7ff]" />
             <p className="text-gray-700 font-medium">Procesando autenticación con Google...</p>
           </>
         )}

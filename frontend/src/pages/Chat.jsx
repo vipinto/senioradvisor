@@ -269,7 +269,7 @@ const Chat = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-[#E6202E] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -282,9 +282,9 @@ const Chat = () => {
         <div className="max-w-2xl mx-auto px-4">
           <div className="bg-white rounded-2xl p-8 shadow-lg text-center">
             <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Lock className="w-10 h-10 text-[#E6202E]" />
+              <Lock className="w-10 h-10 text-[#00e7ff]" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            <h1 className="text-2xl font-bold text-[#33404f] mb-4">
               Mensajeria Bloqueada
             </h1>
             <p className="text-gray-600 mb-8">
@@ -312,7 +312,7 @@ const Chat = () => {
           <p className="text-sm text-amber-800">
             <strong>Cuenta gratuita:</strong> Puedes responder mensajes de clientes que te contacten. Para enviar propuestas e iniciar conversaciones, actualiza a Premium.
           </p>
-          <Link to="/provider/dashboard" className="text-sm font-bold text-[#E6202E] hover:underline whitespace-nowrap ml-4">
+          <Link to="/provider/dashboard" className="text-sm font-bold text-[#00e7ff] hover:underline whitespace-nowrap ml-4">
             Ver Premium $7.500/mes
           </Link>
         </div>
@@ -321,7 +321,7 @@ const Chat = () => {
         {/* Conversations List */}
         <div className={`w-full md:w-80 bg-white border-r flex flex-col ${selectedConversation ? 'hidden md:flex' : 'flex'}`}>
           <div className="p-4 border-b">
-            <h2 className="text-xl font-bold text-gray-900">Mensajes</h2>
+            <h2 className="text-xl font-bold text-[#33404f]">Mensajes</h2>
             <div className="flex items-center gap-2 mt-2 text-sm">
               <Circle className={`w-3 h-3 ${connected ? 'fill-green-500 text-green-500' : 'fill-gray-300 text-gray-300'}`} />
               <span className="text-gray-500">{connected ? 'Conectado' : 'Desconectado'}</span>
@@ -359,7 +359,7 @@ const Chat = () => {
                     )}
                   </div>
                   <div className="flex-1 min-w-0 text-left">
-                    <h3 className="font-semibold text-gray-900 truncate">
+                    <h3 className="font-semibold text-[#33404f] truncate">
                       {conv.other_user?.name || 'Usuario'}
                     </h3>
                     <p className="text-sm text-gray-500 truncate">
@@ -367,7 +367,7 @@ const Chat = () => {
                     </p>
                   </div>
                   {conv.unread_count > 0 && (
-                    <span className="bg-[#E6202E] text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
+                    <span className="bg-[#00e7ff] text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
                       {conv.unread_count}
                     </span>
                   )}
@@ -403,11 +403,11 @@ const Chat = () => {
                   )}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-[#33404f]">
                     {selectedConversation.other_user?.name || 'Usuario'}
                   </h3>
                   {typing[selectedConversation.other_user?.user_id] && (
-                    <p className="text-sm text-[#E6202E]">Escribiendo...</p>
+                    <p className="text-sm text-[#00e7ff]">Escribiendo...</p>
                   )}
                 </div>
               </div>
@@ -433,8 +433,8 @@ const Chat = () => {
                           <div
                             className={`max-w-[70%] rounded-2xl px-4 py-2 ${
                               isOwn
-                                ? 'bg-[#E6202E] text-white rounded-br-none'
-                                : 'bg-gray-100 text-gray-900 rounded-bl-none'
+                                ? 'bg-[#00e7ff] text-white rounded-br-none'
+                                : 'bg-gray-100 text-[#33404f] rounded-bl-none'
                             }`}
                           >
                             <p className="break-words">{msg.message}</p>
@@ -467,7 +467,7 @@ const Chat = () => {
                   <Button 
                     type="submit" 
                     disabled={!newMessage.trim()}
-                    className="bg-[#E6202E] hover:bg-[#D31522]"
+                    className="bg-[#00e7ff] hover:bg-[#00c4d4]"
                     data-testid="send-message-btn"
                   >
                     <Send className="w-5 h-5" />

@@ -37,7 +37,7 @@ const Favorites = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-[#E6202E] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -45,7 +45,7 @@ const Favorites = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="font-montserrat text-4xl font-bold text-gray-900 mb-8">
+        <h1 className="font-montserrat text-4xl font-bold text-[#33404f] mb-8">
           Mis Favoritos
         </h1>
 
@@ -54,7 +54,7 @@ const Favorites = () => {
             <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-600 text-lg mb-4">No tienes favoritos aún</p>
             <Link to="/search">
-              <Button className="bg-[#E6202E] hover:bg-[#D31522]">
+              <Button className="bg-[#00e7ff] hover:bg-[#00c4d4]">
                 Buscar Cuidadores
               </Button>
             </Link>
@@ -80,7 +80,7 @@ const Favorites = () => {
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-2">
                     <Link to={`/provider/${provider.provider_id}`}>
-                      <h3 className="font-bold text-xl hover:text-[#E6202E]">
+                      <h3 className="font-bold text-xl hover:text-[#00e7ff]">
                         {provider.business_name}
                       </h3>
                     </Link>
@@ -96,7 +96,7 @@ const Favorites = () => {
                   <div className="flex items-center gap-2 text-gray-600 mb-3">
                     <MapPin className="w-4 h-4" />
                     <span className="text-sm">{provider.comuna}</span>
-                    {provider.verified && <Shield className="w-4 h-4 text-[#E6202E]" />}
+                    {provider.verified && <Shield className="w-4 h-4 text-[#00e7ff]" />}
                   </div>
                   {provider.rating > 0 && (
                     <div className="flex items-center gap-2">

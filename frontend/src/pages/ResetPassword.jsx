@@ -42,10 +42,10 @@ const ResetPassword = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-white py-12 px-4">
         <div className="max-w-md w-full text-center space-y-4">
-          <h2 className="text-2xl font-bold text-gray-900">Enlace inválido</h2>
+          <h2 className="text-2xl font-bold text-[#33404f]">Enlace inválido</h2>
           <p className="text-gray-600">Este enlace de recuperación no es válido.</p>
           <Link to="/forgot-password">
-            <Button className="bg-[#E6202E] hover:bg-[#D31522] text-white">
+            <Button className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white">
               Solicitar nuevo enlace
             </Button>
           </Link>
@@ -59,7 +59,7 @@ const ResetPassword = () => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
                     <Link to="/"><img src="/ucan-logo-rojo.svg" alt="U-CAN" className="h-16 mx-auto mb-6" /></Link>
-          <h2 className="font-montserrat text-3xl font-extrabold text-gray-900 uppercase" data-testid="reset-password-title">
+          <h2 className="font-montserrat text-3xl font-extrabold text-[#33404f] uppercase" data-testid="reset-password-title">
             Nueva Contraseña
           </h2>
         </div>
@@ -68,11 +68,11 @@ const ResetPassword = () => {
           {success ? (
             <div className="text-center space-y-4" data-testid="reset-password-success">
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
-              <h3 className="text-xl font-semibold text-gray-900">Contraseña actualizada</h3>
+              <h3 className="text-xl font-semibold text-[#33404f]">Contraseña actualizada</h3>
               <p className="text-gray-600">Tu contraseña ha sido cambiada exitosamente.</p>
               <Button
                 onClick={() => navigate('/login')}
-                className="bg-[#E6202E] hover:bg-[#D31522] text-white w-full py-6 text-lg rounded-xl font-bold"
+                className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white w-full py-6 text-lg rounded-xl font-bold"
                 data-testid="go-to-login-button"
               >
                 Ir a Iniciar Sesión
@@ -112,7 +112,7 @@ const ResetPassword = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#E6202E] hover:bg-[#D31522] text-white py-6 text-lg rounded-xl font-bold"
+                className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-6 text-lg rounded-xl font-bold"
                 data-testid="reset-password-submit"
               >
                 {loading ? 'Actualizando...' : 'Restablecer Contraseña'}

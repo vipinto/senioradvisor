@@ -78,7 +78,7 @@ const ClientAccount = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#E6202E] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -99,7 +99,7 @@ const ClientAccount = () => {
         {/* Mi Perfil */}
         <div className="bg-white rounded-2xl p-6 shadow-sm">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Settings className="w-5 h-5 text-[#E6202E]" />
+            <Settings className="w-5 h-5 text-[#00e7ff]" />
             Mi Perfil
           </h2>
 
@@ -113,7 +113,7 @@ const ClientAccount = () => {
                 {user.picture ? (
                   <img src={getPhotoUrl(user.picture)} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-[#E6202E] text-white flex items-center justify-center text-3xl font-bold">
+                  <div className="w-full h-full bg-[#00e7ff] text-white flex items-center justify-center text-3xl font-bold">
                     {user.name?.[0] || 'U'}
                   </div>
                 )}
@@ -183,7 +183,7 @@ const ClientAccount = () => {
               />
             </div>
 
-            <Button type="submit" disabled={savingProfile} className="bg-[#E6202E] hover:bg-[#D31522] text-white">
+            <Button type="submit" disabled={savingProfile} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white">
               {savingProfile ? 'Guardando...' : 'Guardar Cambios'}
             </Button>
           </form>

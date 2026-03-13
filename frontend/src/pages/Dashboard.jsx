@@ -99,21 +99,21 @@ const Dashboard = () => {
   };
 
   if (loading || !user) {
-    return (<div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-[#E6202E] border-t-transparent rounded-full animate-spin" /></div>);
+    return (<div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin" /></div>);
   }
 
   return (
     <div className="min-h-screen bg-gray-50" data-testid="dashboard-page">
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#E6202E] to-[#D31522] rounded-2xl p-6 text-white mb-6">
+        <div className="bg-gradient-to-r from-[#00e7ff] to-[#00c4d4] rounded-2xl p-6 text-white mb-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold">Panel Cliente</h1>
               <p className="opacity-90 text-sm">Hola, {user.name}!</p>
             </div>
             <Link to="/search">
-              <Button className="bg-white text-[#E6202E] hover:bg-gray-100"><Search className="w-4 h-4 mr-2" /> Buscar</Button>
+              <Button className="bg-white text-[#00e7ff] hover:bg-gray-100"><Search className="w-4 h-4 mr-2" /> Buscar</Button>
             </Link>
           </div>
         </div>
@@ -121,10 +121,10 @@ const Dashboard = () => {
         {/* Become Carer button - only show if user doesn't have provider role */}
         {user.role !== 'provider' && user.role !== 'admin' && !user.roles?.includes('provider') && (
           <Link to="/provider/register" className="block mb-6" data-testid="become-carer-link">
-            <div className="bg-white rounded-xl p-4 shadow-sm border-2 border-dashed border-[#E6202E]/30 hover:border-[#E6202E] transition-colors">
+            <div className="bg-white rounded-xl p-4 shadow-sm border-2 border-dashed border-[#00e7ff]/30 hover:border-[#00e7ff] transition-colors">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-[#E6202E]" />
+                  <Shield className="w-5 h-5 text-[#00e7ff]" />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold">¿Quieres ser Cuidador?</h3>
@@ -155,7 +155,7 @@ const Dashboard = () => {
               onClick={() => setActiveTab(key)}
               className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
                 activeTab === key
-                  ? 'bg-[#E6202E] text-white'
+                  ? 'bg-[#00e7ff] text-white'
                   : 'text-gray-500 hover:bg-gray-100'
               }`}
             >
@@ -177,10 +177,10 @@ const Dashboard = () => {
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold flex items-center gap-2">
-                <Dog className="w-5 h-5 text-[#E6202E]" />
+                <Dog className="w-5 h-5 text-[#00e7ff]" />
                 Mis Mascotas
               </h2>
-              <Button onClick={() => { setShowPetForm(true); setNewPet({ name: '', type: 'perro', breed: '', size: 'mediano', age: '', notes: '' }); }} className="bg-[#E6202E] hover:bg-[#D31522]">
+              <Button onClick={() => { setShowPetForm(true); setNewPet({ name: '', type: 'perro', breed: '', size: 'mediano', age: '', notes: '' }); }} className="bg-[#00e7ff] hover:bg-[#00c4d4]">
                 <Plus className="w-4 h-4 mr-2" /> Agregar
               </Button>
             </div>
@@ -205,7 +205,7 @@ const Dashboard = () => {
                   <Input placeholder="Notas (opcional)" value={newPet.notes} onChange={e => setNewPet(p => ({ ...p, notes: e.target.value }))} />
                 </div>
                 <div className="flex gap-2 mt-3">
-                  <Button onClick={handleAddPet} disabled={savingPet} className="bg-[#E6202E] hover:bg-[#D31522]">
+                  <Button onClick={handleAddPet} disabled={savingPet} className="bg-[#00e7ff] hover:bg-[#00c4d4]">
                     {savingPet ? 'Guardando...' : 'Guardar'}
                   </Button>
                   <Button variant="outline" onClick={() => setShowPetForm(false)}>Cancelar</Button>
@@ -239,7 +239,7 @@ const Dashboard = () => {
                           </select>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" onClick={() => handleEditPet(pet.pet_id)} disabled={savingPet} className="bg-[#E6202E]">
+                          <Button size="sm" onClick={() => handleEditPet(pet.pet_id)} disabled={savingPet} className="bg-[#00e7ff]">
                             <Check className="w-4 h-4" />
                           </Button>
                           <Button size="sm" variant="outline" onClick={() => setEditingPet(null)}>
@@ -276,14 +276,14 @@ const Dashboard = () => {
         {activeTab === 'favorites' && (
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Heart className="w-5 h-5 text-[#E6202E]" />
+              <Heart className="w-5 h-5 text-[#00e7ff]" />
               Mis Favoritos
             </h2>
             {favorites.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
                 <Heart className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                 <p>No tienes favoritos aún</p>
-                <Link to="/search" className="text-[#E6202E] hover:underline text-sm">Buscar cuidadores</Link>
+                <Link to="/search" className="text-[#00e7ff] hover:underline text-sm">Buscar cuidadores</Link>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -312,14 +312,14 @@ const Dashboard = () => {
         {activeTab === 'bookings' && (
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <CalendarCheck className="w-5 h-5 text-[#E6202E]" />
+              <CalendarCheck className="w-5 h-5 text-[#00e7ff]" />
               Mis Reservas
             </h2>
             {bookings.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
                 <CalendarCheck className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                 <p>No tienes reservas activas</p>
-                <Link to="/search" className="text-[#E6202E] hover:underline text-sm">Buscar cuidadores</Link>
+                <Link to="/search" className="text-[#00e7ff] hover:underline text-sm">Buscar cuidadores</Link>
               </div>
             ) : (
               <div className="space-y-4">
@@ -350,13 +350,13 @@ const Dashboard = () => {
         {activeTab === 'messages' && (
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <MessageCircle className="w-5 h-5 text-[#E6202E]" />
+              <MessageCircle className="w-5 h-5 text-[#00e7ff]" />
               Mensajes
             </h2>
             <div className="text-center py-12 text-gray-500">
               <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
               <p>Tus conversaciones con cuidadores</p>
-              <Link to="/chat" className="text-[#E6202E] hover:underline text-sm">Ir al chat</Link>
+              <Link to="/chat" className="text-[#00e7ff] hover:underline text-sm">Ir al chat</Link>
             </div>
           </div>
         )}

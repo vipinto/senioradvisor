@@ -110,13 +110,13 @@ const ServiceZones = () => {
     <div className="bg-white rounded-2xl p-6 shadow-sm border" data-testid="service-zones">
       <div className="flex items-center justify-between mb-6">
         <h2 className="font-bold text-xl flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-[#E6202E]" />
+          <MapPin className="w-5 h-5 text-[#00e7ff]" />
           Zona de Paseo
         </h2>
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="bg-[#E6202E] hover:bg-[#D31522]"
+          className="bg-[#00e7ff] hover:bg-[#00c4d4]"
           data-testid="save-zones-btn"
         >
           {saving ? (
@@ -134,7 +134,7 @@ const ServiceZones = () => {
       </div>
 
       {/* Coverage Radius */}
-      <div className="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-100">
+      <div className="mb-6 p-4 bg-cyan-50 rounded-xl border border-cyan-100">
         <div className="flex items-center gap-2 mb-3">
           <Navigation className="w-5 h-5 text-blue-600" />
           <label className="font-medium text-blue-900">
@@ -150,7 +150,7 @@ const ServiceZones = () => {
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 coverageRadiusKm === km
                   ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-white text-gray-700 hover:bg-blue-100 border border-gray-200'
+                  : 'bg-white text-gray-700 hover:bg-cyan-100 border border-gray-200'
               }`}
               data-testid={`radius-${km}km`}
             >

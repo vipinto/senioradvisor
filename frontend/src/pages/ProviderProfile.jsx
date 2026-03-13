@@ -139,13 +139,13 @@ export default function ProviderProfile() {
     }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-16 h-16 border-4 border-[#E6202E] border-t-transparent rounded-full" /></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full" /></div>;
   if (!provider) return <div className="min-h-screen flex items-center justify-center text-gray-500">Cuidador no encontrado</div>;
 
   return (
     <div className="min-h-screen bg-gray-50" data-testid="provider-profile">
       {/* Hero */}
-      <div className="relative h-64 bg-gradient-to-r from-[#E6202E] to-[#D31522]">
+      <div className="relative h-64 bg-gradient-to-r from-[#00e7ff] to-[#00c4d4]">
         {provider.photos?.[0] && (
           <img src={provider.photos[0]} alt="" className="w-full h-full object-cover opacity-30" />
         )}
@@ -158,7 +158,7 @@ export default function ProviderProfile() {
                 ) : provider.photos?.[0] ? (
                   <img src={provider.photos[0]} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-4xl font-bold text-[#E6202E]">{provider.business_name?.[0]}</span>
+                  <span className="text-4xl font-bold text-[#00e7ff]">{provider.business_name?.[0]}</span>
                 )}
               </div>
               <div className="text-white pb-1">
@@ -212,13 +212,13 @@ export default function ProviderProfile() {
             {provider.personal_info && Object.values(provider.personal_info).some(v => v && v !== '' && v !== false && !(Array.isArray(v) && v.length === 0)) && (
               <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="provider-personal-info">
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <UserCircle className="w-5 h-5 text-[#E6202E]" />
+                  <UserCircle className="w-5 h-5 text-[#00e7ff]" />
                   Más Sobre el Cuidador
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {provider.personal_info.housing_type && (
                     <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
-                      <Home className="w-5 h-5 text-[#E6202E] mt-0.5 shrink-0" />
+                      <Home className="w-5 h-5 text-[#00e7ff] mt-0.5 shrink-0" />
                       <div>
                         <p className="text-xs text-gray-500 font-medium">Vivienda</p>
                         <p className="text-sm text-gray-800 capitalize">{provider.personal_info.housing_type}</p>
@@ -235,7 +235,7 @@ export default function ProviderProfile() {
                     </div>
                   )}
                   {provider.personal_info.has_own_pets && (
-                    <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-xl">
+                    <div className="flex items-start gap-3 p-3 bg-cyan-50 rounded-xl">
                       <PawPrint className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
                       <div>
                         <p className="text-xs text-gray-500 font-medium">Mascotas Propias</p>
@@ -245,7 +245,7 @@ export default function ProviderProfile() {
                   )}
                   {provider.personal_info.daily_availability && (
                     <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
-                      <Clock className="w-5 h-5 text-[#E6202E] mt-0.5 shrink-0" />
+                      <Clock className="w-5 h-5 text-[#00e7ff] mt-0.5 shrink-0" />
                       <div>
                         <p className="text-xs text-gray-500 font-medium">Disponibilidad</p>
                         <p className="text-sm text-gray-800">{provider.personal_info.daily_availability}</p>
@@ -306,7 +306,7 @@ export default function ProviderProfile() {
             {provider.gallery?.length > 0 && (
               <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="provider-gallery-public">
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Camera className="w-5 h-5 text-[#E6202E]" />
+                  <Camera className="w-5 h-5 text-[#00e7ff]" />
                   Galería
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -335,7 +335,7 @@ export default function ProviderProfile() {
                 {provider.services.map((s, i) => (
                   <div key={i} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl mb-3">
                     <div>
-                      <span className="capitalize font-semibold text-gray-900">{s.service_type}</span>
+                      <span className="capitalize font-semibold text-[#33404f]">{s.service_type}</span>
                       {s.description && <p className="text-sm text-gray-500 mt-0.5">{s.description}</p>}
                       {s.pet_sizes?.length > 0 && (
                         <div className="flex items-center gap-1 mt-2">
@@ -350,7 +350,7 @@ export default function ProviderProfile() {
                       {s.rules && <p className="text-xs text-gray-400 mt-1">{s.rules}</p>}
                     </div>
                     <div className="text-right">
-                      <span className="text-[#E6202E] font-bold text-lg">Desde ${s.price_from?.toLocaleString('es-CL')}</span>
+                      <span className="text-[#00e7ff] font-bold text-lg">Desde ${s.price_from?.toLocaleString('es-CL')}</span>
                       {s.availability && <p className="text-xs text-gray-400">{s.availability}</p>}
                     </div>
                   </div>
@@ -362,12 +362,12 @@ export default function ProviderProfile() {
             {(provider.coverage_radius_km || provider.service_comunas?.length > 0 || provider.walking_zones?.length > 0) && (
               <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="provider-service-zones">
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-[#E6202E]" />
+                  <MapPin className="w-5 h-5 text-[#00e7ff]" />
                   Zona de Servicio
                 </h2>
                 
                 {provider.coverage_radius_km && (
-                  <div className="mb-4 p-3 bg-blue-50 rounded-xl">
+                  <div className="mb-4 p-3 bg-cyan-50 rounded-xl">
                     <p className="text-sm text-blue-800">
                       <strong>Radio de cobertura:</strong> {provider.coverage_radius_km} km desde su ubicación
                     </p>
@@ -426,7 +426,7 @@ export default function ProviderProfile() {
                     value={reviewText}
                     onChange={e => setReviewText(e.target.value)}
                     placeholder="Cuenta tu experiencia con este cuidador..."
-                    className="w-full border rounded-xl p-3 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#E6202E] mb-3"
+                    className="w-full border rounded-xl p-3 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff] mb-3"
                     data-testid="review-text-input"
                   />
                   {/* Photo Upload */}
@@ -446,7 +446,7 @@ export default function ProviderProfile() {
                       <button
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploading}
-                        className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-[#E6202E] hover:text-[#E6202E] transition-colors"
+                        className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-[#00e7ff] hover:text-[#00e7ff] transition-colors"
                         data-testid="upload-photo-button"
                       >
                         <Camera className="w-5 h-5" />
@@ -458,7 +458,7 @@ export default function ProviderProfile() {
                   <Button
                     onClick={submitReview}
                     disabled={submitting}
-                    className="bg-[#E6202E] hover:bg-[#D31522] text-white"
+                    className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white"
                     data-testid="submit-review-button"
                   >
                     {submitting ? 'Enviando...' : 'Publicar Resena'}
@@ -512,7 +512,7 @@ export default function ProviderProfile() {
                   </div>
 
                   <Link to="/chat" className="block">
-                    <Button className="w-full bg-[#E6202E] hover:bg-[#D31522] text-white py-5 text-base" data-testid="go-to-chat-btn">
+                    <Button className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-5 text-base" data-testid="go-to-chat-btn">
                       <MessageSquare className="w-5 h-5 mr-2" /> Ir al Chat
                     </Button>
                   </Link>
@@ -520,13 +520,13 @@ export default function ProviderProfile() {
                   <div className="pt-3 border-t space-y-3">
                     {provider.address && (
                       <div className="flex items-start gap-3">
-                        <MapPin className="w-5 h-5 text-[#E6202E] mt-0.5" />
+                        <MapPin className="w-5 h-5 text-[#00e7ff] mt-0.5" />
                         <span className="text-sm text-gray-700">{provider.address}</span>
                       </div>
                     )}
                     {provider.phone && (
                       <a href={`tel:${provider.phone}`} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                        <Phone className="w-5 h-5 text-[#E6202E]" />
+                        <Phone className="w-5 h-5 text-[#00e7ff]" />
                         <span className="text-sm font-medium">{provider.phone}</span>
                       </a>
                     )}
@@ -561,7 +561,7 @@ export default function ProviderProfile() {
                     value={contactMessage}
                     onChange={e => setContactMessage(e.target.value)}
                     placeholder="Hola, me gustaria contactarte para un servicio..."
-                    className="w-full border rounded-xl p-3 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#E6202E]"
+                    className="w-full border rounded-xl p-3 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
                     data-testid="contact-message-input"
                   />
                   <Button
@@ -581,7 +581,7 @@ export default function ProviderProfile() {
                       }
                     }}
                     disabled={sendingContactRequest}
-                    className="w-full bg-[#E6202E] hover:bg-[#D31522] text-white py-5 text-base"
+                    className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white py-5 text-base"
                     data-testid="send-contact-request-btn"
                   >
                     {sendingContactRequest ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Send className="w-5 h-5 mr-2" />}
@@ -616,7 +616,7 @@ export default function ProviderProfile() {
               <div className="bg-white rounded-2xl shadow-sm overflow-hidden" data-testid="provider-map">
                 <div className="p-4 border-b">
                   <h3 className="font-bold text-lg flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-[#E6202E]" /> Ubicacion
+                    <MapPin className="w-5 h-5 text-[#00e7ff]" /> Ubicacion
                   </h3>
                 </div>
                 <SafeMap lat={provider.latitude} lng={provider.longitude} />

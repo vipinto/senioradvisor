@@ -60,7 +60,7 @@ const PetForm = ({ onSaved, onCancel }) => {
     <div className="bg-white rounded-2xl shadow-lg p-6 space-y-5" data-testid="pet-form">
       {/* Photo */}
       <div className="flex justify-center">
-        <button type="button" onClick={() => fileRef.current?.click()} className="relative w-28 h-28 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 hover:border-[#E6202E] flex items-center justify-center overflow-hidden transition-colors" data-testid="pet-photo-upload">
+        <button type="button" onClick={() => fileRef.current?.click()} className="relative w-28 h-28 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 hover:border-[#00e7ff] flex items-center justify-center overflow-hidden transition-colors" data-testid="pet-photo-upload">
           {preview || form.photo ? (
             <img src={preview || `${API_BASE}${form.photo}`} alt="Mascota" className="w-full h-full object-cover" />
           ) : (
@@ -87,7 +87,7 @@ const PetForm = ({ onSaved, onCancel }) => {
           <div className="flex gap-2">
             {PET_SIZES.map(s => (
               <button key={s.id} type="button" onClick={() => setForm({ ...form, size: s.id })}
-                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all ${form.size === s.id ? 'bg-[#E6202E] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all ${form.size === s.id ? 'bg-[#00e7ff] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                 data-testid={`pet-size-${s.id}`}
               >{s.label}</button>
             ))}
@@ -98,7 +98,7 @@ const PetForm = ({ onSaved, onCancel }) => {
           <div className="flex gap-2">
             {PET_SEX.map(s => (
               <button key={s.id} type="button" onClick={() => setForm({ ...form, sex: s.id })}
-                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all ${form.sex === s.id ? 'bg-[#E6202E] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all ${form.sex === s.id ? 'bg-[#00e7ff] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                 data-testid={`pet-sex-${s.id}`}
               >{s.label}</button>
             ))}
@@ -112,7 +112,7 @@ const PetForm = ({ onSaved, onCancel }) => {
 
       <div className="flex gap-3">
         {onCancel && <Button variant="outline" onClick={onCancel} className="flex-1" data-testid="pet-cancel-btn">Cancelar</Button>}
-        <Button onClick={handleSave} disabled={saving || uploading} className="flex-1 bg-[#E6202E] hover:bg-[#D31522]" data-testid="pet-save-btn">
+        <Button onClick={handleSave} disabled={saving || uploading} className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4]" data-testid="pet-save-btn">
           {saving ? 'Guardando...' : 'Guardar Mascota'}
         </Button>
       </div>
@@ -147,9 +147,9 @@ export default function PetSetup() {
       <div className="max-w-lg mx-auto px-4">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <PawPrint className="w-8 h-8 text-[#E6202E]" />
+            <PawPrint className="w-8 h-8 text-[#00e7ff]" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Agrega tu Mascota</h1>
+          <h1 className="text-3xl font-bold text-[#33404f]">Agrega tu Mascota</h1>
           <p className="text-gray-500 mt-2">Asi los cuidadores podran conocer mejor a tu companerito</p>
         </div>
 
@@ -162,7 +162,7 @@ export default function PetSetup() {
                   <img src={`${API_BASE}${pet.photo}`} alt={pet.name} className="w-14 h-14 rounded-full object-cover" />
                 ) : (
                   <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center">
-                    <PawPrint className="w-6 h-6 text-[#E6202E]" />
+                    <PawPrint className="w-6 h-6 text-[#00e7ff]" />
                   </div>
                 )}
                 <div className="flex-1">
@@ -178,14 +178,14 @@ export default function PetSetup() {
         {showForm ? (
           <PetForm onSaved={handlePetSaved} onCancel={pets.length > 0 ? () => setShowForm(false) : null} />
         ) : (
-          <button onClick={() => setShowForm(true)} className="w-full bg-white rounded-2xl shadow-sm p-5 border-2 border-dashed border-gray-300 hover:border-[#E6202E] flex items-center justify-center gap-3 text-gray-500 hover:text-[#E6202E] transition-colors" data-testid="add-another-pet-btn">
+          <button onClick={() => setShowForm(true)} className="w-full bg-white rounded-2xl shadow-sm p-5 border-2 border-dashed border-gray-300 hover:border-[#00e7ff] flex items-center justify-center gap-3 text-gray-500 hover:text-[#00e7ff] transition-colors" data-testid="add-another-pet-btn">
             <Plus className="w-5 h-5" /> Agregar otra mascota
           </button>
         )}
 
         {/* Continue / Skip */}
         <div className="mt-8 space-y-3">
-          <Button onClick={handleContinue} className="w-full bg-[#E6202E] hover:bg-[#D31522] py-6 text-lg" data-testid="continue-to-dashboard">
+          <Button onClick={handleContinue} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] py-6 text-lg" data-testid="continue-to-dashboard">
             {pets.length > 0 ? 'Continuar' : 'Omitir por ahora'} <ChevronRight className="w-5 h-5 ml-2" />
           </Button>
           {pets.length === 0 && (

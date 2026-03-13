@@ -77,7 +77,7 @@ export default function NotificationBell() {
       <button onClick={() => { setIsOpen(!isOpen); if (!isOpen) loadNotifications(); }} className="relative p-2 hover:bg-gray-100 rounded-full">
         <Bell className="w-6 h-6 text-gray-600" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-[#E6202E] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+          <span className="absolute -top-1 -right-1 bg-[#00e7ff] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -90,7 +90,7 @@ export default function NotificationBell() {
             <div className="p-3 border-b flex justify-between items-center">
               <h3 className="font-bold">Notificaciones</h3>
               {unreadCount > 0 && (
-                <button onClick={markAllRead} className="text-sm text-[#E6202E] hover:underline">
+                <button onClick={markAllRead} className="text-sm text-[#00e7ff] hover:underline">
                   Marcar todas leídas
                 </button>
               )}
@@ -108,7 +108,7 @@ export default function NotificationBell() {
                         <p className="text-xs text-gray-500 truncate">{n.message}</p>
                         <p className="text-xs text-gray-400 mt-1">{formatTime(n.created_at)}</p>
                       </div>
-                      {!n.read && <span className="w-2 h-2 bg-[#E6202E] rounded-full mt-2" />}
+                      {!n.read && <span className="w-2 h-2 bg-[#00e7ff] rounded-full mt-2" />}
                     </div>
                   </div>
                 ))

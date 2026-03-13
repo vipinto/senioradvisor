@@ -284,7 +284,7 @@ export default function RegisterProvider() {
           <div 
             className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
               currentStep === step.id 
-                ? 'bg-[#E6202E] text-white' 
+                ? 'bg-[#00e7ff] text-white' 
                 : currentStep > step.id 
                   ? 'bg-green-500 text-white' 
                   : 'bg-gray-200 text-gray-500'
@@ -312,7 +312,7 @@ export default function RegisterProvider() {
         <div className="text-center">
           <label className="block text-sm font-medium mb-2">Foto de Perfil</label>
           <div className="relative inline-block">
-            <div className="w-28 h-28 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden cursor-pointer hover:border-[#E6202E] transition-colors">
+            <div className="w-28 h-28 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden cursor-pointer hover:border-[#00e7ff] transition-colors">
               {profilePhotoPreview ? (
                 <img src={profilePhotoPreview} alt="Preview" className="w-full h-full object-cover" />
               ) : (
@@ -353,7 +353,7 @@ export default function RegisterProvider() {
           value={form.description} 
           onChange={e => setForm({...form, description: e.target.value})} 
           placeholder="Cuéntanos sobre ti y tu experiencia con mascotas..." 
-          className="w-full border rounded-xl p-3 text-sm min-h-[100px] focus:outline-none focus:ring-2 focus:ring-[#E6202E]" 
+          className="w-full border rounded-xl p-3 text-sm min-h-[100px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" 
         />
       </div>
       
@@ -406,7 +406,7 @@ export default function RegisterProvider() {
         <select
           value={moreData.housing_type}
           onChange={e => setMoreData(prev => ({ ...prev, housing_type: e.target.value }))}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E6202E]"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00e7ff]"
         >
           <option value="">Selecciona...</option>
           <option value="casa">Casa</option>
@@ -415,12 +415,12 @@ export default function RegisterProvider() {
         </select>
       </div>
 
-      <div className="flex items-center gap-3 p-3 rounded-xl border hover:border-[#E6202E] transition-colors">
+      <div className="flex items-center gap-3 p-3 rounded-xl border hover:border-[#00e7ff] transition-colors">
         <input
           type="checkbox"
           checked={moreData.has_yard}
           onChange={e => setMoreData(prev => ({ ...prev, has_yard: e.target.checked }))}
-          className="w-5 h-5 accent-[#E6202E]"
+          className="w-5 h-5 accent-[#00e7ff]"
         />
         <span className="font-medium">Tengo patio o jardín</span>
       </div>
@@ -438,12 +438,12 @@ export default function RegisterProvider() {
         </div>
       )}
 
-      <div className="flex items-center gap-3 p-3 rounded-xl border hover:border-[#E6202E] transition-colors">
+      <div className="flex items-center gap-3 p-3 rounded-xl border hover:border-[#00e7ff] transition-colors">
         <input
           type="checkbox"
           checked={moreData.has_own_pets}
           onChange={e => setMoreData(prev => ({ ...prev, has_own_pets: e.target.checked }))}
-          className="w-5 h-5 accent-[#E6202E]"
+          className="w-5 h-5 accent-[#00e7ff]"
         />
         <span className="font-medium flex items-center gap-2"><PawPrint className="w-4 h-4" /> Tengo mascotas propias</span>
       </div>
@@ -487,10 +487,10 @@ export default function RegisterProvider() {
           const isSelected = !!selectedServices[opt.id];
           return (
             <button key={opt.id} type="button" onClick={() => toggleService(opt.id)}
-              className={`p-4 rounded-xl border-2 text-center transition-all ${isSelected ? 'border-[#E6202E] bg-red-50' : 'border-gray-200 hover:border-gray-300'}`}
+              className={`p-4 rounded-xl border-2 text-center transition-all ${isSelected ? 'border-[#00e7ff] bg-red-50' : 'border-gray-200 hover:border-gray-300'}`}
             >
-              <Icon className={`w-8 h-8 mx-auto mb-2 ${isSelected ? 'text-[#E6202E]' : 'text-gray-400'}`} />
-              <p className={`font-semibold text-sm ${isSelected ? 'text-[#E6202E]' : 'text-gray-600'}`}>{opt.label}</p>
+              <Icon className={`w-8 h-8 mx-auto mb-2 ${isSelected ? 'text-[#00e7ff]' : 'text-gray-400'}`} />
+              <p className={`font-semibold text-sm ${isSelected ? 'text-[#00e7ff]' : 'text-gray-600'}`}>{opt.label}</p>
               <p className="text-xs text-gray-400 mt-1">{opt.desc}</p>
             </button>
           );
@@ -502,7 +502,7 @@ export default function RegisterProvider() {
         return (
           <div key={id} className="border rounded-xl p-4 space-y-3 bg-gray-50">
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-[#E6202E]">{opt?.label}</h3>
+              <h3 className="font-semibold text-[#00e7ff]">{opt?.label}</h3>
               <button type="button" onClick={() => toggleService(id)} className="text-gray-400 hover:text-red-500"><X className="w-4 h-4" /></button>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -515,7 +515,7 @@ export default function RegisterProvider() {
                 <div className="flex gap-2 mt-1">
                   {PET_SIZES.map(ps => (
                     <button key={ps.id} type="button" onClick={() => togglePetSize(id, ps.id)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${svc.pet_sizes.includes(ps.id) ? 'bg-[#E6202E] text-white' : 'bg-white border text-gray-600'}`}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${svc.pet_sizes.includes(ps.id) ? 'bg-[#00e7ff] text-white' : 'bg-white border text-gray-600'}`}
                     >{ps.label}</button>
                   ))}
                 </div>
@@ -542,8 +542,8 @@ export default function RegisterProvider() {
         <p className="text-gray-500">¿Cuándo estás disponible para cuidar mascotas?</p>
       </div>
 
-      <label className="flex items-center gap-3 cursor-pointer p-4 rounded-xl border-2 transition-all hover:border-[#E6202E]">
-        <input type="checkbox" checked={alwaysActive} onChange={e => setAlwaysActive(e.target.checked)} className="w-5 h-5 accent-[#E6202E]" />
+      <label className="flex items-center gap-3 cursor-pointer p-4 rounded-xl border-2 transition-all hover:border-[#00e7ff]">
+        <input type="checkbox" checked={alwaysActive} onChange={e => setAlwaysActive(e.target.checked)} className="w-5 h-5 accent-[#00e7ff]" />
         <div>
           <span className="font-semibold flex items-center gap-2"><Clock className="w-4 h-4" /> Siempre activo</span>
           <p className="text-xs text-gray-500">Apareceré en las búsquedas sin importar las fechas</p>
@@ -583,13 +583,13 @@ export default function RegisterProvider() {
           onChange={e => setNewZone(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addZone())}
         />
-        <Button type="button" onClick={addZone} className="bg-[#E6202E] hover:bg-[#D31522]">Agregar</Button>
+        <Button type="button" onClick={addZone} className="bg-[#00e7ff] hover:bg-[#00c4d4]">Agregar</Button>
       </div>
 
       {serviceZones.length > 0 ? (
         <div className="flex flex-wrap gap-2 mt-4">
           {serviceZones.map(zone => (
-            <span key={zone} className="bg-red-100 text-[#E6202E] px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2">
+            <span key={zone} className="bg-red-100 text-[#00e7ff] px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2">
               <MapPin className="w-3 h-3" />
               {zone}
               <button type="button" onClick={() => removeZone(zone)} className="hover:bg-red-200 rounded-full p-0.5">
@@ -633,9 +633,9 @@ export default function RegisterProvider() {
           </div>
         ))}
         
-        <label className="aspect-square border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#E6202E] transition-colors">
+        <label className="aspect-square border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#00e7ff] transition-colors">
           {uploadingPhoto ? (
-            <Loader2 className="w-8 h-8 text-[#E6202E] animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#00e7ff] animate-spin" />
           ) : (
             <>
               <ImagePlus className="w-10 h-10 text-gray-400 mb-2" />
@@ -692,7 +692,7 @@ export default function RegisterProvider() {
                       Omitir
                     </Button>
                   )}
-                  <Button type="button" onClick={nextStep} className="flex-1 bg-[#E6202E] hover:bg-[#D31522]">
+                  <Button type="button" onClick={nextStep} className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4]">
                     Siguiente <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 </>
@@ -701,7 +701,7 @@ export default function RegisterProvider() {
                   type="button" 
                   onClick={handleSubmit} 
                   disabled={submitting}
-                  className="flex-1 bg-[#E6202E] hover:bg-[#D31522] py-6"
+                  className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] py-6"
                 >
                   {submitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Creando...</> : 'Crear Perfil de Cuidador'}
                 </Button>

@@ -82,7 +82,7 @@ const Search = () => {
               <Filter className="w-4 h-4 mr-2" />
               Filtros
             </Button>
-            <Button type="submit" className="h-12 bg-[#2B547E] hover:bg-[#1E3A5F]">
+            <Button type="submit" className="h-12 bg-[#00e7ff] hover:bg-[#00c4d4]">
               Buscar
             </Button>
           </form>
@@ -123,7 +123,7 @@ const Search = () => {
                     type="checkbox"
                     checked={verifiedOnly}
                     onChange={(e) => setVerifiedOnly(e.target.checked)}
-                    className="w-4 h-4 text-[#2B547E] rounded"
+                    className="w-4 h-4 text-[#00e7ff] rounded"
                   />
                   <span className="text-sm font-medium">Solo verificados</span>
                 </label>
@@ -136,21 +136,21 @@ const Search = () => {
       {/* View Toggle */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="font-montserrat text-2xl font-bold text-gray-900">
+          <h1 className="font-montserrat text-2xl font-bold text-[#33404f]">
             {providers.length} Servicios encontrados
           </h1>
           <div className="flex gap-2">
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               onClick={() => setViewMode('list')}
-              className={viewMode === 'list' ? 'bg-[#2B547E]' : ''}
+              className={viewMode === 'list' ? 'bg-[#00e7ff]' : ''}
             >
               Lista
             </Button>
             <Button
               variant={viewMode === 'map' ? 'default' : 'outline'}
               onClick={() => setViewMode('map')}
-              className={viewMode === 'map' ? 'bg-[#2B547E]' : ''}
+              className={viewMode === 'map' ? 'bg-[#00e7ff]' : ''}
             >
               Mapa
             </Button>
@@ -159,7 +159,7 @@ const Search = () => {
 
         {loading ? (
           <div className="text-center py-12">
-            <div className="w-16 h-16 border-4 border-[#2B547E] border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <div className="w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin mx-auto"></div>
           </div>
         ) : (
           <>
@@ -169,7 +169,7 @@ const Search = () => {
                   <Link
                     key={provider.provider_id}
                     to={`/provider/${provider.provider_id}`}
-                    className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:border-blue-100 transition-all duration-300 overflow-hidden group"
+                    className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:border-cyan-100 transition-all duration-300 overflow-hidden group"
                     data-testid="provider-card"
                   >
                     <div className="aspect-video bg-gray-200 overflow-hidden">
@@ -183,18 +183,18 @@ const Search = () => {
                     </div>
                     <div className="p-6">
                       <div className="flex items-start justify-between mb-2">
-                        <h3 className="font-bold text-xl text-gray-900">
+                        <h3 className="font-bold text-xl text-[#33404f]">
                           {provider.business_name}
                         </h3>
                         {provider.verified && (
-                          <Shield className="w-5 h-5 text-[#2B547E]" />
+                          <Shield className="w-5 h-5 text-[#00e7ff]" />
                         )}
                       </div>
                       <div className="flex items-center gap-2 text-gray-600 mb-3">
                         <MapPin className="w-4 h-4" />
                         <span className="text-sm">{provider.comuna}</span>
                         {provider.distance_km && (
-                          <span className="text-sm text-[#2B547E]">({provider.distance_km} km)</span>
+                          <span className="text-sm text-[#00e7ff]">({provider.distance_km} km)</span>
                         )}
                       </div>
                       {provider.rating > 0 && (
@@ -211,7 +211,7 @@ const Search = () => {
                           {provider.services.map((service, idx) => (
                             <span
                               key={idx}
-                              className="px-3 py-1 bg-blue-50 text-[#2B547E] text-xs rounded-full font-medium"
+                              className="px-3 py-1 bg-cyan-50 text-[#00e7ff] text-xs rounded-full font-medium"
                             >
                               {service.service_type}
                             </span>
@@ -257,7 +257,7 @@ const Search = () => {
                 setMinRating('');
                 loadProviders();
               }}
-              className="mt-4 bg-[#2B547E] hover:bg-[#1E3A5F]"
+              className="mt-4 bg-[#00e7ff] hover:bg-[#00c4d4]"
             >
               Limpiar filtros
             </Button>

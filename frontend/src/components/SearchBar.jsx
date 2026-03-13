@@ -72,7 +72,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
               }}
               className={`flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-base transition-all ${
                 isActive
-                  ? 'bg-[#2B547E] text-white shadow-md'
+                  ? 'bg-[#00e7ff] text-white shadow-md'
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
               }`}
               data-testid={`service-tab-${tab.id}`}
@@ -95,7 +95,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
               placeholder="Dirección"
               value={address}
               onChange={e => setAddress(e.target.value)}
-              className="w-full pl-12 pr-4 h-16 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2B547E] focus:border-transparent text-base"
+              className="w-full pl-12 pr-4 h-16 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00e7ff] focus:border-transparent text-base"
               data-testid="search-address-input"
             />
           </div>
@@ -109,7 +109,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
                 data-testid="date-picker-trigger"
               >
                 <CalendarDays className="w-5 h-5 text-gray-400 flex-shrink-0" />
-                <span className={`text-base truncate ${(dateRange.from || selectedDates.length > 0) ? 'text-gray-900 font-medium' : 'text-gray-400'}`}>
+                <span className={`text-base truncate ${(dateRange.from || selectedDates.length > 0) ? 'text-[#33404f] font-medium' : 'text-gray-400'}`}>
                   {getDateLabel()}
                 </span>
               </button>
@@ -142,7 +142,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress, co
           {/* Search Button */}
           <Button
             type="submit"
-            className="h-16 px-10 bg-[#2B547E] hover:bg-[#1E3A5F] text-white font-bold text-lg rounded-xl whitespace-nowrap"
+            className="h-16 px-10 bg-[#00e7ff] hover:bg-[#00c4d4] text-white font-bold text-lg rounded-xl whitespace-nowrap"
             data-testid="search-submit-button"
           >
             Buscar

@@ -39,7 +39,7 @@ const CookieConsent = () => {
           <p className="text-sm leading-relaxed">
             Usamos cookies para mejorar tu experiencia, analizar el uso del sitio y personalizar contenido.
             Al continuar navegando, aceptas nuestro uso de cookies.{' '}
-            <Link to="/privacy" className="text-[#E6202E] hover:underline font-medium">
+            <Link to="/privacy" className="text-[#00e7ff] hover:underline font-medium">
               Politica de Privacidad
             </Link>
           </p>
@@ -57,7 +57,7 @@ const CookieConsent = () => {
           <Button
             size="sm"
             onClick={accept}
-            className="bg-[#E6202E] hover:bg-[#D31522] text-white text-xs"
+            className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white text-xs"
             data-testid="cookie-accept-btn"
           >
             Aceptar todas

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api, { API_BASE } from '@/lib/api';
 
-const COLORS = ['#E6202E', '#4285F4', '#34A853', '#FBBC05'];
+const COLORS = ['#00e7ff', '#4285F4', '#34A853', '#FBBC05'];
 
 function MetricsChart({ data }) {
   if (!data || data.length === 0) return <p className="text-gray-400 text-center py-8">Sin datos</p>;
@@ -98,7 +98,7 @@ function PlanModal({ plan, onClose, onSave }) {
         <div>
           <label className="text-sm font-medium text-gray-700">Caracteristicas (una por linea)</label>
           <textarea value={features} onChange={e => setFeatures(e.target.value)}
-            className="w-full border rounded-lg p-2 text-sm min-h-[100px] focus:outline-none focus:ring-2 focus:ring-[#E6202E]"
+            className="w-full border rounded-lg p-2 text-sm min-h-[100px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
             placeholder="Chat ilimitado&#10;Contacto directo" data-testid="plan-features-input" />
         </div>
         <label className="flex items-center gap-2 cursor-pointer">
@@ -107,7 +107,7 @@ function PlanModal({ plan, onClose, onSave }) {
         </label>
         <div className="flex gap-3 pt-2">
           <Button onClick={onClose} variant="outline" className="flex-1">Cancelar</Button>
-          <Button onClick={handleSave} disabled={saving} className="flex-1 bg-[#E6202E] hover:bg-[#D31522] text-white" data-testid="plan-save-button">
+          <Button onClick={handleSave} disabled={saving} className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-white" data-testid="plan-save-button">
             {saving ? 'Guardando...' : 'Guardar'}
           </Button>
         </div>
@@ -188,7 +188,7 @@ export default function AdminPanel() {
     catch (e) { toast.error('Error'); }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-16 h-16 border-4 border-[#E6202E] border-t-transparent rounded-full"></div></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full"></div></div>;
 
   return (
     <div className="min-h-screen bg-gray-50" data-testid="admin-panel">
@@ -197,29 +197,29 @@ export default function AdminPanel() {
 
         {stats && (
           <div className="grid md:grid-cols-5 gap-4 mb-8">
-            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Usuarios</p><p className="text-3xl font-bold text-[#E6202E]" data-testid="stat-users">{stats.total_users}</p></div>
-            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Cuidadores</p><p className="text-3xl font-bold text-[#E6202E]" data-testid="stat-providers">{stats.total_providers}</p></div>
+            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Usuarios</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-users">{stats.total_users}</p></div>
+            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Cuidadores</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-providers">{stats.total_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Pendientes</p><p className="text-3xl font-bold text-orange-500" data-testid="stat-pending">{stats.pending_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Verificados</p><p className="text-3xl font-bold text-green-600" data-testid="stat-verified">{stats.verified_providers}</p></div>
-            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Suscripciones</p><p className="text-3xl font-bold text-[#E6202E]" data-testid="stat-subscriptions">{stats.active_subscriptions}</p></div>
+            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Suscripciones</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-subscriptions">{stats.active_subscriptions}</p></div>
           </div>
         )}
 
         <div className="bg-white rounded-2xl shadow-sm">
           <div className="flex border-b overflow-x-auto">
-            <button onClick={() => setActiveTab('pending')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'pending' ? 'text-[#E6202E] border-b-2 border-[#E6202E]' : 'text-gray-500'}`} data-testid="tab-pending">
+            <button onClick={() => setActiveTab('pending')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'pending' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-pending">
               Pendientes ({pendingProviders.length})
             </button>
-            <button onClick={() => setActiveTab('all')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'all' ? 'text-[#E6202E] border-b-2 border-[#E6202E]' : 'text-gray-500'}`} data-testid="tab-all">
+            <button onClick={() => setActiveTab('all')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'all' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-all">
               Cuidadores ({allProviders.filter(p => p.approved).length})
             </button>
-            <button onClick={() => setActiveTab('plans')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'plans' ? 'text-[#E6202E] border-b-2 border-[#E6202E]' : 'text-gray-500'}`} data-testid="tab-plans">
+            <button onClick={() => setActiveTab('plans')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'plans' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-plans">
               <CreditCard className="w-4 h-4 inline mr-1" />Planes ({plans.length})
             </button>
-            <button onClick={() => setActiveTab('metrics')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'metrics' ? 'text-[#E6202E] border-b-2 border-[#E6202E]' : 'text-gray-500'}`} data-testid="tab-metrics">
+            <button onClick={() => setActiveTab('metrics')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'metrics' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-metrics">
               <BarChart3 className="w-4 h-4 inline mr-1" />Metricas
             </button>
-            <button onClick={() => setActiveTab('sos')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'sos' ? 'text-[#E6202E] border-b-2 border-[#E6202E]' : 'text-gray-500'}`} data-testid="tab-sos">
+            <button onClick={() => setActiveTab('sos')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'sos' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-sos">
               SOS Veterinario
             </button>
           </div>
@@ -241,7 +241,7 @@ export default function AdminPanel() {
                           {/* Verification Status */}
                           {p.verification_status === 'pending' && (
                             <div className="mt-2 flex items-center gap-2">
-                              <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                              <span className="bg-cyan-100 text-blue-700 text-xs px-2 py-1 rounded-full flex items-center gap-1">
                                 <ShieldCheck className="w-3 h-3" />
                                 Documentos pendientes de revision
                               </span>
@@ -283,7 +283,7 @@ export default function AdminPanel() {
                         <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-bold">{p.business_name}</h3>
-                            {p.verified && <ShieldCheck className="w-5 h-5 text-[#E6202E]" />}
+                            {p.verified && <ShieldCheck className="w-5 h-5 text-[#00e7ff]" />}
                           </div>
                           <p className="text-sm text-gray-500">{p.comuna}</p>
                         </div>
@@ -293,7 +293,7 @@ export default function AdminPanel() {
                         {p.verified ? (
                           <Button size="sm" variant="outline" onClick={() => unverifyProvider(p.provider_id)}>Quitar Badge</Button>
                         ) : (
-                          <Button size="sm" onClick={() => verifyProvider(p.provider_id)} className="bg-[#E6202E] hover:bg-[#D31522]"><Badge className="w-4 h-4 mr-1" />Verificar</Button>
+                          <Button size="sm" onClick={() => verifyProvider(p.provider_id)} className="bg-[#00e7ff] hover:bg-[#00c4d4]"><Badge className="w-4 h-4 mr-1" />Verificar</Button>
                         )}
                       </div>
                     </div>
@@ -305,7 +305,7 @@ export default function AdminPanel() {
             {activeTab === 'plans' && (
               <div className="space-y-4">
                 <div className="flex justify-end">
-                  <Button onClick={() => { setEditPlan(null); setShowPlanModal(true); }} className="bg-[#E6202E] hover:bg-[#D31522] text-white" data-testid="create-plan-button">
+                  <Button onClick={() => { setEditPlan(null); setShowPlanModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white" data-testid="create-plan-button">
                     <Plus className="w-4 h-4 mr-1" />Nuevo Plan
                   </Button>
                 </div>
@@ -313,15 +313,15 @@ export default function AdminPanel() {
                   <p className="text-gray-500 text-center py-8">No hay planes creados</p>
                 ) : (
                   plans.map(p => (
-                    <div key={p.plan_id} className={`p-5 rounded-xl border-2 ${p.active ? 'bg-white border-gray-200' : 'bg-gray-100 border-gray-300 opacity-60'} ${p.popular ? 'ring-2 ring-[#E6202E]' : ''}`} data-testid={`plan-card-${p.plan_id}`}>
+                    <div key={p.plan_id} className={`p-5 rounded-xl border-2 ${p.active ? 'bg-white border-gray-200' : 'bg-gray-100 border-gray-300 opacity-60'} ${p.popular ? 'ring-2 ring-[#00e7ff]' : ''}`} data-testid={`plan-card-${p.plan_id}`}>
                       <div className="flex justify-between items-start">
                         <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-bold text-lg">{p.name}</h3>
-                            {p.popular && <span className="bg-[#E6202E] text-white text-xs px-2 py-0.5 rounded-full">Popular</span>}
+                            {p.popular && <span className="bg-[#00e7ff] text-white text-xs px-2 py-0.5 rounded-full">Popular</span>}
                             {!p.active && <span className="bg-gray-500 text-white text-xs px-2 py-0.5 rounded-full">Inactivo</span>}
                           </div>
-                          <p className="text-2xl font-bold text-[#E6202E] mt-1">${p.price_clp?.toLocaleString('es-CL')} CLP</p>
+                          <p className="text-2xl font-bold text-[#00e7ff] mt-1">${p.price_clp?.toLocaleString('es-CL')} CLP</p>
                           <p className="text-sm text-gray-500">{p.duration_months} {p.duration_months === 1 ? 'mes' : 'meses'}</p>
                           {p.features?.length > 0 && (
                             <ul className="mt-2 space-y-1">
@@ -349,7 +349,7 @@ export default function AdminPanel() {
 
             {activeTab === 'metrics' && (
               <div className="space-y-6" data-testid="metrics-tab">
-                <h3 className="text-lg font-bold text-gray-900">Actividad Ultimos 6 Meses</h3>
+                <h3 className="text-lg font-bold text-[#33404f]">Actividad Ultimos 6 Meses</h3>
                 <div className="bg-gray-50 rounded-xl p-6">
                   <MetricsChart data={metrics} />
                 </div>
@@ -359,7 +359,7 @@ export default function AdminPanel() {
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between"><span className="text-gray-500">Usuarios totales</span><span className="font-bold">{stats?.total_users || 0}</span></div>
                       <div className="flex justify-between"><span className="text-gray-500">Cuidadores activos</span><span className="font-bold">{stats?.total_providers || 0}</span></div>
-                      <div className="flex justify-between"><span className="text-gray-500">Suscripciones activas</span><span className="font-bold text-[#E6202E]">{stats?.active_subscriptions || 0}</span></div>
+                      <div className="flex justify-between"><span className="text-gray-500">Suscripciones activas</span><span className="font-bold text-[#00e7ff]">{stats?.active_subscriptions || 0}</span></div>
                       <div className="flex justify-between"><span className="text-gray-500">Reseñas totales</span><span className="font-bold">{stats?.total_reviews || 0}</span></div>
                     </div>
                   </div>
@@ -368,7 +368,7 @@ export default function AdminPanel() {
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between"><span className="text-gray-500">Aprobados</span><span className="font-bold text-green-600">{stats?.total_providers || 0}</span></div>
                       <div className="flex justify-between"><span className="text-gray-500">Pendientes</span><span className="font-bold text-orange-500">{stats?.pending_providers || 0}</span></div>
-                      <div className="flex justify-between"><span className="text-gray-500">Verificados</span><span className="font-bold text-[#E6202E]">{stats?.verified_providers || 0}</span></div>
+                      <div className="flex justify-between"><span className="text-gray-500">Verificados</span><span className="font-bold text-[#00e7ff]">{stats?.verified_providers || 0}</span></div>
                     </div>
                   </div>
                 </div>
@@ -376,40 +376,40 @@ export default function AdminPanel() {
             )}
             {activeTab === 'sos' && (
               <div className="space-y-6" data-testid="sos-tab">
-                <h3 className="text-lg font-bold text-gray-900">Configuracion SOS Veterinario</h3>
+                <h3 className="text-lg font-bold text-[#33404f]">Configuracion SOS Veterinario</h3>
                 <p className="text-sm text-gray-500">Configura el número de emergencia al que los cuidadores pueden llamar si tienen un problema con una mascota.</p>
 
                 <div className="bg-gray-50 rounded-xl p-6 space-y-4">
                   <div className="flex items-center gap-3 mb-4">
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={sosConfig.active || false} onChange={e => setSosConfig(prev => ({ ...prev, active: e.target.checked }))} className="w-5 h-5 accent-[#E6202E] rounded" data-testid="sos-active-toggle" />
+                      <input type="checkbox" checked={sosConfig.active || false} onChange={e => setSosConfig(prev => ({ ...prev, active: e.target.checked }))} className="w-5 h-5 accent-[#00e7ff] rounded" data-testid="sos-active-toggle" />
                       <span className="font-semibold">{sosConfig.active ? 'SOS Activo' : 'SOS Desactivado'}</span>
                     </label>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium mb-1">Nombre del Veterinario</label>
-                    <input type="text" placeholder="Ej: Dr. Martinez" value={sosConfig.vet_name || ''} onChange={e => setSosConfig(prev => ({ ...prev, vet_name: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#E6202E]" data-testid="sos-vet-name" />
+                    <input type="text" placeholder="Ej: Dr. Martinez" value={sosConfig.vet_name || ''} onChange={e => setSosConfig(prev => ({ ...prev, vet_name: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="sos-vet-name" />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium mb-1">Numero de Telefono</label>
-                    <input type="tel" placeholder="Ej: +56912345678" value={sosConfig.phone || ''} onChange={e => setSosConfig(prev => ({ ...prev, phone: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#E6202E]" data-testid="sos-phone" />
+                    <input type="tel" placeholder="Ej: +56912345678" value={sosConfig.phone || ''} onChange={e => setSosConfig(prev => ({ ...prev, phone: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="sos-phone" />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium mb-1">Horario de Atencion (texto descriptivo)</label>
-                    <input type="text" placeholder="Ej: Lunes a Viernes 9:00 - 18:00" value={sosConfig.schedule || ''} onChange={e => setSosConfig(prev => ({ ...prev, schedule: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#E6202E]" data-testid="sos-schedule" />
+                    <input type="text" placeholder="Ej: Lunes a Viernes 9:00 - 18:00" value={sosConfig.schedule || ''} onChange={e => setSosConfig(prev => ({ ...prev, schedule: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="sos-schedule" />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">Hora inicio (0-23)</label>
-                      <input type="number" min="0" max="23" value={sosConfig.start_hour ?? 8} onChange={e => setSosConfig(prev => ({ ...prev, start_hour: parseInt(e.target.value) || 0 }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#E6202E]" data-testid="sos-start-hour" />
+                      <input type="number" min="0" max="23" value={sosConfig.start_hour ?? 8} onChange={e => setSosConfig(prev => ({ ...prev, start_hour: parseInt(e.target.value) || 0 }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="sos-start-hour" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">Hora fin (0-23)</label>
-                      <input type="number" min="0" max="23" value={sosConfig.end_hour ?? 20} onChange={e => setSosConfig(prev => ({ ...prev, end_hour: parseInt(e.target.value) || 0 }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#E6202E]" data-testid="sos-end-hour" />
+                      <input type="number" min="0" max="23" value={sosConfig.end_hour ?? 20} onChange={e => setSosConfig(prev => ({ ...prev, end_hour: parseInt(e.target.value) || 0 }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="sos-end-hour" />
                     </div>
                   </div>
                   <p className="text-xs text-gray-500">El boton SOS solo estara activo entre la hora inicio y hora fin (hora de Chile). Fuera de horario, los cuidadores suscritos veran el boton deshabilitado.</p>
@@ -424,7 +424,7 @@ export default function AdminPanel() {
                       finally { setSavingSos(false); }
                     }}
                     disabled={savingSos}
-                    className="bg-[#E6202E] hover:bg-[#D31522]"
+                    className="bg-[#00e7ff] hover:bg-[#00c4d4]"
                     data-testid="save-sos-btn"
                   >
                     {savingSos ? 'Guardando...' : 'Guardar Configuracion SOS'}
@@ -448,7 +448,7 @@ export default function AdminPanel() {
       {viewingDocs && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" data-testid="verification-docs-modal">
           <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div className="p-4 border-b flex justify-between items-center bg-gradient-to-r from-[#E6202E] to-[#D31522] text-white">
+            <div className="p-4 border-b flex justify-between items-center bg-gradient-to-r from-[#00e7ff] to-[#00c4d4] text-white">
               <div>
                 <h3 className="text-xl font-bold">Documentos de Verificación</h3>
                 <p className="text-sm opacity-80">{viewingDocs.business_name}</p>
@@ -463,7 +463,7 @@ export default function AdminPanel() {
                 {/* ID Front */}
                 <div>
                   <h4 className="font-semibold mb-2 flex items-center gap-2">
-                    <Camera className="w-4 h-4 text-[#E6202E]" />
+                    <Camera className="w-4 h-4 text-[#00e7ff]" />
                     Carnet (Frente)
                   </h4>
                   {viewingDocs.id_front_photo ? (
@@ -471,7 +471,7 @@ export default function AdminPanel() {
                       <img 
                         src={`${API_BASE}${viewingDocs.id_front_photo}`} 
                         alt="Carnet frente" 
-                        className="w-full h-48 object-cover rounded-xl border-2 border-gray-200 hover:border-[#E6202E] transition-colors cursor-pointer"
+                        className="w-full h-48 object-cover rounded-xl border-2 border-gray-200 hover:border-[#00e7ff] transition-colors cursor-pointer"
                       />
                     </a>
                   ) : (
@@ -484,7 +484,7 @@ export default function AdminPanel() {
                 {/* ID Back */}
                 <div>
                   <h4 className="font-semibold mb-2 flex items-center gap-2">
-                    <Camera className="w-4 h-4 text-[#E6202E]" />
+                    <Camera className="w-4 h-4 text-[#00e7ff]" />
                     Carnet (Dorso)
                   </h4>
                   {viewingDocs.id_back_photo ? (
@@ -492,7 +492,7 @@ export default function AdminPanel() {
                       <img 
                         src={`${API_BASE}${viewingDocs.id_back_photo}`} 
                         alt="Carnet dorso" 
-                        className="w-full h-48 object-cover rounded-xl border-2 border-gray-200 hover:border-[#E6202E] transition-colors cursor-pointer"
+                        className="w-full h-48 object-cover rounded-xl border-2 border-gray-200 hover:border-[#00e7ff] transition-colors cursor-pointer"
                       />
                     </a>
                   ) : (
@@ -505,7 +505,7 @@ export default function AdminPanel() {
                 {/* Selfie */}
                 <div>
                   <h4 className="font-semibold mb-2 flex items-center gap-2">
-                    <User className="w-4 h-4 text-[#E6202E]" />
+                    <User className="w-4 h-4 text-[#00e7ff]" />
                     Selfie
                   </h4>
                   {viewingDocs.selfie_photo ? (
@@ -513,7 +513,7 @@ export default function AdminPanel() {
                       <img 
                         src={`${API_BASE}${viewingDocs.selfie_photo}`} 
                         alt="Selfie" 
-                        className="w-full h-48 object-cover rounded-xl border-2 border-gray-200 hover:border-[#E6202E] transition-colors cursor-pointer"
+                        className="w-full h-48 object-cover rounded-xl border-2 border-gray-200 hover:border-[#00e7ff] transition-colors cursor-pointer"
                       />
                     </a>
                   ) : (
@@ -526,7 +526,7 @@ export default function AdminPanel() {
                 {/* Background Certificate */}
                 <div>
                   <h4 className="font-semibold mb-2 flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-[#E6202E]" />
+                    <FileText className="w-4 h-4 text-[#00e7ff]" />
                     Certificado de Antecedentes
                   </h4>
                   {viewingDocs.background_certificate ? (
@@ -535,7 +535,7 @@ export default function AdminPanel() {
                         href={`${API_BASE}${viewingDocs.background_certificate}`} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="w-full h-48 bg-blue-50 rounded-xl flex flex-col items-center justify-center text-blue-600 hover:bg-blue-100 transition-colors"
+                        className="w-full h-48 bg-cyan-50 rounded-xl flex flex-col items-center justify-center text-blue-600 hover:bg-cyan-100 transition-colors"
                       >
                         <FileText className="w-12 h-12 mb-2" />
                         <span className="font-medium">Ver PDF</span>
@@ -545,7 +545,7 @@ export default function AdminPanel() {
                         <img 
                           src={`${API_BASE}${viewingDocs.background_certificate}`} 
                           alt="Certificado" 
-                          className="w-full h-48 object-cover rounded-xl border-2 border-gray-200 hover:border-[#E6202E] transition-colors cursor-pointer"
+                          className="w-full h-48 object-cover rounded-xl border-2 border-gray-200 hover:border-[#00e7ff] transition-colors cursor-pointer"
                         />
                       </a>
                     )

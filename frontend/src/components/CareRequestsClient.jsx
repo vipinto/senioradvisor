@@ -54,7 +54,7 @@ const ProposalCard = ({ proposal, onRespond }) => {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <Link to={`/provider/${proposal.provider_provider_id}`} className="font-bold text-gray-900 hover:text-[#E6202E] transition-colors">
+            <Link to={`/provider/${proposal.provider_provider_id}`} className="font-bold text-[#33404f] hover:text-[#00e7ff] transition-colors">
               {proposal.provider_business_name}
             </Link>
             {proposal.provider_verified && <Shield className="w-4 h-4 text-green-500" />}
@@ -66,13 +66,13 @@ const ProposalCard = ({ proposal, onRespond }) => {
           </div>
 
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-xl font-bold text-[#E6202E] flex items-center" data-testid="proposal-price">
+            <span className="text-xl font-bold text-[#00e7ff] flex items-center" data-testid="proposal-price">
               ${proposal.price?.toLocaleString('es-CL')}
             </span>
             <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
               isAccepted ? 'bg-green-100 text-green-700' :
               isRejected ? 'bg-gray-200 text-gray-600' :
-              'bg-blue-100 text-blue-700'
+              'bg-cyan-100 text-blue-700'
             }`}>
               {isAccepted ? 'Aceptada' : isRejected ? 'Rechazada' : 'Pendiente'}
             </span>
@@ -112,7 +112,7 @@ const ProposalCard = ({ proposal, onRespond }) => {
               <CheckCircle className="w-4 h-4 text-green-600" />
               <span className="text-sm text-green-700 font-medium">Chat desbloqueado</span>
               <Link to="/chat" className="ml-auto">
-                <Button size="sm" className="bg-[#E6202E] hover:bg-[#D31522] text-xs">
+                <Button size="sm" className="bg-[#00e7ff] hover:bg-[#00c4d4] text-xs">
                   <MessageCircle className="w-3.5 h-3.5 mr-1" />Ir al Chat
                 </Button>
               </Link>
@@ -249,12 +249,12 @@ const CareRequestsClient = ({ pets = [] }) => {
     <div className="bg-white rounded-2xl p-6 shadow-sm border mb-8" data-testid="care-requests-section">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-bold text-xl flex items-center gap-2">
-          <Dog className="w-5 h-5 text-[#E6202E]" />
+          <Dog className="w-5 h-5 text-[#00e7ff]" />
           Solicitudes de Cuidado
         </h2>
         <Button 
           onClick={() => setShowForm(!showForm)} size="sm" 
-          className={showForm ? 'bg-gray-500' : 'bg-[#E6202E] hover:bg-[#D31522]'}
+          className={showForm ? 'bg-gray-500' : 'bg-[#00e7ff] hover:bg-[#00c4d4]'}
           data-testid="new-care-request-btn"
         >
           {showForm ? 'Cancelar' : <><Plus className="w-4 h-4 mr-1" /> Nueva</>}
@@ -294,20 +294,20 @@ const CareRequestsClient = ({ pets = [] }) => {
           <div>
             <label className="block text-sm font-medium mb-1">Comuna *</label>
             <input type="text" value={formData.comuna} onChange={e => setFormData(prev => ({ ...prev, comuna: e.target.value }))}
-              placeholder="Ej: Providencia, Las Condes" className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#E6202E] focus:outline-none" data-testid="input-comuna" />
+              placeholder="Ej: Providencia, Las Condes" className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:outline-none" data-testid="input-comuna" />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Descripcion *</label>
             <textarea value={formData.description} onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
               placeholder="Describe lo que necesitas: horarios, frecuencia, requisitos especiales..."
-              rows={3} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#E6202E] focus:outline-none resize-none" data-testid="input-description" />
+              rows={3} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:outline-none resize-none" data-testid="input-description" />
           </div>
           <div className="flex items-center gap-2">
             <input type="checkbox" id="flexible" checked={formData.flexible_dates}
-              onChange={e => setFormData(prev => ({ ...prev, flexible_dates: e.target.checked }))} className="w-4 h-4 text-[#E6202E] rounded" />
+              onChange={e => setFormData(prev => ({ ...prev, flexible_dates: e.target.checked }))} className="w-4 h-4 text-[#00e7ff] rounded" />
             <label htmlFor="flexible" className="text-sm text-gray-600">Tengo flexibilidad en las fechas</label>
           </div>
-          <Button type="submit" disabled={submitting || pets.length === 0} className="w-full bg-[#E6202E] hover:bg-[#D31522]" data-testid="submit-care-request">
+          <Button type="submit" disabled={submitting || pets.length === 0} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4]" data-testid="submit-care-request">
             {submitting ? 'Creando...' : 'Crear Solicitud'}
           </Button>
         </form>
@@ -328,22 +328,22 @@ const CareRequestsClient = ({ pets = [] }) => {
 
             return (
               <div key={req.request_id} data-testid={`care-request-${req.request_id}`}>
-                <div className={`p-4 rounded-xl border ${req.status === 'active' ? 'bg-green-50 border-green-200' : req.status === 'completed' ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'}`}>
+                <div className={`p-4 rounded-xl border ${req.status === 'active' ? 'bg-green-50 border-green-200' : req.status === 'completed' ? 'bg-cyan-50 border-blue-200' : 'bg-gray-50 border-gray-200'}`}>
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
                           req.status === 'active' ? 'bg-green-100 text-green-700' :
-                          req.status === 'completed' ? 'bg-blue-100 text-blue-700' :
+                          req.status === 'completed' ? 'bg-cyan-100 text-blue-700' :
                           'bg-gray-200 text-gray-600'
                         }`}>
                           {req.status === 'active' ? 'Activa' : req.status === 'completed' ? 'Completada' : 'Pausada'}
                         </span>
-                        <span className="px-2 py-0.5 text-xs font-medium bg-red-100 text-[#E6202E] rounded-full capitalize">
+                        <span className="px-2 py-0.5 text-xs font-medium bg-red-100 text-[#00e7ff] rounded-full capitalize">
                           {SERVICE_LABELS[req.service_type] || req.service_type}
                         </span>
                       </div>
-                      <p className="font-medium text-gray-900">{req.pet_name}</p>
+                      <p className="font-medium text-[#33404f]">{req.pet_name}</p>
                       <p className="text-sm text-gray-600 line-clamp-2">{req.description}</p>
                       <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
                         <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{req.comuna}</span>
@@ -378,7 +378,7 @@ const CareRequestsClient = ({ pets = [] }) => {
                         <Send className="w-4 h-4" />
                         {reqProposals.length} propuesta{reqProposals.length > 1 ? 's' : ''} recibida{reqProposals.length > 1 ? 's' : ''}
                         {pendingCount > 0 && (
-                          <span className="px-2 py-0.5 bg-[#E6202E] text-white text-xs rounded-full">{pendingCount} nueva{pendingCount > 1 ? 's' : ''}</span>
+                          <span className="px-2 py-0.5 bg-[#00e7ff] text-white text-xs rounded-full">{pendingCount} nueva{pendingCount > 1 ? 's' : ''}</span>
                         )}
                       </span>
                       {isExpanded ? <ChevronUp className="w-4 h-4 text-blue-600" /> : <ChevronDown className="w-4 h-4 text-blue-600" />}

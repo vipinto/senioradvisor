@@ -114,13 +114,13 @@ const ProviderDashboard = () => {
     }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-16 h-16 border-4 border-[#E6202E] border-t-transparent rounded-full" /></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full" /></div>;
 
   if (!provider) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
         <p className="text-gray-600 mb-6">No tienes perfil de cuidador.</p>
-        <Link to="/provider/register"><Button className="bg-[#E6202E] hover:bg-[#D31522]">Crear Perfil</Button></Link>
+        <Link to="/provider/register"><Button className="bg-[#00e7ff] hover:bg-[#00c4d4]">Crear Perfil</Button></Link>
       </div>
     </div>
   );
@@ -136,7 +136,7 @@ const ProviderDashboard = () => {
             ) : (
               <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">Pendiente</span>
             )}
-            {provider.verified && <Shield className="w-5 h-5 text-[#E6202E]" />}
+            {provider.verified && <Shield className="w-5 h-5 text-[#00e7ff]" />}
           </div>
         </div>
 
@@ -173,7 +173,7 @@ const ProviderDashboard = () => {
                 <Shield className="w-6 h-6 text-orange-600" />
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-lg text-gray-900 mb-1">Completa tu perfil para aparecer en las búsquedas</h3>
+                <h3 className="font-bold text-lg text-[#33404f] mb-1">Completa tu perfil para aparecer en las búsquedas</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Tu perfil está al {provider.profile_completeness.percentage}% completo. 
                   Los clientes solo pueden ver cuidadores con perfiles completos.
@@ -244,7 +244,7 @@ const ProviderDashboard = () => {
               onClick={() => setActiveTab(key)}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === key
-                  ? 'border-[#E6202E] text-[#E6202E]'
+                  ? 'border-[#00e7ff] text-[#00e7ff]'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
               data-testid={`tab-${key}`}
@@ -259,7 +259,7 @@ const ProviderDashboard = () => {
         {activeTab === 'profile' && (
           <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="profile-section">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Settings className="w-5 h-5 text-[#E6202E]" />
+              <Settings className="w-5 h-5 text-[#00e7ff]" />
               Editar Mi Perfil
             </h2>
             <p className="text-sm text-gray-500 mb-6">Esta información aparece en tu perfil público.</p>
@@ -294,7 +294,7 @@ const ProviderDashboard = () => {
                   onChange={(e) => setProfileForm(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Describe tu servicio, experiencia y lo que ofreces..."
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E6202E] focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:border-transparent"
                   data-testid="profile-description"
                 />
               </div>
@@ -333,7 +333,7 @@ const ProviderDashboard = () => {
               <Button 
                 type="submit" 
                 disabled={savingProfile}
-                className="bg-[#E6202E] hover:bg-[#D31522] text-white"
+                className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white"
                 data-testid="save-profile-btn"
               >
                 {savingProfile ? 'Guardando...' : 'Guardar Cambios'}
@@ -346,7 +346,7 @@ const ProviderDashboard = () => {
         {activeTab === 'contact-requests' && (
           <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="contact-requests-section">
             <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
-              <Inbox className="w-5 h-5 text-[#E6202E]" />
+              <Inbox className="w-5 h-5 text-[#00e7ff]" />
               Solicitudes de Contacto Directas
             </h2>
             <p className="text-sm text-gray-500 mb-4">Clientes premium que quieren contactarte. Si aceptas, se desbloquea el chat.</p>
@@ -419,7 +419,7 @@ const ProviderDashboard = () => {
                       <div className="mt-3 flex items-center gap-2">
                         <CheckCircle className="w-4 h-4 text-green-600" />
                         <span className="text-sm text-green-700 font-medium">Aceptada - Chat desbloqueado</span>
-                        <Link to="/chat" className="ml-auto text-sm text-[#E6202E] hover:underline">Ir al chat</Link>
+                        <Link to="/chat" className="ml-auto text-sm text-[#00e7ff] hover:underline">Ir al chat</Link>
                       </div>
                     )}
                     {req.status === 'rejected' && (
@@ -444,7 +444,7 @@ const ProviderDashboard = () => {
         {activeTab === 'personal' && (
           <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="personal-info-section">
             <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
-              <UserCircle className="w-5 h-5 text-[#E6202E]" />
+              <UserCircle className="w-5 h-5 text-[#00e7ff]" />
               Más Datos Personales
             </h2>
             <p className="text-sm text-gray-500 mb-6">Esta información se muestra en tu perfil público para que los clientes te conozcan mejor.</p>
@@ -458,7 +458,7 @@ const ProviderDashboard = () => {
                 <select
                   value={personalInfo.housing_type}
                   onChange={e => setPersonalInfo(prev => ({ ...prev, housing_type: e.target.value }))}
-                  className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#E6202E] bg-white"
+                  className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff] bg-white"
                   data-testid="personal-housing-type"
                 >
                   <option value="">Seleccionar...</option>
@@ -471,12 +471,12 @@ const ProviderDashboard = () => {
 
               {/* Has Yard */}
               <div>
-                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border-2 transition-all hover:border-[#E6202E]" data-testid="personal-has-yard">
+                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border-2 transition-all hover:border-[#00e7ff]" data-testid="personal-has-yard">
                   <input
                     type="checkbox"
                     checked={personalInfo.has_yard}
                     onChange={e => setPersonalInfo(prev => ({ ...prev, has_yard: e.target.checked }))}
-                    className="w-5 h-5 accent-[#E6202E]"
+                    className="w-5 h-5 accent-[#00e7ff]"
                   />
                   <div>
                     <span className="font-semibold text-sm">Tengo patio o jardín</span>
@@ -515,9 +515,9 @@ const ProviderDashboard = () => {
                           </div>
                         ))}
                         {(personalInfo.yard_photos || []).length < 3 && (
-                          <label className="w-24 h-24 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-[#E6202E] hover:text-[#E6202E] cursor-pointer transition-colors" data-testid="upload-yard-photo">
+                          <label className="w-24 h-24 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-[#00e7ff] hover:text-[#00e7ff] cursor-pointer transition-colors" data-testid="upload-yard-photo">
                             {uploadingPhoto === 'yard' ? (
-                              <div className="animate-spin w-5 h-5 border-2 border-[#E6202E] border-t-transparent rounded-full" />
+                              <div className="animate-spin w-5 h-5 border-2 border-[#00e7ff] border-t-transparent rounded-full" />
                             ) : (
                               <>
                                 <ImagePlus className="w-5 h-5" />
@@ -547,12 +547,12 @@ const ProviderDashboard = () => {
 
               {/* Has Own Pets */}
               <div>
-                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border-2 transition-all hover:border-[#E6202E]" data-testid="personal-has-pets">
+                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border-2 transition-all hover:border-[#00e7ff]" data-testid="personal-has-pets">
                   <input
                     type="checkbox"
                     checked={personalInfo.has_own_pets}
                     onChange={e => setPersonalInfo(prev => ({ ...prev, has_own_pets: e.target.checked }))}
-                    className="w-5 h-5 accent-[#E6202E]"
+                    className="w-5 h-5 accent-[#00e7ff]"
                   />
                   <div>
                     <span className="font-semibold text-sm">Tengo mascotas propias</span>
@@ -565,7 +565,7 @@ const ProviderDashboard = () => {
                       value={personalInfo.own_pets_description}
                       onChange={e => setPersonalInfo(prev => ({ ...prev, own_pets_description: e.target.value }))}
                       placeholder="Describe tus mascotas (ej: 2 perros golden, 1 gato...)"
-                      className="w-full mt-2 border rounded-xl p-3 text-sm min-h-[60px] focus:outline-none focus:ring-2 focus:ring-[#E6202E]"
+                      className="w-full mt-2 border rounded-xl p-3 text-sm min-h-[60px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
                       data-testid="personal-pets-desc"
                     />
                     {/* Pets Photos */}
@@ -591,9 +591,9 @@ const ProviderDashboard = () => {
                           </div>
                         ))}
                         {(personalInfo.pets_photos || []).length < 3 && (
-                          <label className="w-24 h-24 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-[#E6202E] hover:text-[#E6202E] cursor-pointer transition-colors" data-testid="upload-pets-photo">
+                          <label className="w-24 h-24 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-[#00e7ff] hover:text-[#00e7ff] cursor-pointer transition-colors" data-testid="upload-pets-photo">
                             {uploadingPhoto === 'pets' ? (
-                              <div className="animate-spin w-5 h-5 border-2 border-[#E6202E] border-t-transparent rounded-full" />
+                              <div className="animate-spin w-5 h-5 border-2 border-[#00e7ff] border-t-transparent rounded-full" />
                             ) : (
                               <>
                                 <ImagePlus className="w-5 h-5" />
@@ -630,7 +630,7 @@ const ProviderDashboard = () => {
                   value={personalInfo.animal_experience}
                   onChange={e => setPersonalInfo(prev => ({ ...prev, animal_experience: e.target.value }))}
                   placeholder="Cuéntanos sobre tu experiencia cuidando animales..."
-                  className="w-full border rounded-xl p-3 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#E6202E]"
+                  className="w-full border rounded-xl p-3 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
                   data-testid="personal-experience"
                 />
               </div>
@@ -655,7 +655,7 @@ const ProviderDashboard = () => {
                   value={personalInfo.additional_info}
                   onChange={e => setPersonalInfo(prev => ({ ...prev, additional_info: e.target.value }))}
                   placeholder="Cualquier otra información que quieras compartir..."
-                  className="w-full border rounded-xl p-3 text-sm min-h-[60px] focus:outline-none focus:ring-2 focus:ring-[#E6202E]"
+                  className="w-full border rounded-xl p-3 text-sm min-h-[60px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
                   data-testid="personal-additional"
                 />
               </div>
@@ -673,7 +673,7 @@ const ProviderDashboard = () => {
                   }
                 }}
                 disabled={savingPersonalInfo}
-                className="w-full bg-[#E6202E] hover:bg-[#D31522] text-white"
+                className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white"
                 data-testid="save-personal-info-btn"
               >
                 {savingPersonalInfo ? 'Guardando...' : 'Guardar Información Personal'}
@@ -702,10 +702,10 @@ const ProviderDashboard = () => {
           <div className="grid lg:grid-cols-2 gap-8">
           {/* Availability Management */}
           <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="availability-section">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><CalendarIcon className="w-5 h-5 text-[#E6202E]" />Disponibilidad</h2>
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><CalendarIcon className="w-5 h-5 text-[#00e7ff]" />Disponibilidad</h2>
 
-            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border-2 mb-4 transition-all hover:border-[#E6202E]" data-testid="always-active-toggle">
-              <input type="checkbox" checked={alwaysActive} onChange={e => setAlwaysActive(e.target.checked)} className="w-5 h-5 accent-[#E6202E]" />
+            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border-2 mb-4 transition-all hover:border-[#00e7ff]" data-testid="always-active-toggle">
+              <input type="checkbox" checked={alwaysActive} onChange={e => setAlwaysActive(e.target.checked)} className="w-5 h-5 accent-[#00e7ff]" />
               <div>
                 <span className="font-semibold">Siempre activo</span>
                 <p className="text-xs text-gray-500">Aparecerás en todas las búsquedas</p>
@@ -732,14 +732,14 @@ const ProviderDashboard = () => {
               </div>
             )}
 
-            <Button onClick={saveAvailability} disabled={savingAvailability} className="w-full bg-[#E6202E] hover:bg-[#D31522] text-white" data-testid="save-availability-button">
+            <Button onClick={saveAvailability} disabled={savingAvailability} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white" data-testid="save-availability-button">
               {savingAvailability ? 'Guardando...' : 'Guardar Disponibilidad'}
             </Button>
           </div>
 
           {/* Services */}
           <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Settings className="w-5 h-5 text-[#E6202E]" />Mis Servicios</h2>
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Settings className="w-5 h-5 text-[#00e7ff]" />Mis Servicios</h2>
             {provider.services?.length > 0 ? (
               <div className="space-y-3">
                 {provider.services.map((s, i) => (
@@ -756,7 +756,7 @@ const ProviderDashboard = () => {
                           </div>
                         )}
                       </div>
-                      <span className="text-[#E6202E] font-bold">${s.price_from?.toLocaleString('es-CL')}</span>
+                      <span className="text-[#00e7ff] font-bold">${s.price_from?.toLocaleString('es-CL')}</span>
                     </div>
                   </div>
                 ))}
@@ -771,7 +771,7 @@ const ProviderDashboard = () => {
         {/* Tab Content: Reviews */}
         {activeTab === 'reviews' && (
           <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><MessageSquare className="w-5 h-5 text-[#E6202E]" />Últimas Reseñas</h2>
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><MessageSquare className="w-5 h-5 text-[#00e7ff]" />Últimas Reseñas</h2>
             {reviews.length > 0 ? (
               <div className="space-y-4">
                 {reviews.slice(0, 5).map((r, i) => (
@@ -800,7 +800,7 @@ const ProviderDashboard = () => {
         {/* Tab Content: Rate Clients */}
         {activeTab === 'clients' && (
           <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="rate-clients-section">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Users className="w-5 h-5 text-[#E6202E]" />Calificar Clientes</h2>
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Users className="w-5 h-5 text-[#00e7ff]" />Calificar Clientes</h2>
             <p className="text-sm text-gray-500 mb-4">Califica a los clientes con los que has trabajado</p>
 
             {conversations.length > 0 ? (
@@ -825,7 +825,7 @@ const ProviderDashboard = () => {
                             {givenReviews.find(r => r.client_user_id === client.user_id)?.published !== false ? 'Publicado' : 'Pendiente'}
                           </span>
                         ) : (
-                          <Button size="sm" variant={isFormOpen ? "outline" : "default"} onClick={() => { setShowReviewForm(isFormOpen ? null : client.user_id); setReviewForm({ rating: 5, punctuality: 5, pet_behavior: 5, communication: 5, comment: '' }); }} className={!isFormOpen ? 'bg-[#E6202E] hover:bg-[#D31522]' : ''} data-testid={`rate-client-${client.user_id}`}>
+                          <Button size="sm" variant={isFormOpen ? "outline" : "default"} onClick={() => { setShowReviewForm(isFormOpen ? null : client.user_id); setReviewForm({ rating: 5, punctuality: 5, pet_behavior: 5, communication: 5, comment: '' }); }} className={!isFormOpen ? 'bg-[#00e7ff] hover:bg-[#00c4d4]' : ''} data-testid={`rate-client-${client.user_id}`}>
                             {isFormOpen ? 'Cancelar' : 'Calificar'}
                           </Button>
                         )}
@@ -853,7 +853,7 @@ const ProviderDashboard = () => {
                           ))}
                           <div>
                             <label className="text-sm font-medium text-gray-700">Comentario</label>
-                            <textarea value={reviewForm.comment} onChange={e => setReviewForm(prev => ({ ...prev, comment: e.target.value }))} placeholder="Opcional: comparte tu experiencia..." className="w-full mt-1 border rounded-xl p-3 text-sm min-h-[60px] focus:outline-none focus:ring-2 focus:ring-[#E6202E]" data-testid="client-review-comment" />
+                            <textarea value={reviewForm.comment} onChange={e => setReviewForm(prev => ({ ...prev, comment: e.target.value }))} placeholder="Opcional: comparte tu experiencia..." className="w-full mt-1 border rounded-xl p-3 text-sm min-h-[60px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="client-review-comment" />
                           </div>
                           <Button onClick={async () => {
                             setSubmittingReview(true);
@@ -865,7 +865,7 @@ const ProviderDashboard = () => {
                               setGivenReviews(res.data);
                             } catch (err) { toast.error(err.response?.data?.detail || 'Error al calificar'); }
                             finally { setSubmittingReview(false); }
-                          }} disabled={submittingReview} className="w-full bg-[#E6202E] hover:bg-[#D31522]" data-testid="submit-client-review">
+                          }} disabled={submittingReview} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4]" data-testid="submit-client-review">
                             {submittingReview ? 'Enviando...' : 'Enviar Calificacion'}
                           </Button>
                         </div>
@@ -882,7 +882,7 @@ const ProviderDashboard = () => {
 
         <div className="mt-6 flex items-center justify-center gap-4">
           <Link to={`/provider/${provider.provider_id}`}>
-            <Button variant="outline" className="border-[#E6202E] text-[#E6202E]"><Eye className="w-4 h-4 mr-2" />Ver mi perfil publico</Button>
+            <Button variant="outline" className="border-[#00e7ff] text-[#00e7ff]"><Eye className="w-4 h-4 mr-2" />Ver mi perfil publico</Button>
           </Link>
           <Link to="/historial">
             <Button variant="outline" className="border-gray-300 text-gray-600" data-testid="history-link-provider"><Clock className="w-4 h-4 mr-2" />Historial y Facturas</Button>

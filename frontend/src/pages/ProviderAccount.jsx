@@ -243,7 +243,7 @@ const ProviderAccount = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#E6202E] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -276,7 +276,7 @@ const ProviderAccount = () => {
               onClick={() => setActiveTab(key)}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === key
-                  ? 'border-[#E6202E] text-[#E6202E]'
+                  ? 'border-[#00e7ff] text-[#00e7ff]'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -290,7 +290,7 @@ const ProviderAccount = () => {
         {activeTab === 'profile' && (
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Settings className="w-5 h-5 text-[#E6202E]" />
+              <Settings className="w-5 h-5 text-[#00e7ff]" />
               Editar Mi Perfil
             </h2>
             <p className="text-sm text-gray-500 mb-6">Esta información aparece en tu perfil público.</p>
@@ -308,12 +308,12 @@ const ProviderAccount = () => {
                         className="w-full h-full object-cover" 
                       />
                     ) : (
-                      <span className="text-3xl font-bold text-[#E6202E]">
+                      <span className="text-3xl font-bold text-[#00e7ff]">
                         {provider.business_name?.[0]?.toUpperCase() || 'C'}
                       </span>
                     )}
                   </div>
-                  <label className="absolute -bottom-2 -right-2 w-8 h-8 bg-[#E6202E] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#D31522] transition-colors shadow-lg">
+                  <label className="absolute -bottom-2 -right-2 w-8 h-8 bg-[#00e7ff] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#00c4d4] transition-colors shadow-lg">
                     <input
                       type="file"
                       accept="image/*"
@@ -352,7 +352,7 @@ const ProviderAccount = () => {
                   onChange={(e) => setProfileForm(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Describe tu servicio, experiencia y lo que ofreces..."
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E6202E] focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:border-transparent"
                 />
               </div>
 
@@ -384,7 +384,7 @@ const ProviderAccount = () => {
                 />
               </div>
 
-              <Button type="submit" disabled={savingProfile} className="bg-[#E6202E] hover:bg-[#D31522] text-white">
+              <Button type="submit" disabled={savingProfile} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white">
                 {savingProfile ? 'Guardando...' : 'Guardar Cambios'}
               </Button>
             </form>
@@ -395,7 +395,7 @@ const ProviderAccount = () => {
         {activeTab === 'services' && (
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
-              <Briefcase className="w-5 h-5 text-[#E6202E]" />
+              <Briefcase className="w-5 h-5 text-[#00e7ff]" />
               Mis Servicios
             </h2>
             <p className="text-sm text-gray-500 mb-6">Configura los servicios que ofreces y sus precios.</p>
@@ -408,10 +408,10 @@ const ProviderAccount = () => {
                   const isSelected = !!services[opt.id];
                   return (
                     <button key={opt.id} type="button" onClick={() => toggleService(opt.id)}
-                      className={`p-4 rounded-xl border-2 text-center transition-all ${isSelected ? 'border-[#E6202E] bg-red-50' : 'border-gray-200 hover:border-gray-300'}`}
+                      className={`p-4 rounded-xl border-2 text-center transition-all ${isSelected ? 'border-[#00e7ff] bg-red-50' : 'border-gray-200 hover:border-gray-300'}`}
                     >
-                      <Icon className={`w-8 h-8 mx-auto mb-2 ${isSelected ? 'text-[#E6202E]' : 'text-gray-400'}`} />
-                      <p className={`font-semibold text-sm ${isSelected ? 'text-[#E6202E]' : 'text-gray-600'}`}>{opt.label}</p>
+                      <Icon className={`w-8 h-8 mx-auto mb-2 ${isSelected ? 'text-[#00e7ff]' : 'text-gray-400'}`} />
+                      <p className={`font-semibold text-sm ${isSelected ? 'text-[#00e7ff]' : 'text-gray-600'}`}>{opt.label}</p>
                       <p className="text-xs text-gray-400 mt-1">{opt.desc}</p>
                     </button>
                   );
@@ -424,7 +424,7 @@ const ProviderAccount = () => {
                 return (
                   <div key={id} className="border rounded-xl p-4 space-y-3 bg-gray-50">
                     <div className="flex justify-between items-center">
-                      <h3 className="font-semibold text-[#E6202E]">{opt?.label}</h3>
+                      <h3 className="font-semibold text-[#00e7ff]">{opt?.label}</h3>
                       <button type="button" onClick={() => toggleService(id)} className="text-gray-400 hover:text-red-500"><X className="w-4 h-4" /></button>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
@@ -437,7 +437,7 @@ const ProviderAccount = () => {
                         <div className="flex gap-2 mt-1">
                           {PET_SIZES.map(ps => (
                             <button key={ps.id} type="button" onClick={() => togglePetSize(id, ps.id)}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${svc.pet_sizes.includes(ps.id) ? 'bg-[#E6202E] text-white' : 'bg-white border text-gray-600'}`}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${svc.pet_sizes.includes(ps.id) ? 'bg-[#00e7ff] text-white' : 'bg-white border text-gray-600'}`}
                             >{ps.label}</button>
                           ))}
                         </div>
@@ -465,7 +465,7 @@ const ProviderAccount = () => {
               <Button 
                 onClick={saveServices} 
                 disabled={savingServices || Object.keys(services).length === 0} 
-                className="w-full bg-[#E6202E] hover:bg-[#D31522] text-white"
+                className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-white"
               >
                 {savingServices ? 'Guardando...' : 'Guardar Servicios'}
               </Button>
@@ -477,7 +477,7 @@ const ProviderAccount = () => {
         {activeTab === 'personal' && (
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
-              <UserCircle className="w-5 h-5 text-[#E6202E]" />
+              <UserCircle className="w-5 h-5 text-[#00e7ff]" />
               Más Datos Personales
             </h2>
             <p className="text-sm text-gray-500 mb-6">Esta información se muestra en tu perfil público para que los clientes te conozcan mejor.</p>
@@ -490,7 +490,7 @@ const ProviderAccount = () => {
                 <select
                   value={personalInfo.housing_type}
                   onChange={(e) => setPersonalInfo(prev => ({ ...prev, housing_type: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E6202E]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00e7ff]"
                 >
                   <option value="">Selecciona...</option>
                   <option value="casa">Casa</option>
@@ -506,7 +506,7 @@ const ProviderAccount = () => {
                   id="hasYard"
                   checked={personalInfo.has_yard}
                   onChange={(e) => setPersonalInfo(prev => ({ ...prev, has_yard: e.target.checked }))}
-                  className="w-5 h-5 text-[#E6202E] rounded"
+                  className="w-5 h-5 text-[#00e7ff] rounded"
                 />
                 <label htmlFor="hasYard" className="text-sm font-medium text-gray-700">Tengo patio o jardín</label>
               </div>
@@ -536,7 +536,7 @@ const ProviderAccount = () => {
                           </button>
                         </div>
                       ))}
-                      <label className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-[#E6202E]">
+                      <label className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-[#00e7ff]">
                         <input
                           type="file"
                           accept="image/*"
@@ -545,7 +545,7 @@ const ProviderAccount = () => {
                           disabled={uploadingPhoto === 'yard'}
                         />
                         {uploadingPhoto === 'yard' ? (
-                          <div className="w-5 h-5 border-2 border-[#E6202E] border-t-transparent rounded-full animate-spin" />
+                          <div className="w-5 h-5 border-2 border-[#00e7ff] border-t-transparent rounded-full animate-spin" />
                         ) : (
                           <ImagePlus className="w-6 h-6 text-gray-400" />
                         )}
@@ -561,7 +561,7 @@ const ProviderAccount = () => {
                   id="hasOwnPets"
                   checked={personalInfo.has_own_pets}
                   onChange={(e) => setPersonalInfo(prev => ({ ...prev, has_own_pets: e.target.checked }))}
-                  className="w-5 h-5 text-[#E6202E] rounded"
+                  className="w-5 h-5 text-[#00e7ff] rounded"
                 />
                 <label htmlFor="hasOwnPets" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                   <PawPrint className="w-4 h-4" /> Tengo mascotas propias
@@ -593,7 +593,7 @@ const ProviderAccount = () => {
                           </button>
                         </div>
                       ))}
-                      <label className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-[#E6202E]">
+                      <label className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-[#00e7ff]">
                         <input
                           type="file"
                           accept="image/*"
@@ -602,7 +602,7 @@ const ProviderAccount = () => {
                           disabled={uploadingPhoto === 'pets'}
                         />
                         {uploadingPhoto === 'pets' ? (
-                          <div className="w-5 h-5 border-2 border-[#E6202E] border-t-transparent rounded-full animate-spin" />
+                          <div className="w-5 h-5 border-2 border-[#00e7ff] border-t-transparent rounded-full animate-spin" />
                         ) : (
                           <ImagePlus className="w-6 h-6 text-gray-400" />
                         )}
@@ -634,7 +634,7 @@ const ProviderAccount = () => {
                 />
               </div>
 
-              <Button onClick={savePersonalInfo} disabled={savingPersonalInfo} className="bg-[#E6202E] hover:bg-[#D31522] text-white">
+              <Button onClick={savePersonalInfo} disabled={savingPersonalInfo} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white">
                 {savingPersonalInfo ? 'Guardando...' : 'Guardar Información'}
               </Button>
             </div>
@@ -659,7 +659,7 @@ const ProviderAccount = () => {
         {activeTab === 'availability' && (
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <CalendarIcon className="w-5 h-5 text-[#E6202E]" />
+              <CalendarIcon className="w-5 h-5 text-[#00e7ff]" />
               Disponibilidad
             </h2>
 
@@ -669,7 +669,7 @@ const ProviderAccount = () => {
                   type="checkbox"
                   checked={alwaysActive}
                   onChange={(e) => setAlwaysActive(e.target.checked)}
-                  className="w-5 h-5 text-[#E6202E] rounded"
+                  className="w-5 h-5 text-[#00e7ff] rounded"
                 />
                 <span className="font-medium">Siempre disponible</span>
               </label>
@@ -694,7 +694,7 @@ const ProviderAccount = () => {
               </div>
             )}
 
-            <Button onClick={saveAvailability} disabled={savingAvailability} className="bg-[#E6202E] hover:bg-[#D31522] text-white">
+            <Button onClick={saveAvailability} disabled={savingAvailability} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-white">
               {savingAvailability ? 'Guardando...' : 'Guardar Disponibilidad'}
             </Button>
           </div>
