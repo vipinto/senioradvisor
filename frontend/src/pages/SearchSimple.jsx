@@ -656,7 +656,7 @@ const SearchPage = () => {
                             return (
                               <span
                                 key={idx}
-                                className="px-4 py-2 bg-gray-50 border border-gray-200 text-[#33404f] text-sm rounded-lg font-semibold"
+                                className="px-4 py-2 bg-gray-200 border border-gray-300 text-[#33404f] text-sm rounded-lg font-semibold"
                               >
                                 {formatServiceName(service.service_type)}
                               </span>
