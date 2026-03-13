@@ -458,7 +458,7 @@ export default function ProviderProfile() {
                         </div>
                         <span className="font-medium text-sm">{r.user_name}</span>
                         <div className="flex gap-0.5">
-                          {[1,2,3,4,5].map(s => <Star key={s} className={`w-3.5 h-3.5 ${s <= r.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />)}
+                          {[1,2,3,4,5].map(s => <Star key={s} className={`w-3.5 h-3.5 ${s <= (r.rating || r.overall_rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />)}
                         </div>
                       </div>
                       {r.comment && <p className="text-sm text-gray-700">{r.comment}</p>}
