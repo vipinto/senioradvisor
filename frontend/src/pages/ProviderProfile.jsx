@@ -539,7 +539,7 @@ export default function ProviderProfile() {
             )}
 
             {/* Contacto */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-24">
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-lg mb-4">Contacto</h3>
 
               {/* Connected: Full contact visible */}
@@ -663,6 +663,21 @@ export default function ProviderProfile() {
                 <SafeMap lat={provider.latitude} lng={provider.longitude} />
               </div>
             )}
+
+            {/* CTA para dueños */}
+            <div className="bg-[#33404f] rounded-2xl p-6 text-center" data-testid="owner-cta">
+              <h3 className="font-bold text-white text-lg mb-2">¿Eres dueño de esta residencia?</h3>
+              <p className="text-white/70 text-sm mb-4">
+                Si administras este servicio y deseas completar o actualizar la información de tu perfil, contáctanos y te ayudamos.
+              </p>
+              <a
+                href="mailto:contacto@senioradvisor.cl?subject=Quiero administrar mi residencia en SeniorAdvisor"
+                className="inline-block w-full py-3 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold rounded-xl transition-colors text-center"
+                data-testid="owner-cta-btn"
+              >
+                Contáctanos
+              </a>
+            </div>
           </div>
         </div>
       </div>
