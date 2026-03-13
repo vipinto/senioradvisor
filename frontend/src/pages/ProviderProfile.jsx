@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, Shield, MapPin, Phone, MessageSquare, Heart, Lock, Camera, X, Dog, CalendarPlus, Crown, Home, PawPrint, Briefcase, Clock, UserCircle, Send, CheckCircle, Loader2 } from 'lucide-react';
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import api, { API_BASE } from '@/lib/api';
@@ -9,44 +8,17 @@ import BookingForm from '@/components/BookingForm';
 import SubscriptionCard from '@/components/SubscriptionCard';
 
 const GOOGLE_MAPS_KEY = process.env.REACT_APP_GOOGLE_MAPS_KEY || '';
-const LIBRARIES = ['places'];
 
-class MapErrorBoundary extends React.Component {
-  constructor(props) { super(props); this.state = { hasError: false }; }
-  static getDerivedStateFromError() { return { hasError: true }; }
-  componentDidCatch(error, info) {
-    console.log('Map error:', error);
-  }
-  render() {
-    if (this.state.hasError) {
-      return <div className="h-[250px] bg-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-base">Mapa no disponible</div>;
-    }
-    return this.props.children;
-  }
-}
-
-const SafeMap = ({ lat, lng, isLoaded }) => {
-  if (!isLoaded || !lat || !lng) {
-    return <div className="h-[250px] bg-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-base">Cargando mapa...</div>;
-  }
-  
-  try {
-    return (
-      <MapErrorBoundary>
-        <GoogleMap
-          center={{ lat, lng }}
-          zoom={15}
-          mapContainerStyle={{ width: '100%', height: '250px', borderRadius: '12px' }}
-          options={{ disableDefaultUI: true, zoomControl: true, mapTypeControl: false, streetViewControl: false, fullscreenControl: false }}
-        >
-          <Marker position={{ lat, lng }} />
-        </GoogleMap>
-      </MapErrorBoundary>
-    );
-  } catch (error) {
-    console.log('Map render error:', error);
-    return <div className="h-[250px] bg-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-base">Mapa no disponible</div>;
-  }
+// Mapa desactivado temporalmente hasta configurar correctamente Google Maps API
+const SafeMap = ({ lat, lng }) => {
+  return (
+    <div className="h-[250px] bg-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-base">
+      <div className="text-center">
+        <MapPin className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+        <p>Ubicación disponible</p>
+      </div>
+    </div>
+  );
 };
 const PET_SIZE_LABELS = { pequeno: 'Pequeno', mediano: 'Mediano', grande: 'Grande' };
 const API_URL = process.env.REACT_APP_BACKEND_URL;
@@ -72,10 +44,9 @@ export default function ProviderProfile() {
   const [contactMessage, setContactMessage] = useState('');
   const fileInputRef = useRef(null);
 
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: GOOGLE_MAPS_KEY,
-    libraries: LIBRARIES
-  });
+  // Google Maps desactivado temporalmente
+  const isLoaded = false;
+  const loadError = true;
 
   useEffect(() => {
     loadProvider();
@@ -624,7 +595,7 @@ export default function ProviderProfile() {
                     <MapPin className="w-5 h-5 text-[#00e7ff]" /> Ubicación
                   </h3>
                 </div>
-                <SafeMap lat={provider.latitude} lng={provider.longitude} isLoaded={isLoaded && !loadError} />
+                <SafeMap lat={provider.latitude} lng={provider.longitude} />
               </div>
             )}
           </div>
