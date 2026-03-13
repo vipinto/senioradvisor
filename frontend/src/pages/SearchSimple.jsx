@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { MapPin, Star, Shield, Navigation, Search, X, ChevronRight, Dog, Crown } from 'lucide-react';
+import { MapPin, Star, Shield, Navigation, Search, X, ChevronRight, Home, Crown } from 'lucide-react';
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
@@ -17,12 +17,11 @@ const DEFAULT_ZOOM = 12;
 const mapStyles = [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }];
 
 const SERVICE_TABS = [
-  { id: 'paseo', label: 'Paseo' },
-  { id: 'cuidado', label: 'Cuidado' },
-  { id: 'daycare', label: 'Daycare' },
+  { id: 'residencias', label: 'Residencias' },
+  { id: 'cuidado-domicilio', label: 'Cuidado a Domicilio' },
+  { id: 'salud-mental', label: 'Salud Mental' },
 ];
 
-const PET_SIZE_LABELS = { pequeno: 'Pequeno', mediano: 'Mediano', grande: 'Grande' };
 
 const getPhotoUrl = (path) => {
   if (!path) return null;
@@ -258,11 +257,11 @@ const SearchPage = () => {
 
     const svg = isHighlighted
       ? `<svg width="40" height="50" viewBox="0 0 40 50" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 0C8.95 0 0 8.95 0 20c0 15 20 30 20 30s20-15 20-30C40 8.95 31.05 0 20 0z" fill="#E6202E"/>
+          <path d="M20 0C8.95 0 0 8.95 0 20c0 15 20 30 20 30s20-15 20-30C40 8.95 31.05 0 20 0z" fill="#2B547E"/>
           <circle cx="20" cy="18" r="8" fill="white"/>
         </svg>`
       : `<svg width="32" height="40" viewBox="0 0 32 40" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 0C7.16 0 0 7.16 0 16c0 12 16 24 16 24s16-12 16-24C32 7.16 24.84 0 16 0z" fill="#E6202E"/>
+          <path d="M16 0C7.16 0 0 7.16 0 16c0 12 16 24 16 24s16-12 16-24C32 7.16 24.84 0 16 0z" fill="#2B547E"/>
           <circle cx="16" cy="14" r="6" fill="white"/>
         </svg>`;
 
@@ -313,7 +312,7 @@ const SearchPage = () => {
           <div className="flex gap-2 mb-3">
             <button
               onClick={() => { setActiveService(''); setFilteredProviders(providers); }}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${!activeService ? 'bg-[#E6202E] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${!activeService ? 'bg-[#2B547E] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
               data-testid="service-tab-all"
             >
               Todos
@@ -332,7 +331,7 @@ const SearchPage = () => {
                     setFilteredProviders(providers.filter(p => p.services?.some(s => s.service_type === tab.id)));
                   }
                 }}
-                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${activeService === tab.id ? 'bg-[#E6202E] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${activeService === tab.id ? 'bg-[#2B547E] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                 data-testid={`service-tab-${tab.id}`}
               >
                 {tab.label}
@@ -349,7 +348,7 @@ const SearchPage = () => {
                 placeholder="Buscar por dirección o comuna..."
                 value={searchAddress}
                 onChange={(e) => setSearchAddress(e.target.value)}
-                className="w-full pl-12 pr-10 h-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#E6202E] focus:border-transparent"
+                className="w-full pl-12 pr-10 h-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2B547E] focus:border-transparent"
                 data-testid="search-input"
               />
               {searchAddress && (
@@ -415,7 +414,7 @@ const SearchPage = () => {
 
             <Button
               type="submit"
-              className="h-12 px-6 bg-[#E6202E] hover:bg-[#D31522]"
+              className="h-12 px-6 bg-[#2B547E] hover:bg-[#1E3A5F]"
               data-testid="search-submit"
             >
               <Search className="w-5 h-5" />
@@ -435,7 +434,7 @@ const SearchPage = () => {
             </div>
           ) : !isLoaded ? (
             <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-              <div className="w-12 h-12 border-4 border-[#E6202E] border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-12 h-12 border-4 border-[#2B547E] border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : (
             <>
@@ -511,7 +510,7 @@ const SearchPage = () => {
                             </div>
                           )}
                           {selectedProvider.distance_km && (
-                            <p className="text-xs text-[#E6202E] mt-1">
+                            <p className="text-xs text-[#2B547E] mt-1">
                               {selectedProvider.distance_km} km
                             </p>
                           )}
@@ -520,7 +519,7 @@ const SearchPage = () => {
 
                       <Link
                         to={`/provider/${selectedProvider.provider_id}`}
-                        className="mt-3 block w-full text-center py-2 bg-[#E6202E] text-white text-sm font-medium rounded-lg hover:bg-[#D31522]"
+                        className="mt-3 block w-full text-center py-2 bg-[#2B547E] text-white text-sm font-medium rounded-lg hover:bg-[#1E3A5F]"
                       >
                         Ver perfil
                       </Link>
@@ -533,7 +532,7 @@ const SearchPage = () => {
                 onClick={() => setIsMapSearchActive(!isMapSearchActive)}
                 className={`absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full shadow-lg font-medium text-sm transition-all ${
                   isMapSearchActive
-                    ? 'bg-[#E6202E] text-white'
+                    ? 'bg-[#2B547E] text-white'
                     : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
                 }`}
                 data-testid="dynamic-search-toggle"
@@ -554,7 +553,7 @@ const SearchPage = () => {
         <div className="w-full lg:w-1/2 h-full overflow-y-auto bg-white border-l">
           <div className="p-4 border-b bg-gray-50 sticky top-0 z-10">
             <h2 className="font-bold text-lg text-gray-900">
-              {loading ? 'Buscando...' : `${filteredProviders.length} Cuidadores encontrados`}
+              {loading ? 'Buscando...' : `${filteredProviders.length} Servicios encontrados`}
             </h2>
             {searchAddress && !loading && (
               <p className="text-sm text-gray-500 mt-1">
@@ -565,16 +564,16 @@ const SearchPage = () => {
 
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <div className="w-12 h-12 border-4 border-[#E6202E] border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-12 h-12 border-4 border-[#2B547E] border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : filteredProviders.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 px-4">
               <MapPin className="w-16 h-16 text-gray-300 mb-4" />
               <p className="text-gray-600 text-center mb-4">
-                No se encontraron cuidadores en esta zona
+                No se encontraron servicios en esta zona
               </p>
               <Button onClick={clearSearch} variant="outline">
-                Ver todos los cuidadores
+                Ver todos los servicios
               </Button>
             </div>
           ) : (
@@ -586,7 +585,7 @@ const SearchPage = () => {
                   className={`block p-4 hover:bg-gray-50 transition-colors ${
                     (hoveredProvider?.provider_id === provider.provider_id ||
                       selectedProvider?.provider_id === provider.provider_id)
-                      ? 'bg-red-50' : ''
+                      ? 'bg-blue-50' : ''
                   }`}
                   onMouseEnter={() => setHoveredProvider(provider)}
                   onMouseLeave={() => setHoveredProvider(null)}
@@ -618,7 +617,7 @@ const SearchPage = () => {
                           </span>
                         )}
                         {provider.verified && (
-                          <Shield className="w-5 h-5 text-[#E6202E] flex-shrink-0" />
+                          <Shield className="w-5 h-5 text-[#2B547E] flex-shrink-0" />
                         )}
                       </div>
 
@@ -626,7 +625,7 @@ const SearchPage = () => {
                         <MapPin className="w-4 h-4" />
                         <span className="truncate">{provider.comuna}</span>
                         {provider.distance_km && (
-                          <span className="text-[#E6202E] font-medium whitespace-nowrap">
+                          <span className="text-[#2B547E] font-medium whitespace-nowrap">
                             ({provider.distance_km} km)
                           </span>
                         )}
@@ -647,7 +646,7 @@ const SearchPage = () => {
                           {provider.services.slice(0, 3).map((service, idx) => (
                             <span
                               key={idx}
-                              className="px-2 py-0.5 bg-red-50 text-[#E6202E] text-xs rounded-full font-medium capitalize"
+                              className="px-2 py-0.5 bg-blue-50 text-[#2B547E] text-xs rounded-full font-medium capitalize"
                             >
                               {service.service_type}
                             </span>
@@ -661,7 +660,6 @@ const SearchPage = () => {
                           <div className="flex gap-1">
                             {[...new Set(provider.services.flatMap(s => s.pet_sizes || []))].map((size, i) => (
                               <span key={i} className="px-1.5 py-0.5 bg-gray-100 text-gray-600 text-xs rounded font-medium">
-                                {PET_SIZE_LABELS[size] || size}
                               </span>
                             ))}
                           </div>

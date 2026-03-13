@@ -82,7 +82,7 @@ const Search = () => {
               <Filter className="w-4 h-4 mr-2" />
               Filtros
             </Button>
-            <Button type="submit" className="h-12 bg-[#E6202E] hover:bg-[#D31522]">
+            <Button type="submit" className="h-12 bg-[#2B547E] hover:bg-[#1E3A5F]">
               Buscar
             </Button>
           </form>
@@ -98,9 +98,9 @@ const Search = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">Todos</SelectItem>
-                    <SelectItem value="paseo">Paseo</SelectItem>
-                    <SelectItem value="petsitter">PetSitter</SelectItem>
-                    <SelectItem value="alojamiento">Alojamiento</SelectItem>
+                    <SelectItem value="residencias">Residencias</SelectItem>
+                    <SelectItem value="cuidado-domicilio">Cuidado a Domicilio</SelectItem>
+                    <SelectItem value="salud-mental">Salud Mental</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -123,7 +123,7 @@ const Search = () => {
                     type="checkbox"
                     checked={verifiedOnly}
                     onChange={(e) => setVerifiedOnly(e.target.checked)}
-                    className="w-4 h-4 text-[#E6202E] rounded"
+                    className="w-4 h-4 text-[#2B547E] rounded"
                   />
                   <span className="text-sm font-medium">Solo verificados</span>
                 </label>
@@ -137,20 +137,20 @@ const Search = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="font-montserrat text-2xl font-bold text-gray-900">
-            {providers.length} Cuidadores encontrados
+            {providers.length} Servicios encontrados
           </h1>
           <div className="flex gap-2">
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               onClick={() => setViewMode('list')}
-              className={viewMode === 'list' ? 'bg-[#E6202E]' : ''}
+              className={viewMode === 'list' ? 'bg-[#2B547E]' : ''}
             >
               Lista
             </Button>
             <Button
               variant={viewMode === 'map' ? 'default' : 'outline'}
               onClick={() => setViewMode('map')}
-              className={viewMode === 'map' ? 'bg-[#E6202E]' : ''}
+              className={viewMode === 'map' ? 'bg-[#2B547E]' : ''}
             >
               Mapa
             </Button>
@@ -159,7 +159,7 @@ const Search = () => {
 
         {loading ? (
           <div className="text-center py-12">
-            <div className="w-16 h-16 border-4 border-[#E6202E] border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <div className="w-16 h-16 border-4 border-[#2B547E] border-t-transparent rounded-full animate-spin mx-auto"></div>
           </div>
         ) : (
           <>
@@ -169,7 +169,7 @@ const Search = () => {
                   <Link
                     key={provider.provider_id}
                     to={`/provider/${provider.provider_id}`}
-                    className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:border-red-100 transition-all duration-300 overflow-hidden group"
+                    className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:border-blue-100 transition-all duration-300 overflow-hidden group"
                     data-testid="provider-card"
                   >
                     <div className="aspect-video bg-gray-200 overflow-hidden">
@@ -187,14 +187,14 @@ const Search = () => {
                           {provider.business_name}
                         </h3>
                         {provider.verified && (
-                          <Shield className="w-5 h-5 text-[#E6202E]" />
+                          <Shield className="w-5 h-5 text-[#2B547E]" />
                         )}
                       </div>
                       <div className="flex items-center gap-2 text-gray-600 mb-3">
                         <MapPin className="w-4 h-4" />
                         <span className="text-sm">{provider.comuna}</span>
                         {provider.distance_km && (
-                          <span className="text-sm text-[#E6202E]">({provider.distance_km} km)</span>
+                          <span className="text-sm text-[#2B547E]">({provider.distance_km} km)</span>
                         )}
                       </div>
                       {provider.rating > 0 && (
@@ -211,7 +211,7 @@ const Search = () => {
                           {provider.services.map((service, idx) => (
                             <span
                               key={idx}
-                              className="px-3 py-1 bg-red-50 text-[#E6202E] text-xs rounded-full font-medium"
+                              className="px-3 py-1 bg-blue-50 text-[#2B547E] text-xs rounded-full font-medium"
                             >
                               {service.service_type}
                             </span>
@@ -248,7 +248,7 @@ const Search = () => {
 
         {!loading && providers.length === 0 && (
           <div className="text-center py-12 bg-white rounded-2xl">
-            <p className="text-gray-600 text-lg">No se encontraron proveedores</p>
+            <p className="text-gray-600 text-lg">No se encontraron servicios</p>
             <Button
               onClick={() => {
                 setComuna('');
@@ -257,7 +257,7 @@ const Search = () => {
                 setMinRating('');
                 loadProviders();
               }}
-              className="mt-4 bg-[#E6202E] hover:bg-[#D31522]"
+              className="mt-4 bg-[#2B547E] hover:bg-[#1E3A5F]"
             >
               Limpiar filtros
             </Button>
