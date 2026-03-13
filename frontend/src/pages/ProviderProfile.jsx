@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import api, { API_BASE } from '@/lib/api';
 import BookingForm from '@/components/BookingForm';
+import AmenitiesDisplay from '@/components/AmenitiesDisplay';
 
 // Mapa desactivado temporalmente
 const SafeMap = ({ lat, lng }) => {
@@ -231,6 +232,9 @@ export default function ProviderProfile() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
 
+            {/* Amenidades / Servicios */}
+            <AmenitiesDisplay amenities={provider.amenities} />
+
             {/* Description */}
             {provider.description && (
               <div className="bg-white rounded-2xl p-6 shadow-sm">
@@ -307,7 +311,7 @@ export default function ProviderProfile() {
             {/* Services */}
             {provider.services?.length > 0 && (
               <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <h2 className="text-xl font-bold mb-4">Servicios</h2>
+                <h2 className="text-xl font-bold mb-4">Precio</h2>
                 {provider.services.map((s, i) => {
                   // Formatear nombre del servicio sin guiones
                   const formatServiceName = (type) => {

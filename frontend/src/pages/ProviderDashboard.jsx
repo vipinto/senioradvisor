@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Star, MessageSquare, Settings, Calendar as CalendarIcon, Shield, Eye, Phone, Users, ChevronDown, ChevronUp, CalendarCheck, Dog, Camera, MapPin, Lock, Clock, UserCircle, Home, PawPrint, Briefcase, X, ImagePlus, Inbox, CheckCircle, XCircle } from 'lucide-react';
+import { Star, MessageSquare, Settings, Calendar as CalendarIcon, Shield, Eye, Phone, Users, ChevronDown, ChevronUp, CalendarCheck, ListChecks, Camera, MapPin, Lock, Clock, UserCircle, Home, Briefcase, X, ImagePlus, Inbox, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
@@ -13,6 +13,7 @@ import CareRequestsProvider from '@/components/CareRequestsProvider';
 import SubscriptionCard from '@/components/SubscriptionCard';
 import ProviderGallery from '@/components/ProviderGallery';
 import ServiceZones from '@/components/ServiceZones';
+import AmenitiesToggle from '@/components/AmenitiesToggle';
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -45,6 +46,8 @@ const ProviderDashboard = () => {
   });
   const [savingProfile, setSavingProfile] = useState(false);
   const [editingServices, setEditingServices] = useState(false);
+  const [amenities, setAmenities] = useState([]);
+  const [savingAmenities, setSavingAmenities] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
@@ -66,6 +69,7 @@ const ProviderDashboard = () => {
       setHasSubscription(subRes.data.has_subscription || subRes.data.status === 'active');
       setAlwaysActive(p.always_active !== false);
       setAvailableDates((p.available_dates || []).map(d => new Date(d)));
+      setAmenities(p.amenities || []);
       try {
         const revRes = await api.get(`/providers/${p.provider_id}/reviews`);
         setReviews(revRes.data);
@@ -236,7 +240,8 @@ const ProviderDashboard = () => {
         <div className="flex gap-2 mb-6 border-b overflow-x-auto">
           {[
             { key: 'contact-requests', label: 'Solicitudes Directas', icon: Inbox },
-            { key: 'requests', label: 'Solicitudes Publicadas', icon: Dog },
+            { key: 'amenities', label: 'Servicios', icon: ListChecks },
+            { key: 'requests', label: 'Solicitudes Publicadas', icon: Users },
             { key: 'bookings', label: 'Reservas', icon: CalendarCheck },
           ].map(({ key, label, icon: Icon }) => (
             <button
@@ -432,6 +437,39 @@ const ProviderDashboard = () => {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Tab Content: Amenidades / Servicios */}
+        {activeTab === 'amenities' && (
+          <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="amenities-section">
+            <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
+              <ListChecks className="w-5 h-5 text-[#00e7ff]" />
+              Servicios de tu Residencia
+            </h2>
+            <p className="text-sm text-gray-500 mb-6">Selecciona los servicios que ofrece tu residencia. Estos se mostrarán en tu perfil público.</p>
+            
+            <AmenitiesToggle amenities={amenities} onChange={setAmenities} />
+
+            <Button
+              onClick={async () => {
+                setSavingAmenities(true);
+                try {
+                  await api.put('/providers/my-profile', { amenities });
+                  toast.success('Servicios actualizados');
+                  setProvider(prev => ({ ...prev, amenities }));
+                } catch (e) {
+                  toast.error('Error al guardar servicios');
+                } finally {
+                  setSavingAmenities(false);
+                }
+              }}
+              disabled={savingAmenities}
+              className="w-full mt-6 py-4 text-base font-bold bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
+              data-testid="save-amenities-btn"
+            >
+              {savingAmenities ? 'Guardando...' : 'Guardar Servicios'}
+            </Button>
           </div>
         )}
 
