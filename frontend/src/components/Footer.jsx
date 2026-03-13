@@ -8,10 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <span className="text-2xl font-bold">
-              <span className="text-[#00e7ff]">Senior</span>
-              <span className="text-white">Advisor</span>
-            </span>
+            <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-10 brightness-0 invert" />
             <p className="text-sm text-gray-400 leading-relaxed mt-4">
               La plataforma para encontrar residencias, cuidado a domicilio y servicios de salud mental para adultos mayores.
             </p>

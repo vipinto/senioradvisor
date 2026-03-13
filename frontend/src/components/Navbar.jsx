@@ -43,13 +43,10 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50" data-testid="navbar">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-28">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="text-2xl font-bold" data-testid="navbar-logo">
-              <span className="text-[#00e7ff]">Senior</span>
-              <span className="text-[#33404f]">Advisor</span>
-            </span>
+            <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-12" data-testid="navbar-logo" />
           </Link>
 
           {/* Desktop Navigation */}
