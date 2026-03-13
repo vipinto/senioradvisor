@@ -202,9 +202,9 @@ export default function ProviderProfile() {
                   <span className="text-4xl font-bold text-[#00e7ff]">{provider.business_name?.[0]}</span>
                 )}
               </div>
-              <div className="text-white pb-1">
+              <div className="pb-1">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold" data-testid="provider-name">{provider.business_name}</h1>
+                  <h1 className="text-3xl font-bold text-[#33404f]" data-testid="provider-name">{provider.business_name}</h1>
                   {provider.verified && <Shield className="w-6 h-6 text-yellow-300" />}
                   {provider.is_featured && (
                     <span className="bg-yellow-400/30 text-yellow-100 text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -217,7 +217,7 @@ export default function ProviderProfile() {
                     </span>
                   )}
                 </div>
-                <p className="opacity-80">{provider.comuna}</p>
+                <p className="font-bold text-[#33404f]">{provider.comuna}</p>
               </div>
             </div>
           </div>
