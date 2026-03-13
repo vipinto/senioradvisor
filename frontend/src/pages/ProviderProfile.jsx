@@ -186,9 +186,9 @@ export default function ProviderProfile() {
   return (
     <div className="min-h-screen bg-gray-50" data-testid="provider-profile">
       {/* Hero */}
-      <div className="relative h-64 bg-gradient-to-r from-[#00e7ff] to-[#00c4d4]">
+      <div className="relative h-64 bg-gradient-to-r from-[#00e7ff]/30 to-[#00c4d4]/30">
         {provider.photos?.[0] && (
-          <img src={provider.photos[0]} alt="" className="w-full h-full object-cover opacity-30" />
+          <img src={provider.photos[0]} alt="" className="w-full h-full object-cover opacity-20" />
         )}
         <div className="absolute inset-0 flex items-end">
           <div className="max-w-5xl mx-auto w-full px-4 pb-8">
