@@ -258,16 +258,16 @@ export default function ProviderProfile() {
               </div>
             )}
 
-            {/* Amenidades / Servicios */}
-            <AmenitiesDisplay amenities={provider.amenities} />
-
-            {/* Description */}
+            {/* Description - Sobre mi */}
             {provider.description && (
               <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-3">Sobre mi</h2>
                 <p className="text-gray-700 leading-relaxed">{provider.description}</p>
               </div>
             )}
+
+            {/* Amenidades / Servicios */}
+            <AmenitiesDisplay amenities={provider.amenities} />
 
             {/* Personal Info (Más Datos) */}
             {provider.personal_info && Object.values(provider.personal_info).some(v => v && v !== '' && v !== false && !(Array.isArray(v) && v.length === 0)) && (
