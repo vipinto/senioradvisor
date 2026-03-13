@@ -187,9 +187,6 @@ export default function ProviderProfile() {
     <div className="min-h-screen bg-gray-50" data-testid="provider-profile">
       {/* Hero */}
       <div className="relative h-64 bg-[#00e7ff]">
-        {provider.photos?.[0] && (
-          <img src={provider.photos[0]} alt="" className="w-full h-full object-cover opacity-30" />
-        )}
         <div className="absolute inset-0 flex items-end">
           <div className="max-w-5xl mx-auto w-full px-4 pb-8">
             <div className="flex items-end gap-4">
@@ -207,14 +204,14 @@ export default function ProviderProfile() {
                 <div className="flex items-center gap-2 mb-1">
                   <div className="flex items-center gap-0.5">
                     {[1,2,3,4,5].map(s => (
-                      <Star key={s} className={`w-4 h-4 ${s <= Math.round(provider.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-white/50'}`} />
+                      <Star key={s} className={`w-4 h-4 ${s <= Math.round(provider.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-[#33404f]/30'}`} />
                     ))}
                   </div>
-                  <span className="text-sm font-bold text-white" data-testid="provider-rating">{provider.rating?.toFixed(1) || 'Sin rating'}</span>
-                  <span className="text-sm text-white/80">({provider.total_reviews || 0} reseñas)</span>
+                  <span className="text-sm font-bold text-[#33404f]" data-testid="provider-rating">{provider.rating?.toFixed(1) || 'Sin rating'}</span>
+                  <span className="text-sm text-[#33404f]/70">({provider.total_reviews || 0} reseñas)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold text-white" data-testid="provider-name">{provider.business_name}</h1>
+                  <h1 className="text-3xl font-bold text-[#33404f]" data-testid="provider-name">{provider.business_name}</h1>
                   {provider.verified && <Shield className="w-6 h-6 text-yellow-300" />}
                   {provider.is_featured && (
                     <span className="bg-yellow-400/30 text-yellow-100 text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -222,7 +219,7 @@ export default function ProviderProfile() {
                     </span>
                   )}
                 </div>
-                <p className="font-bold text-white/90">{provider.comuna}</p>
+                <p className="font-bold text-[#33404f]">{provider.comuna}</p>
               </div>
             </div>
           </div>
