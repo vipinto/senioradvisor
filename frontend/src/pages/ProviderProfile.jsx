@@ -204,7 +204,7 @@ export default function ProviderProfile() {
                 <div className="flex items-center gap-2 mb-1">
                   <div className="flex items-center gap-0.5">
                     {[1,2,3,4,5].map(s => (
-                      <Star key={s} className={`w-4 h-4 ${s <= Math.round(provider.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-[#33404f]/30'}`} />
+                      <Star key={s} className={`w-4 h-4 ${s <= Math.round(provider.rating || 0) ? 'fill-[#33404f] text-[#33404f]' : 'text-[#33404f]/30'}`} />
                     ))}
                   </div>
                   <span className="text-sm font-bold text-[#33404f]" data-testid="provider-rating">{provider.rating?.toFixed(1) || 'Sin rating'}</span>
