@@ -642,7 +642,7 @@ const SearchPage = () => {
                       )}
 
                       {provider.services && provider.services.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-2">
+                        <div className="flex flex-wrap gap-2 mt-2">
                           {provider.services.slice(0, 3).map((service, idx) => {
                             // Formatear nombre del servicio sin guiones
                             const formatServiceName = (type) => {
@@ -656,7 +656,7 @@ const SearchPage = () => {
                             return (
                               <span
                                 key={idx}
-                                className="px-3 py-1 bg-[#33404f] text-[#00e7ff] text-sm rounded-full font-semibold"
+                                className="px-4 py-2 bg-gray-50 border border-gray-200 text-[#33404f] text-sm rounded-lg font-semibold"
                               >
                                 {formatServiceName(service.service_type)}
                               </span>
