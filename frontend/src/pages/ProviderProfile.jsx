@@ -201,16 +201,6 @@ export default function ProviderProfile() {
                 )}
               </div>
               <div className="pb-1">
-                {/* Rating arriba del nombre */}
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="flex items-center gap-0.5">
-                    {[1,2,3,4,5].map(s => (
-                      <Star key={s} className={`w-4 h-4 ${s <= Math.round(provider.rating || 0) ? 'fill-[#33404f] text-[#33404f]' : 'text-[#33404f]/30'}`} />
-                    ))}
-                  </div>
-                  <span className="text-sm font-bold text-[#33404f]" data-testid="provider-rating">{provider.rating?.toFixed(1) || 'Sin rating'}</span>
-                  <span className="text-sm text-[#33404f]/70">({provider.total_reviews || 0} reseñas)</span>
-                </div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-3xl font-bold text-[#33404f]" data-testid="provider-name">{provider.business_name}</h1>
                   {provider.verified && <Shield className="w-6 h-6 text-yellow-300" />}
@@ -231,6 +221,19 @@ export default function ProviderProfile() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
+
+            {/* Rating */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-0.5">
+                  {[1,2,3,4,5].map(s => (
+                    <Star key={s} className={`w-5 h-5 ${s <= Math.round(provider.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+                  ))}
+                </div>
+                <span className="text-lg font-bold text-[#33404f]" data-testid="provider-rating">{provider.rating?.toFixed(1) || 'Sin rating'}</span>
+                <span className="text-[#33404f]/60">({provider.total_reviews || 0} reseñas)</span>
+              </div>
+            </div>
 
             {/* Photo Gallery */}
             {provider.gallery?.length > 0 && (
