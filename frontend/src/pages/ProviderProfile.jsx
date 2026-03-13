@@ -308,37 +308,6 @@ export default function ProviderProfile() {
               </div>
             )}
 
-            {/* Services */}
-            {provider.services?.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <h2 className="text-xl font-bold mb-4">Precio</h2>
-                {provider.services.map((s, i) => {
-                  // Formatear nombre del servicio sin guiones
-                  const formatServiceName = (type) => {
-                    const names = {
-                      'residencias': 'Residencias',
-                      'cuidado-domicilio': 'Cuidado a Domicilio',
-                      'salud-mental': 'Salud Mental'
-                    };
-                    return names[type] || type;
-                  };
-                  return (
-                    <div key={i} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl mb-3">
-                      <div>
-                        <span className="font-semibold text-[#33404f]">{formatServiceName(s.service_type)}</span>
-                        {s.description && <p className="text-sm text-gray-500 mt-0.5">{s.description}</p>}
-                        {s.rules && <p className="text-xs text-gray-400 mt-1">{s.rules}</p>}
-                      </div>
-                      <div className="text-right">
-                        <span className="text-[#33404f] font-bold text-lg">Desde ${s.price_from?.toLocaleString('es-CL')}</span>
-                        {s.availability && <p className="text-xs text-gray-400">{s.availability}</p>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
             {/* Service Zones - Comunas and Walking Zones */}
             {(provider.coverage_radius_km || provider.service_comunas?.length > 0 || provider.walking_zones?.length > 0) && (
               <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="provider-service-zones">
@@ -506,8 +475,33 @@ export default function ProviderProfile() {
             </div>
           </div>
 
-          {/* Sidebar - Contact */}
+          {/* Sidebar */}
           <div className="space-y-6">
+            {/* Precio */}
+            {provider.services?.length > 0 && (
+              <div className="bg-white rounded-2xl p-6 shadow-sm">
+                <h3 className="font-bold text-lg mb-4">Precio</h3>
+                {provider.services.map((s, i) => {
+                  const formatServiceName = (type) => {
+                    const names = {
+                      'residencias': 'Residencias',
+                      'cuidado-domicilio': 'Cuidado a Domicilio',
+                      'salud-mental': 'Salud Mental'
+                    };
+                    return names[type] || type;
+                  };
+                  return (
+                    <div key={i} className="p-3 bg-gray-50 rounded-xl mb-3 last:mb-0">
+                      <span className="font-semibold text-[#33404f] text-sm">{formatServiceName(s.service_type)}</span>
+                      {s.description && <p className="text-xs text-gray-500 mt-0.5">{s.description}</p>}
+                      <span className="text-[#33404f] font-bold text-lg block mt-1">Desde ${s.price_from?.toLocaleString('es-CL')}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Contacto */}
             <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-24">
               <h3 className="font-bold text-lg mb-4">Contacto</h3>
 
