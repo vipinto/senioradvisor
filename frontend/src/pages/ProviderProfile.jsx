@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Star, Shield, MapPin, Phone, MessageSquare, Heart, Lock, Camera, X, Dog, CalendarPlus, Crown, Home, PawPrint, Briefcase, Clock, UserCircle, Send, CheckCircle, Loader2 } from 'lucide-react';
+import { Star, Shield, MapPin, Phone, MessageSquare, Heart, Lock, Camera, X, CalendarPlus, Crown, Home, Clock, UserCircle, Send, CheckCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import api, { API_BASE } from '@/lib/api';
@@ -48,7 +48,6 @@ const StarRating = ({ value, onChange, size = 'md' }) => {
   );
 };
 
-const PET_SIZE_LABELS = { pequeno: 'Pequeno', mediano: 'Mediano', grande: 'Grande' };
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const getPhotoUrl = (path) => {
@@ -286,31 +285,6 @@ export default function ProviderProfile() {
                     </div>
                   )}
                 </div>
-              </div>
-            )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {provider.personal_info.animal_experience && (
-                  <div className="mt-4 p-3 bg-amber-50 rounded-xl">
-                    <div className="flex items-start gap-3">
-                      <Briefcase className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-xs text-gray-500 font-medium">Experiencia con Animales</p>
-                        <p className="text-sm text-gray-800">{provider.personal_info.animal_experience}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {provider.personal_info.additional_info && (
-                  <div className="mt-3 p-3 bg-gray-50 rounded-xl">
-                    <p className="text-xs text-gray-500 font-medium mb-1">Información Adicional</p>
-                    <p className="text-sm text-gray-800">{provider.personal_info.additional_info}</p>
-                  </div>
-                )}
               </div>
             )}
 
