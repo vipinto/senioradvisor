@@ -16,9 +16,9 @@ class SubscriptionStatus(str, Enum):
     PENDING = "pending"
 
 class ServiceType(str, Enum):
-    WALKING = "paseo"
-    DAYCARE = "petsitter"
-    BOARDING = "alojamiento"
+    RESIDENCIAS = "residencias"
+    CUIDADO_DOMICILIO = "cuidado-domicilio"
+    SALUD_MENTAL = "salud-mental"
 
 class RequestStatus(str, Enum):
     NEW = "new"
