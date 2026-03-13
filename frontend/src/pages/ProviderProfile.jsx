@@ -232,6 +232,32 @@ export default function ProviderProfile() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
 
+            {/* Photo Gallery */}
+            {provider.gallery?.length > 0 && (
+              <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="provider-gallery-public">
+                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                  <Camera className="w-5 h-5 text-[#00e7ff]" />
+                  Galería
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {provider.gallery.map((photo, index) => (
+                    <div 
+                      key={photo.photo_id} 
+                      className="aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 cursor-pointer hover:opacity-90 transition-opacity"
+                      onClick={() => window.open(getPhotoUrl(photo.url), '_blank')}
+                    >
+                      <img
+                        src={getPhotoUrl(photo.thumbnail_url || photo.url)}
+                        alt={`Foto ${index + 1}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Amenidades / Servicios */}
             <AmenitiesDisplay amenities={provider.amenities} />
 
@@ -278,32 +304,6 @@ export default function ProviderProfile() {
                       </div>
                     </div>
                   )}
-                </div>
-              </div>
-            )}
-
-            {/* Photo Gallery */}
-            {provider.gallery?.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="provider-gallery-public">
-                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Camera className="w-5 h-5 text-[#00e7ff]" />
-                  Galería
-                </h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {provider.gallery.map((photo, index) => (
-                    <div 
-                      key={photo.photo_id} 
-                      className="aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 cursor-pointer hover:opacity-90 transition-opacity"
-                      onClick={() => window.open(getPhotoUrl(photo.url), '_blank')}
-                    >
-                      <img
-                        src={getPhotoUrl(photo.thumbnail_url || photo.url)}
-                        alt={`Foto ${index + 1}`}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-                  ))}
                 </div>
               </div>
             )}
