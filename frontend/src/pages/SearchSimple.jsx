@@ -642,15 +642,26 @@ const SearchPage = () => {
                       )}
 
                       {provider.services && provider.services.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {provider.services.slice(0, 3).map((service, idx) => (
-                            <span
-                              key={idx}
-                              className="px-2 py-0.5 bg-cyan-50 text-[#00e7ff] text-xs rounded-full font-medium capitalize"
-                            >
-                              {service.service_type}
-                            </span>
-                          ))}
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {provider.services.slice(0, 3).map((service, idx) => {
+                            // Formatear nombre del servicio sin guiones
+                            const formatServiceName = (type) => {
+                              const names = {
+                                'residencias': 'Residencias',
+                                'cuidado-domicilio': 'Cuidado a Domicilio',
+                                'salud-mental': 'Salud Mental'
+                              };
+                              return names[type] || type;
+                            };
+                            return (
+                              <span
+                                key={idx}
+                                className="px-3 py-1 bg-[#33404f] text-[#00e7ff] text-sm rounded-full font-semibold"
+                              >
+                                {formatServiceName(service.service_type)}
+                              </span>
+                            );
+                          })}
                         </div>
                       )}
 
