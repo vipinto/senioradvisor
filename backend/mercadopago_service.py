@@ -1,5 +1,5 @@
 """
-Mercado Pago Payment Service for U-CAN
+Mercado Pago Payment Service for SeniorAdvisor
 """
 import mercadopago
 import os
@@ -39,8 +39,8 @@ class MercadoPagoService:
                 "items": [
                     {
                         "id": subscription_id,
-                        "title": f"U-CAN - {plan_name}",
-                        "description": f"Suscripción {plan_name} - Acceso a contactos de proveedores",
+                        "title": f"SeniorAdvisor - {plan_name}",
+                        "description": f"Suscripción {plan_name} - Plan para proveedores de servicios",
                         "quantity": 1,
                         "currency_id": "CLP",
                         "unit_price": amount
@@ -56,7 +56,7 @@ class MercadoPagoService:
                 },
                 "auto_return": "approved",
                 "notification_url": notification_url,
-                "statement_descriptor": "U-CAN SUSCRIPCION"
+                "statement_descriptor": "SENIORADVISOR"
             }
             
             result = self.sdk.preference().create(preference_data)

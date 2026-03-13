@@ -41,7 +41,7 @@ const PaymentResult = ({ status }) => {
           icon: <CheckCircle className="w-24 h-24 text-green-500" />,
           title: '¡Pago Exitoso!',
           message: subscriptionActive 
-            ? 'Tu suscripción está activa. Ya puedes ver los contactos de los proveedores.'
+            ? 'Tu suscripción Premium está activa. Tu servicio ahora aparece destacado en las búsquedas.'
             : 'Tu pago está siendo procesado. En unos momentos tu suscripción estará activa.',
           bgColor: 'bg-green-50',
           borderColor: 'border-green-200'
@@ -104,16 +104,16 @@ const PaymentResult = ({ status }) => {
         <div className="space-y-3">
           {status === 'success' && (
             <Button
-              onClick={() => navigate('/search')}
+              onClick={() => navigate('/provider/dashboard')}
               className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6"
             >
-              Buscar Cuidadores
+              Ir a Mi Panel
             </Button>
           )}
           
           {status === 'failure' && (
             <Button
-              onClick={() => navigate('/planes')}
+              onClick={() => navigate('/provider/dashboard')}
               className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6"
             >
               Intentar de Nuevo

@@ -1,44 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { Crown, Check, Lock, MessageCircle, Eye, Search, Users } from 'lucide-react';
+import { Crown, Check, Star, Users, BarChart3, Shield, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 
-const SubscriptionCard = ({ userType = 'client', hasSubscription = false, onSubscriptionChange }) => {
-  const [plan, setPlan] = useState(null);
+const SubscriptionCard = ({ hasSubscription = false }) => {
+  const [plans, setPlans] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState(null);
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(false);
 
   useEffect(() => {
-    loadPlan();
-  }, [userType]);
+    loadPlans();
+  }, []);
 
-  const loadPlan = async () => {
+  const loadPlans = async () => {
     try {
-      const role = userType === 'client' ? 'client' : 'provider';
-      const res = await api.get(`/subscription/plans?role=${role}`);
-      const activePlan = res.data.find(p => p.active) || res.data[0];
-      setPlan(activePlan);
+      const res = await api.get('/subscription/plans?role=provider');
+      setPlans(res.data);
+      if (res.data.length > 0) {
+        setSelectedPlan(res.data[0].plan_id);
+      }
     } catch (error) {
-      console.error('Error loading plan:', error);
+      console.error('Error loading plans:', error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleSubscribe = async () => {
-    if (!plan) return;
+    if (!selectedPlan) return;
     
     setSubscribing(true);
     try {
       const response = await api.post('/subscription/create-payment', {
-        plan_id: plan.plan_id
+        plan_id: selectedPlan
       });
       
       if (response.data.checkout_url) {
         window.location.href = response.data.checkout_url;
-      } else if (response.data.sandbox_url) {
-        window.location.href = response.data.sandbox_url;
       } else {
         toast.error('Error al crear el pago');
       }
@@ -51,7 +51,7 @@ const SubscriptionCard = ({ userType = 'client', hasSubscription = false, onSubs
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-br from-red-50 to-white rounded-2xl p-6 border-2 border-dashed border-gray-200">
+      <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
         <div className="animate-pulse space-y-3">
           <div className="h-6 bg-gray-200 rounded w-1/2"></div>
           <div className="h-4 bg-gray-100 rounded w-3/4"></div>
@@ -68,137 +68,113 @@ const SubscriptionCard = ({ userType = 'client', hasSubscription = false, onSubs
             <Crown className="w-5 h-5 text-green-600" />
           </div>
           <div>
-            <h3 className="font-bold text-green-800">Cuenta Premium Activa</h3>
-            <p className="text-sm text-green-600">Tienes acceso completo</p>
+            <h3 className="font-bold text-green-800 text-lg">Plan Premium Activo</h3>
+            <p className="text-sm text-green-600">Tu servicio está destacado en búsquedas</p>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          {userType === 'client' ? (
-            <>
-              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs flex items-center gap-1">
-                <Eye className="w-3 h-3" /> Ver datos de contacto
-              </span>
-              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs flex items-center gap-1">
-                <MessageCircle className="w-3 h-3" /> Mensajería
-              </span>
-              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs flex items-center gap-1">
-                <Search className="w-3 h-3" /> Contactar cuidadores
-              </span>
-            </>
-          ) : (
-            <>
-              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs flex items-center gap-1">
-                <Users className="w-3 h-3" /> Ver solicitudes de clientes
-              </span>
-              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs flex items-center gap-1">
-                <MessageCircle className="w-3 h-3" /> Enviar propuestas
-              </span>
-              <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs flex items-center gap-1">
-                <Crown className="w-3 h-3" /> SOS Emergencia
-              </span>
-            </>
-          )}
+          <span className="px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-xs flex items-center gap-1">
+            <Star className="w-3 h-3" /> Perfil destacado
+          </span>
+          <span className="px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-xs flex items-center gap-1">
+            <Users className="w-3 h-3" /> Solicitudes ilimitadas
+          </span>
+          <span className="px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-xs flex items-center gap-1">
+            <BarChart3 className="w-3 h-3" /> Estadísticas avanzadas
+          </span>
+          <span className="px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-xs flex items-center gap-1">
+            <Shield className="w-3 h-3" /> Soporte prioritario
+          </span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-br from-red-50 to-white rounded-2xl p-6 border-2 border-[#00e7ff]" data-testid="subscription-cta">
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div className="flex-1 min-w-[200px]">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-              <Crown className="w-5 h-5 text-[#00e7ff]" />
-            </div>
-            <div>
-              <h3 className="font-bold text-[#33404f]">
-                {userType === 'client' ? '¡Desbloquea el contacto!' : '¡Accede a más clientes!'}
-              </h3>
-              <p className="text-2xl font-bold text-[#00e7ff]">
-                ${plan?.price_clp?.toLocaleString('es-CL') || '9.990'}/mes
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-2 mb-4">
-            {userType === 'client' ? (
-              <>
-                <p className="text-sm text-gray-600 flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-gray-400" />
-                  <span>Actualmente no puedes ver datos de contacto</span>
-                </p>
-                <p className="text-sm font-medium text-gray-800">Con Premium podrás:</p>
-                <ul className="space-y-1 text-sm text-gray-600">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#00e7ff]" />
-                    Ver teléfono, WhatsApp y dirección de cuidadores
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#00e7ff]" />
-                    Enviar mensajes directos
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#00e7ff]" />
-                    Contactar cuidadores ilimitadamente
-                  </li>
-                </ul>
-              </>
-            ) : (
-              <>
-                <p className="text-sm text-gray-600 flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-gray-400" />
-                  <span>Puedes responder mensajes, pero no enviar propuestas</span>
-                </p>
-                <p className="text-sm font-medium text-gray-800">Con Premium podras:</p>
-                <ul className="space-y-1 text-sm text-gray-600">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#00e7ff]" />
-                    Ver solicitudes de clientes que buscan cuidador
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#00e7ff]" />
-                    Enviar propuestas a clientes directamente
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#00e7ff]" />
-                    Acceder al panel de oportunidades
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#00e7ff]" />
-                    Boton SOS emergencia veterinaria
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#00e7ff]" />
-                    Perfil destacado en resultados de busqueda
-                  </li>
-                </ul>
-              </>
-            )}
-          </div>
+    <div className="bg-gradient-to-br from-[#00e7ff]/5 to-white rounded-2xl p-6 border-2 border-[#00e7ff]" data-testid="subscription-cta">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-12 h-12 bg-[#00e7ff]/10 rounded-full flex items-center justify-center">
+          <Crown className="w-6 h-6 text-[#00e7ff]" />
         </div>
-
-        <div className="w-full sm:w-auto">
-          <Button
-            onClick={handleSubscribe}
-            disabled={subscribing}
-            className="w-full sm:w-auto px-8 py-6 text-lg font-bold bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
-            data-testid="subscribe-now-btn"
-          >
-            {subscribing ? (
-              <span className="flex items-center gap-2">
-                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                Procesando...
-              </span>
-            ) : (
-              <>
-                <Crown className="w-5 h-5 mr-2" />
-                Suscribirme Ahora
-              </>
-            )}
-          </Button>
+        <div>
+          <h3 className="font-bold text-[#33404f] text-lg">Destaca tu servicio con Premium</h3>
+          <p className="text-sm text-gray-500">Llega a más familias que buscan servicios como el tuyo</p>
         </div>
       </div>
+
+      {/* Plan selection */}
+      {plans.length > 0 && (
+        <div className="grid sm:grid-cols-3 gap-3 mb-4">
+          {plans.map((plan) => {
+            const isSelected = selectedPlan === plan.plan_id;
+            const monthlyPrice = Math.round(plan.price_clp / plan.duration_months);
+            return (
+              <button
+                key={plan.plan_id}
+                onClick={() => setSelectedPlan(plan.plan_id)}
+                className={`p-4 rounded-xl border-2 text-left transition-all ${
+                  isSelected 
+                    ? 'border-[#00e7ff] bg-[#00e7ff]/5 shadow-md' 
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+                data-testid={`plan-${plan.plan_id}`}
+              >
+                <p className="font-bold text-[#33404f] text-sm">{plan.name}</p>
+                <p className="text-xl font-bold text-[#00e7ff] mt-1">
+                  ${plan.price_clp.toLocaleString('es-CL')}
+                </p>
+                {plan.duration_months > 1 && (
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    ${monthlyPrice.toLocaleString('es-CL')}/mes
+                  </p>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Benefits */}
+      <div className="space-y-2 mb-4">
+        <p className="text-sm font-semibold text-[#33404f]">Con Premium obtienes:</p>
+        <ul className="space-y-1.5 text-sm text-gray-600">
+          <li className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-[#00e7ff] shrink-0" />
+            Perfil destacado en resultados de búsqueda
+          </li>
+          <li className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-[#00e7ff] shrink-0" />
+            Recibir solicitudes de contacto ilimitadas
+          </li>
+          <li className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-[#00e7ff] shrink-0" />
+            Acceso a estadísticas avanzadas de tu perfil
+          </li>
+          <li className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-[#00e7ff] shrink-0" />
+            Soporte prioritario
+          </li>
+        </ul>
+      </div>
+
+      <Button
+        onClick={handleSubscribe}
+        disabled={subscribing || !selectedPlan}
+        className="w-full py-5 text-lg font-bold bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
+        data-testid="subscribe-now-btn"
+      >
+        {subscribing ? (
+          <span className="flex items-center gap-2">
+            <Loader2 className="w-5 h-5 animate-spin" />
+            Procesando...
+          </span>
+        ) : (
+          <>
+            <Crown className="w-5 h-5 mr-2" />
+            Suscribirme Ahora
+          </>
+        )}
+      </Button>
     </div>
   );
 };

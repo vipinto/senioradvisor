@@ -229,7 +229,7 @@ const ProviderDashboard = () => {
 
         {/* Subscription Card */}
         <div className="mb-6">
-          <SubscriptionCard userType="provider" hasSubscription={hasSubscription} />
+          <SubscriptionCard hasSubscription={hasSubscription} />
         </div>
 
         {/* Tabs Navigation */}

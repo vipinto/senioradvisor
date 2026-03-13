@@ -66,12 +66,12 @@ async def create_subscription_payment(payment_request: CreatePaymentRequest, req
     try:
         mp_service = get_mercadopago_service()
 
-        frontend_url = os.environ.get('CORS_ORIGINS', 'https://care-directory-dev.preview.emergentagent.com').split(',')[0]
+        frontend_url = os.environ.get('CORS_ORIGINS', 'https://senioradvisor.cl').split(',')[0]
         if frontend_url == '*':
-            frontend_url = 'https://care-directory-dev.preview.emergentagent.com'
+            frontend_url = 'https://senioradvisor.cl'
 
-        backend_url = request.base_url
-        notification_url = f"{str(backend_url).rstrip('/')}api/webhooks/mercadopago"
+        backend_url = str(request.base_url).rstrip('/')
+        notification_url = f"{backend_url}/api/webhooks/mercadopago"
 
         preference = mp_service.create_payment_preference(
             subscription_id=subscription_id,
@@ -292,7 +292,7 @@ async def get_subscription_invoices(request: Request):
         )
         invoice = {
             "subscription_id": sub.get("subscription_id"),
-            "plan_name": plan["name"] if plan else "Plan U-CAN",
+            "plan_name": plan["name"] if plan else "Plan SeniorAdvisor",
             "amount": plan["price_clp"] if plan else 9990,
             "status": sub.get("status", "unknown"),
             "start_date": sub.get("start_date").isoformat() if sub.get("start_date") else None,
