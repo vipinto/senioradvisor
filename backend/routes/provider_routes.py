@@ -657,7 +657,12 @@ async def search_providers(
         query["latitude"] = {"$gte": bounds_south, "$lte": bounds_north}
         query["longitude"] = {"$gte": bounds_west, "$lte": bounds_east}
 
+    import logging
+    logging.info(f"Provider search query: {query}")
+    
     providers = await db.providers.find(query, {"_id": 0}).skip(skip).limit(limit).to_list(limit)
+    
+    logging.info(f"Found {len(providers)} providers")
 
     if latitude and longitude and radius_km:
         filtered_providers = []

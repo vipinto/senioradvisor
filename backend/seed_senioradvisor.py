@@ -6,9 +6,16 @@ import uuid
 from datetime import datetime
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
-DB_NAME = os.getenv("DB_NAME", "senioradvisor")
+# Cargar variables de entorno
+load_dotenv(Path(__file__).parent / '.env')
+
+MONGO_URL = os.environ.get("MONGO_URL")
+DB_NAME = os.environ.get("DB_NAME", "senioradvisor")
+
+print(f"Conectando a DB: {DB_NAME}")
 
 # 10 Servicios de prueba con diferentes combinaciones de categorías
 SERVICIOS = [
