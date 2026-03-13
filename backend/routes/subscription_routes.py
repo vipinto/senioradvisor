@@ -66,9 +66,9 @@ async def create_subscription_payment(payment_request: CreatePaymentRequest, req
     try:
         mp_service = get_mercadopago_service()
 
-        frontend_url = os.environ.get('CORS_ORIGINS', 'https://repo-collab-1.preview.emergentagent.com').split(',')[0]
+        frontend_url = os.environ.get('CORS_ORIGINS', 'https://care-directory-dev.preview.emergentagent.com').split(',')[0]
         if frontend_url == '*':
-            frontend_url = 'https://repo-collab-1.preview.emergentagent.com'
+            frontend_url = 'https://care-directory-dev.preview.emergentagent.com'
 
         backend_url = request.base_url
         notification_url = f"{str(backend_url).rstrip('/')}api/webhooks/mercadopago"

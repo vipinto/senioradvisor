@@ -39,7 +39,7 @@ class TestGoogleOAuthRedirectFlow:
             f"{BASE_URL}/api/auth/google",
             json={
                 "code": "fake_auth_code_12345",
-                "redirect_uri": "https://repo-collab-1.preview.emergentagent.com/auth/google/callback"
+                "redirect_uri": "https://care-directory-dev.preview.emergentagent.com/auth/google/callback"
             },
             headers={"Content-Type": "application/json"}
         )

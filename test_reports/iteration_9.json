@@ -56,7 +56,7 @@
   "action_items": [],
 
   "critical_code_review_comments": [
-    "Google Maps API key needs domain authorization for https://repo-collab-1.preview.emergentagent.com - requires Google Cloud Console configuration"
+    "Google Maps API key needs domain authorization for https://care-directory-dev.preview.emergentagent.com - requires Google Cloud Console configuration"
   ],
 
   "updated_files": [

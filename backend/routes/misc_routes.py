@@ -212,7 +212,7 @@ async def get_sos_info(request: Request):
 async def create_request(request_data: RequestCreate, request: Request):
     """Create service request"""
     user = await get_current_user(request, db)
-    await require_subscription(user, db)
+    # Sin restricción de suscripción para clientes
 
     request_id = f"req_{uuid.uuid4().hex[:12]}"
     request_obj = {

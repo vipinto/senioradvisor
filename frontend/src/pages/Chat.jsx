@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import api, { API_BASE } from '@/lib/api';
-import SubscriptionCard from '@/components/SubscriptionCard';
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -274,35 +273,8 @@ const Chat = () => {
     );
   }
 
-  // Show subscription required message for non-subscribed clients only
-  // Free providers can still see and respond to client-initiated conversations
-  if (!user?.has_subscription && user?.role !== 'provider') {
-    return (
-      <div className="min-h-screen bg-gray-100 py-12" data-testid="chat-blocked">
-        <div className="max-w-2xl mx-auto px-4">
-          <div className="bg-white rounded-2xl p-8 shadow-lg text-center">
-            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Lock className="w-10 h-10 text-[#00e7ff]" />
-            </div>
-            <h1 className="text-2xl font-bold text-[#33404f] mb-4">
-              Mensajeria Bloqueada
-            </h1>
-            <p className="text-gray-600 mb-8">
-              Para enviar y recibir mensajes necesitas una suscripcion activa.
-              Como cliente, podras contactar cuidadores directamente.
-            </p>
-            <SubscriptionCard 
-              userType="client"
-              hasSubscription={false} 
-            />
-            <Link to="/dashboard" className="inline-block mt-6 text-gray-500 hover:text-gray-700">
-              Volver al panel
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Clientes pueden usar el chat sin restricción
+  // Proveedores gratuitos pueden ver y responder mensajes
 
   return (
     <div className="min-h-screen bg-gray-100" data-testid="chat-page">
@@ -313,7 +285,7 @@ const Chat = () => {
             <strong>Cuenta gratuita:</strong> Puedes responder mensajes de clientes que te contacten. Para enviar propuestas e iniciar conversaciones, actualiza a Premium.
           </p>
           <Link to="/provider/dashboard" className="text-sm font-bold text-[#00e7ff] hover:underline whitespace-nowrap ml-4">
-            Ver Premium $7.500/mes
+            Ver Premium
           </Link>
         </div>
       )}

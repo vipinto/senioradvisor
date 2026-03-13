@@ -136,7 +136,7 @@ async def check_favorite(provider_id: str, request: Request):
 async def upload_review_photo(file: UploadFile = File(...), request: Request = None):
     """Upload a photo for a review"""
     user = await get_current_user(request, db)
-    await require_subscription(user, db)
+    # Sin restricción de suscripción para clientes
 
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Solo se permiten imagenes")

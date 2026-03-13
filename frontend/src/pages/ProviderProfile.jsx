@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import api, { API_BASE } from '@/lib/api';
 import BookingForm from '@/components/BookingForm';
-import SubscriptionCard from '@/components/SubscriptionCard';
 
 // Mapa desactivado temporalmente
 const SafeMap = ({ lat, lng }) => {
@@ -256,69 +255,39 @@ export default function ProviderProfile() {
               <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="provider-personal-info">
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                   <UserCircle className="w-5 h-5 text-[#00e7ff]" />
-                  Más Sobre el Cuidador
+                  Más Información
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  {provider.personal_info.housing_type && (
+                  {provider.personal_info?.housing_type && (
                     <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
                       <Home className="w-5 h-5 text-[#00e7ff] mt-0.5 shrink-0" />
                       <div>
-                        <p className="text-xs text-gray-500 font-medium">Vivienda</p>
+                        <p className="text-xs text-gray-500 font-medium">Tipo de instalación</p>
                         <p className="text-sm text-gray-800 capitalize">{provider.personal_info.housing_type}</p>
                       </div>
                     </div>
                   )}
-                  {provider.personal_info.has_yard && (
-                    <div className="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
-                      <MapPin className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-xs text-gray-500 font-medium">Patio / Jardín</p>
-                        <p className="text-sm text-gray-800">{provider.personal_info.yard_description || 'Sí, tiene patio'}</p>
-                      </div>
-                    </div>
-                  )}
-                  {provider.personal_info.has_own_pets && (
-                    <div className="flex items-start gap-3 p-3 bg-cyan-50 rounded-xl">
-                      <PawPrint className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-xs text-gray-500 font-medium">Mascotas Propias</p>
-                        <p className="text-sm text-gray-800">{provider.personal_info.own_pets_description || 'Sí, tiene mascotas'}</p>
-                      </div>
-                    </div>
-                  )}
-                  {provider.personal_info.daily_availability && (
+                  {provider.personal_info?.daily_availability && (
                     <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
                       <Clock className="w-5 h-5 text-[#00e7ff] mt-0.5 shrink-0" />
                       <div>
-                        <p className="text-xs text-gray-500 font-medium">Disponibilidad</p>
+                        <p className="text-xs text-gray-500 font-medium">Horario de atención</p>
                         <p className="text-sm text-gray-800">{provider.personal_info.daily_availability}</p>
                       </div>
                     </div>
                   )}
-                </div>
-
-                {/* Yard Photos */}
-                {provider.personal_info.yard_photos?.length > 0 && (
-                  <div className="mt-4" data-testid="yard-photos-public">
-                    <p className="text-xs text-gray-500 font-medium mb-2 flex items-center gap-1"><MapPin className="w-3.5 h-3.5 text-green-600" /> Fotos del patio</p>
-                    <div className="flex gap-2">
-                      {provider.personal_info.yard_photos.map((photo, i) => (
-                        <div key={photo.photo_id} className="w-28 h-28 rounded-xl overflow-hidden bg-gray-100 cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(getPhotoUrl(photo.url), '_blank')}>
-                          <img src={getPhotoUrl(photo.thumbnail_url || photo.url)} alt={`Patio ${i+1}`} className="w-full h-full object-cover" loading="lazy" />
-                        </div>
-                      ))}
+                  {provider.personal_info?.bio && (
+                    <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl sm:col-span-2">
+                      <UserCircle className="w-5 h-5 text-[#00e7ff] mt-0.5 shrink-0" />
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium">Descripción adicional</p>
+                        <p className="text-sm text-gray-800">{provider.personal_info.bio}</p>
+                      </div>
                     </div>
-                  </div>
-                )}
-
-                {/* Pets Photos */}
-                {provider.personal_info.pets_photos?.length > 0 && (
-                  <div className="mt-4" data-testid="pets-photos-public">
-                    <p className="text-xs text-gray-500 font-medium mb-2 flex items-center gap-1"><PawPrint className="w-3.5 h-3.5 text-blue-600" /> Mascotas del cuidador</p>
-                    <div className="flex gap-2">
-                      {provider.personal_info.pets_photos.map((photo, i) => (
-                        <div key={photo.photo_id} className="w-28 h-28 rounded-xl overflow-hidden bg-gray-100 cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(getPhotoUrl(photo.url), '_blank')}>
-                          <img src={getPhotoUrl(photo.thumbnail_url || photo.url)} alt={`Mascota ${i+1}`} className="w-full h-full object-cover" loading="lazy" />
+                  )}
+                </div>
+              </div>
+            )}
                         </div>
                       ))}
                     </div>
@@ -623,17 +592,17 @@ export default function ProviderProfile() {
                   </p>
                 </div>
 
-              ) : provider.viewer_has_subscription ? (
-                /* Premium client: can send contact request */
+              ) : user ? (
+                /* Cliente logueado: puede enviar solicitud de contacto */
                 <div className="space-y-3" data-testid="contact-request-form">
                   <p className="text-sm text-gray-600 mb-2">
-                    Envía una solicitud de contacto. Si el cuidador acepta, se desbloqueará el chat.
+                    Envía una solicitud de contacto. Cuando el servicio acepte, se desbloqueará el chat.
                   </p>
                   <textarea
                     value={contactMessage}
                     onChange={e => setContactMessage(e.target.value)}
-                    placeholder="Hola, me gustaria contactarte para un servicio..."
-                    className="w-full border rounded-xl p-3 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
+                    placeholder="Hola, me gustaría contactarte para un servicio..."
+                    className="w-full border-2 border-gray-200 rounded-xl p-4 text-base min-h-[100px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
                     data-testid="contact-message-input"
                   />
                   <Button
@@ -642,9 +611,9 @@ export default function ProviderProfile() {
                       try {
                         await api.post('/contact-requests', {
                           provider_user_id: provider.user_id,
-                          message: contactMessage || 'Hola, me gustaria contactarte para un servicio.'
+                          message: contactMessage || 'Hola, me gustaría contactarte para un servicio.'
                         });
-                        toast.success('Solicitud enviada! Te notificaremos cuando responda.');
+                        toast.success('¡Solicitud enviada! Te notificaremos cuando responda.');
                         loadProvider();
                       } catch (e) {
                         toast.error(e.response?.data?.detail || 'Error al enviar solicitud');
@@ -653,7 +622,7 @@ export default function ProviderProfile() {
                       }
                     }}
                     disabled={sendingContactRequest}
-                    className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-5 text-base"
+                    className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-5 text-lg font-bold"
                     data-testid="send-contact-request-btn"
                   >
                     {sendingContactRequest ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Send className="w-5 h-5 mr-2" />}
@@ -662,23 +631,24 @@ export default function ProviderProfile() {
                 </div>
 
               ) : (
-                /* Free client or not logged in: show subscription prompt */
-                <div className="space-y-4" data-testid="contact-blocked">
+                /* No logueado: mostrar botón de login */
+                <div className="space-y-4" data-testid="contact-login-required">
                   <div className="text-center">
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
                       <Lock className="w-8 h-8 text-gray-400" />
                     </div>
-                    <p className="text-sm text-gray-500 mb-2">
-                      {user ? 'Con la suscripcion Premium puedes contactar cuidadores directamente' : 'Inicia sesion para contactar a este cuidador'}
+                    <p className="text-base text-gray-600 mb-4">
+                      Inicia sesión para contactar a este servicio
                     </p>
-                    {!user && (
-                      <Link to="/login">
-                        <Button className="w-full mb-3" variant="outline">Iniciar Sesion</Button>
-                      </Link>
-                    )}
-                    {user && <p className="text-xs text-gray-400 mb-3">Tambien puedes publicar una solicitud gratuita y esperar ofertas de cuidadores</p>}
+                    <Link to="/login">
+                      <Button className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-4 text-lg font-bold">
+                        Iniciar Sesión
+                      </Button>
+                    </Link>
+                    <p className="text-sm text-gray-500 mt-3">
+                      ¿No tienes cuenta? <Link to="/register" className="text-[#00e7ff] hover:underline font-semibold">Regístrate gratis</Link>
+                    </p>
                   </div>
-                  {user && <SubscriptionCard userType="client" hasSubscription={false} />}
                 </div>
               )}
             </div>

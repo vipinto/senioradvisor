@@ -728,10 +728,11 @@ async def search_providers(
         provider["is_featured"] = is_verified and is_subscribed
         provider["is_verified_only"] = is_verified and not is_subscribed
 
-        provider["phone"] = None
-        provider["whatsapp"] = None
-        provider["address"] = None
-        provider["full_name_hidden"] = not has_subscription
+        # Clientes ven toda la información sin restricción
+        # provider["phone"] = None
+        # provider["whatsapp"] = None
+        # provider["address"] = None
+        provider["full_name_hidden"] = False  # Siempre mostrar nombre completo
 
     def sort_key(p):
         if p.get("is_featured"):
@@ -807,20 +808,13 @@ async def get_provider(provider_id: str, request: Request):
         {"_id": 0},
     )
     provider["is_featured"] = provider.get("verified", False) and provider_sub is not None
-    provider["viewer_has_subscription"] = has_subscription
+    provider["viewer_has_subscription"] = True  # Clientes siempre ven todo
     provider["viewer_is_connected"] = is_connected
     provider["viewer_has_pending_request"] = has_pending_request
 
-    if not is_connected:
-        provider["phone"] = None
-        provider["whatsapp"] = None
-        provider["address"] = None
-        provider["email"] = None
-        provider["contact_blocked"] = True
-        provider["contact_message"] = "Los datos de contacto estarán disponibles cuando el cuidador acepte tu solicitud"
-    else:
-        provider["contact_blocked"] = False
-        provider["contact_message"] = None
+    # Clientes ven toda la información de contacto sin restricción
+    provider["contact_blocked"] = False
+    provider["contact_message"] = None
 
     provider["full_name_hidden"] = False
 
