@@ -483,23 +483,23 @@ export default function ProviderProfile() {
                 <div className="flex items-center justify-center gap-5">
                   {provider.social_links.instagram && (
                     <a href={provider.social_links.instagram} target="_blank" rel="noopener noreferrer" 
-                       className="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#00e7ff]/10 transition-colors"
+                       className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
                        data-testid="social-instagram">
-                      <Instagram className="w-5 h-5 text-[#33404f]" />
+                      <Instagram className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
                     </a>
                   )}
                   {provider.social_links.facebook && (
                     <a href={provider.social_links.facebook} target="_blank" rel="noopener noreferrer"
-                       className="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#00e7ff]/10 transition-colors"
+                       className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
                        data-testid="social-facebook">
-                      <Facebook className="w-5 h-5 text-[#33404f]" />
+                      <Facebook className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
                     </a>
                   )}
                   {provider.social_links.website && (
                     <a href={provider.social_links.website} target="_blank" rel="noopener noreferrer"
-                       className="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#00e7ff]/10 transition-colors"
+                       className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
                        data-testid="social-website">
-                      <Globe className="w-5 h-5 text-[#33404f]" />
+                      <Globe className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
                     </a>
                   )}
                 </div>
