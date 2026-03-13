@@ -50,21 +50,21 @@ const Home = () => {
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-white flex items-center justify-center mb-3">
+                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-[#00e7ff] flex items-center justify-center mb-3">
                       <HomeIcon className="w-9 h-9 text-[#33404f]" />
                     </div>
                     <p className="font-bold text-2xl uppercase tracking-widest mb-1.5">Confort</p>
                     <p className="opacity-85 text-sm leading-relaxed">Espacios diseñados para su bienestar, con todas las comodidades y atención personalizada que necesitan.</p>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-white flex items-center justify-center mb-3">
+                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-[#00e7ff] flex items-center justify-center mb-3">
                       <Heart className="w-9 h-9 text-[#33404f]" />
                     </div>
                     <p className="font-bold text-2xl uppercase tracking-widest mb-1.5">Cariño</p>
                     <p className="opacity-85 text-sm leading-relaxed">Profesionales dedicados que brindan atención con amor y respeto, como parte de la familia.</p>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-white flex items-center justify-center mb-3">
+                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-[#00e7ff] flex items-center justify-center mb-3">
                       <Brain className="w-9 h-9 text-[#33404f]" />
                     </div>
                     <p className="font-bold text-2xl uppercase tracking-widest mb-1.5">Bienestar</p>
