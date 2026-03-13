@@ -46,7 +46,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-12" data-testid="navbar-logo" />
+            <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-16" data-testid="navbar-logo" />
           </Link>
 
           {/* Desktop Navigation */}
