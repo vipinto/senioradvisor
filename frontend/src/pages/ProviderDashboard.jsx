@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Star, MessageSquare, Settings, Calendar as CalendarIcon, Shield, Eye, Phone, Users, ChevronDown, ChevronUp, CalendarCheck, ListChecks, Camera, MapPin, Lock, Clock, UserCircle, Home, Briefcase, X, ImagePlus, Inbox, CheckCircle, XCircle } from 'lucide-react';
+import { Star, MessageSquare, Settings, Calendar as CalendarIcon, Shield, Eye, Phone, Users, ChevronDown, ChevronUp, CalendarCheck, ListChecks, Camera, MapPin, Lock, Clock, UserCircle, Home, Briefcase, X, ImagePlus, Inbox, CheckCircle, XCircle, Instagram, Facebook, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
@@ -48,6 +48,8 @@ const ProviderDashboard = () => {
   const [editingServices, setEditingServices] = useState(false);
   const [amenities, setAmenities] = useState([]);
   const [savingAmenities, setSavingAmenities] = useState(false);
+  const [socialLinks, setSocialLinks] = useState({ instagram: '', facebook: '', website: '' });
+  const [savingSocial, setSavingSocial] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
@@ -70,6 +72,7 @@ const ProviderDashboard = () => {
       setAlwaysActive(p.always_active !== false);
       setAvailableDates((p.available_dates || []).map(d => new Date(d)));
       setAmenities(p.amenities || []);
+      setSocialLinks(p.social_links || { instagram: '', facebook: '', website: '' });
       try {
         const revRes = await api.get(`/providers/${p.provider_id}/reviews`);
         setReviews(revRes.data);
@@ -470,6 +473,68 @@ const ProviderDashboard = () => {
             >
               {savingAmenities ? 'Guardando...' : 'Guardar Servicios'}
             </Button>
+
+            {/* Redes Sociales */}
+            <div className="mt-8 pt-6 border-t border-gray-200">
+              <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
+                <Globe className="w-5 h-5 text-[#00e7ff]" />
+                Redes Sociales
+              </h2>
+              <p className="text-sm text-gray-500 mb-4">Agrega tus redes sociales para que aparezcan en tu perfil público.</p>
+              
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <Instagram className="w-5 h-5 text-[#33404f] shrink-0" />
+                  <Input
+                    placeholder="https://instagram.com/tu-residencia"
+                    value={socialLinks.instagram || ''}
+                    onChange={(e) => setSocialLinks(prev => ({ ...prev, instagram: e.target.value }))}
+                    className="flex-1"
+                    data-testid="social-input-instagram"
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <Facebook className="w-5 h-5 text-[#33404f] shrink-0" />
+                  <Input
+                    placeholder="https://facebook.com/tu-residencia"
+                    value={socialLinks.facebook || ''}
+                    onChange={(e) => setSocialLinks(prev => ({ ...prev, facebook: e.target.value }))}
+                    className="flex-1"
+                    data-testid="social-input-facebook"
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <Globe className="w-5 h-5 text-[#33404f] shrink-0" />
+                  <Input
+                    placeholder="https://tu-sitio-web.cl"
+                    value={socialLinks.website || ''}
+                    onChange={(e) => setSocialLinks(prev => ({ ...prev, website: e.target.value }))}
+                    className="flex-1"
+                    data-testid="social-input-website"
+                  />
+                </div>
+              </div>
+
+              <Button
+                onClick={async () => {
+                  setSavingSocial(true);
+                  try {
+                    await api.put('/providers/my-profile', { social_links: socialLinks });
+                    toast.success('Redes sociales actualizadas');
+                    setProvider(prev => ({ ...prev, social_links: socialLinks }));
+                  } catch (e) {
+                    toast.error('Error al guardar redes sociales');
+                  } finally {
+                    setSavingSocial(false);
+                  }
+                }}
+                disabled={savingSocial}
+                className="w-full mt-4 py-4 text-base font-bold bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
+                data-testid="save-social-btn"
+              >
+                {savingSocial ? 'Guardando...' : 'Guardar Redes Sociales'}
+              </Button>
+            </div>
           </div>
         )}
 

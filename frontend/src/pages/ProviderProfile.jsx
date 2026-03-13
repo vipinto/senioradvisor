@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Star, Shield, MapPin, Phone, MessageSquare, Heart, Lock, Camera, X, CalendarPlus, Crown, Home, Clock, UserCircle, Send, CheckCircle, Loader2 } from 'lucide-react';
+import { Star, Shield, MapPin, Phone, MessageSquare, Heart, Lock, Camera, X, CalendarPlus, Crown, Home, Clock, UserCircle, Send, CheckCircle, Loader2, Instagram, Facebook, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import api, { API_BASE } from '@/lib/api';
@@ -477,6 +477,35 @@ export default function ProviderProfile() {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Redes Sociales */}
+            {provider.social_links && (provider.social_links.instagram || provider.social_links.facebook || provider.social_links.website) && (
+              <div className="bg-white rounded-2xl p-5 shadow-sm" data-testid="provider-social-links">
+                <div className="flex items-center justify-center gap-5">
+                  {provider.social_links.instagram && (
+                    <a href={provider.social_links.instagram} target="_blank" rel="noopener noreferrer" 
+                       className="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#00e7ff]/10 transition-colors"
+                       data-testid="social-instagram">
+                      <Instagram className="w-5 h-5 text-[#33404f]" />
+                    </a>
+                  )}
+                  {provider.social_links.facebook && (
+                    <a href={provider.social_links.facebook} target="_blank" rel="noopener noreferrer"
+                       className="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#00e7ff]/10 transition-colors"
+                       data-testid="social-facebook">
+                      <Facebook className="w-5 h-5 text-[#33404f]" />
+                    </a>
+                  )}
+                  {provider.social_links.website && (
+                    <a href={provider.social_links.website} target="_blank" rel="noopener noreferrer"
+                       className="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#00e7ff]/10 transition-colors"
+                       data-testid="social-website">
+                      <Globe className="w-5 h-5 text-[#33404f]" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Precio */}
             {provider.services?.length > 0 && (
               <div className="bg-white rounded-2xl p-6 shadow-sm">
