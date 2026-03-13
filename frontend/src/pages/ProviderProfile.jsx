@@ -19,29 +19,34 @@ class MapErrorBoundary extends React.Component {
   }
   render() {
     if (this.state.hasError) {
-      return <div className="h-[250px] bg-gray-100 flex items-center justify-center text-gray-400 text-sm">Mapa no disponible</div>;
+      return <div className="h-[250px] bg-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-base">Mapa no disponible</div>;
     }
     return this.props.children;
   }
 }
 
-const SafeMap = ({ lat, lng }) => {
-  if (!lat || !lng || !window.google?.maps) {
-    return <div className="h-[250px] bg-gray-100 flex items-center justify-center text-gray-400 text-sm">Mapa no disponible</div>;
+const SafeMap = ({ lat, lng, isLoaded }) => {
+  if (!isLoaded || !lat || !lng) {
+    return <div className="h-[250px] bg-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-base">Cargando mapa...</div>;
   }
   
-  return (
-    <MapErrorBoundary>
-      <GoogleMap
-        center={{ lat, lng }}
-        zoom={15}
-        mapContainerStyle={{ width: '100%', height: '250px' }}
-        options={{ disableDefaultUI: true, zoomControl: true, mapTypeControl: false, streetViewControl: false, fullscreenControl: false }}
-      >
-        <Marker position={{ lat, lng }} />
-      </GoogleMap>
-    </MapErrorBoundary>
-  );
+  try {
+    return (
+      <MapErrorBoundary>
+        <GoogleMap
+          center={{ lat, lng }}
+          zoom={15}
+          mapContainerStyle={{ width: '100%', height: '250px', borderRadius: '12px' }}
+          options={{ disableDefaultUI: true, zoomControl: true, mapTypeControl: false, streetViewControl: false, fullscreenControl: false }}
+        >
+          <Marker position={{ lat, lng }} />
+        </GoogleMap>
+      </MapErrorBoundary>
+    );
+  } catch (error) {
+    console.log('Map render error:', error);
+    return <div className="h-[250px] bg-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-base">Mapa no disponible</div>;
+  }
 };
 const PET_SIZE_LABELS = { pequeno: 'Pequeno', mediano: 'Mediano', grande: 'Grande' };
 const API_URL = process.env.REACT_APP_BACKEND_URL;
@@ -612,14 +617,14 @@ export default function ProviderProfile() {
             </div>
 
             {/* Location Map */}
-            {provider.latitude && provider.longitude && isLoaded && !loadError && (
+            {provider.latitude && provider.longitude && (
               <div className="bg-white rounded-2xl shadow-sm overflow-hidden" data-testid="provider-map">
                 <div className="p-4 border-b">
                   <h3 className="font-bold text-lg flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-[#00e7ff]" /> Ubicacion
+                    <MapPin className="w-5 h-5 text-[#00e7ff]" /> Ubicación
                   </h3>
                 </div>
-                <SafeMap lat={provider.latitude} lng={provider.longitude} />
+                <SafeMap lat={provider.latitude} lng={provider.longitude} isLoaded={isLoaded && !loadError} />
               </div>
             )}
           </div>
