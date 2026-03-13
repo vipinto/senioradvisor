@@ -1,0 +1,125 @@
+{
+  "summary": "Iteration 25: Role Switching Feature - All tests PASSED. Backend: 12/12 API tests passed (100%). Frontend: All role-based UI features verified working correctly.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Provider Profile Map", "issues": ["Google Maps RefererNotAllowedMapError - API key domain restriction (known issue from iteration_24)"]}
+    ]
+  },
+
+  "passed_tests": {
+    "backend_api_tests": [
+      "GET /api/auth/me - requires authentication (401)",
+      "GET /api/auth/me - returns roles array and active_role for carer (provider)",
+      "GET /api/auth/me - returns roles array and active_role for client",
+      "PUT /api/auth/switch-role - requires authentication (401)",
+      "PUT /api/auth/switch-role - carer can switch to client role",
+      "PUT /api/auth/switch-role - carer can switch back to provider role",
+      "PUT /api/auth/switch-role - fails if user doesn't have target role (400)",
+      "POST /api/auth/add-role - requires authentication (401)",
+      "POST /api/auth/add-role - fails if role already exists (400)",
+      "POST /api/auth/add-role - fails for invalid role type like 'admin' (400)",
+      "Lazy migration - user gets roles array auto-created from role field",
+      "Integration test - full role switch flow works end-to-end"
+    ],
+    "frontend_ui_tests": [
+      "Login as cuidador@test.com (provider mode) → GREEN navbar (bg-emerald-700)",
+      "Login as cuidador@test.com → CUIDADOR badge visible",
+      "Login as cuidador@test.com → Role switcher button shows 'Cambiar a Cliente'",
+      "Provider menu: Mi Panel, Mensajes, Historial (NO 'Buscar Cuidadores')",
+      "Click 'Cambiar a Cliente' → switches to RED navbar (bg-[#E6202E])",
+      "After switch → CLIENTE badge visible",
+      "After switch → Role switcher shows 'Cambiar a Cuidador'",
+      "Client menu: Mi Panel, Buscar Cuidadores, Mensajes, Historial",
+      "Switch back to provider → GREEN navbar restored",
+      "Login as cliente@test.com (single role) → RED navbar",
+      "Single role client → Role switcher NOT visible",
+      "Single role client → 'Ser Cuidador' button visible",
+      "'Ser Cuidador' button navigates to /provider/register page"
+    ]
+  },
+
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_25_role_switching.py",
+    "/app/test_reports/pytest/iteration_25_results.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [],
+
+  "updated_files": [
+    "/app/backend/tests/test_iteration_25_role_switching.py"
+  ],
+
+  "success_rate": {
+    "backend": "100% (12/12 tests passed)",
+    "frontend": "100% - All role-based UI features verified"
+  },
+
+  "test_credentials": {
+    "carer_with_both_roles": {"email": "cuidador@test.com", "password": "cuidador123", "roles": ["provider", "client"]},
+    "client_premium_single_role": {"email": "cliente@test.com", "password": "cliente123", "roles": ["client"]},
+    "client_free_single_role": {"email": "test_client_ui@test.com", "password": "test123456", "roles": ["client"]}
+  },
+
+  "seed_data_creation": "No new seed data created. Used existing test users from previous iterations.",
+
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "Iteration 25 - Role Switching Feature tested successfully. Key features: 1) PUT /api/auth/switch-role - multi-role users can switch between client and provider. 2) POST /api/auth/add-role - single-role users can add a second role. 3) GET /api/auth/me - returns roles array and active_role. 4) Backend lazy migration - old users without roles array get it auto-created from role field. 5) Frontend - GREEN navbar (bg-emerald-700) for provider, RED navbar (bg-[#E6202E]) for client. 6) Provider menu: Mi Panel, Mensajes, Historial (no Buscar Cuidadores). 7) Client menu: Mi Panel, Buscar Cuidadores, Mensajes, Historial. 8) Role switcher button only visible for users with both roles. 9) 'Ser Cuidador' button visible for single-role clients, navigates to /provider/register. 10) cuidador@test.com has both roles, cliente@test.com has single client role.",
+
+  "features_verified": {
+    "switch_role_api": {
+      "PUT /api/auth/switch-role": "PASS - Multi-role users can switch between client and provider",
+      "authentication_required": "PASS - Returns 401 without auth",
+      "role_validation": "PASS - Returns 400 if user doesn't have target role"
+    },
+    "add_role_api": {
+      "POST /api/auth/add-role": "PASS - Users can add second role (client or provider)",
+      "duplicate_prevention": "PASS - Returns 400 if role already exists",
+      "invalid_role_prevention": "PASS - Returns 400 for invalid roles like 'admin'"
+    },
+    "auth_me_api": {
+      "GET /api/auth/me": "PASS - Returns roles array and active_role",
+      "has_subscription": "PASS - Included in response",
+      "provider_info": "PASS - Included for users with provider role"
+    },
+    "lazy_migration": {
+      "roles_array_creation": "PASS - Old users without roles array get it auto-created"
+    },
+    "frontend_navbar_themes": {
+      "provider_green": "PASS - bg-emerald-700 for provider mode",
+      "client_red": "PASS - bg-[#E6202E] for client mode"
+    },
+    "frontend_role_badges": {
+      "provider_badge": "PASS - Shows 'Cuidador' badge",
+      "client_badge": "PASS - Shows 'Cliente' badge"
+    },
+    "frontend_role_switcher": {
+      "multi_role_visible": "PASS - Visible for users with both roles",
+      "single_role_hidden": "PASS - Not visible for single-role users",
+      "switch_text": "PASS - Shows 'Cambiar a Cliente' or 'Cambiar a Cuidador'"
+    },
+    "frontend_menus": {
+      "provider_menu": "PASS - Mi Panel, Mensajes, Historial (no Buscar Cuidadores)",
+      "client_menu": "PASS - Mi Panel, Buscar Cuidadores, Mensajes, Historial"
+    },
+    "frontend_add_role_button": {
+      "ser_cuidador": "PASS - Visible for single-role clients",
+      "navigation": "PASS - Navigates to /provider/register"
+    }
+  },
+
+  "known_issues": {
+    "google_maps": "RefererNotAllowedMapError - API key domain restriction (external config, not code bug)"
+  }
+}

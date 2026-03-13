@@ -1,0 +1,166 @@
+{
+  "project_name": "U-CAN",
+  "theme_strategy": {
+    "theme": "light",
+    "emotional_archetype": "TRUST_AND_ENERGY",
+    "primary_color": "#E6202E",
+    "background_color": "#F8F8F8",
+    "vibe": "Modern, Reliable, Energetic, Chilean",
+    "description": "A trustworthy pet services marketplace that balances professional reliability with the joy of pet ownership. The vibrant red (#E6202E) signals energy and action, while the creamy off-white background (#F8F8F8) provides a clean, calming canvas."
+  },
+  "typography": {
+    "font_family_headings": "Montserrat, sans-serif",
+    "font_family_body": "Lato, sans-serif",
+    "heading_style": "uppercase tracking-wide font-bold",
+    "body_style": "leading-relaxed",
+    "scale": {
+      "h1": "text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase",
+      "h2": "text-3xl md:text-4xl font-bold uppercase",
+      "h3": "text-2xl font-bold",
+      "body": "text-base text-gray-700",
+      "small": "text-sm text-gray-500"
+    }
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "DEFAULT": "#E6202E",
+        "foreground": "#FFFFFF",
+        "50": "#FDE7E8",
+        "100": "#FBCFCF",
+        "500": "#E6202E",
+        "600": "#D31522",
+        "900": "#7F0F16"
+      },
+      "secondary": {
+        "DEFAULT": "#F8F8F8",
+        "foreground": "#333333",
+        "dark": "#E5E5E5"
+      },
+      "neutral": {
+        "DEFAULT": "#FFFFFF",
+        "foreground": "#1A1A1A",
+        "gray": "#F3F4F6",
+        "dark_gray": "#4B5563"
+      },
+      "accent": {
+        "DEFAULT": "#FFD700",
+        "foreground": "#1A1A1A",
+        "description": "Use sparingly for 'premium' or 'star' ratings"
+      },
+      "status": {
+        "success": "#2E7D32",
+        "warning": "#ED6C02",
+        "error": "#D32F2F",
+        "info": "#0288D1"
+      }
+    },
+    "gradients": {
+      "primary_soft": "bg-gradient-to-br from-[#E6202E] to-[#FF5F6D]",
+      "surface_shine": "bg-gradient-to-r from-transparent via-white/20 to-transparent"
+    }
+  },
+  "visual_enhancers": {
+    "border_radius": {
+      "default": "rounded-xl",
+      "large": "rounded-2xl",
+      "button": "rounded-lg"
+    },
+    "shadows": {
+      "card": "shadow-[0_2px_8px_rgba(0,0,0,0.08)]",
+      "card_hover": "shadow-[0_8px_24px_rgba(0,0,0,0.12)]",
+      "floating": "shadow-[0_12px_32px_rgba(0,0,0,0.15)]"
+    },
+    "textures": {
+      "noise": "bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"
+    },
+    "decorations": {
+      "waves": "Use SVG wave dividers between sections in text-red-500/10"
+    }
+  },
+  "layout_strategies": {
+    "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "spacing": {
+      "section_gap": "py-20 md:py-32",
+      "element_gap": "gap-6 md:gap-8"
+    },
+    "grids": {
+      "bento_services": "grid grid-cols-1 md:grid-cols-3 gap-6",
+      "listing_card": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8",
+      "dashboard": "grid grid-cols-12 gap-6"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#E6202E] hover:bg-[#D31522] text-white font-bold py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0",
+      "secondary": "bg-white border-2 border-[#E6202E] text-[#E6202E] font-bold py-3 px-8 rounded-lg hover:bg-red-50 transition-colors",
+      "ghost": "text-gray-600 hover:text-[#E6202E] font-medium"
+    },
+    "cards": {
+      "service_card": "bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:border-red-100 transition-all duration-300 group overflow-hidden",
+      "profile_card": "bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col items-center text-center",
+      "pricing_card": "relative bg-white rounded-2xl p-8 shadow-md border-2 border-transparent hover:border-[#E6202E] transition-all"
+    },
+    "inputs": {
+      "search_bar": "h-14 pl-12 pr-4 rounded-full border-gray-200 focus:border-[#E6202E] focus:ring-[#E6202E]/20 shadow-sm text-lg",
+      "form_field": "h-12 rounded-lg border-gray-200 focus:border-[#E6202E] focus:ring-[#E6202E]/20"
+    }
+  },
+  "image_assets": {
+    "hero_section": {
+      "main_hero": "https://images.unsplash.com/photo-1765160602748-49a4a8ea7591?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NjZ8MHwxfHNlYXJjaHw0fHxoYXBweSUyMGRvZyUyMHdhbGtlciUyMHBhcmt8ZW58MHx8fHwxNzcwMjI1NjQ3fDA&ixlib=rb-4.1.0&q=85",
+      "alt": "Happy golden retriever on stone surface, symbolizing joy and trust"
+    },
+    "categories": {
+      "walking": "https://images.pexels.com/photos/7210535/pexels-photo-7210535.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "boarding": "https://images.unsplash.com/photo-1674120968146-3189a7c067ac?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNDR8MHwxfHNlYXJjaHwxfHxjdXRlJTIwY2F0JTIwaW5kb29yc3xlbnwwfHx8fDE3NzAyMjU2NTB8MA&ixlib=rb-4.1.0&q=85",
+      "grooming": "https://images.pexels.com/photos/6131149/pexels-photo-6131149.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "veterinary": "https://images.unsplash.com/photo-1644675272883-0c4d582528d8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwyfHx2ZXRlcmluYXJpYW4lMjBkb2clMjBjbGluaWN8ZW58MHx8fHwxNzcwMjI1NjYxfDA&ixlib=rb-4.1.0&q=85"
+    },
+    "trust_indicators": {
+      "vet_check": "https://images.unsplash.com/photo-1644675443401-ea4c14bad0e6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwxfHx2ZXRlcmluYXJpYW4lMjBkb2clMjBjbGluaWN8ZW58MHx8fHwxNzcwMjI1NjYxfDA&ixlib=rb-4.1.0&q=85",
+      "groomer_action": "https://images.pexels.com/photos/6131008/pexels-photo-6131008.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    },
+    "contextual": {
+      "santiago_skyline": "https://images.unsplash.com/photo-1631850033735-b4c7853b16df?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNzl8MHwxfHNlYXJjaHwyfHxTYW50aWFnbyUyMENoaWxlJTIwc2t5bGluZXxlbnwwfHx8fDE3NzAyMjU2NjF8MA&ixlib=rb-4.1.0&q=85",
+      "happy_dog_park": "https://images.pexels.com/photos/20387498/pexels-photo-20387498.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    }
+  },
+  "instructions_to_main_agent": [
+    "IMPERATIVE: Use the primary color #E6202E for all main calls-to-action (buttons, active states).",
+    "IMPERATIVE: Use Montserrat font for all Headings (H1-H6) in uppercase where appropriate for modern look.",
+    "IMPERATIVE: Use Lato (or system sans-serif if Lato unavailable) for body text.",
+    "NAVIGATION: Create a sticky header with a clean white background and shadow-sm.",
+    "HERO SECTION: Use a split layout or a centered layout with a large, high-quality image of a pet (use provided hero assets). Include a prominent search bar.",
+    "SUBSCRIPTION CARDS: Design the subscription plan page with 3 distinct cards. Highlight the '12 Months' plan as 'Best Value'. Use checkmarks in primary red.",
+    "CONTACT BLOCKING: Implement a visual blur or 'lock' icon overlay on contact details for non-subscribed users.",
+    "TRUST: Add a 'Verified Professionals' badge system using the CheckBadge icon from Lucide/Heroicons.",
+    "MAPS: Use a placeholder static map image or integration if live map is not ready, but style it to match the clean theme.",
+    "RESPONSIVENESS: Ensure all grids collapse to single column on mobile (grid-cols-1) and use generous padding (p-4 mobile, p-8 desktop)."
+  ],
+  "accessibility_rules": {
+    "contrast": "Ensure white text on red background (#E6202E) meets AA standards. Avoid light gray text on white.",
+    "interactive": "All buttons must have :focus-visible styles (ring-2 ring-offset-2 ring-red-500).",
+    "motion": "Respect prefers-reduced-motion media query."
+  },
+  "universal_guidelines": [
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur) where appropriate (e.g., sticky headers)",
+    "You MUST NOT apply universal transition. Eg: transition: all. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; } in the css file. This disrupts the human natural reading flow of text",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories = main agent will use placeholder text which is FORBIDDEN",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Create new components that match the style and conventions of existing components when needed",
+    "Examine existing components to understand the project's component patterns before creating new ones",
+    "Components MUST use named exports (export const ComponentName = ...)",
+    "Pages MUST use default exports (export default function PageName() {...})",
+    "Use sonner for toasts"
+  ]
+}

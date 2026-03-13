@@ -1,0 +1,102 @@
+{
+  "summary": "Completed iteration 20 testing for Proposal System feature. All 11 backend tests pass. Full e2e frontend testing completed: client can create care requests, provider (when subscribed) can send proposals with price/message, client can view proposals and accept/reject them. When a proposal is accepted, the care request is marked as completed.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "passed_tests": [
+    "POST /api/care-requests - Client can create care request successfully",
+    "GET /api/care-requests/my-requests - Client can view their care requests",
+    "GET /api/care-requests - Provider can see care requests (limited info when not subscribed)",
+    "POST /api/proposals - Free provider correctly blocked (403) with subscription required message",
+    "POST /api/proposals - Client (non-provider) correctly blocked (403)",
+    "GET /api/proposals/my-sent - Provider can view sent proposals",
+    "GET /api/proposals/received - Client can view received proposals",
+    "GET /api/proposals/for-request/{request_id} - Client can view proposals for specific care request",
+    "PUT /api/proposals/{id}/respond - Invalid status correctly rejected (400)",
+    "PUT /api/proposals/{id}/respond - Non-existent proposal returns 404",
+    "Frontend: Client dashboard shows 'Solicitudes de Cuidado' section",
+    "Frontend: Client can create new care request with pet/service/comuna/description",
+    "Frontend: Success toast shows after care request creation",
+    "Frontend: Free provider sees 'Suscribete para enviar propuestas' warning",
+    "Frontend: Subscribed provider sees 'Cuenta Premium Activa' card",
+    "Frontend: Subscribed provider sees 'Enviar Propuesta' buttons next to care requests",
+    "Frontend: Proposal form appears with price and message fields (data-testid working)",
+    "Frontend: 'Propuesta enviada exitosamente' toast after submission",
+    "Frontend: 'Propuesta enviada ($15.000)' indicator shows after sending",
+    "Frontend: Client sees '1 propuesta recibida' with badge indicator",
+    "Frontend: Proposal card shows provider info, price ($15.000), message, rating",
+    "Frontend: 'Aceptar' and 'Rechazar' buttons visible for pending proposals",
+    "Frontend: 'Propuesta aceptada!' toast after accepting",
+    "Frontend: Care request status changes from 'Activa' to 'Completada' after acceptance",
+    "Frontend: 'Contactar Cuidador' button appears after acceptance"
+  ],
+
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_20_proposals.py",
+    "/app/test_reports/pytest/iteration_20_results.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [],
+
+  "updated_files": [
+    "/app/backend/tests/test_iteration_20_proposals.py",
+    "/app/scripts/activate_provider_sub.py"
+  ],
+
+  "success_rate": {
+    "backend": "100% (11/11 passed, 1 skipped - admin endpoint not available)",
+    "frontend": "100% - All proposal features verified"
+  },
+
+  "test_credentials": {
+    "admin": {"email": "admin@ucan.cl", "password": "admin123", "role": "admin"},
+    "provider": {"email": "cuidador@test.com", "password": "cuidador123", "role": "provider", "subscription": "active (manually activated for testing)"},
+    "client": {"email": "test_client_ui@test.com", "password": "test123456", "role": "client"}
+  },
+
+  "seed_data_creation": "Activated provider subscription to 'active' status using /app/scripts/activate_provider_sub.py for full e2e testing. Created test care requests during frontend testing.",
+
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "Iteration 20 verified the complete Proposal System feature. Key findings: 1) Free providers see care requests but cannot send proposals (correct 403 block). 2) Subscribed providers see 'Enviar Propuesta' buttons and can submit proposals with price/message. 3) Clients see proposal indicators, can expand to view details, and accept/reject. 4) Accepting a proposal marks the care request as 'completed'. 5) Provider subscription was manually activated using scripts/activate_provider_sub.py since the subscription flow requires MercadoPago payment. The provider cuidador@test.com now has an active subscription until April 4, 2026.",
+
+  "features_verified": {
+    "create_care_request": "✓ POST /api/care-requests works for clients",
+    "view_care_requests": "✓ GET /api/care-requests works for providers (limited/full based on subscription)",
+    "free_provider_blocked": "✓ POST /api/proposals returns 403 for free providers",
+    "client_blocked": "✓ POST /api/proposals returns 403 for non-providers",
+    "create_proposal": "✓ Subscribed provider can create proposal with price/message",
+    "view_sent_proposals": "✓ GET /api/proposals/my-sent works for providers",
+    "view_received_proposals": "✓ GET /api/proposals/received works for clients",
+    "view_proposals_for_request": "✓ GET /api/proposals/for-request/{id} works for clients",
+    "accept_proposal": "✓ PUT /api/proposals/{id}/respond with status='accepted' works",
+    "reject_proposal": "✓ PUT /api/proposals/{id}/respond with status='rejected' available",
+    "care_request_completion": "✓ Care request status changes to 'completed' when proposal accepted",
+    "frontend_client_dashboard": "✓ Shows care requests with proposal indicators",
+    "frontend_provider_dashboard": "✓ Shows care requests with 'Enviar Propuesta' for subscribed",
+    "frontend_proposal_form": "✓ Price and message inputs working",
+    "frontend_proposal_card": "✓ Shows provider info, price, message, accept/reject buttons"
+  },
+
+  "screenshots": {
+    "client_dashboard_care_requests": "/app/.screenshots/client_dashboard_care_requests.jpg",
+    "client_care_request_form": "/app/.screenshots/client_care_request_filled.jpg",
+    "provider_subscribed_dashboard": "/app/.screenshots/provider_subscribed_dashboard.jpg",
+    "provider_proposal_form": "/app/.screenshots/provider_proposal_form_filled.jpg",
+    "provider_proposal_submitted": "/app/.screenshots/provider_proposal_submitted.jpg",
+    "client_proposals_expanded": "/app/.screenshots/client_proposals_expanded.jpg",
+    "client_proposal_accepted": "/app/.screenshots/client_proposal_accepted.jpg"
+  }
+}

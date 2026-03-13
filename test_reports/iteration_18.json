@@ -1,0 +1,96 @@
+{
+  "summary": "Completed iteration 18 testing: All new features verified. Fixed route ordering bug in /api/bookings/history. 13/13 backend tests pass, all frontend features working correctly.",
+  
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Search page map", "issues": ["Google Maps billing error showing 'Oops! Something went wrong' - known issue, not a code bug"]}
+    ]
+  },
+  
+  "passed_tests": [
+    "GET /api/providers returns providers with is_featured and is_verified_only fields",
+    "GET /api/providers sorted correctly: featured (verified+subscribed) -> verified_only -> rest",
+    "GET /api/providers/{id} returns is_featured field for individual provider",
+    "GET /api/bookings/history returns service history for authenticated user (provider or client)",
+    "GET /api/subscription/invoices returns billing history with plan_name, amount, status",
+    "GET /api/sos/info returns is_available, schedule_text, current_hour based on admin config",
+    "PUT /api/admin/sos accepts start_hour and end_hour fields (tested with values 8 and 20)",
+    "GET /api/admin/sos returns start_hour and end_hour in config",
+    "Search page (/search) loads provider list sorted correctly",
+    "ServiceHistory page (/historial) loads with Servicios and Facturas tabs",
+    "ServiceHistory Facturas tab shows subscription payment at $9,990 Pendiente",
+    "Client Dashboard has 'Historial' card link to /historial",
+    "Provider Dashboard has 'Historial y Facturas' button",
+    "Provider Dashboard shows SOS section with schedule_text '8:00 - 20:00 hrs'",
+    "Provider Dashboard SOS 'Llamar' button visible (provider is subscribed, within hours)",
+    "Navbar user dropdown shows 'Historial y Facturas' link",
+    "Provider registration page (/provider/register) shows photo tip about uploading with pets",
+    "Provider gallery in dashboard shows photo tip suggesting photos with pets",
+    "Admin Panel SOS config tab has start_hour and end_hour numeric inputs"
+  ],
+  
+  "bugs_fixed": [
+    {
+      "file": "/app/backend/routes/booking_routes.py",
+      "issue": "Route /api/bookings/history was defined AFTER /api/bookings/{booking_id}, causing 'history' to be matched as booking_id",
+      "fix": "Moved /api/bookings/history and /api/bookings/stats/summary routes BEFORE the dynamic /{booking_id} route"
+    }
+  ],
+  
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_18_features.py",
+    "/app/test_reports/pytest/iteration_18_results.xml"
+  ],
+  
+  "action_items": [],
+  
+  "critical_code_review_comments": [],
+  
+  "updated_files": [
+    "/app/backend/routes/booking_routes.py (fixed route ordering for /bookings/history)"
+  ],
+  
+  "success_rate": {
+    "backend": "100% (13/13 tests passed)",
+    "frontend": "100% - All UI features verified via Playwright"
+  },
+  
+  "test_credentials": {
+    "admin": {"email": "admin@ucan.cl", "password": "admin123", "role": "admin"},
+    "provider": {"email": "cuidador@test.com", "password": "cuidador123", "role": "provider"},
+    "client": {"email": "test_client_ui@test.com", "password": "test123456", "role": "user"}
+  },
+  
+  "seed_data_creation": "No new seed data created",
+  
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  
+  "context_for_next_testing_agent": "Iteration 18 verified new features: 1) Provider sorting by featured status (verified+subscribed first). 2) Service History page with Servicios and Facturas tabs. 3) Subscription invoices endpoint. 4) SOS button scheduling with admin-configurable start_hour/end_hour. 5) Photo tips for carers. Fixed route ordering bug for /api/bookings/history. Note: Featured badge ('Destacado') only shows when provider is BOTH verified AND has active subscription simultaneously - currently 0 providers meet this criteria.",
+  
+  "features_verified": {
+    "providers_featured_sorting": "✓ is_featured and is_verified_only fields present, correct sorting",
+    "provider_detail_is_featured": "✓ Individual provider has is_featured field",
+    "service_history_api": "✓ GET /api/bookings/history works for both providers and clients",
+    "invoices_api": "✓ GET /api/subscription/invoices returns billing history",
+    "sos_schedule_api": "✓ GET /api/sos/info returns is_available, schedule_text",
+    "admin_sos_hours": "✓ PUT /api/admin/sos accepts start_hour, end_hour",
+    "search_page_providers": "✓ 17 providers loaded, sorted correctly",
+    "featured_badge": "✓ Code present (no featured providers currently)",
+    "service_history_page": "✓ Two tabs: Servicios (0) and Facturas (1)",
+    "dashboard_history_link": "✓ Client dashboard has 'Historial' card",
+    "provider_dashboard_history": "✓ 'Historial y Facturas' button visible",
+    "navbar_historial_link": "✓ Visible in user dropdown menu",
+    "provider_registration_tip": "✓ Photo tip about uploading with pets",
+    "gallery_photo_tip": "✓ Tip suggesting photos with pets (shows when <3 photos)",
+    "admin_sos_config": "✓ start_hour and end_hour inputs with values 8 and 20",
+    "provider_sos_section": "✓ Shows schedule_text '8:00 - 20:00 hrs', Llamar button active"
+  }
+}

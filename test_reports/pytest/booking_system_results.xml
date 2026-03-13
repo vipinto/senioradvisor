@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="10" time="19.660" timestamp="2026-02-27T06:53:21.070042+00:00" hostname="agent-env-444ff54a-d382-4502-aed9-caae23c245f7"><testcase classname="tests.test_booking_system" name="test_create_booking_requires_auth" time="0.170" /><testcase classname="tests.test_booking_system" name="test_get_my_bookings_requires_auth" time="0.105" /><testcase classname="tests.test_booking_system" name="test_get_provider_bookings_requires_auth" time="0.095" /><testcase classname="tests.test_booking_system" name="test_get_booking_stats_requires_auth" time="0.119" /><testcase classname="tests.test_booking_system" name="test_booking_full_flow" time="6.398"><failure message="AssertionError: Booking creation failed: {&quot;detail&quot;:&quot;Necesitas una suscripcion activa para hacer reservas&quot;}&#10;assert 403 == 200&#10; +  where 403 = &lt;Response [403]&gt;.status_code">tests/test_booking_system.py:170: in test_booking_full_flow
+    assert booking_res.status_code == 200, f"Booking creation failed: {booking_res.text}"
+E   AssertionError: Booking creation failed: {"detail":"Necesitas una suscripcion activa para hacer reservas"}
+E   assert 403 == 200
+E    +  where 403 = &lt;Response [403]&gt;.status_code</failure></testcase><testcase classname="tests.test_booking_system" name="test_booking_reject_flow" time="2.853"><failure message="assert 403 == 200&#10; +  where 403 = &lt;Response [403]&gt;.status_code">tests/test_booking_system.py:316: in test_booking_reject_flow
+    assert booking_res.status_code == 200
+E   assert 403 == 200
+E    +  where 403 = &lt;Response [403]&gt;.status_code</failure></testcase><testcase classname="tests.test_booking_system" name="test_booking_cancel_flow" time="2.931"><failure message="KeyError: 'booking_id'">tests/test_booking_system.py:411: in test_booking_cancel_flow
+    booking_id = booking_res.json()["booking_id"]
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'booking_id'</failure></testcase><testcase classname="tests.test_booking_system" name="test_complete_pending_booking_fails" time="2.872"><failure message="KeyError: 'booking_id'">tests/test_booking_system.py:510: in test_complete_pending_booking_fails
+    booking_id = booking_res.json()["booking_id"]
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'booking_id'</failure></testcase><testcase classname="tests.test_booking_system" name="test_invalid_provider_and_pet" time="2.519"><failure message="AssertionError: Expected 404 for invalid provider, got 403&#10;assert 403 == 404&#10; +  where 403 = &lt;Response [403]&gt;.status_code">tests/test_booking_system.py:586: in test_invalid_provider_and_pet
+    assert res.status_code == 404, f"Expected 404 for invalid provider, got {res.status_code}"
+E   AssertionError: Expected 404 for invalid provider, got 403
+E   assert 403 == 404
+E    +  where 403 = &lt;Response [403]&gt;.status_code</failure></testcase><testcase classname="tests.test_booking_system" name="test_get_client_requires_provider_profile" time="1.404" /></testsuite></testsuites>

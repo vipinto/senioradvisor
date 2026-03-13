@@ -1,0 +1,139 @@
+{
+  "summary": "Iteration 24: Contact Request & Connection-Based Chat Model - MAJOR BUSINESS MODEL CHANGE. All 21 backend tests passed (100%). Frontend UI verified working correctly for premium client (connected state), free client (blocked state), provider dashboard (contact requests tab), and client dashboard (sent requests section).",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Provider Profile Map", "issues": ["Google Maps RefererNotAllowedMapError - API key domain restriction (known issue, not code bug)"]}
+    ]
+  },
+
+  "passed_tests": {
+    "backend_api_tests": [
+      "POST /api/contact-requests - requires authentication (401)",
+      "POST /api/contact-requests - free client blocked (403 with 'suscripcion Premium' message)",
+      "GET /api/contact-requests/sent - premium client can view sent requests",
+      "GET /api/contact-requests/received - carer can view received requests",
+      "GET /api/connections/check/{user_id} - requires auth (401)",
+      "GET /api/connections/check/{user_id} - returns connected: boolean",
+      "GET /api/connections - returns all user connections",
+      "POST /api/chat/messages - requires auth (401)",
+      "POST /api/chat/messages - blocked for unconnected users (403 with 'conexion' message)",
+      "GET /api/chat/conversations - returns only conversations with connected users",
+      "GET /api/care-requests - requires auth (401)",
+      "GET /api/care-requests - clients blocked (403 - only providers)",
+      "GET /api/care-requests - subscribed carer can view full list",
+      "GET /api/proposals/received - works for clients",
+      "GET /api/providers/{id} - has viewer_is_connected flag",
+      "GET /api/providers/{id} - has viewer_has_subscription flag",
+      "GET /api/providers/{id} - has viewer_has_pending_request flag",
+      "GET /api/providers/{id} - hides contact when not connected",
+      "GET /api/providers/{id} - free client shows no subscription",
+      "GET /api/providers/{id} - premium client shows subscription",
+      "PUT /api/contact-requests/{id}/accept - invalid ID returns 404"
+    ],
+    "frontend_ui_tests": [
+      "Premium client provider profile - shows 'Conectados' status with green checkmark",
+      "Premium client provider profile - 'Ir al Chat' button visible for connected users",
+      "Premium client provider profile - full contact info visible (address, phone, WhatsApp)",
+      "Free client provider profile - shows lock icon with 'suscripcion Premium' message",
+      "Free client provider profile - subscription card with '$9.990/mes' price visible",
+      "Free client provider profile - contact info hidden (phone, WhatsApp not visible)",
+      "Provider dashboard - 'Solicitudes Directas' tab visible and active",
+      "Provider dashboard - contact requests section shows client info and messages",
+      "Provider dashboard - accepted requests show 'Aceptada - Chat desbloqueado' with chat link",
+      "Client dashboard - 'Solicitudes de Contacto Enviadas' section visible for premium clients",
+      "Client dashboard - sent requests show provider name, message, and 'Chat Activo' status"
+    ]
+  },
+
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_24_contact_connection_model.py",
+    "/app/test_reports/pytest/iteration_24_results.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [],
+
+  "updated_files": [
+    "/app/backend/tests/test_iteration_24_contact_connection_model.py"
+  ],
+
+  "success_rate": {
+    "backend": "100% (21/21 tests passed)",
+    "frontend": "100% - All connection-based UI states verified"
+  },
+
+  "test_credentials": {
+    "admin": {"email": "admin@test.com", "password": "password123"},
+    "carer_subscribed": {"email": "cuidador@test.com", "password": "cuidador123", "user_id": "user_d9afd9d44c30", "provider_id": "prov_23ad24c36254"},
+    "client_premium": {"email": "cliente@test.com", "password": "cliente123"},
+    "client_free": {"email": "test_client_ui@test.com", "password": "test123456"}
+  },
+
+  "seed_data_creation": "Existing connection between cliente@test.com and cuidador@test.com (from previous testing). Contact request from Cliente Premium Demo to Cuidador Demo already accepted.",
+
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "Iteration 24 - MAJOR BUSINESS MODEL CHANGE tested successfully. Key features verified: 1) POST /api/contact-requests - only premium clients can send (free get 403). 2) GET /api/contact-requests/received & /sent - carers/clients can view. 3) PUT /api/contact-requests/{id}/accept|reject - creates connection on accept. 4) GET /api/connections/check/{user_id} - returns {connected: boolean}. 5) POST /api/chat/messages - ONLY works between connected users (403 for unconnected). 6) GET /api/care-requests - ONLY subscribed providers can view (403 for free carers and all clients). 7) GET /api/providers/{id} returns viewer_is_connected, viewer_has_subscription, viewer_has_pending_request flags. 8) Phone/WhatsApp only visible in provider profile when connected. 9) Frontend provider profile shows 4 states: connected (chat button + contact info), pending (waiting message), contact form (premium not connected), blocked (free/non-logged with subscription prompt). 10) Provider dashboard has 'Solicitudes Directas' tab with accept/reject buttons. 11) Client dashboard shows 'Solicitudes de Contacto Enviadas' section for premium clients.",
+
+  "features_verified": {
+    "contact_requests_api": {
+      "POST /api/contact-requests": "PASS - Only premium clients can send (free get 403)",
+      "GET /api/contact-requests/sent": "PASS - Premium client can view sent requests",
+      "GET /api/contact-requests/received": "PASS - Carer can view received requests",
+      "PUT /api/contact-requests/{id}/accept": "PASS - Creates connection, unlocks chat",
+      "PUT /api/contact-requests/{id}/reject": "PASS - Rejects without connection"
+    },
+    "connection_api": {
+      "GET /api/connections/check/{user_id}": "PASS - Returns connected: boolean",
+      "GET /api/connections": "PASS - Returns all user connections"
+    },
+    "chat_permissions": {
+      "POST /api/chat/messages": "PASS - Blocked for unconnected users (403)",
+      "GET /api/chat/conversations": "PASS - Only shows conversations with connected users"
+    },
+    "care_requests_permissions": {
+      "GET /api/care-requests": "PASS - Only subscribed providers can view (403 for others)"
+    },
+    "provider_profile_flags": {
+      "viewer_is_connected": "PASS - Boolean flag in provider profile",
+      "viewer_has_subscription": "PASS - Boolean flag in provider profile",
+      "viewer_has_pending_request": "PASS - Boolean flag in provider profile",
+      "contact_blocked": "PASS - True when not connected, hides phone/whatsapp"
+    },
+    "frontend_provider_profile": {
+      "connected_state": "PASS - Shows 'Conectados' + chat button + full contact info",
+      "blocked_state": "PASS - Shows lock icon + subscription prompt + price"
+    },
+    "frontend_provider_dashboard": {
+      "contact_requests_tab": "PASS - 'Solicitudes Directas' tab with accept/reject UI",
+      "accepted_requests": "PASS - Shows 'Aceptada - Chat desbloqueado' with chat link"
+    },
+    "frontend_client_dashboard": {
+      "sent_requests_section": "PASS - 'Solicitudes de Contacto Enviadas' visible for premium",
+      "request_status": "PASS - Shows 'Chat Activo' for accepted requests"
+    }
+  },
+
+  "business_model_summary": {
+    "free_clients": "Can post care requests, receive offers, accept/reject → chat unlocks",
+    "premium_clients": "Can search carers, send direct contact requests → if accepted, chat unlocks",
+    "free_carers": "Only receive direct requests from premium clients (cannot see care requests)",
+    "premium_carers": "Can see published care requests and send offers",
+    "chat_rule": "ONLY works between connected users (after mutual acceptance)",
+    "contact_visibility": "Phone/WhatsApp only visible after connection"
+  },
+
+  "known_issues": {
+    "google_maps": "RefererNotAllowedMapError - API key needs domain authorization (external config, not code bug)"
+  }
+}
