@@ -196,6 +196,7 @@ const FeaturedSlider = ({ featured }) => {
   });
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const [showAll, setShowAll] = useState(false);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -210,6 +211,34 @@ const FeaturedSlider = ({ featured }) => {
     emblaApi.on('reInit', onSelect);
   }, [emblaApi, onSelect]);
 
+  const FeaturedCard = ({ p }) => (
+    <Link
+      to={`/provider/${p.provider_id}`}
+      className="group block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow"
+      data-testid={`featured-${p.provider_id}`}
+    >
+      <div className="h-44 bg-gray-200 overflow-hidden">
+        <img
+          src={p.photos?.[0] || p.gallery?.[0]?.url || ''}
+          alt={p.business_name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+      <div className="p-4">
+        <div className="flex items-center gap-1 mb-1.5">
+          {[1,2,3,4,5].map(s => (
+            <Star key={s} className={`w-3.5 h-3.5 ${s <= Math.round(p.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+          ))}
+          <span className="text-sm font-bold text-[#33404f] ml-1">{p.rating?.toFixed(1)}</span>
+        </div>
+        <h3 className="font-bold text-[#33404f] text-base mb-1 group-hover:text-[#008b9a] transition-colors">{p.business_name}</h3>
+        <p className="text-sm text-gray-500 flex items-center gap-1">
+          <MapPin className="w-3.5 h-3.5" /> {p.comuna}
+        </p>
+      </div>
+    </Link>
+  );
+
   return (
     <section className="py-16 bg-white" data-testid="featured-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -218,66 +247,55 @@ const FeaturedSlider = ({ featured }) => {
             <h2 className="text-3xl font-bold text-[#33404f] mb-1">Residencias Destacadas</h2>
             <p className="text-gray-500 text-sm">Los servicios mejor evaluados por las familias</p>
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => emblaApi?.scrollPrev()}
-              disabled={!canScrollPrev}
-              className="w-10 h-10 rounded-full bg-[#33404f] text-white flex items-center justify-center hover:bg-[#4a5568] disabled:opacity-30 transition-all"
-              data-testid="slider-prev"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => emblaApi?.scrollNext()}
-              disabled={!canScrollNext}
-              className="w-10 h-10 rounded-full bg-[#33404f] text-white flex items-center justify-center hover:bg-[#4a5568] disabled:opacity-30 transition-all"
-              data-testid="slider-next"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
+          {!showAll && (
+            <div className="flex gap-2">
+              <button
+                onClick={() => emblaApi?.scrollPrev()}
+                disabled={!canScrollPrev}
+                className="w-10 h-10 rounded-full bg-[#33404f] text-white flex items-center justify-center hover:bg-[#4a5568] disabled:opacity-30 transition-all"
+                data-testid="slider-prev"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => emblaApi?.scrollNext()}
+                disabled={!canScrollNext}
+                className="w-10 h-10 rounded-full bg-[#33404f] text-white flex items-center justify-center hover:bg-[#4a5568] disabled:opacity-30 transition-all"
+                data-testid="slider-next"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          )}
         </div>
 
-        <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-6">
+        {showAll ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {featured.map((p) => (
-              <div key={p.provider_id} className="flex-[0_0_280px]">
-                <Link
-                  to={`/provider/${p.provider_id}`}
-                  className="group block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow"
-                  data-testid={`featured-${p.provider_id}`}
-                >
-                  <div className="h-44 bg-gray-200 overflow-hidden">
-                    <img
-                      src={p.photos?.[0] || p.gallery?.[0]?.url || ''}
-                      alt={p.business_name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-center gap-1 mb-1.5">
-                      {[1,2,3,4,5].map(s => (
-                        <Star key={s} className={`w-3.5 h-3.5 ${s <= Math.round(p.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
-                      ))}
-                      <span className="text-sm font-bold text-[#33404f] ml-1">{p.rating?.toFixed(1)}</span>
-                    </div>
-                    <h3 className="font-bold text-[#33404f] text-base mb-1 group-hover:text-[#008b9a] transition-colors">{p.business_name}</h3>
-                    <p className="text-sm text-gray-500 flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5" /> {p.comuna}
-                    </p>
-                  </div>
-                </Link>
-              </div>
+              <FeaturedCard key={p.provider_id} p={p} />
             ))}
           </div>
-        </div>
+        ) : (
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex gap-6">
+              {featured.map((p) => (
+                <div key={p.provider_id} className="flex-[0_0_280px]">
+                  <FeaturedCard p={p} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="text-center mt-10">
-          <Link to="/search">
-            <Button className="bg-[#33404f] text-white hover:bg-[#4a5568] px-8 py-4 text-base font-bold rounded-xl">
-              Ver Todos los Servicios <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </Link>
+          <Button 
+            onClick={() => setShowAll(!showAll)}
+            className="bg-[#33404f] text-white hover:bg-[#4a5568] px-8 py-4 text-base font-bold rounded-xl"
+            data-testid="toggle-all-featured"
+          >
+            {showAll ? 'Ver Menos' : 'Ver Todas las Destacadas'} 
+            <ArrowRight className={`w-5 h-5 ml-2 transition-transform ${showAll ? 'rotate-90' : ''}`} />
+          </Button>
         </div>
       </div>
     </section>
