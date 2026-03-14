@@ -133,6 +133,10 @@ export default function AdminPanel() {
   const [showBlogModal, setShowBlogModal] = useState(false);
   const [editingArticle, setEditingArticle] = useState(null);
   const [partnerLeads, setPartnerLeads] = useState([]);
+  const [convenios, setConvenios] = useState([]);
+  const [showConvenioModal, setShowConvenioModal] = useState(false);
+  const [editingConvenio, setEditingConvenio] = useState(null);
+  const [convenioForm, setConvenioForm] = useState({ name: '', logo: '', description: '', location: '', plans: [], featured: false });
 
   useEffect(() => { loadData(); }, []);
 
@@ -159,6 +163,10 @@ export default function AdminPanel() {
       try {
         const leadsRes = await api.get('/partners/leads');
         setPartnerLeads(leadsRes.data);
+      } catch {}
+      try {
+        const convRes = await api.get('/partners/convenios?active_only=false');
+        setConvenios(convRes.data);
       } catch {}
     } catch (e) {
       navigate('/login');
@@ -231,6 +239,9 @@ export default function AdminPanel() {
             </button>
             <button onClick={() => setActiveTab('leads')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'leads' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-leads">
               <Handshake className="w-4 h-4 inline mr-1" />Leads ({partnerLeads.length})
+            </button>
+            <button onClick={() => setActiveTab('convenios')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'convenios' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-convenios">
+              <Handshake className="w-4 h-4 inline mr-1" />Convenios ({convenios.length})
             </button>
           </div>
 
@@ -477,6 +488,45 @@ export default function AdminPanel() {
                 )}
               </div>
             )}
+
+            {activeTab === 'convenios' && (
+              <div className="space-y-4" data-testid="convenios-tab">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold text-[#33404f]">Convenios SeniorClub</h3>
+                  <Button onClick={() => { setEditingConvenio(null); setConvenioForm({ name: '', logo: '', description: '', location: '', plans: [{ name: '', category: '', price: '', uf: '' }], featured: false }); setShowConvenioModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-convenio-btn">
+                    <Plus className="w-4 h-4 mr-1" /> Nuevo Convenio
+                  </Button>
+                </div>
+                {convenios.length === 0 ? (
+                  <p className="text-gray-500 text-center py-8">No hay convenios registrados</p>
+                ) : (
+                  <div className="space-y-3">
+                    {convenios.map(c => (
+                      <div key={c.convenio_id} className="bg-white border rounded-xl p-4 flex items-center gap-4" data-testid={`convenio-row-${c.convenio_id}`}>
+                        <img src={c.logo} alt={c.name} className="w-16 h-16 object-contain rounded-lg bg-gray-50 p-1" />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-bold text-[#33404f]">{c.name}</h4>
+                            {c.featured && <span className="bg-[#00e7ff] text-[#33404f] text-[10px] font-bold px-2 py-0.5 rounded-full">Destacado</span>}
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${c.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{c.active ? 'Activo' : 'Inactivo'}</span>
+                          </div>
+                          <p className="text-xs text-gray-500 truncate max-w-md">{c.description}</p>
+                          <p className="text-xs text-gray-400">{c.plans?.length || 0} planes | {c.location || 'Sin ubicación'}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button onClick={() => { setEditingConvenio(c); setConvenioForm({ name: c.name, logo: c.logo, description: c.description, location: c.location || '', plans: c.plans || [{ name: '', category: '', price: '', uf: '' }], featured: c.featured }); setShowConvenioModal(true); }} className="p-2 hover:bg-gray-100 rounded-lg">
+                            <Pencil className="w-4 h-4 text-gray-500" />
+                          </button>
+                          <button onClick={async () => { if (window.confirm('¿Eliminar este convenio?')) { try { await api.delete(`/partners/convenios/${c.convenio_id}`); toast.success('Convenio eliminado'); loadData(); } catch { toast.error('Error'); } } }} className="p-2 hover:bg-red-50 rounded-lg">
+                            <Trash2 className="w-4 h-4 text-red-400" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -681,6 +731,81 @@ export default function AdminPanel() {
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Aprobar y Verificar
               </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Convenio Modal */}
+      {showConvenioModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
+            <h3 className="text-lg font-bold text-[#33404f] mb-4">{editingConvenio ? 'Editar Convenio' : 'Nuevo Convenio'}</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium mb-1">Nombre</label>
+                <input type="text" value={convenioForm.name} onChange={e => setConvenioForm(p => ({ ...p, name: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Ej: Help Rescate" data-testid="convenio-form-name" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">URL del Logo</label>
+                <input type="text" value={convenioForm.logo} onChange={e => setConvenioForm(p => ({ ...p, logo: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="https://..." data-testid="convenio-form-logo" />
+                {convenioForm.logo && <img src={convenioForm.logo} alt="" className="mt-2 h-16 rounded-lg object-contain" />}
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Descripción</label>
+                <textarea value={convenioForm.description} onChange={e => setConvenioForm(p => ({ ...p, description: e.target.value }))} rows={3} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="convenio-form-desc" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Ubicación</label>
+                <input type="text" value={convenioForm.location} onChange={e => setConvenioForm(p => ({ ...p, location: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Ej: Metropolitana, Valparaíso" data-testid="convenio-form-location" />
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" checked={convenioForm.featured} onChange={e => setConvenioForm(p => ({ ...p, featured: e.target.checked }))} className="w-4 h-4 accent-[#00e7ff]" data-testid="convenio-form-featured" />
+                <label className="text-sm font-medium">Destacado</label>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium">Planes</label>
+                  <button onClick={() => setConvenioForm(p => ({ ...p, plans: [...p.plans, { name: '', category: '', price: '', uf: '' }] }))} className="text-xs text-[#00e7ff] font-bold hover:underline">+ Agregar plan</button>
+                </div>
+                {convenioForm.plans.map((plan, idx) => (
+                  <div key={idx} className="border rounded-xl p-3 mb-2 space-y-2 relative">
+                    {convenioForm.plans.length > 1 && (
+                      <button onClick={() => setConvenioForm(p => ({ ...p, plans: p.plans.filter((_, i) => i !== idx) }))} className="absolute top-2 right-2 text-red-400 hover:text-red-600">
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    )}
+                    <div className="grid grid-cols-2 gap-2">
+                      <input type="text" value={plan.name} onChange={e => { const plans = [...convenioForm.plans]; plans[idx] = { ...plans[idx], name: e.target.value }; setConvenioForm(p => ({ ...p, plans })); }} className="border rounded-lg p-2 text-xs" placeholder="Nombre del plan" />
+                      <input type="text" value={plan.category} onChange={e => { const plans = [...convenioForm.plans]; plans[idx] = { ...plans[idx], category: e.target.value }; setConvenioForm(p => ({ ...p, plans })); }} className="border rounded-lg p-2 text-xs" placeholder="Categoría" />
+                      <input type="text" value={plan.price} onChange={e => { const plans = [...convenioForm.plans]; plans[idx] = { ...plans[idx], price: e.target.value }; setConvenioForm(p => ({ ...p, plans })); }} className="border rounded-lg p-2 text-xs" placeholder="Precio ej: $8.336" />
+                      <input type="text" value={plan.uf} onChange={e => { const plans = [...convenioForm.plans]; plans[idx] = { ...plans[idx], uf: e.target.value }; setConvenioForm(p => ({ ...p, plans })); }} className="border rounded-lg p-2 text-xs" placeholder="UF ej: 0.22" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex gap-3 mt-4">
+              <Button
+                onClick={async () => {
+                  try {
+                    if (editingConvenio) {
+                      await api.put(`/partners/convenios/${editingConvenio.convenio_id}`, convenioForm);
+                      toast.success('Convenio actualizado');
+                    } else {
+                      await api.post('/partners/convenios', convenioForm);
+                      toast.success('Convenio creado');
+                    }
+                    setShowConvenioModal(false);
+                    loadData();
+                  } catch { toast.error('Error al guardar'); }
+                }}
+                className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
+                data-testid="convenio-form-save"
+              >
+                {editingConvenio ? 'Actualizar' : 'Crear Convenio'}
+              </Button>
+              <Button variant="outline" onClick={() => setShowConvenioModal(false)} className="flex-1">Cancelar</Button>
             </div>
           </div>
         </div>

@@ -1,11 +1,87 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime, timezone
 import uuid
 from database import db
 
 router = APIRouter(prefix="/partners", tags=["partners"])
+
+# --- Convenios CRUD ---
+
+class PlanModel(BaseModel):
+    name: str
+    category: str
+    price: str
+    uf: str
+
+class ConvenioCreate(BaseModel):
+    name: str
+    slug: Optional[str] = ""
+    logo: str
+    description: str
+    location: Optional[str] = ""
+    plans: List[PlanModel] = []
+    featured: bool = False
+    active: bool = True
+
+class ConvenioUpdate(BaseModel):
+    name: Optional[str] = None
+    logo: Optional[str] = None
+    description: Optional[str] = None
+    location: Optional[str] = None
+    plans: Optional[List[PlanModel]] = None
+    featured: Optional[bool] = None
+    active: Optional[bool] = None
+
+@router.get("/convenios")
+async def get_convenios(active_only: bool = True):
+    query = {"active": True} if active_only else {}
+    convenios = await db.convenios.find(query, {"_id": 0}).sort("created_at", -1).to_list(50)
+    return convenios
+
+@router.post("/convenios")
+async def create_convenio(data: ConvenioCreate):
+    slug = data.slug or data.name.lower().replace(" ", "-").replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u")
+    convenio = {
+        "convenio_id": str(uuid.uuid4()),
+        "slug": slug,
+        "name": data.name,
+        "logo": data.logo,
+        "description": data.description,
+        "location": data.location,
+        "plans": [p.dict() for p in data.plans],
+        "featured": data.featured,
+        "active": data.active,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.convenios.insert_one(convenio)
+    del convenio["_id"]
+    return convenio
+
+@router.put("/convenios/{convenio_id}")
+async def update_convenio(convenio_id: str, data: ConvenioUpdate):
+    update = {}
+    for k, v in data.dict().items():
+        if v is not None:
+            if k == "plans":
+                update[k] = [p for p in v]
+            else:
+                update[k] = v
+    result = await db.convenios.update_one({"convenio_id": convenio_id}, {"$set": update})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Convenio no encontrado")
+    convenio = await db.convenios.find_one({"convenio_id": convenio_id}, {"_id": 0})
+    return convenio
+
+@router.delete("/convenios/{convenio_id}")
+async def delete_convenio(convenio_id: str):
+    result = await db.convenios.delete_one({"convenio_id": convenio_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Convenio no encontrado")
+    return {"status": "deleted"}
+
+# --- Leads ---
 
 class PartnerLeadCreate(BaseModel):
     partner_slug: str
