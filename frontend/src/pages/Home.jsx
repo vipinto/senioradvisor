@@ -70,7 +70,7 @@ const Home = () => {
       </section>
 
       {/* SeniorClub - Banner CTA */}
-      <section className="py-12" data-testid="senior-club-section">
+      <section className="py-12 bg-white" data-testid="senior-club-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link to="/seniorclub" className="block">
             <div className="bg-[#33404f] rounded-2xl hover:bg-[#3a4a5c] transition-colors cursor-pointer group overflow-hidden">
