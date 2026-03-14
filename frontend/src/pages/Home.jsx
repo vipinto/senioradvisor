@@ -19,7 +19,7 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-cyan-50 via-white to-cyan-50 pt-16 pb-12 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#00e7ff]/15 via-[#00e7ff]/5 to-[#00e7ff]/15 pt-16 pb-12 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto" data-testid="hero-section">
             <h1 className="font-montserrat text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#33404f] uppercase tracking-wide leading-tight mb-6">
@@ -31,8 +31,8 @@ const Home = () => {
               Conectamos familias con <span className="font-bold text-[#008b9a]">residencias</span>, <span className="font-bold">cuidado a domicilio</span> y servicios de <span className="font-bold text-[#008b9a]">salud mental</span> de confianza.
             </p>
 
-            {/* SearchBar - Full Width */}
-            <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200 mb-8">
+            {/* SearchBar */}
+            <div className="max-w-3xl mx-auto mb-8">
               <SearchBar />
             </div>
           </div>
