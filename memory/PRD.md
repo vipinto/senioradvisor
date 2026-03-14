@@ -6,7 +6,7 @@ Plataforma web para encontrar residencias, cuidado a domicilio y servicios de sa
 ## Modelo de Negocio
 
 ### Roles
-- **Cliente/Familiar**: Buscar servicios, ver perfiles, dejar reseñas (SIN suscripcion)
+- **Cliente/Familiar**: Buscar servicios, ver perfiles, dejar resenas (SIN suscripcion)
 - **Proveedor**: Ofrece residencias, cuidado a domicilio o salud mental. Suscripcion Premium via MercadoPago
 - **Admin**: Panel de administracion completo
 
@@ -20,22 +20,31 @@ Plataforma web para encontrar residencias, cuidado a domicilio y servicios de sa
 
 ### Home
 - Hero con buscador
-- Banner de llamado a la accion
 - Nuestros Servicios (3 categorias)
-- Residencias Destacadas (premium + rating >= 4.0, carrusel)
+- **SeniorClub** - Convenios con entidades externas (Help Rescate)
+- Residencias Destacadas (10 premium con carrusel)
+- Como usar SeniorAdvisor (3 pasos)
 - Sobre Nosotros (con video YouTube)
-- Actualidad Mayor (seccion blog en homepage)
+- Actualidad Mayor (seccion blog)
 - CTA para proveedores
 
+### SeniorClub - Convenios
+- Seccion en homepage con tarjetas de socios
+- Pagina interna por convenio: /convenio/help-rescate
+- Modal de contacto (Nombre, Correo, Telefono +56, Tipo de contacto)
+- Backend almacena leads para seguimiento de comisiones
+- Admin panel: Tab "Leads" con tabla de contactos
+
+### Help Rescate (Primer convenio)
+- Logo, descripcion, regiones disponibles
+- Plan Hogar: Desde $8.336/mes (0.22 UF) - Mejoramiento del Hogar
+- Plan Rescate Total: Desde $32.152/mes (0.81 UF) - Emergencias y traslados
+- Servicios: Orientacion 24/7, Telemedicina, Medico domicilio, Rescate movil, etc.
+
 ### Perfil del Proveedor
-- Hero: fondo #00e7ff, nombre en #33404f, comuna bold
-- Rating: estrellas amarillas
-- Galeria de fotos
-- Sobre mi: descripcion
-- Servicios: amenidades en 4 categorias
-- Mas Informacion
-- Resenas: sistema 5 criterios
-- Sidebar: Redes sociales, Precio, Contacto, Ubicacion, CTA
+- Hero: fondo #00e7ff, nombre en #33404f
+- Rating, Galeria, Sobre mi, Servicios/amenidades
+- Sidebar: Redes sociales, Precio, Contacto, Ubicacion
 
 ### Panel del Proveedor
 - Suscripcion Premium (MercadoPago)
@@ -43,35 +52,24 @@ Plataforma web para encontrar residencias, cuidado a domicilio y servicios de sa
 - Galeria, Reservas, Solicitudes
 
 ### Blog "Actualidad Mayor"
-- Paginas publicas: /blog (listado) y /blog/:slug (articulo individual)
-- Seccion en homepage con ultimos articulos
+- Paginas publicas: /blog y /blog/:slug
 - Admin CRUD completo desde panel de administracion
-- 6 articulos seed en base de datos
+- 6 articulos seed
 
 ### Panel de Administracion (/admin)
-- Dashboard con estadisticas (usuarios, proveedores, suscripciones)
-- Tabs: Pendientes, Cuidadores, Planes, Metricas, SOS Veterinario, Blog
-- Blog: Crear, Editar, Eliminar articulos con formulario modal
-- Gestion de proveedores (aprobar/rechazar/verificar)
-- Gestion de planes de suscripcion
-
-### Sistema de Resenas
-- 5 criterios: personal, instalaciones, visitas, comida, actividades
-- Promedio automatico
-- Requiere login para dejar resena
+- Dashboard con estadisticas
+- Tabs: Pendientes, Cuidadores, Planes, Metricas, SOS, Blog, Leads
+- Blog CRUD, Gestion proveedores, Leads de convenios
 
 ## Key API Endpoints
 - POST /api/auth/login, /register | GET /api/auth/me
 - GET /api/providers | GET /api/providers/{id}
 - PUT /api/providers/my-profile
 - POST /api/reviews
-- GET /api/subscription/plans?role=provider
-- POST /api/subscription/create-payment
-- POST /api/webhooks/mercadopago
-- GET /api/blog/articles | POST /api/blog/articles
-- GET /api/blog/articles/{slug}
-- PUT /api/blog/articles/{article_id} | DELETE /api/blog/articles/{article_id}
-- GET /api/admin/stats, /providers/pending, /providers/all, /plans, /metrics
+- GET/POST /api/blog/articles | PUT/DELETE /api/blog/articles/{id}
+- POST /api/partners/leads | GET /api/partners/leads
+- GET /api/partners/leads/stats
+- Admin: /api/admin/stats, /providers, /plans, /metrics
 
 ## Credenciales de Test
 - Admin: admin@senioradvisor.cl / admin123
@@ -84,22 +82,18 @@ Plataforma web para encontrar residencias, cuidado a domicilio y servicios de sa
 - Re-branding U-CAN -> SeniorAdvisor
 - Categorias de servicios actualizadas
 - Sistema de resenas 5 criterios
-- Eliminacion paywall clientes
 - MercadoPago produccion (3 planes)
-- Amenidades con 4 categorias + toggles en dashboard
-- Redes sociales en perfil + dashboard
-- Residencias Destacadas en Home (premium + rating >= 4.0)
-- Blog "Actualidad Mayor" con CRUD admin completo
-- Panel de administracion funcional con gestion de blog
+- Amenidades + redes sociales en perfil y dashboard
+- Residencias Destacadas (10 proveedores premium)
+- Blog "Actualidad Mayor" con CRUD admin
+- SeniorClub con convenio Help Rescate
+- Sistema de leads para seguimiento de comisiones
+- Seccion "Como usar SeniorAdvisor" (3 pasos)
 
 ### Pendiente
-- P1: Google Maps (desactivado, requiere config externa del usuario)
+- P1: Google Maps (desactivado, requiere config externa)
 - P2: Limpieza global terminologia ("cuidador"/"mascota")
-- P2: Optimizacion modelo de datos
-- P2: Refactorizacion Home.jsx y ProviderProfile.jsx (archivos grandes)
-
-## Dominio
-- senioradvisor.cl
+- P2: Refactorizacion archivos grandes
 
 ## Tech Stack
 - Frontend: React, TailwindCSS, Shadcn UI, embla-carousel-react, lucide-react
@@ -107,5 +101,4 @@ Plataforma web para encontrar residencias, cuidado a domicilio y servicios de sa
 - Database: MongoDB Atlas
 - Auth: JWT + Google OAuth
 - Payments: MercadoPago
-- Font: Poppins
-- Colors: #00e7ff (accent), #33404f (dark text)
+- Font: Poppins | Colors: #00e7ff, #33404f
