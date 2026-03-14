@@ -86,36 +86,33 @@ const Home = () => {
           </div>
           <div className="md:w-8/12 flex items-center px-8 py-14 md:py-16 md:px-12">
               <div className="text-[#33404f] w-full">
-                <h2 className="text-3xl md:text-4xl font-extrabold mb-10">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
                   ¿Cómo usar SeniorAdvisor?
                 </h2>
-                <div className="space-y-8 mb-8">
-                  <div className="flex items-start gap-5">
-                    <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-[#33404f] flex items-center justify-center shrink-0">
-                      <MapPin className="w-7 h-7 text-[#33404f]" />
+                <p className="text-lg md:text-xl leading-relaxed mb-10 text-center">
+                  Encuentra, evalúa y comparte tu experiencia en simples pasos:
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-[#00e7ff] flex items-center justify-center mb-3">
+                      <MapPin className="w-9 h-9 text-[#33404f]" />
                     </div>
-                    <div>
-                      <p className="font-extrabold text-xl mb-1">Busca un servicio</p>
-                      <p className="opacity-85 text-sm leading-relaxed">Explora los distintos servicios, y ayúdanos a filtrar los mejores.</p>
-                    </div>
+                    <p className="font-bold text-xl mb-1.5">Busca un servicio</p>
+                    <p className="opacity-85 text-sm leading-relaxed">Explora los distintos servicios, y ayúdanos a filtrar los mejores.</p>
                   </div>
-                  <div className="flex items-start gap-5">
-                    <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-[#33404f] flex items-center justify-center shrink-0">
-                      <MessageSquareText className="w-7 h-7 text-[#33404f]" />
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-[#00e7ff] flex items-center justify-center mb-3">
+                      <MessageSquareText className="w-9 h-9 text-[#33404f]" />
                     </div>
-                    <div>
-                      <p className="font-extrabold text-xl mb-1">Deja tu reseña</p>
-                      <p className="opacity-85 text-sm leading-relaxed">Escribe tu experiencia y otorga una valoración con estrellas.</p>
-                    </div>
+                    <p className="font-bold text-xl mb-1.5">Deja tu reseña</p>
+                    <p className="opacity-85 text-sm leading-relaxed">Escribe tu experiencia y otorga una valoración con estrellas.</p>
                   </div>
-                  <div className="flex items-start gap-5">
-                    <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-[#33404f] flex items-center justify-center shrink-0">
-                      <Users className="w-7 h-7 text-[#33404f]" />
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-[#00e7ff] flex items-center justify-center mb-3">
+                      <Users className="w-9 h-9 text-[#33404f]" />
                     </div>
-                    <div>
-                      <p className="font-extrabold text-xl mb-1">Ayuda a otros</p>
-                      <p className="opacity-85 text-sm leading-relaxed">Tu opinión orienta a más personas a tomar una mejor decisión.</p>
-                    </div>
+                    <p className="font-bold text-xl mb-1.5">Ayuda a otros</p>
+                    <p className="opacity-85 text-sm leading-relaxed">Tu opinión orienta a más personas a tomar una mejor decisión.</p>
                   </div>
                 </div>
               </div>
