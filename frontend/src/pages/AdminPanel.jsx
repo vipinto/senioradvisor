@@ -11,7 +11,7 @@ const COLORS = ['#00e7ff', '#4285F4', '#34A853', '#FBBC05'];
 function MetricsChart({ data }) {
   if (!data || data.length === 0) return <p className="text-gray-400 text-center py-8">Sin datos</p>;
   const keys = ['users', 'providers', 'subscriptions', 'reviews'];
-  const labels = ['Usuarios', 'Cuidadores', 'Suscripciones', 'Reseñas'];
+  const labels = ['Usuarios', 'Proveedores', 'Suscripciones', 'Reseñas'];
   const maxVal = Math.max(...data.flatMap(d => keys.map(k => d[k] || 0)), 1);
 
   return (
@@ -127,13 +127,11 @@ export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState('pending');
   const [editPlan, setEditPlan] = useState(null);
   const [showPlanModal, setShowPlanModal] = useState(false);
-  const [sosConfig, setSosConfig] = useState({ active: false, phone: '', schedule: '', vet_name: '', start_hour: 8, end_hour: 20 });
-  const [savingSos, setSavingSos] = useState(false);
+  const [blogForm, setBlogForm] = useState({ title: '', excerpt: '', content: '', image: '' });
   const [viewingDocs, setViewingDocs] = useState(null);
   const [blogArticles, setBlogArticles] = useState([]);
   const [showBlogModal, setShowBlogModal] = useState(false);
   const [editingArticle, setEditingArticle] = useState(null);
-  const [blogForm, setBlogForm] = useState({ title: '', excerpt: '', content: '', image: '' });
   const [partnerLeads, setPartnerLeads] = useState([]);
 
   useEffect(() => { loadData(); }, []);
@@ -154,10 +152,6 @@ export default function AdminPanel() {
       setAllProviders(allRes.data);
       setPlans(plansRes.data);
       setMetrics(metricsRes.data);
-      try {
-        const sosRes = await api.get('/admin/sos');
-        setSosConfig(sosRes.data);
-      } catch {}
       try {
         const blogRes = await api.get('/blog/articles?published_only=false');
         setBlogArticles(blogRes.data);
@@ -211,7 +205,7 @@ export default function AdminPanel() {
         {stats && (
           <div className="grid md:grid-cols-5 gap-4 mb-8">
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Usuarios</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-users">{stats.total_users}</p></div>
-            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Cuidadores</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-providers">{stats.total_providers}</p></div>
+            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Proveedores</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-providers">{stats.total_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Pendientes</p><p className="text-3xl font-bold text-orange-500" data-testid="stat-pending">{stats.pending_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Verificados</p><p className="text-3xl font-bold text-green-600" data-testid="stat-verified">{stats.verified_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Suscripciones</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-subscriptions">{stats.active_subscriptions}</p></div>
@@ -224,16 +218,13 @@ export default function AdminPanel() {
               Pendientes ({pendingProviders.length})
             </button>
             <button onClick={() => setActiveTab('all')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'all' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-all">
-              Cuidadores ({allProviders.filter(p => p.approved).length})
+              Proveedores ({allProviders.filter(p => p.approved).length})
             </button>
             <button onClick={() => setActiveTab('plans')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'plans' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-plans">
               <CreditCard className="w-4 h-4 inline mr-1" />Planes ({plans.length})
             </button>
             <button onClick={() => setActiveTab('metrics')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'metrics' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-metrics">
               <BarChart3 className="w-4 h-4 inline mr-1" />Metricas
-            </button>
-            <button onClick={() => setActiveTab('sos')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'sos' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-sos">
-              SOS Veterinario
             </button>
             <button onClick={() => setActiveTab('blog')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'blog' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-blog">
               <Newspaper className="w-4 h-4 inline mr-1" />Blog
@@ -377,13 +368,13 @@ export default function AdminPanel() {
                     <h4 className="font-semibold text-gray-700 mb-3">Resumen</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between"><span className="text-gray-500">Usuarios totales</span><span className="font-bold">{stats?.total_users || 0}</span></div>
-                      <div className="flex justify-between"><span className="text-gray-500">Cuidadores activos</span><span className="font-bold">{stats?.total_providers || 0}</span></div>
+                      <div className="flex justify-between"><span className="text-gray-500">Proveedores activos</span><span className="font-bold">{stats?.total_providers || 0}</span></div>
                       <div className="flex justify-between"><span className="text-gray-500">Suscripciones activas</span><span className="font-bold text-[#00e7ff]">{stats?.active_subscriptions || 0}</span></div>
                       <div className="flex justify-between"><span className="text-gray-500">Reseñas totales</span><span className="font-bold">{stats?.total_reviews || 0}</span></div>
                     </div>
                   </div>
                   <div className="bg-gray-50 rounded-xl p-5">
-                    <h4 className="font-semibold text-gray-700 mb-3">Cuidadores</h4>
+                    <h4 className="font-semibold text-gray-700 mb-3">Proveedores</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between"><span className="text-gray-500">Aprobados</span><span className="font-bold text-green-600">{stats?.total_providers || 0}</span></div>
                       <div className="flex justify-between"><span className="text-gray-500">Pendientes</span><span className="font-bold text-orange-500">{stats?.pending_providers || 0}</span></div>
@@ -393,65 +384,6 @@ export default function AdminPanel() {
                 </div>
               </div>
             )}
-            {activeTab === 'sos' && (
-              <div className="space-y-6" data-testid="sos-tab">
-                <h3 className="text-lg font-bold text-[#33404f]">Configuracion SOS Veterinario</h3>
-                <p className="text-sm text-gray-500">Configura el número de emergencia al que los cuidadores pueden llamar si tienen un problema con una mascota.</p>
-
-                <div className="bg-gray-50 rounded-xl p-6 space-y-4">
-                  <div className="flex items-center gap-3 mb-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={sosConfig.active || false} onChange={e => setSosConfig(prev => ({ ...prev, active: e.target.checked }))} className="w-5 h-5 accent-[#00e7ff] rounded" data-testid="sos-active-toggle" />
-                      <span className="font-semibold">{sosConfig.active ? 'SOS Activo' : 'SOS Desactivado'}</span>
-                    </label>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Nombre del Veterinario</label>
-                    <input type="text" placeholder="Ej: Dr. Martinez" value={sosConfig.vet_name || ''} onChange={e => setSosConfig(prev => ({ ...prev, vet_name: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="sos-vet-name" />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Numero de Telefono</label>
-                    <input type="tel" placeholder="Ej: +56912345678" value={sosConfig.phone || ''} onChange={e => setSosConfig(prev => ({ ...prev, phone: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="sos-phone" />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Horario de Atencion (texto descriptivo)</label>
-                    <input type="text" placeholder="Ej: Lunes a Viernes 9:00 - 18:00" value={sosConfig.schedule || ''} onChange={e => setSosConfig(prev => ({ ...prev, schedule: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="sos-schedule" />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Hora inicio (0-23)</label>
-                      <input type="number" min="0" max="23" value={sosConfig.start_hour ?? 8} onChange={e => setSosConfig(prev => ({ ...prev, start_hour: parseInt(e.target.value) || 0 }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="sos-start-hour" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Hora fin (0-23)</label>
-                      <input type="number" min="0" max="23" value={sosConfig.end_hour ?? 20} onChange={e => setSosConfig(prev => ({ ...prev, end_hour: parseInt(e.target.value) || 0 }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="sos-end-hour" />
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-500">El boton SOS solo estara activo entre la hora inicio y hora fin (hora de Chile). Fuera de horario, los cuidadores suscritos veran el boton deshabilitado.</p>
-
-                  <Button
-                    onClick={async () => {
-                      setSavingSos(true);
-                      try {
-                        await api.put('/admin/sos', sosConfig);
-                        toast.success('Configuracion SOS guardada');
-                      } catch { toast.error('Error al guardar'); }
-                      finally { setSavingSos(false); }
-                    }}
-                    disabled={savingSos}
-                    className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
-                    data-testid="save-sos-btn"
-                  >
-                    {savingSos ? 'Guardando...' : 'Guardar Configuracion SOS'}
-                  </Button>
-                </div>
-              </div>
-            )}
-
             {activeTab === 'blog' && (
               <div className="space-y-4" data-testid="blog-tab">
                 <div className="flex items-center justify-between mb-4">
@@ -724,7 +656,7 @@ export default function AdminPanel() {
               <div className="mt-6 p-4 bg-yellow-50 rounded-xl">
                 <p className="text-sm text-yellow-800">
                   <strong>Instrucciones:</strong> Compara la foto del carnet con la selfie para verificar que sea la misma persona. 
-                  Si todo esta correcto, aprueba y verifica al cuidador.
+                  Si todo esta correcto, aprueba y verifica al proveedor.
                 </p>
               </div>
             </div>
