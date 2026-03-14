@@ -69,66 +69,32 @@ const Home = () => {
         </div>
       </section>
 
-      {/* SeniorClub - Convenios */}
-      <section className="py-14 bg-gray-50" data-testid="senior-club-section">
+      {/* SeniorClub - Banner CTA */}
+      <section className="py-12" data-testid="senior-club-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Handshake className="w-7 h-7 text-[#00e7ff]" />
-            <h2 className="text-3xl font-bold text-[#33404f]">SeniorClub</h2>
-          </div>
-          <p className="text-gray-500 mb-8">Convenios exclusivos para el bienestar de nuestros mayores</p>
-
-          {/* Help Rescate Card */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow">
-            <div className="flex flex-col lg:flex-row">
-              {/* Logo side */}
-              <div className="lg:w-64 bg-gray-50 flex items-center justify-center p-8 lg:border-r border-b lg:border-b-0 border-gray-100">
-                <img
-                  src="https://customer-assets.emergentagent.com/job_316c0f31-5a86-43b3-bcc3-d5c9be92d49a/artifacts/tawy0n3k_images-7.png"
-                  alt="Help Rescate"
-                  className="w-36"
-                />
-              </div>
-              {/* Content side */}
-              <div className="flex-1 p-6 lg:p-8">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="text-2xl font-bold text-[#33404f]">Help Rescate</h3>
-                    <p className="text-sm text-gray-500 mt-1 max-w-xl">Más de 25 años acompañando a las personas en momentos donde la salud se vuelve una prioridad.</p>
-                  </div>
-                  <span className="bg-[#00e7ff] text-[#33404f] text-xs font-bold px-3 py-1 rounded-full shrink-0 ml-4">Destacado</span>
+          <Link to="/seniorclub" className="block">
+            <div className="bg-[#33404f] rounded-2xl overflow-hidden hover:shadow-2xl transition-shadow cursor-pointer group">
+              <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 px-8 py-8 md:py-6">
+                <div className="shrink-0">
+                  <img
+                    src="https://customer-assets.emergentagent.com/job_316c0f31-5a86-43b3-bcc3-d5c9be92d49a/artifacts/y9u1s2ae_seniorclub.svg"
+                    alt="SeniorClub"
+                    className="h-16 md:h-20"
+                    style={{ filter: 'brightness(0) invert(1)' }}
+                  />
                 </div>
-                {/* Plans preview */}
-                <div className="grid sm:grid-cols-2 gap-4 mt-5">
-                  <div className="border border-gray-200 rounded-xl p-4 hover:border-[#00e7ff] transition-colors">
-                    <p className="font-bold text-[#33404f] text-sm">PLAN HOGAR</p>
-                    <p className="text-xs text-gray-400 mb-2">Mejoramiento del Hogar</p>
-                    <p className="font-bold text-lg text-[#33404f]">Desde $8.336<span className="text-xs font-normal text-gray-400"> /mes</span></p>
-                    <p className="text-[11px] text-gray-400">Cobro en UF, Desde 0.22</p>
-                  </div>
-                  <div className="border border-gray-200 rounded-xl p-4 hover:border-[#00e7ff] transition-colors">
-                    <p className="font-bold text-[#33404f] text-sm">PLAN RESCATE TOTAL</p>
-                    <p className="text-xs text-gray-400 mb-2">Emergencias y traslados</p>
-                    <p className="font-bold text-lg text-[#33404f]">Desde $32.152<span className="text-xs font-normal text-gray-400"> /mes</span></p>
-                    <p className="text-[11px] text-gray-400">Cobro en UF, Desde 0.81</p>
-                  </div>
+                <div className="flex-1 text-center md:text-left">
+                  <h3 className="text-white text-xl md:text-2xl font-bold mb-1">Convenios exclusivos para el bienestar de nuestros mayores</h3>
+                  <p className="text-gray-300 text-sm">Accede a descuentos y servicios preferenciales con nuestros aliados</p>
                 </div>
-                {/* Actions */}
-                <div className="flex gap-3 mt-5">
-                  <Link to="/convenio/help-rescate">
-                    <Button variant="outline" className="border-[#33404f] text-[#33404f] hover:bg-gray-50 font-bold" data-testid="view-help-rescate">
-                      Ver Servicio
-                    </Button>
-                  </Link>
-                  <Link to="/convenio/help-rescate">
-                    <Button className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold" data-testid="contact-help-rescate-home">
-                      Contactar Servicio
-                    </Button>
-                  </Link>
+                <div className="shrink-0">
+                  <div className="bg-[#00e7ff] hover:bg-[#00d4e8] text-[#33404f] font-bold px-6 py-3 rounded-xl text-sm group-hover:scale-105 transition-transform flex items-center gap-2">
+                    Ver Convenios <ArrowRight className="w-4 h-4" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
       </section>
 

@@ -26,6 +26,7 @@ import PetSetup from '@/pages/PetSetup';
 import Blog from '@/pages/Blog';
 import BlogArticle from '@/pages/BlogArticle';
 import HelpRescatePage from '@/pages/HelpRescatePage';
+import SeniorClubPage from '@/pages/SeniorClubPage';
 import FAQ from '@/pages/FAQ';
 import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
@@ -64,6 +65,7 @@ function AppRouter() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogArticle />} />
         <Route path="/convenio/help-rescate" element={<HelpRescatePage />} />
+        <Route path="/seniorclub" element={<SeniorClubPage />} />
         <Route path="/provider/:providerId" element={<ProviderProfile />} />
         <Route path="/dashboard" element={
           <ProtectedRoute><Dashboard /></ProtectedRoute>
