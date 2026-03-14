@@ -36,6 +36,53 @@ const Home = () => {
           <div className="mb-8">
             <SearchBar />
           </div>
+
+          {/* Residencias Destacadas - dentro del hero */}
+          {featured.length > 0 && (
+            <div className="mt-4" data-testid="featured-section">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-[#33404f] mb-2">Residencias Destacadas</h2>
+                <p className="text-[#33404f]/60 text-sm">Los servicios mejor evaluados por las familias</p>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {featured.map((p) => (
+                  <Link
+                    key={p.provider_id}
+                    to={`/provider/${p.provider_id}`}
+                    className="group bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
+                    data-testid={`featured-${p.provider_id}`}
+                  >
+                    <div className="h-44 bg-gray-200 overflow-hidden">
+                      <img
+                        src={p.photos?.[0] || p.gallery?.[0]?.url || ''}
+                        alt={p.business_name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center gap-1 mb-1.5">
+                        {[1,2,3,4,5].map(s => (
+                          <Star key={s} className={`w-3.5 h-3.5 ${s <= Math.round(p.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+                        ))}
+                        <span className="text-sm font-bold text-[#33404f] ml-1">{p.rating?.toFixed(1)}</span>
+                      </div>
+                      <h3 className="font-bold text-[#33404f] text-base mb-1 group-hover:text-[#008b9a] transition-colors">{p.business_name}</h3>
+                      <p className="text-sm text-gray-500 flex items-center gap-1">
+                        <MapPin className="w-3.5 h-3.5" /> {p.comuna}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <div className="text-center mt-8">
+                <Link to="/search">
+                  <Button className="bg-[#33404f] text-white hover:bg-[#4a5568] px-8 py-4 text-base font-bold rounded-xl">
+                    Ver Todos los Servicios <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -131,55 +178,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/* Residencias Destacadas */}
-      {featured.length > 0 && (
-        <section className="py-20 bg-gray-50" data-testid="featured-section">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-[#33404f] mb-3">Residencias Destacadas</h2>
-              <p className="text-gray-500 text-lg">Los servicios mejor evaluados por las familias</p>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featured.map((p) => (
-                <Link
-                  key={p.provider_id}
-                  to={`/provider/${p.provider_id}`}
-                  className="group bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
-                  data-testid={`featured-${p.provider_id}`}
-                >
-                  <div className="h-44 bg-gray-200 overflow-hidden">
-                    <img
-                      src={p.photos?.[0] || p.gallery?.[0]?.url || ''}
-                      alt={p.business_name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-center gap-1 mb-1.5">
-                      {[1,2,3,4,5].map(s => (
-                        <Star key={s} className={`w-3.5 h-3.5 ${s <= Math.round(p.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
-                      ))}
-                      <span className="text-sm font-bold text-[#33404f] ml-1">{p.rating?.toFixed(1)}</span>
-                    </div>
-                    <h3 className="font-bold text-[#33404f] text-base mb-1 group-hover:text-[#008b9a] transition-colors">{p.business_name}</h3>
-                    <p className="text-sm text-gray-500 flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5" /> {p.comuna}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-            <div className="text-center mt-10">
-              <Link to="/search">
-                <Button className="bg-[#33404f] text-white hover:bg-[#4a5568] px-8 py-4 text-base font-bold rounded-xl">
-                  Ver Todos los Servicios <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* About Section */}
       <section className="py-20 bg-gray-50">
