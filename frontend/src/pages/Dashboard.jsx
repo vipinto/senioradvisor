@@ -112,30 +112,12 @@ const Dashboard = () => {
               <p className="opacity-90 text-sm">Hola, {user.name}!</p>
             </div>
             <Link to="/search">
-              <Button className="bg-white text-[#00e7ff] hover:bg-gray-100"><Search className="w-4 h-4 mr-2" /> Buscar</Button>
+              <Button className="bg-[#33404f] text-white hover:bg-[#4a5568]"><Search className="w-4 h-4 mr-2" /> Buscar</Button>
             </Link>
           </div>
         </div>
 
-        {/* Become Carer button - only show if user doesn't have provider role */}
-        {user.role !== 'provider' && user.role !== 'admin' && !user.roles?.includes('provider') && (
-          <Link to="/provider/register" className="block mb-6" data-testid="become-carer-link">
-            <div className="bg-white rounded-xl p-4 shadow-sm border-2 border-dashed border-[#00e7ff]/30 hover:border-[#00e7ff] transition-colors">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-[#00e7ff]" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-bold">¿Quieres ser Cuidador?</h3>
-                  <p className="text-sm text-gray-500">Ofrece tus servicios y empieza a ganar</p>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </div>
-            </div>
-          </Link>
-        )}
-
-        {/* Tabs Navigation - Sin suscripción para clientes */}
+        {/* Tabs Navigation */}
         <div className="flex gap-2 mb-6 border-b overflow-x-auto bg-white rounded-t-xl p-2">
           {[
             { key: 'requests', label: 'Mis Solicitudes', icon: Inbox },

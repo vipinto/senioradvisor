@@ -88,9 +88,11 @@ const Navbar = () => {
                         Panel Cliente
                       </Link>
                     )}
+                    {user.role === 'provider' && (
                     <Link to="/historial" className="block px-4 py-3 text-[#33404f] text-lg hover:bg-gray-50">
                       Historial y Facturas
                     </Link>
+                    )}
                     {user.role === 'provider' && (
                       <Link to="/provider/dashboard" className="block px-4 py-3 text-[#33404f] text-lg hover:bg-gray-50">
                         Panel Proveedor
@@ -163,12 +165,14 @@ const Navbar = () => {
                     Panel Cliente
                   </Link>
                 )}
+                {user.role === 'provider' && (
                 <Link to="/historial" className="block py-2 text-gray-700 hover:text-[#00e7ff]">
                   Historial y Facturas
                 </Link>
+                )}
                 {user.role === 'provider' && (
                   <Link to="/provider/dashboard" className="block py-2 text-gray-700 hover:text-[#00e7ff]">
-                    Panel Cuidador
+                    Panel Proveedor
                   </Link>
                 )}
                 <Link to="/favoritos" className="block py-2 text-gray-700 hover:text-[#00e7ff]">
