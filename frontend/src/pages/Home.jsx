@@ -41,28 +41,22 @@ const Home = () => {
       </section>
 
       {/* Nuestros Servicios */}
-      <section className="py-16 bg-white" data-testid="services-section">
+      <section className="py-12 bg-white" data-testid="services-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#33404f] mb-2">Nuestros Servicios</h2>
-          </div>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { id: 'residencias', title: 'Residencias', desc: 'Hogares especializados con atención 24/7, actividades recreativas y cuidado médico profesional', Icon: HomeIcon },
-              { id: 'cuidado-domicilio', title: 'Cuidado a Domicilio', desc: 'Cuidadores profesionales que van a tu hogar para brindar atención personalizada', Icon: Heart },
-              { id: 'salud-mental', title: 'Salud Mental', desc: 'Psicólogos, psiquiatras y terapeutas especializados en adultos mayores', Icon: Brain },
+              { id: 'residencias', title: 'Residencias', Icon: HomeIcon },
+              { id: 'cuidado-domicilio', title: 'Cuidado a Domicilio', Icon: Heart },
+              { id: 'salud-mental', title: 'Salud Mental', Icon: Brain },
             ].map((service) => (
               <div
                 key={service.id}
                 onClick={() => navigate(`/search?service=${service.id}`)}
-                className="group cursor-pointer bg-white border border-gray-200 rounded-2xl p-8 flex items-center justify-between hover:shadow-lg hover:border-[#00e7ff] transition-all min-h-[200px]"
+                className="group cursor-pointer bg-white border border-gray-200 rounded-2xl p-8 flex items-center justify-between hover:shadow-lg hover:border-[#00e7ff] transition-all min-h-[120px]"
               >
-                <div className="flex-1 pr-6">
-                  <h3 className="text-xl font-bold text-[#33404f] mb-2">{service.title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">{service.desc}</p>
-                </div>
-                <div className="w-20 h-20 rounded-full bg-[#00e7ff]/10 flex items-center justify-center shrink-0 group-hover:bg-[#00e7ff]/20 transition-colors">
-                  <service.Icon className="w-9 h-9 text-[#00e7ff]" />
+                <h3 className="text-xl font-bold text-[#33404f]">{service.title}</h3>
+                <div className="w-16 h-16 rounded-full bg-[#00e7ff] flex items-center justify-center shrink-0">
+                  <service.Icon className="w-7 h-7 text-[#33404f]" />
                 </div>
               </div>
             ))}
