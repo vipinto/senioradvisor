@@ -25,11 +25,11 @@ const Home = () => {
           <div className="text-center max-w-4xl mx-auto" data-testid="hero-section">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#33404f] leading-tight mb-6">
               Encuentra el mejor
-              <span className="block text-[#008b9a]">cuidado</span>
+              <span className="block text-[#00e7ff]">cuidado</span>
               para adultos mayores
             </h1>
             <p className="text-sm text-gray-500 max-w-2xl mx-auto mb-10">
-              Conectamos familias con <span className="font-bold text-[#008b9a]">residencias</span>, <span className="font-bold">cuidado a domicilio</span> y servicios de <span className="font-bold text-[#008b9a]">salud mental</span> de confianza.
+              Conectamos familias con <span className="font-bold text-[#00e7ff]">residencias</span>, <span className="font-bold">cuidado a domicilio</span> y servicios de <span className="font-bold text-[#00e7ff]">salud mental</span> de confianza.
             </p>
           </div>
 
@@ -231,7 +231,7 @@ const FeaturedSlider = ({ featured }) => {
           ))}
           <span className="text-sm font-bold text-[#33404f] ml-1">{p.rating?.toFixed(1)}</span>
         </div>
-        <h3 className="font-bold text-[#33404f] text-base mb-1 group-hover:text-[#008b9a] transition-colors">{p.business_name}</h3>
+        <h3 className="font-bold text-[#33404f] text-base mb-1 group-hover:text-[#00e7ff] transition-colors">{p.business_name}</h3>
         <p className="text-sm text-gray-500 flex items-center gap-1">
           <MapPin className="w-3.5 h-3.5" /> {p.comuna}
         </p>
