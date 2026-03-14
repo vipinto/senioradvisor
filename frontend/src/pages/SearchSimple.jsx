@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, Component } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { MapPin, Star, Shield, Navigation, Search, X, ChevronRight, Home, Crown } from 'lucide-react';
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
@@ -8,6 +8,23 @@ import { Calendar } from '@/components/ui/calendar';
 import { es } from 'date-fns/locale';
 import { format } from 'date-fns';
 import api from '@/lib/api';
+
+class MapErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { hasError: false }; }
+  static getDerivedStateFromError() { return { hasError: true }; }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center">
+          <MapPin className="w-16 h-16 text-gray-400 mb-4" />
+          <p className="text-gray-500 font-medium">Mapa no disponible</p>
+          <p className="text-gray-400 text-sm mt-1">Usa la lista para encontrar servicios</p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const GOOGLE_MAPS_KEY = process.env.REACT_APP_GOOGLE_MAPS_KEY || '';
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -426,11 +443,12 @@ const SearchPage = () => {
 
       <div className="flex flex-col lg:flex-row" style={{ height: 'calc(100vh - 128px)' }}>
         <div className="w-full lg:w-1/2 h-[400px] lg:h-full relative">
+          <MapErrorBoundary>
           {loadError ? (
             <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center">
               <MapPin className="w-16 h-16 text-gray-400 mb-4" />
               <p className="text-gray-500 font-medium">Mapa no disponible</p>
-              <p className="text-gray-400 text-sm mt-1">Usa la lista para encontrar cuidadores</p>
+              <p className="text-gray-400 text-sm mt-1">Usa la lista para encontrar servicios</p>
             </div>
           ) : !isLoaded ? (
             <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -548,6 +566,7 @@ const SearchPage = () => {
               </button>
             </>
           )}
+          </MapErrorBoundary>
         </div>
 
         <div className="w-full lg:w-1/2 h-full overflow-y-auto bg-white border-l">
