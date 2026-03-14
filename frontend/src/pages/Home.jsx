@@ -19,7 +19,7 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-[#00e7ff]/80 pt-16 pb-12 overflow-hidden">
+      <section className="relative bg-[#00e7ff]/70 pt-16 pb-12 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto" data-testid="hero-section">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#33404f] leading-tight mb-6">
