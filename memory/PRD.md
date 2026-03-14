@@ -58,8 +58,20 @@ Plataforma web para encontrar residencias, cuidado a domicilio y servicios de sa
 
 ### Panel de Administracion (/admin)
 - Dashboard con estadisticas
-- Tabs: Pendientes, Cuidadores, Planes, Metricas, SOS, Blog, Leads
+- Tabs: Pendientes, Residencias, Planes, Metricas, SOS, Blog, Leads, Convenios
 - Blog CRUD, Gestion proveedores, Leads de convenios
+- **Carga Masiva de Residencias**: Upload CSV/XLSX con mapeo automatico de columnas
+  - Genera emails sinteticos para residencias sin correo
+  - Genera contrasenas aleatorias
+  - Batch insert optimizado (~5 seg para 265 filas)
+  - Mapea: nombre, comuna, direccion, telefono, rating, imagenes, servicios, redes sociales, coordenadas
+  - Resultados descargables como CSV
+
+### Busqueda de Proveedores
+- Filtros: comuna, tipo de servicio, rating
+- Muestra 50 resultados por defecto (224+ aprobados en DB)
+- Soporta servicios embebidos (CSV import) y coleccion separada (creacion manual)
+- Ordenamiento: Destacados > Verificados > Por rating
 
 ## Key API Endpoints
 - POST /api/auth/login, /register | GET /api/auth/me
@@ -70,6 +82,9 @@ Plataforma web para encontrar residencias, cuidado a domicilio y servicios de sa
 - POST /api/partners/leads | GET /api/partners/leads
 - GET /api/partners/leads/stats
 - Admin: /api/admin/stats, /providers, /plans, /metrics
+- **POST /api/admin/residencias/upload-excel** - Carga masiva CSV/XLSX
+- POST /api/admin/residencias/create - Creacion individual
+- POST /api/admin/residencias/bulk-create - Creacion masiva JSON
 
 ## Credenciales de Test
 - Admin: admin@senioradvisor.cl / admin123
@@ -89,15 +104,18 @@ Plataforma web para encontrar residencias, cuidado a domicilio y servicios de sa
 - SeniorClub con convenio Help Rescate
 - Sistema de leads para seguimiento de comisiones
 - Seccion "Como usar SeniorAdvisor" (3 pasos)
+- **Carga masiva de residencias desde CSV** (265 filas, 246 creadas, ~5 seg)
+- **Busqueda relajada** para incluir proveedores importados
 
 ### Pendiente
 - P1: Google Maps (desactivado, requiere config externa)
 - P2: Limpieza global terminologia ("cuidador"/"mascota")
-- P2: Refactorizacion archivos grandes
+- P2: Refactorizacion archivos grandes (AdminPanel.jsx)
+- P2: Paginacion/scroll infinito en pagina de busqueda (muestra 50 de 224+)
 
 ## Tech Stack
 - Frontend: React, TailwindCSS, Shadcn UI, embla-carousel-react, lucide-react
-- Backend: FastAPI, Pydantic, Motor (async MongoDB)
+- Backend: FastAPI, Pydantic, Motor (async MongoDB), pandas
 - Database: MongoDB Atlas
 - Auth: JWT + Google OAuth
 - Payments: MercadoPago
