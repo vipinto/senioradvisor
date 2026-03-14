@@ -205,7 +205,7 @@ export default function ProviderProfile() {
                   <h1 className="text-3xl font-bold text-[#33404f]" data-testid="provider-name">{provider.business_name}</h1>
                   {provider.verified && <Shield className="w-6 h-6 text-yellow-300" />}
                   {provider.is_featured && (
-                    <span className="bg-yellow-400/30 text-yellow-100 text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
                       <Crown className="w-3 h-3" />Destacado
                     </span>
                   )}
