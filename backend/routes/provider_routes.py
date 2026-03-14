@@ -745,9 +745,9 @@ async def search_providers(
 
     providers.sort(key=sort_key)
 
-    # Filter featured only
+    # Filter featured only (with subscription) and minimum rating 4.0
     if featured:
-        providers = [p for p in providers if p.get("is_featured")]
+        providers = [p for p in providers if p.get("is_featured") and (p.get("rating") or 0) >= 4.0]
 
     return providers
 
