@@ -30,11 +30,11 @@ const Home = () => {
             <p className="text-sm text-gray-500 max-w-2xl mx-auto mb-10">
               Conectamos familias con <span className="font-bold text-[#008b9a]">residencias</span>, <span className="font-bold">cuidado a domicilio</span> y servicios de <span className="font-bold text-[#008b9a]">salud mental</span> de confianza.
             </p>
+          </div>
 
-            {/* SearchBar */}
-            <div className="max-w-7xl mx-auto mb-8 px-4 sm:px-6 lg:px-8">
-              <SearchBar />
-            </div>
+          {/* SearchBar - ancho completo */}
+          <div className="mb-8">
+            <SearchBar />
           </div>
         </div>
       </section>
