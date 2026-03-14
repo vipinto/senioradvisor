@@ -127,14 +127,18 @@ const Home = () => {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Image */}
+            {/* Video */}
             <div className="flex justify-center">
-              <div className="relative mx-auto" style={{ maxWidth: '500px' }}>
-                <img
-                  src="https://images.unsplash.com/photo-1447069387593-a5de0862481e?w=800"
-                  alt="Familia feliz con adulto mayor"
-                  className="w-full h-auto rounded-2xl shadow-lg"
-                />
+              <div className="relative w-full" style={{ maxWidth: '500px' }}>
+                <div className="aspect-video rounded-2xl shadow-lg overflow-hidden">
+                  <iframe
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                    title="SeniorAdvisor"
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
               </div>
             </div>
             {/* Text Content */}
