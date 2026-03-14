@@ -30,8 +30,8 @@ const Login = () => {
       
       const user = response.data.user;
       
-      if (user.needs_role_selection && user.roles?.length > 1) {
-        navigate('/select-role', { replace: true, state: { user } });
+      if (user.role === 'admin') {
+        navigate('/admin', { replace: true });
       } else if (user.role === 'provider') {
         navigate('/provider/dashboard', { replace: true });
       } else {

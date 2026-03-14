@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Eye, EyeOff, Mail, Lock, User, Heart, Shield } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 
@@ -10,7 +10,6 @@ const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 const Register = () => {
   const navigate = useNavigate();
-  const [role, setRole] = useState(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,15 +33,10 @@ const Register = () => {
     }
     setLoading(true);
     try {
-      const registerRole = role === 'provider' ? 'provider' : 'client';
-      const response = await api.post('/auth/register', { email, password, name, role: registerRole });
+      const response = await api.post('/auth/register', { email, password, name, role: 'client' });
       localStorage.setItem('jwt_token', response.data.token);
       toast.success('Cuenta creada correctamente');
-      if (role === 'provider') {
-        navigate('/provider/register', { replace: true });
-      } else {
-        navigate('/dashboard', { replace: true });
-      }
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Error al crear la cuenta');
     } finally {
@@ -51,7 +45,7 @@ const Register = () => {
   };
 
   const handleGoogleRedirect = () => {
-    localStorage.setItem('register_role', role || 'client');
+    localStorage.setItem('register_role', 'client');
     const redirectUri = `${process.env.REACT_APP_BACKEND_URL}/auth/google`;
     const scope = 'email profile openid';
     const params = new URLSearchParams({
@@ -65,63 +59,6 @@ const Register = () => {
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
   };
 
-  // Pantalla de selección de rol
-  if (!role) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-50 to-white py-12 px-4" data-testid="register-role-selection">
-        <div className="max-w-lg w-full space-y-8">
-          <div className="text-center">
-            <Link to="/">
-              <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-16 mx-auto mb-6" />
-            </Link>
-            <h2 className="text-3xl font-extrabold text-[#33404f]">Crear Cuenta</h2>
-            <p className="mt-2 text-lg text-gray-600">Elige cómo quieres usar SeniorAdvisor</p>
-          </div>
-
-          <div className="space-y-4">
-            <button
-              onClick={() => setRole('client')}
-              className="w-full bg-white rounded-2xl shadow-lg p-6 border-2 border-transparent hover:border-[#00e7ff] transition-all group text-left"
-              data-testid="register-as-client"
-            >
-              <div className="flex items-center gap-5">
-                <div className="w-16 h-16 bg-cyan-50 rounded-2xl flex items-center justify-center group-hover:bg-[#00e7ff] transition-colors">
-                  <Heart className="w-8 h-8 text-[#00e7ff] group-hover:text-white transition-colors" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-[#33404f]">Busco Servicios</h3>
-                  <p className="text-gray-500 text-base mt-1">Encuentra residencias, cuidado a domicilio o salud mental</p>
-                </div>
-              </div>
-            </button>
-
-            <button
-              onClick={() => setRole('provider')}
-              className="w-full bg-white rounded-2xl shadow-lg p-6 border-2 border-transparent hover:border-[#00e7ff] transition-all group text-left"
-              data-testid="register-as-provider"
-            >
-              <div className="flex items-center gap-5">
-                <div className="w-16 h-16 bg-cyan-50 rounded-2xl flex items-center justify-center group-hover:bg-[#00e7ff] transition-colors">
-                  <Shield className="w-8 h-8 text-[#00e7ff] group-hover:text-white transition-colors" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-[#33404f]">Ofrezco Servicios</h3>
-                  <p className="text-gray-500 text-base mt-1">Registra tu residencia, servicio de cuidado o consulta</p>
-                </div>
-              </div>
-            </button>
-          </div>
-
-          <div className="text-center text-base text-gray-600">
-            ¿Ya tienes cuenta?{' '}
-            <Link to="/login" className="text-[#00e7ff] hover:underline font-bold">Inicia sesión</Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Formulario de registro
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-50 to-white py-12 px-4">
       <div className="max-w-md w-full space-y-8">
@@ -129,73 +66,33 @@ const Register = () => {
           <Link to="/">
             <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-16 mx-auto mb-6" />
           </Link>
-          <h2 className="text-3xl font-extrabold text-[#33404f]" data-testid="register-title">
-            {role === 'provider' ? 'Registro de Servicio' : 'Crear Cuenta'}
-          </h2>
-          <p className="mt-2 text-lg text-gray-600">
-            {role === 'provider' ? 'Paso 1: Crea tu cuenta' : 'Regístrate para encontrar servicios'}
-          </p>
-          <button onClick={() => setRole(null)} className="mt-2 text-base text-[#00e7ff] hover:underline font-medium" data-testid="back-to-role-selection">
-            ← Cambiar tipo de cuenta
-          </button>
+          <h2 className="text-3xl font-extrabold text-[#33404f]" data-testid="register-title">Crear Cuenta</h2>
+          <p className="mt-2 text-lg text-gray-600">Regístrate para encontrar servicios</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
           <form onSubmit={handleRegister} className="space-y-4">
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <Input 
-                type="text" 
-                placeholder="Nombre completo" 
-                value={name} 
-                onChange={(e) => setName(e.target.value)} 
-                className="pl-12 py-6 text-lg rounded-xl border-2 border-gray-300 focus:border-[#00e7ff]" 
-                data-testid="register-name-input" 
-              />
+              <Input type="text" placeholder="Nombre completo" value={name} onChange={(e) => setName(e.target.value)} className="pl-12 py-6 text-lg rounded-xl border-2 border-gray-300 focus:border-[#00e7ff]" data-testid="register-name-input" />
             </div>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <Input 
-                type="email" 
-                placeholder="Correo electrónico" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                className="pl-12 py-6 text-lg rounded-xl border-2 border-gray-300 focus:border-[#00e7ff]" 
-                data-testid="register-email-input" 
-              />
+              <Input type="email" placeholder="Correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-12 py-6 text-lg rounded-xl border-2 border-gray-300 focus:border-[#00e7ff]" data-testid="register-email-input" />
             </div>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <Input 
-                type={showPassword ? 'text' : 'password'} 
-                placeholder="Contraseña (mín. 6 caracteres)" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                className="pl-12 pr-12 py-6 text-lg rounded-xl border-2 border-gray-300 focus:border-[#00e7ff]" 
-                data-testid="register-password-input" 
-              />
+              <Input type={showPassword ? 'text' : 'password'} placeholder="Contraseña (mín. 6 caracteres)" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-12 pr-12 py-6 text-lg rounded-xl border-2 border-gray-300 focus:border-[#00e7ff]" data-testid="register-password-input" />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <Input 
-                type={showPassword ? 'text' : 'password'} 
-                placeholder="Confirmar contraseña" 
-                value={confirmPassword} 
-                onChange={(e) => setConfirmPassword(e.target.value)} 
-                className="pl-12 py-6 text-lg rounded-xl border-2 border-gray-300 focus:border-[#00e7ff]" 
-                data-testid="register-confirm-password-input" 
-              />
+              <Input type={showPassword ? 'text' : 'password'} placeholder="Confirmar contraseña" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="pl-12 py-6 text-lg rounded-xl border-2 border-gray-300 focus:border-[#00e7ff]" data-testid="register-confirm-password-input" />
             </div>
-            <Button 
-              type="submit" 
-              disabled={loading} 
-              className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6 text-lg rounded-xl font-bold shadow-md hover:shadow-lg transition-all" 
-              data-testid="register-submit-button"
-            >
-              {loading ? 'Creando cuenta...' : role === 'provider' ? 'Continuar' : 'Crear Cuenta'}
+            <Button type="submit" disabled={loading} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6 text-lg rounded-xl font-bold shadow-md hover:shadow-lg transition-all" data-testid="register-submit-button">
+              {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
             </Button>
           </form>
 
@@ -205,12 +102,7 @@ const Register = () => {
           </div>
 
           <div className="flex justify-center" data-testid="google-register-container">
-            <button 
-              type="button" 
-              onClick={handleGoogleRedirect} 
-              className="flex items-center justify-center gap-3 w-full px-4 py-4 border-2 border-gray-300 rounded-xl bg-white hover:bg-gray-50 transition-colors shadow-sm" 
-              data-testid="google-register-button"
-            >
+            <button type="button" onClick={handleGoogleRedirect} className="flex items-center justify-center gap-3 w-full px-4 py-4 border-2 border-gray-300 rounded-xl bg-white hover:bg-gray-50 transition-colors shadow-sm" data-testid="google-register-button">
               <svg width="24" height="24" viewBox="0 0 48 48">
                 <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
                 <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>

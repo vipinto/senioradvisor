@@ -95,7 +95,7 @@ const Navbar = () => {
                     )}
                     {user.role === 'provider' && (
                       <Link to="/provider/dashboard" className="block px-4 py-3 text-[#33404f] text-lg hover:bg-gray-50">
-                        Panel Proveedor
+                        Panel Residencia
                       </Link>
                     )}
                     {user.role === 'admin' && (

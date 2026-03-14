@@ -126,7 +126,7 @@ const ProviderDashboard = () => {
   if (!provider) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
-        <p className="text-gray-600 mb-6">No tienes perfil de cuidador.</p>
+        <p className="text-gray-600 mb-6">No tienes perfil de residencia.</p>
         <Link to="/provider/register"><Button className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">Crear Perfil</Button></Link>
       </div>
     </div>
@@ -136,7 +136,7 @@ const ProviderDashboard = () => {
     <div className="min-h-screen bg-gray-50" data-testid="provider-dashboard">
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Panel de Cuidador</h1>
+          <h1 className="text-4xl font-bold">Panel de Residencia</h1>
           <div className="flex items-center gap-2">
             {provider.approved ? (
               <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">Aprobado</span>
@@ -183,7 +183,7 @@ const ProviderDashboard = () => {
                 <h3 className="font-bold text-lg text-[#33404f] mb-1">Completa tu perfil para aparecer en las búsquedas</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Tu perfil está al {provider.profile_completeness.percentage}% completo. 
-                  Los clientes solo pueden ver cuidadores con perfiles completos.
+                  Los clientes solo pueden ver residencias con perfiles completos.
                 </p>
                 
                 {/* Progress Bar */}
