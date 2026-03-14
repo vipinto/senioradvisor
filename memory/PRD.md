@@ -6,78 +6,106 @@ Plataforma web para encontrar residencias, cuidado a domicilio y servicios de sa
 ## Modelo de Negocio
 
 ### Roles
-- **Cliente/Familiar**: Buscar servicios, ver perfiles, dejar reseñas (SIN suscripción)
-- **Proveedor**: Ofrece residencias, cuidado a domicilio o salud mental. Suscripción Premium via MercadoPago
-- **Admin**: Panel de administración
+- **Cliente/Familiar**: Buscar servicios, ver perfiles, dejar reseñas (SIN suscripcion)
+- **Proveedor**: Ofrece residencias, cuidado a domicilio o salud mental. Suscripcion Premium via MercadoPago
+- **Admin**: Panel de administracion completo
 
-### Categorías
+### Categorias
 - Residencias | Cuidado a Domicilio | Salud Mental
 
-### Planes de Suscripción (Proveedores - MercadoPago Producción)
+### Planes de Suscripcion (Proveedores - MercadoPago Produccion)
 - Mensual: $19.990 CLP | Trimestral: $49.990 CLP | Anual: $149.990 CLP
 
 ## Funcionalidades Implementadas
 
 ### Home
 - Hero con buscador
-- Banner de llamado a la acción
-- Nuestros Servicios (3 categorías)
-- **Residencias Destacadas** (4 mejores evaluados con foto, rating, comuna)
-- Sobre Nosotros
+- Banner de llamado a la accion
+- Nuestros Servicios (3 categorias)
+- Residencias Destacadas (premium + rating >= 4.0, carrusel)
+- Sobre Nosotros (con video YouTube)
+- Actualidad Mayor (seccion blog en homepage)
 - CTA para proveedores
 
-### Perfil del Proveedor (orden de secciones)
+### Perfil del Proveedor
 - Hero: fondo #00e7ff, nombre en #33404f, comuna bold
-- Rating: estrellas amarillas arriba de galería
-- Galería: fotos del proveedor
-- Sobre mi: descripción
-- Servicios: amenidades en 4 categorías (Cuidado y Salud, Servicios e instalaciones, Habitaciones, Actividades)
-- Más Información
-- Reseñas: con mensaje de login si no está autenticado
-- **Sidebar**: Redes sociales (Instagram, Facebook, Web - círculos #33404f, iconos blancos, hover #00e7ff), Precio, Contacto, Ubicación, CTA para dueños
+- Rating: estrellas amarillas
+- Galeria de fotos
+- Sobre mi: descripcion
+- Servicios: amenidades en 4 categorias
+- Mas Informacion
+- Resenas: sistema 5 criterios
+- Sidebar: Redes sociales, Precio, Contacto, Ubicacion, CTA
 
 ### Panel del Proveedor
-- Suscripción Premium (MercadoPago)
+- Suscripcion Premium (MercadoPago)
 - Tab Servicios: toggles de amenidades + redes sociales
-- Galería, Reservas, Solicitudes
+- Galeria, Reservas, Solicitudes
 
-### Sistema de Reseñas
+### Blog "Actualidad Mayor"
+- Paginas publicas: /blog (listado) y /blog/:slug (articulo individual)
+- Seccion en homepage con ultimos articulos
+- Admin CRUD completo desde panel de administracion
+- 6 articulos seed en base de datos
+
+### Panel de Administracion (/admin)
+- Dashboard con estadisticas (usuarios, proveedores, suscripciones)
+- Tabs: Pendientes, Cuidadores, Planes, Metricas, SOS Veterinario, Blog
+- Blog: Crear, Editar, Eliminar articulos con formulario modal
+- Gestion de proveedores (aprobar/rechazar/verificar)
+- Gestion de planes de suscripcion
+
+### Sistema de Resenas
 - 5 criterios: personal, instalaciones, visitas, comida, actividades
-- Promedio automático
-- Requiere login para dejar reseña
+- Promedio automatico
+- Requiere login para dejar resena
 
 ## Key API Endpoints
 - POST /api/auth/login, /register | GET /api/auth/me
 - GET /api/providers | GET /api/providers/{id}
-- PUT /api/providers/my-profile (amenities, social_links)
+- PUT /api/providers/my-profile
 - POST /api/reviews
 - GET /api/subscription/plans?role=provider
 - POST /api/subscription/create-payment
 - POST /api/webhooks/mercadopago
+- GET /api/blog/articles | POST /api/blog/articles
+- GET /api/blog/articles/{slug}
+- PUT /api/blog/articles/{article_id} | DELETE /api/blog/articles/{article_id}
+- GET /api/admin/stats, /providers/pending, /providers/all, /plans, /metrics
 
 ## Credenciales de Test
+- Admin: admin@senioradvisor.cl / admin123
 - Cliente: demo@senioradvisor.cl / demo123
 - Proveedor: proveedor1@senioradvisor.cl / demo123
 
 ## Estado Actual (Marzo 2026)
 
 ### Completado
-- Re-branding U-CAN → SeniorAdvisor
-- Categorías de servicios actualizadas
-- Sistema de reseñas 5 criterios
-- Eliminación paywall clientes
-- MercadoPago producción (3 planes)
-- Amenidades con 4 categorías + toggles en dashboard
-- Redes sociales (Instagram, Facebook, Web) en perfil + dashboard
-- Residencias Destacadas en Home
-- CTA para dueños en perfil
-- Fotos actualizadas en todos los providers
-- 5 reseñas seed en Villa Serena
+- Re-branding U-CAN -> SeniorAdvisor
+- Categorias de servicios actualizadas
+- Sistema de resenas 5 criterios
+- Eliminacion paywall clientes
+- MercadoPago produccion (3 planes)
+- Amenidades con 4 categorias + toggles en dashboard
+- Redes sociales en perfil + dashboard
+- Residencias Destacadas en Home (premium + rating >= 4.0)
+- Blog "Actualidad Mayor" con CRUD admin completo
+- Panel de administracion funcional con gestion de blog
 
 ### Pendiente
-- P1: Google Maps (desactivado, requiere config externa)
-- P2: Limpieza global terminología ("cuidador"/"mascota")
-- P2: Optimización modelo de datos
+- P1: Google Maps (desactivado, requiere config externa del usuario)
+- P2: Limpieza global terminologia ("cuidador"/"mascota")
+- P2: Optimizacion modelo de datos
+- P2: Refactorizacion Home.jsx y ProviderProfile.jsx (archivos grandes)
 
 ## Dominio
 - senioradvisor.cl
+
+## Tech Stack
+- Frontend: React, TailwindCSS, Shadcn UI, embla-carousel-react, lucide-react
+- Backend: FastAPI, Pydantic, Motor (async MongoDB)
+- Database: MongoDB Atlas
+- Auth: JWT + Google OAuth
+- Payments: MercadoPago
+- Font: Poppins
+- Colors: #00e7ff (accent), #33404f (dark text)
