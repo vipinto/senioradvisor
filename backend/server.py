@@ -21,6 +21,7 @@ from routes.booking_routes import router as booking_router
 from routes.care_request_routes import router as care_request_router
 from routes.contact_request_routes import router as contact_request_router
 from routes.blog_routes import router as blog_router
+from routes.partner_routes import router as partner_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -62,6 +63,7 @@ api_router.include_router(booking_router)
 api_router.include_router(care_request_router)
 api_router.include_router(contact_request_router)
 api_router.include_router(blog_router)
+api_router.include_router(partner_router)
 
 
 @api_router.get("/")

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home as HomeIcon, Heart, Brain, Star, MapPin, ArrowRight, ChevronLeft, ChevronRight, MessageSquareText, Users } from 'lucide-react';
+import { Home as HomeIcon, Heart, Brain, Star, MapPin, ArrowRight, ChevronLeft, ChevronRight, MessageSquareText, Users, Handshake } from 'lucide-react';
 import SearchBar from '@/components/SearchBar';
 import useEmblaCarousel from 'embla-carousel-react';
 import api from '@/lib/api';
@@ -65,6 +65,69 @@ const Home = () => {
                 <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SeniorClub - Convenios */}
+      <section className="py-14 bg-gray-50" data-testid="senior-club-section">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3 mb-2">
+            <Handshake className="w-7 h-7 text-[#00e7ff]" />
+            <h2 className="text-3xl font-bold text-[#33404f]">SeniorClub</h2>
+          </div>
+          <p className="text-gray-500 mb-8">Convenios exclusivos para el bienestar de nuestros mayores</p>
+
+          {/* Help Rescate Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow">
+            <div className="flex flex-col lg:flex-row">
+              {/* Logo side */}
+              <div className="lg:w-64 bg-gray-50 flex items-center justify-center p-8 lg:border-r border-b lg:border-b-0 border-gray-100">
+                <img
+                  src="https://customer-assets.emergentagent.com/job_316c0f31-5a86-43b3-bcc3-d5c9be92d49a/artifacts/tawy0n3k_images-7.png"
+                  alt="Help Rescate"
+                  className="w-36"
+                />
+              </div>
+              {/* Content side */}
+              <div className="flex-1 p-6 lg:p-8">
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <h3 className="text-2xl font-bold text-[#33404f]">Help Rescate</h3>
+                    <p className="text-sm text-gray-500 mt-1 max-w-xl">Más de 25 años acompañando a las personas en momentos donde la salud se vuelve una prioridad.</p>
+                  </div>
+                  <span className="bg-[#00e7ff] text-[#33404f] text-xs font-bold px-3 py-1 rounded-full shrink-0 ml-4">Destacado</span>
+                </div>
+                {/* Plans preview */}
+                <div className="grid sm:grid-cols-2 gap-4 mt-5">
+                  <div className="border border-gray-200 rounded-xl p-4 hover:border-[#00e7ff] transition-colors">
+                    <p className="font-bold text-[#33404f] text-sm">PLAN HOGAR</p>
+                    <p className="text-xs text-gray-400 mb-2">Mejoramiento del Hogar</p>
+                    <p className="font-bold text-lg text-[#33404f]">Desde $8.336<span className="text-xs font-normal text-gray-400"> /mes</span></p>
+                    <p className="text-[11px] text-gray-400">Cobro en UF, Desde 0.22</p>
+                  </div>
+                  <div className="border border-gray-200 rounded-xl p-4 hover:border-[#00e7ff] transition-colors">
+                    <p className="font-bold text-[#33404f] text-sm">PLAN RESCATE TOTAL</p>
+                    <p className="text-xs text-gray-400 mb-2">Emergencias y traslados</p>
+                    <p className="font-bold text-lg text-[#33404f]">Desde $32.152<span className="text-xs font-normal text-gray-400"> /mes</span></p>
+                    <p className="text-[11px] text-gray-400">Cobro en UF, Desde 0.81</p>
+                  </div>
+                </div>
+                {/* Actions */}
+                <div className="flex gap-3 mt-5">
+                  <Link to="/convenio/help-rescate">
+                    <Button variant="outline" className="border-[#33404f] text-[#33404f] hover:bg-gray-50 font-bold" data-testid="view-help-rescate">
+                      Ver Servicio
+                    </Button>
+                  </Link>
+                  <Link to="/convenio/help-rescate">
+                    <Button className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold" data-testid="contact-help-rescate-home">
+                      Contactar Servicio
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

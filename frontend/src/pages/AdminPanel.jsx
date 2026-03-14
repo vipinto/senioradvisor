@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShieldCheck, CheckCircle, XCircle, Badge, Eye, CreditCard, Plus, Pencil, Trash2, ToggleLeft, ToggleRight, BarChart3, Camera, FileText, User, Newspaper } from 'lucide-react';
+import { ShieldCheck, CheckCircle, XCircle, Badge, Eye, CreditCard, Plus, Pencil, Trash2, ToggleLeft, ToggleRight, BarChart3, Camera, FileText, User, Newspaper, Handshake } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -134,6 +134,7 @@ export default function AdminPanel() {
   const [showBlogModal, setShowBlogModal] = useState(false);
   const [editingArticle, setEditingArticle] = useState(null);
   const [blogForm, setBlogForm] = useState({ title: '', excerpt: '', content: '', image: '' });
+  const [partnerLeads, setPartnerLeads] = useState([]);
 
   useEffect(() => { loadData(); }, []);
 
@@ -160,6 +161,10 @@ export default function AdminPanel() {
       try {
         const blogRes = await api.get('/blog/articles?published_only=false');
         setBlogArticles(blogRes.data);
+      } catch {}
+      try {
+        const leadsRes = await api.get('/partners/leads');
+        setPartnerLeads(leadsRes.data);
       } catch {}
     } catch (e) {
       navigate('/login');
@@ -232,6 +237,9 @@ export default function AdminPanel() {
             </button>
             <button onClick={() => setActiveTab('blog')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'blog' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-blog">
               <Newspaper className="w-4 h-4 inline mr-1" />Blog
+            </button>
+            <button onClick={() => setActiveTab('leads')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'leads' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-leads">
+              <Handshake className="w-4 h-4 inline mr-1" />Leads ({partnerLeads.length})
             </button>
           </div>
 
@@ -493,6 +501,47 @@ export default function AdminPanel() {
                       </button>
                     </div>
                   ))
+                )}
+              </div>
+            )}
+
+            {activeTab === 'leads' && (
+              <div className="space-y-4" data-testid="leads-tab">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold text-[#33404f]">Leads de Convenios - SeniorClub</h3>
+                  <span className="text-sm text-gray-500">{partnerLeads.length} contactos</span>
+                </div>
+                {partnerLeads.length === 0 ? (
+                  <p className="text-gray-500 text-center py-8">No hay leads registrados</p>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b text-left">
+                          <th className="py-3 px-2 font-semibold text-gray-600">Fecha</th>
+                          <th className="py-3 px-2 font-semibold text-gray-600">Nombre</th>
+                          <th className="py-3 px-2 font-semibold text-gray-600">Email</th>
+                          <th className="py-3 px-2 font-semibold text-gray-600">Teléfono</th>
+                          <th className="py-3 px-2 font-semibold text-gray-600">Convenio</th>
+                          <th className="py-3 px-2 font-semibold text-gray-600">Plan</th>
+                          <th className="py-3 px-2 font-semibold text-gray-600">Tipo</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {partnerLeads.map(l => (
+                          <tr key={l.lead_id} className="border-b hover:bg-gray-50" data-testid={`lead-row-${l.lead_id}`}>
+                            <td className="py-3 px-2 text-gray-500">{new Date(l.created_at).toLocaleDateString('es-CL')}</td>
+                            <td className="py-3 px-2 font-medium text-[#33404f]">{l.name}</td>
+                            <td className="py-3 px-2 text-gray-600">{l.email}</td>
+                            <td className="py-3 px-2 text-gray-600">{l.phone}</td>
+                            <td className="py-3 px-2"><span className="bg-[#00e7ff]/10 text-[#33404f] text-xs font-bold px-2 py-0.5 rounded-full">{l.partner_slug}</span></td>
+                            <td className="py-3 px-2 text-gray-600">{l.plan_interest || '-'}</td>
+                            <td className="py-3 px-2 text-gray-500">{l.contact_type || '-'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
             )}
