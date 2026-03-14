@@ -22,7 +22,7 @@ const Home = () => {
       <section className="relative bg-gradient-to-br from-[#00e7ff]/25 via-[#00e7ff]/15 to-[#00e7ff]/25 pt-16 pb-12 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto" data-testid="hero-section">
-            <h1 className="font-montserrat text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#33404f] uppercase tracking-wide leading-tight mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#33404f] leading-tight mb-6">
               Encuentra el mejor
               <span className="block text-[#008b9a]">cuidado</span>
               para adultos mayores
@@ -51,7 +51,7 @@ const Home = () => {
           </div>
           <div className="md:w-8/12 flex items-center px-8 py-14 md:py-16 md:px-12">
               <div className="text-[#33404f] w-full">
-                <h2 className="font-montserrat text-3xl md:text-4xl font-bold uppercase tracking-wide mb-4 text-center">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
                   El cuidado que merecen nuestros mayores
                 </h2>
                 <p className="text-lg md:text-xl leading-relaxed mb-10 text-center">
@@ -62,21 +62,21 @@ const Home = () => {
                     <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-[#00e7ff] flex items-center justify-center mb-3">
                       <HomeIcon className="w-9 h-9 text-[#33404f]" />
                     </div>
-                    <p className="font-bold text-2xl uppercase tracking-widest mb-1.5">Confort</p>
+                    <p className="font-bold text-2xlst mb-1.5">Confort</p>
                     <p className="opacity-85 text-sm leading-relaxed">Espacios diseñados para su bienestar, con todas las comodidades y atención personalizada que necesitan.</p>
                   </div>
                   <div className="flex flex-col items-center text-center">
                     <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-[#00e7ff] flex items-center justify-center mb-3">
                       <Heart className="w-9 h-9 text-[#33404f]" />
                     </div>
-                    <p className="font-bold text-2xl uppercase tracking-widest mb-1.5">Cariño</p>
+                    <p className="font-bold text-2xlst mb-1.5">Cariño</p>
                     <p className="opacity-85 text-sm leading-relaxed">Profesionales dedicados que brindan atención con amor y respeto, como parte de la familia.</p>
                   </div>
                   <div className="flex flex-col items-center text-center">
                     <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-[#00e7ff] flex items-center justify-center mb-3">
                       <Brain className="w-9 h-9 text-[#33404f]" />
                     </div>
-                    <p className="font-bold text-2xl uppercase tracking-widest mb-1.5">Bienestar</p>
+                    <p className="font-bold text-2xlst mb-1.5">Bienestar</p>
                     <p className="opacity-85 text-sm leading-relaxed">Atención integral que incluye salud física, mental y emocional para una vida plena.</p>
                   </div>
                 </div>
@@ -96,7 +96,7 @@ const Home = () => {
       <section className="py-20 bg-white" data-testid="services-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-montserrat text-4xl font-bold text-[#33404f] uppercase tracking-wide mb-4">Nuestros Servicios</h2>
+            <h2 className="text-4xl font-bold text-[#33404f] mb-4">Nuestros Servicios</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-12">
             {[
@@ -124,7 +124,7 @@ const Home = () => {
                     {service.icon}
                   </div>
                 </div>
-                <h3 className="font-montserrat text-2xl font-bold text-[#33404f] uppercase tracking-wide">{service.title}</h3>
+                <h3 className="text-2xl font-bold text-[#33404f]">{service.title}</h3>
                 <p className="text-gray-500 mt-2">{service.desc}</p>
               </div>
             ))}
@@ -137,7 +137,7 @@ const Home = () => {
         <section className="py-20 bg-gray-50" data-testid="featured-section">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="font-montserrat text-4xl font-bold text-[#33404f] uppercase tracking-wide mb-3">Residencias Destacadas</h2>
+              <h2 className="text-4xl font-bold text-[#33404f] mb-3">Residencias Destacadas</h2>
               <p className="text-gray-500 text-lg">Los servicios mejor evaluados por las familias</p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -197,7 +197,7 @@ const Home = () => {
             </div>
             {/* Text Content */}
             <div className="space-y-6">
-              <h2 className="font-montserrat text-4xl font-bold text-[#33404f] uppercase tracking-wide">Sobre Nosotros</h2>
+              <h2 className="text-4xl font-bold text-[#33404f]">Sobre Nosotros</h2>
               <div className="space-y-4 text-gray-700 leading-relaxed text-lg">
                 <p><span className="font-bold text-[#00e7ff]">SeniorAdvisor</span> es una <span className="font-semibold">plataforma innovadora</span> diseñada para ayudar a las familias a encontrar el mejor <span className="font-semibold text-[#00e7ff]">cuidado para adultos mayores</span>.</p>
                 <p>Conectamos a familias con <span className="font-semibold">residencias de calidad</span>, <span className="font-semibold text-[#00e7ff]">cuidadores a domicilio</span> y profesionales de <span className="font-semibold">salud mental</span> verificados y confiables.</p>
@@ -210,7 +210,7 @@ const Home = () => {
       {/* CTA for Providers */}
       <section className="py-20 bg-gradient-to-r from-[#00e7ff] to-[#00c4d4]">
         <div className="max-w-7xl mx-auto px-4 text-center text-[#33404f]">
-          <h2 className="font-montserrat text-4xl font-bold mb-4">¿Ofreces servicios para adultos mayores?</h2>
+          <h2 className="text-4xl font-bold mb-4">¿Ofreces servicios para adultos mayores?</h2>
           <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">Únete a SeniorAdvisor y conecta con miles de familias que buscan servicios de calidad como el tuyo.</p>
           <Link to="/provider/register">
             <Button className="bg-[#33404f] text-white hover:bg-[#4a5568] px-12 py-6 text-lg font-bold rounded-xl">

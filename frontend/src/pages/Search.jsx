@@ -136,7 +136,7 @@ const Search = () => {
       {/* View Toggle */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="font-montserrat text-2xl font-bold text-[#33404f]">
+          <h1 className="text-2xl font-bold text-[#33404f]">
             {providers.length} Servicios encontrados
           </h1>
           <div className="flex gap-2">

@@ -74,7 +74,7 @@ const Register = () => {
             <Link to="/">
               <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-16 mx-auto mb-6" />
             </Link>
-            <h2 className="font-montserrat text-3xl font-extrabold text-[#33404f]">Crear Cuenta</h2>
+            <h2 className="text-3xl font-extrabold text-[#33404f]">Crear Cuenta</h2>
             <p className="mt-2 text-lg text-gray-600">Elige cómo quieres usar SeniorAdvisor</p>
           </div>
 
@@ -129,7 +129,7 @@ const Register = () => {
           <Link to="/">
             <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-16 mx-auto mb-6" />
           </Link>
-          <h2 className="font-montserrat text-3xl font-extrabold text-[#33404f]" data-testid="register-title">
+          <h2 className="text-3xl font-extrabold text-[#33404f]" data-testid="register-title">
             {role === 'provider' ? 'Registro de Servicio' : 'Crear Cuenta'}
           </h2>
           <p className="mt-2 text-lg text-gray-600">

@@ -69,7 +69,7 @@ const Login = () => {
           <Link to="/">
             <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-16 mx-auto mb-6" />
           </Link>
-          <h2 className="font-montserrat text-3xl font-extrabold text-[#33404f]" data-testid="login-title">
+          <h2 className="text-3xl font-extrabold text-[#33404f]" data-testid="login-title">
             Iniciar Sesión
           </h2>
           <p className="mt-2 text-lg text-gray-600">Accede a tu cuenta de SeniorAdvisor</p>

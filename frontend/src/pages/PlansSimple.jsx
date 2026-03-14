@@ -111,7 +111,7 @@ const Plans = () => {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="font-montserrat text-4xl sm:text-5xl font-bold text-[#33404f] uppercase mb-4">
+          <h1 className="text-4xl sm:text-5xl font-bold text-[#33404f] mb-4">
             Elige tu Plan
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">

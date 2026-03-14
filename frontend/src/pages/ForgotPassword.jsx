@@ -33,7 +33,7 @@ const ForgotPassword = () => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
                     <Link to="/"><img src="/ucan-logo-rojo.svg" alt="U-CAN" className="h-16 mx-auto mb-6" /></Link>
-          <h2 className="font-montserrat text-3xl font-extrabold text-[#33404f] uppercase" data-testid="forgot-password-title">
+          <h2 className="text-3xl font-extrabold text-[#33404f]" data-testid="forgot-password-title">
             Recuperar Contraseña
           </h2>
         </div>
