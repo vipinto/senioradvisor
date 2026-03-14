@@ -52,7 +52,7 @@ const Home = () => {
               <div
                 key={service.id}
                 onClick={() => navigate(`/search?service=${service.id}`)}
-                className="group cursor-pointer bg-white border border-gray-200 rounded-2xl p-8 flex items-center justify-between hover:shadow-lg hover:border-[#00e7ff] transition-all min-h-[120px]"
+                className="group cursor-pointer bg-white border border-gray-200 rounded-2xl px-6 py-4 flex items-center justify-between hover:shadow-lg hover:border-[#00e7ff] transition-all"
               >
                 <h3 className="text-xl font-bold text-[#33404f]">{service.title}</h3>
                 <div className="w-16 h-16 rounded-full bg-[#00e7ff] flex items-center justify-center shrink-0">
