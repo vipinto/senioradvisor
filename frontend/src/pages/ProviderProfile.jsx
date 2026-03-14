@@ -194,6 +194,8 @@ export default function ProviderProfile() {
               <div className="w-24 h-24 rounded-2xl bg-white shadow-xl flex items-center justify-center overflow-hidden">
                 {provider.profile_photo ? (
                   <img src={getPhotoUrl(provider.profile_photo)} alt="" className="w-full h-full object-cover" />
+                ) : provider.gallery?.[0]?.url ? (
+                  <img src={getPhotoUrl(provider.gallery[0].url)} alt="" className="w-full h-full object-cover" />
                 ) : provider.photos?.[0] ? (
                   <img src={provider.photos[0]} alt="" className="w-full h-full object-cover" />
                 ) : (

@@ -653,6 +653,17 @@ async def search_providers(
         query["latitude"] = {"$gte": bounds_south, "$lte": bounds_north}
         query["longitude"] = {"$gte": bounds_west, "$lte": bounds_east}
 
+    if service_type:
+        services_coll = await db.services.find(
+            {"service_type": service_type},
+            {"_id": 0, "provider_id": 1},
+        ).to_list(5000)
+        provider_ids_from_collection = {s["provider_id"] for s in services_coll}
+        query["$or"] = [
+            {"provider_id": {"$in": list(provider_ids_from_collection)}},
+            {"services": {"$elemMatch": {"service_type": service_type}}},
+        ]
+
     import logging
     logging.info(f"Provider search query: {query}")
     
@@ -669,18 +680,6 @@ async def search_providers(
                     provider["distance_km"] = round(distance, 2)
                     filtered_providers.append(provider)
         providers = filtered_providers
-
-    if service_type:
-        # Check both services collection and embedded services
-        services = await db.services.find(
-            {"service_type": service_type},
-            {"_id": 0, "provider_id": 1},
-        ).to_list(1000)
-        provider_ids_from_collection = {s["provider_id"] for s in services}
-        providers = [p for p in providers if 
-            p["provider_id"] in provider_ids_from_collection or
-            any(s.get("service_type") == service_type for s in p.get("services", []))
-        ]
 
     if dates:
         search_dates = [d.strip()[:10] for d in dates.split(",") if d.strip()]
@@ -769,7 +768,9 @@ async def get_provider(provider_id: str, request: Request):
         {"provider_id": provider_id},
         {"_id": 0},
     ).to_list(10)
-    provider["services"] = services
+    # Merge services collection with embedded services array
+    embedded_services = provider.get("services", [])
+    provider["services"] = services if services else embedded_services
 
     reviews = await db.reviews.find(
         {

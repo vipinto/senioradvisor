@@ -691,9 +691,9 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
         if service_type_raw:
             st_lower = service_type_raw.lower()
             if "domicilio" in st_lower:
-                service_type = "cuidado_domicilio"
+                service_type = "cuidado-domicilio"
             elif "mental" in st_lower or "psico" in st_lower:
-                service_type = "salud_mental"
+                service_type = "salud-mental"
 
         price_from = parse_int(get_val(row, "price_from"))
 
