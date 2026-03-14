@@ -32,7 +32,7 @@ const Home = () => {
             </p>
 
             {/* SearchBar */}
-            <div className="max-w-3xl mx-auto mb-8">
+            <div className="max-w-7xl mx-auto mb-8 px-4 sm:px-6 lg:px-8">
               <SearchBar />
             </div>
           </div>
