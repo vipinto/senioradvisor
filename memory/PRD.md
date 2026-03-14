@@ -1,69 +1,59 @@
 # SeniorAdvisor - Directorio de Servicios para Adultos Mayores
 
 ## Problema Original
-Plataforma web para encontrar residencias, cuidado a domicilio y servicios de salud mental para adultos mayores. Transformada desde la app "U-CAN" (directorio de pet-sitters).
+Plataforma web para encontrar residencias, cuidado a domicilio y servicios de salud mental para adultos mayores. Transformada desde la app "U-CAN".
 
 ## Modelo de Negocio
 
 ### Roles
-- **Cliente/Familiar**: Puede buscar servicios, ver perfiles, dejar reseñas (SIN suscripción requerida)
-- **Proveedor de Servicios**: Ofrece residencias, cuidado a domicilio o salud mental. Puede suscribirse a plan Premium via MercadoPago
+- **Cliente/Familiar**: Buscar servicios, ver perfiles, dejar reseñas (SIN suscripción)
+- **Proveedor**: Ofrece residencias, cuidado a domicilio o salud mental. Suscripción Premium via MercadoPago
 - **Admin**: Panel de administración
 
-### Categorías de Servicios
-- **Residencias**: Hogares especializados con atención 24/7
-- **Cuidado a Domicilio**: Cuidadores profesionales que van al hogar
-- **Salud Mental**: Psicólogos, psiquiatras y terapeutas especializados
+### Categorías
+- Residencias | Cuidado a Domicilio | Salud Mental
 
-### Planes de Suscripción (Proveedores)
-- **Plan Mensual**: $19.990 CLP/mes
-- **Plan Trimestral**: $49.990 CLP ($16.663/mes)
-- **Plan Anual**: $149.990 CLP ($12.499/mes)
-- Pago via MercadoPago (modo producción)
+### Planes de Suscripción (Proveedores - MercadoPago Producción)
+- Mensual: $19.990 CLP | Trimestral: $49.990 CLP | Anual: $149.990 CLP
 
 ## Funcionalidades Implementadas
 
-### Para Clientes/Familiares
-- Buscar servicios por zona/tipo (3 categorías)
-- Ver perfiles de proveedores (sin paywall)
-- Sistema de reseñas con 5 criterios (personal, instalaciones, visitas, comida, actividades)
-- Contacto con proveedores vía chat
-- Login con email/password y Google OAuth
+### Home
+- Hero con buscador
+- Banner de llamado a la acción
+- Nuestros Servicios (3 categorías)
+- **Residencias Destacadas** (4 mejores evaluados con foto, rating, comuna)
+- Sobre Nosotros
+- CTA para proveedores
 
-### Para Proveedores
-- Panel de proveedor con estadísticas
-- Suscripción Premium via MercadoPago (3 planes)
-- Galería de fotos
-- Perfil público con servicios y precios
-- Gestión de solicitudes de contacto
+### Perfil del Proveedor (orden de secciones)
+- Hero: fondo #00e7ff, nombre en #33404f, comuna bold
+- Rating: estrellas amarillas arriba de galería
+- Galería: fotos del proveedor
+- Sobre mi: descripción
+- Servicios: amenidades en 4 categorías (Cuidado y Salud, Servicios e instalaciones, Habitaciones, Actividades)
+- Más Información
+- Reseñas: con mensaje de login si no está autenticado
+- **Sidebar**: Redes sociales (Instagram, Facebook, Web - círculos #33404f, iconos blancos, hover #00e7ff), Precio, Contacto, Ubicación, CTA para dueños
+
+### Panel del Proveedor
+- Suscripción Premium (MercadoPago)
+- Tab Servicios: toggles de amenidades + redes sociales
+- Galería, Reservas, Solicitudes
+
+### Sistema de Reseñas
+- 5 criterios: personal, instalaciones, visitas, comida, actividades
+- Promedio automático
+- Requiere login para dejar reseña
 
 ## Key API Endpoints
-- POST /api/auth/login - Login
-- POST /api/auth/register - Registro
-- GET /api/auth/me - Usuario actual
-- GET /api/providers - Listar proveedores
-- GET /api/providers/{id} - Perfil de proveedor
-- POST /api/reviews - Crear reseña
-- POST /api/contact-requests - Solicitar contacto
-- GET /api/subscription/plans?role=provider - Planes de suscripción
-- POST /api/subscription/create-payment - Crear pago MercadoPago
-- POST /api/webhooks/mercadopago - Webhook de MercadoPago
-- GET /api/subscription/my - Mi suscripción
-- GET /api/subscription/verify/{id} - Verificar pago
-
-## Arquitectura
-
-### Frontend
-- React con react-router-dom
-- TailwindCSS + Shadcn UI
-- Google Maps (DESACTIVADO - SafeMap placeholder)
-
-### Backend
-- FastAPI (Python)
-- MongoDB Atlas
-- JWT authentication
-- MercadoPago SDK (v2.3.0) - producción
-- Socket.IO para chat
+- POST /api/auth/login, /register | GET /api/auth/me
+- GET /api/providers | GET /api/providers/{id}
+- PUT /api/providers/my-profile (amenities, social_links)
+- POST /api/reviews
+- GET /api/subscription/plans?role=provider
+- POST /api/subscription/create-payment
+- POST /api/webhooks/mercadopago
 
 ## Credenciales de Test
 - Cliente: demo@senioradvisor.cl / demo123
@@ -72,29 +62,22 @@ Plataforma web para encontrar residencias, cuidado a domicilio y servicios de sa
 ## Estado Actual (Marzo 2026)
 
 ### Completado
-- Re-branding completo U-CAN → SeniorAdvisor
+- Re-branding U-CAN → SeniorAdvisor
 - Categorías de servicios actualizadas
-- Sistema de reseñas con 5 criterios
-- Eliminación de paywall para clientes
-- 10 proveedores de ejemplo en base de datos
-- Accesibilidad mejorada (fuentes grandes, alto contraste)
-- Fix error de sintaxis en ProviderProfile.jsx
-- **MercadoPago para proveedores** (3 planes, modo producción)
-- SubscriptionCard actualizado para proveedores
-- PaymentResult actualizado para contexto de proveedores
+- Sistema de reseñas 5 criterios
+- Eliminación paywall clientes
+- MercadoPago producción (3 planes)
+- Amenidades con 4 categorías + toggles en dashboard
+- Redes sociales (Instagram, Facebook, Web) en perfil + dashboard
+- Residencias Destacadas en Home
+- CTA para dueños en perfil
+- Fotos actualizadas en todos los providers
+- 5 reseñas seed en Villa Serena
 
 ### Pendiente
-- P1: Google Maps (desactivado, requiere configuración externa)
-- P2: Limpieza global de terminología ("U-CAN", "mascota", "cuidador")
-- P2: Optimización del modelo de datos de proveedores
-- P2: Limpieza del ProviderDashboard (referencias a mascotas)
-
-## 3rd Party Integrations
-- MongoDB Atlas: Base de datos
-- Google OAuth: Autenticación
-- Google Maps: DESACTIVADO
-- Resend: Email
-- MercadoPago: Pagos de suscripción (PRODUCCIÓN)
+- P1: Google Maps (desactivado, requiere config externa)
+- P2: Limpieza global terminología ("cuidador"/"mascota")
+- P2: Optimización modelo de datos
 
 ## Dominio
 - senioradvisor.cl
