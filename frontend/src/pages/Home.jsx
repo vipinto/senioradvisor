@@ -9,11 +9,15 @@ import api from '@/lib/api';
 const Home = () => {
   const navigate = useNavigate();
   const [featured, setFeatured] = useState([]);
+  const [blogArticles, setBlogArticles] = useState([]);
 
   useEffect(() => {
     api.get('/providers?featured=true').then(res => {
       const sorted = res.data.sort((a, b) => (b.rating || 0) - (a.rating || 0));
       setFeatured(sorted);
+    }).catch(() => {});
+    api.get('/blog/articles?limit=6').then(res => {
+      setBlogArticles(res.data);
     }).catch(() => {});
   }, []);
 
@@ -154,48 +158,43 @@ const Home = () => {
       </section>
 
       {/* Actualidad Mayor - Blog */}
-      <section className="py-16 bg-white" data-testid="blog-section">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-10">
-            <h2 className="text-3xl font-bold text-[#33404f] mb-2">Actualidad Mayor</h2>
-            <p className="text-gray-500 text-sm">Noticias, beneficios y recomendaciones para inspirarte</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            {[
-              { slug: 'residencias-chile-vs-espana', title: 'Residencias: Chile versus España', image: 'https://images.unsplash.com/photo-1773227060422-ee506b865417?w=600' },
-              { slug: 'app-mayor-celular', title: 'App Mayor: Tu celular más fácil', image: 'https://images.unsplash.com/photo-1758612897617-88c9c45ed47a?w=600' },
-              { slug: 'soledad-adulto-mayor', title: 'Actualidad Adulto Mayor: Soledad no deseada', image: 'https://images.unsplash.com/photo-1773227054096-2857c73ef2da?w=600' },
-              { slug: 'subsidio-eleam', title: 'Subsidio ELEAM: Apoyo a los mayores', image: 'https://images.unsplash.com/photo-1773227059881-ef8ecf22aac8?w=600' },
-              { slug: 'vacaciones-tercera-edad', title: 'Vacaciones tercera edad con Sernatur', image: 'https://images.unsplash.com/photo-1758798469179-dea5d63257ba?w=600' },
-              { slug: 'envejecer-con-vitalidad', title: 'Envejecer con Vitalidad', image: 'https://images.unsplash.com/photo-1764173040171-57f79264b358?w=600' },
-            ].map((article) => (
-              <Link
-                key={article.slug}
-                to={`/blog/${article.slug}`}
-                className="group relative aspect-[4/3] rounded-2xl overflow-hidden"
-                data-testid={`blog-${article.slug}`}
-              >
-                <img
-                  src={article.image}
-                  alt={article.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <h3 className="text-white font-bold text-lg leading-tight">{article.title}</h3>
-                </div>
+      {blogArticles.length > 0 && (
+        <section className="py-16 bg-white" data-testid="blog-section">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-10">
+              <h2 className="text-3xl font-bold text-[#33404f] mb-2">Actualidad Mayor</h2>
+              <p className="text-gray-500 text-sm">Noticias, beneficios y recomendaciones para inspirarte</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-4">
+              {blogArticles.slice(0, 6).map((article) => (
+                <Link
+                  key={article.slug}
+                  to={`/blog/${article.slug}`}
+                  className="group relative aspect-[4/3] rounded-2xl overflow-hidden"
+                  data-testid={`blog-${article.slug}`}
+                >
+                  <img
+                    src={article.image}
+                    alt={article.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <h3 className="text-white font-bold text-lg leading-tight">{article.title}</h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            <div className="text-center mt-10">
+              <Link to="/blog">
+                <Button className="bg-[#33404f] text-white hover:bg-[#4a5568] px-8 py-4 text-base font-bold rounded-xl">
+                  Ver Toda la Actualidad <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
               </Link>
-            ))}
+            </div>
           </div>
-          <div className="text-center mt-10">
-            <Link to="/blog">
-              <Button className="bg-[#33404f] text-white hover:bg-[#4a5568] px-8 py-4 text-base font-bold rounded-xl">
-                Ver Toda la Actualidad <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CTA for Providers */}
       <section className="py-20 bg-gradient-to-r from-[#00e7ff] to-[#00c4d4]">

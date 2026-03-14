@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShieldCheck, CheckCircle, XCircle, Badge, Eye, CreditCard, Plus, Pencil, Trash2, ToggleLeft, ToggleRight, BarChart3, Camera, FileText, User } from 'lucide-react';
+import { ShieldCheck, CheckCircle, XCircle, Badge, Eye, CreditCard, Plus, Pencil, Trash2, ToggleLeft, ToggleRight, BarChart3, Camera, FileText, User, Newspaper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -130,6 +130,10 @@ export default function AdminPanel() {
   const [sosConfig, setSosConfig] = useState({ active: false, phone: '', schedule: '', vet_name: '', start_hour: 8, end_hour: 20 });
   const [savingSos, setSavingSos] = useState(false);
   const [viewingDocs, setViewingDocs] = useState(null);
+  const [blogArticles, setBlogArticles] = useState([]);
+  const [showBlogModal, setShowBlogModal] = useState(false);
+  const [editingArticle, setEditingArticle] = useState(null);
+  const [blogForm, setBlogForm] = useState({ title: '', excerpt: '', content: '', image: '' });
 
   useEffect(() => { loadData(); }, []);
 
@@ -152,6 +156,10 @@ export default function AdminPanel() {
       try {
         const sosRes = await api.get('/admin/sos');
         setSosConfig(sosRes.data);
+      } catch {}
+      try {
+        const blogRes = await api.get('/blog/articles?published_only=false');
+        setBlogArticles(blogRes.data);
       } catch {}
     } catch (e) {
       navigate('/login');
@@ -221,6 +229,9 @@ export default function AdminPanel() {
             </button>
             <button onClick={() => setActiveTab('sos')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'sos' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-sos">
               SOS Veterinario
+            </button>
+            <button onClick={() => setActiveTab('blog')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'blog' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-blog">
+              <Newspaper className="w-4 h-4 inline mr-1" />Blog
             </button>
           </div>
 
@@ -432,9 +443,113 @@ export default function AdminPanel() {
                 </div>
               </div>
             )}
+
+            {activeTab === 'blog' && (
+              <div className="space-y-4" data-testid="blog-tab">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold text-[#33404f]">Actualidad Mayor - Blog</h3>
+                  <Button
+                    onClick={() => { setBlogForm({ title: '', excerpt: '', content: '', image: '' }); setEditingArticle(null); setShowBlogModal(true); }}
+                    className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
+                    data-testid="new-article-btn"
+                  >
+                    <Plus className="w-4 h-4 mr-1" /> Nuevo Artículo
+                  </Button>
+                </div>
+
+                {blogArticles.length === 0 ? (
+                  <p className="text-gray-500 text-center py-8">No hay artículos</p>
+                ) : (
+                  blogArticles.map(a => (
+                    <div key={a.article_id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl" data-testid={`blog-row-${a.article_id}`}>
+                      <img src={a.image} alt="" className="w-20 h-14 rounded-lg object-cover shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-[#33404f] text-sm truncate">{a.title}</h4>
+                        <p className="text-xs text-gray-500 truncate">{a.excerpt}</p>
+                      </div>
+                      <span className={`text-xs px-2 py-1 rounded-full shrink-0 ${a.published ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500'}`}>
+                        {a.published ? 'Publicado' : 'Borrador'}
+                      </span>
+                      <button
+                        onClick={() => { setBlogForm({ title: a.title, excerpt: a.excerpt, content: a.content, image: a.image }); setEditingArticle(a); setShowBlogModal(true); }}
+                        className="p-2 hover:bg-gray-200 rounded-lg"
+                        data-testid={`edit-article-${a.article_id}`}
+                      >
+                        <Pencil className="w-4 h-4 text-gray-500" />
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (!window.confirm('¿Eliminar este artículo?')) return;
+                          try {
+                            await api.delete(`/blog/articles/${a.article_id}`);
+                            setBlogArticles(prev => prev.filter(x => x.article_id !== a.article_id));
+                            toast.success('Artículo eliminado');
+                          } catch { toast.error('Error al eliminar'); }
+                        }}
+                        className="p-2 hover:bg-red-50 rounded-lg"
+                        data-testid={`delete-article-${a.article_id}`}
+                      >
+                        <Trash2 className="w-4 h-4 text-red-400" />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Blog Modal */}
+      {showBlogModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
+            <h3 className="text-lg font-bold text-[#33404f] mb-4">{editingArticle ? 'Editar Artículo' : 'Nuevo Artículo'}</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium mb-1">Título</label>
+                <input type="text" value={blogForm.title} onChange={e => setBlogForm(p => ({ ...p, title: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="blog-form-title" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Extracto</label>
+                <input type="text" value={blogForm.excerpt} onChange={e => setBlogForm(p => ({ ...p, excerpt: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="blog-form-excerpt" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">URL de Imagen</label>
+                <input type="text" value={blogForm.image} onChange={e => setBlogForm(p => ({ ...p, image: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="https://..." data-testid="blog-form-image" />
+                {blogForm.image && <img src={blogForm.image} alt="" className="mt-2 h-24 rounded-lg object-cover" />}
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Contenido</label>
+                <textarea value={blogForm.content} onChange={e => setBlogForm(p => ({ ...p, content: e.target.value }))} rows={8} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Separa los párrafos con doble salto de línea" data-testid="blog-form-content" />
+              </div>
+            </div>
+            <div className="flex gap-3 mt-4">
+              <Button
+                onClick={async () => {
+                  try {
+                    if (editingArticle) {
+                      await api.put(`/blog/articles/${editingArticle.article_id}`, blogForm);
+                      toast.success('Artículo actualizado');
+                    } else {
+                      await api.post('/blog/articles', blogForm);
+                      toast.success('Artículo creado');
+                    }
+                    setShowBlogModal(false);
+                    const res = await api.get('/blog/articles?published_only=false');
+                    setBlogArticles(res.data);
+                  } catch { toast.error('Error al guardar'); }
+                }}
+                className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold"
+                data-testid="blog-form-save"
+              >
+                {editingArticle ? 'Actualizar' : 'Publicar'}
+              </Button>
+              <Button variant="outline" onClick={() => setShowBlogModal(false)} className="flex-1">Cancelar</Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showPlanModal && (
         <PlanModal
