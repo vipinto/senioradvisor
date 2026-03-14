@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, Request, HTTPException, UploadFile, File
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from datetime import datetime, timezone
-import uuid
+import uuid, random, string, io
+from passlib.hash import bcrypt
 
 from database import db
 from auth import get_current_user, require_admin
@@ -336,3 +337,296 @@ async def update_sos_config(request: Request):
     )
     config = await db.sos_config.find_one({}, {"_id": 0})
     return config
+
+
+# --- Create Residencia ---
+
+class ResidenciaCreate(BaseModel):
+    business_name: str
+    email: str
+    password: Optional[str] = None
+    phone: Optional[str] = ""
+    whatsapp: Optional[str] = ""
+    address: Optional[str] = ""
+    comuna: Optional[str] = ""
+    description: Optional[str] = ""
+    service_type: Optional[str] = "residencias"
+    price_from: Optional[int] = 0
+
+def generate_password(length=10):
+    chars = string.ascii_letters + string.digits
+    return ''.join(random.choice(chars) for _ in range(length))
+
+@router.post("/residencias/create")
+async def create_residencia(data: ResidenciaCreate, request: Request):
+    user = await get_current_user(request, db)
+    await require_admin(user)
+    
+    existing = await db.users.find_one({"email": data.email})
+    if existing:
+        raise HTTPException(status_code=400, detail=f"El email {data.email} ya está registrado")
+    
+    password = data.password or generate_password()
+    user_id = str(uuid.uuid4())
+    provider_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc)
+    
+    user = {
+        "user_id": user_id,
+        "email": data.email,
+        "name": data.business_name,
+        "role": "provider",
+        "hashed_password": bcrypt.hash(password),
+        "created_at": now.isoformat(),
+        "active": True,
+    }
+    await db.users.insert_one(user)
+    
+    provider = {
+        "provider_id": provider_id,
+        "user_id": user_id,
+        "business_name": data.business_name,
+        "phone": data.phone or "",
+        "whatsapp": data.whatsapp or "",
+        "address": data.address or "",
+        "comuna": data.comuna or "",
+        "description": data.description or "",
+        "services": [{"service_type": data.service_type or "residencias", "price_from": data.price_from or 0, "description": ""}],
+        "photos": [],
+        "gallery": [],
+        "amenities": [],
+        "social_links": {},
+        "personal_info": {},
+        "rating": 0,
+        "total_reviews": 0,
+        "approved": True,
+        "verified": False,
+        "latitude": 0,
+        "longitude": 0,
+        "coverage_zone": "10",
+        "created_at": now,
+        "approved_at": now,
+    }
+    await db.providers.insert_one(provider)
+    
+    return {
+        "provider_id": provider_id,
+        "user_id": user_id,
+        "business_name": data.business_name,
+        "email": data.email,
+        "password": password,
+        "status": "created"
+    }
+
+class BulkResidenciaItem(BaseModel):
+    business_name: str
+    email: str
+    phone: Optional[str] = ""
+    whatsapp: Optional[str] = ""
+    address: Optional[str] = ""
+    comuna: Optional[str] = ""
+    description: Optional[str] = ""
+    service_type: Optional[str] = "residencias"
+    price_from: Optional[int] = 0
+
+class BulkResidenciaCreate(BaseModel):
+    residencias: List[BulkResidenciaItem]
+
+@router.post("/residencias/bulk-create")
+async def bulk_create_residencias(data: BulkResidenciaCreate, request: Request):
+    user = await get_current_user(request, db)
+    await require_admin(user)
+    
+    results = []
+    now = datetime.now(timezone.utc)
+    
+    for item in data.residencias:
+        existing = await db.users.find_one({"email": item.email})
+        if existing:
+            results.append({"business_name": item.business_name, "email": item.email, "status": "error", "detail": "Email ya registrado"})
+            continue
+        
+        password = generate_password()
+        user_id = str(uuid.uuid4())
+        provider_id = str(uuid.uuid4())
+        
+        user = {
+            "user_id": user_id,
+            "email": item.email,
+            "name": item.business_name,
+            "role": "provider",
+            "hashed_password": bcrypt.hash(password),
+            "created_at": now.isoformat(),
+            "active": True,
+        }
+        await db.users.insert_one(user)
+        
+        provider = {
+            "provider_id": provider_id,
+            "user_id": user_id,
+            "business_name": item.business_name,
+            "phone": item.phone or "",
+            "whatsapp": item.whatsapp or "",
+            "address": item.address or "",
+            "comuna": item.comuna or "",
+            "description": item.description or "",
+            "services": [{"service_type": item.service_type or "residencias", "price_from": item.price_from or 0, "description": ""}],
+            "photos": [],
+            "gallery": [],
+            "amenities": [],
+            "social_links": {},
+            "personal_info": {},
+            "rating": 0,
+            "total_reviews": 0,
+            "approved": True,
+            "verified": False,
+            "latitude": 0,
+            "longitude": 0,
+            "coverage_zone": "10",
+            "created_at": now,
+            "approved_at": now,
+        }
+        await db.providers.insert_one(provider)
+        
+        results.append({
+            "business_name": item.business_name,
+            "email": item.email,
+            "password": password,
+            "provider_id": provider_id,
+            "status": "created"
+        })
+    
+    created = len([r for r in results if r["status"] == "created"])
+    errors = len([r for r in results if r["status"] == "error"])
+    return {"total": len(results), "created": created, "errors": errors, "results": results}
+
+
+@router.post("/residencias/upload-excel")
+async def upload_excel_residencias(request: Request, file: UploadFile = File(...)):
+    user = await get_current_user(request, db)
+    await require_admin(user)
+    
+    import openpyxl
+    content = await file.read()
+    wb = openpyxl.load_workbook(io.BytesIO(content))
+    ws = wb.active
+    
+    headers = [str(cell.value or "").strip().lower() for cell in ws[1]]
+    
+    # Map common column names
+    col_map = {}
+    for i, h in enumerate(headers):
+        if h in ("nombre", "business_name", "residencia", "nombre residencia", "nombre_residencia"):
+            col_map["business_name"] = i
+        elif h in ("email", "correo", "correo electrónico", "correo electronico", "mail"):
+            col_map["email"] = i
+        elif h in ("telefono", "teléfono", "phone", "fono"):
+            col_map["phone"] = i
+        elif h in ("whatsapp", "wsp"):
+            col_map["whatsapp"] = i
+        elif h in ("direccion", "dirección", "address"):
+            col_map["address"] = i
+        elif h in ("comuna", "ciudad"):
+            col_map["comuna"] = i
+        elif h in ("descripcion", "descripción", "description"):
+            col_map["description"] = i
+        elif h in ("tipo", "tipo servicio", "tipo_servicio", "service_type", "categoria"):
+            col_map["service_type"] = i
+        elif h in ("precio", "price", "precio_desde", "price_from"):
+            col_map["price_from"] = i
+    
+    if "business_name" not in col_map or "email" not in col_map:
+        raise HTTPException(status_code=400, detail="El archivo debe tener al menos columnas 'nombre' y 'email'")
+    
+    results = []
+    now = datetime.now(timezone.utc)
+    
+    for row in ws.iter_rows(min_row=2, values_only=False):
+        values = [str(cell.value or "").strip() for cell in row]
+        bname = values[col_map["business_name"]]
+        email = values[col_map["email"]]
+        
+        if not bname or not email:
+            continue
+        
+        existing = await db.users.find_one({"email": email})
+        if existing:
+            results.append({"business_name": bname, "email": email, "status": "error", "detail": "Email ya registrado"})
+            continue
+        
+        password = generate_password()
+        user_id = str(uuid.uuid4())
+        provider_id = str(uuid.uuid4())
+        
+        phone = values[col_map["phone"]] if "phone" in col_map else ""
+        whatsapp = values[col_map["whatsapp"]] if "whatsapp" in col_map else phone
+        address = values[col_map["address"]] if "address" in col_map else ""
+        comuna = values[col_map["comuna"]] if "comuna" in col_map else ""
+        description = values[col_map["description"]] if "description" in col_map else ""
+        service_type = values[col_map["service_type"]] if "service_type" in col_map else "residencias"
+        
+        price_from = 0
+        if "price_from" in col_map:
+            try:
+                price_from = int(float(values[col_map["price_from"]].replace(".", "").replace("$", "").replace(",", "")))
+            except:
+                pass
+        
+        # Normalize service type
+        st_lower = service_type.lower()
+        if "domicilio" in st_lower:
+            service_type = "cuidado_domicilio"
+        elif "mental" in st_lower or "psico" in st_lower:
+            service_type = "salud_mental"
+        else:
+            service_type = "residencias"
+        
+        user = {
+            "user_id": user_id,
+            "email": email,
+            "name": bname,
+            "role": "provider",
+            "hashed_password": bcrypt.hash(password),
+            "created_at": now.isoformat(),
+            "active": True,
+        }
+        await db.users.insert_one(user)
+        
+        provider = {
+            "provider_id": provider_id,
+            "user_id": user_id,
+            "business_name": bname,
+            "phone": phone,
+            "whatsapp": whatsapp or phone,
+            "address": address,
+            "comuna": comuna,
+            "description": description,
+            "services": [{"service_type": service_type, "price_from": price_from, "description": ""}],
+            "photos": [],
+            "gallery": [],
+            "amenities": [],
+            "social_links": {},
+            "personal_info": {},
+            "rating": 0,
+            "total_reviews": 0,
+            "approved": True,
+            "verified": False,
+            "latitude": 0,
+            "longitude": 0,
+            "coverage_zone": "10",
+            "created_at": now,
+            "approved_at": now,
+        }
+        await db.providers.insert_one(provider)
+        
+        results.append({
+            "business_name": bname,
+            "email": email,
+            "password": password,
+            "provider_id": provider_id,
+            "status": "created"
+        })
+    
+    created = len([r for r in results if r["status"] == "created"])
+    errors = len([r for r in results if r["status"] == "error"])
+    return {"total": len(results), "created": created, "errors": errors, "results": results}

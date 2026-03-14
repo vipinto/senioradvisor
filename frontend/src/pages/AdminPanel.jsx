@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShieldCheck, CheckCircle, XCircle, Badge, Eye, CreditCard, Plus, Pencil, Trash2, ToggleLeft, ToggleRight, BarChart3, Camera, FileText, User, Newspaper, Handshake } from 'lucide-react';
+import { ShieldCheck, CheckCircle, XCircle, Badge, Eye, CreditCard, Plus, Pencil, Trash2, ToggleLeft, ToggleRight, BarChart3, Camera, FileText, User, Newspaper, Handshake, Upload, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -137,6 +137,10 @@ export default function AdminPanel() {
   const [showConvenioModal, setShowConvenioModal] = useState(false);
   const [editingConvenio, setEditingConvenio] = useState(null);
   const [convenioForm, setConvenioForm] = useState({ name: '', logo: '', description: '', location: '', plans: [], featured: false });
+  const [showResidenciaModal, setShowResidenciaModal] = useState(false);
+  const [residenciaForm, setResidenciaForm] = useState({ business_name: '', email: '', phone: '', address: '', comuna: '', description: '', service_type: 'residencias' });
+  const [bulkResults, setBulkResults] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
@@ -242,6 +246,9 @@ export default function AdminPanel() {
             </button>
             <button onClick={() => setActiveTab('convenios')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'convenios' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-convenios">
               <Handshake className="w-4 h-4 inline mr-1" />Convenios ({convenios.length})
+            </button>
+            <button onClick={() => setActiveTab('crear-residencia')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'crear-residencia' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-crear-residencia">
+              <Plus className="w-4 h-4 inline mr-1" />Crear Residencias
             </button>
           </div>
 
@@ -527,9 +534,185 @@ export default function AdminPanel() {
                 )}
               </div>
             )}
+
+            {activeTab === 'crear-residencia' && (
+              <div className="space-y-6" data-testid="crear-residencia-tab">
+                {/* Individual */}
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-[#33404f]">Crear Residencia Individual</h3>
+                    <Button onClick={() => { setResidenciaForm({ business_name: '', email: '', phone: '', address: '', comuna: '', description: '', service_type: 'residencias' }); setShowResidenciaModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-residencia-btn">
+                      <Plus className="w-4 h-4 mr-1" /> Nueva Residencia
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Bulk Upload */}
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-[#33404f] mb-2">Carga Masiva desde Excel</h3>
+                  <p className="text-sm text-gray-500 mb-4">Sube un archivo .xlsx con las columnas: <strong>nombre, email</strong> (obligatorias), telefono, whatsapp, direccion, comuna, descripcion, tipo, precio</p>
+                  
+                  <div className="flex items-center gap-4 mb-4">
+                    <Button variant="outline" className="text-sm" data-testid="download-template-btn" onClick={() => {
+                      const headers = 'nombre,email,telefono,whatsapp,direccion,comuna,descripcion,tipo,precio\n';
+                      const example = 'Residencia Ejemplo,ejemplo@email.cl,+56912345678,+56912345678,Av. Principal 123,Las Condes,Residencia de adultos mayores,residencias,1500000\n';
+                      const blob = new Blob([headers + example], { type: 'text/csv' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url; a.download = 'plantilla_residencias.csv'; a.click();
+                    }}>
+                      <Download className="w-4 h-4 mr-1" /> Descargar Plantilla CSV
+                    </Button>
+                    
+                    <label className="cursor-pointer">
+                      <input type="file" accept=".xlsx,.xls,.csv" className="hidden" data-testid="excel-upload-input" onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setUploading(true);
+                        setBulkResults(null);
+                        try {
+                          const formData = new FormData();
+                          formData.append('file', file);
+                          const token = localStorage.getItem('jwt_token');
+                          const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/residencias/upload-excel`, {
+                            method: 'POST',
+                            headers: { 'Authorization': `Bearer ${token}` },
+                            body: formData
+                          });
+                          const data = await res.json();
+                          if (!res.ok) throw new Error(data.detail || 'Error');
+                          setBulkResults(data);
+                          toast.success(`${data.created} residencias creadas`);
+                          if (data.errors > 0) toast.error(`${data.errors} errores`);
+                          loadData();
+                        } catch (err) {
+                          toast.error(err.message || 'Error al subir archivo');
+                        } finally {
+                          setUploading(false);
+                          e.target.value = '';
+                        }
+                      }} />
+                      <Button className="bg-[#33404f] hover:bg-[#4a5568] text-white" disabled={uploading} asChild>
+                        <span><Upload className="w-4 h-4 mr-1" />{uploading ? 'Subiendo...' : 'Subir Excel'}</span>
+                      </Button>
+                    </label>
+                  </div>
+
+                  {/* Results */}
+                  {bulkResults && (
+                    <div className="mt-4">
+                      <div className="flex gap-4 mb-3">
+                        <span className="text-sm font-bold text-green-600">Creadas: {bulkResults.created}</span>
+                        {bulkResults.errors > 0 && <span className="text-sm font-bold text-red-500">Errores: {bulkResults.errors}</span>}
+                      </div>
+                      <div className="max-h-64 overflow-y-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b text-left">
+                              <th className="py-2 px-2 font-semibold">Residencia</th>
+                              <th className="py-2 px-2 font-semibold">Email</th>
+                              <th className="py-2 px-2 font-semibold">Contraseña</th>
+                              <th className="py-2 px-2 font-semibold">Estado</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {bulkResults.results.map((r, i) => (
+                              <tr key={i} className="border-b">
+                                <td className="py-2 px-2 font-medium">{r.business_name}</td>
+                                <td className="py-2 px-2 text-gray-600">{r.email}</td>
+                                <td className="py-2 px-2 font-mono text-xs">{r.password || '-'}</td>
+                                <td className="py-2 px-2">
+                                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${r.status === 'created' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
+                                    {r.status === 'created' ? 'Creada' : r.detail}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      <Button variant="outline" className="mt-3 text-sm" onClick={() => {
+                        const csv = 'residencia,email,contraseña,estado\n' + bulkResults.results.map(r => `${r.business_name},${r.email},${r.password || ''},${r.status}`).join('\n');
+                        const blob = new Blob([csv], { type: 'text/csv' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url; a.download = 'resultado_carga.csv'; a.click();
+                      }} data-testid="download-results-btn">
+                        <Download className="w-4 h-4 mr-1" /> Descargar Resultados con Contraseñas
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Residencia Modal */}
+      {showResidenciaModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
+            <h3 className="text-lg font-bold text-[#33404f] mb-4">Crear Nueva Residencia</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium mb-1">Nombre de la Residencia *</label>
+                <input type="text" value={residenciaForm.business_name} onChange={e => setResidenciaForm(p => ({ ...p, business_name: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Ej: Residencia Villa Serena" data-testid="residencia-form-name" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Email *</label>
+                <input type="email" value={residenciaForm.email} onChange={e => setResidenciaForm(p => ({ ...p, email: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="residencia@email.cl" data-testid="residencia-form-email" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Teléfono</label>
+                  <input type="tel" value={residenciaForm.phone} onChange={e => setResidenciaForm(p => ({ ...p, phone: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="+56 9 1234 5678" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Comuna</label>
+                  <input type="text" value={residenciaForm.comuna} onChange={e => setResidenciaForm(p => ({ ...p, comuna: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Las Condes" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Dirección</label>
+                <input type="text" value={residenciaForm.address} onChange={e => setResidenciaForm(p => ({ ...p, address: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Av. Principal 123" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Descripción</label>
+                <textarea value={residenciaForm.description} onChange={e => setResidenciaForm(p => ({ ...p, description: e.target.value }))} rows={3} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Descripción del servicio..." />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Tipo de Servicio</label>
+                <select value={residenciaForm.service_type} onChange={e => setResidenciaForm(p => ({ ...p, service_type: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff] bg-white">
+                  <option value="residencias">Residencia</option>
+                  <option value="cuidado_domicilio">Cuidado a Domicilio</option>
+                  <option value="salud_mental">Salud Mental</option>
+                </select>
+              </div>
+            </div>
+            <p className="text-xs text-gray-400 mt-3">Se generará una contraseña automática que podrás enviar a la residencia.</p>
+            <div className="flex gap-3 mt-4">
+              <Button
+                onClick={async () => {
+                  if (!residenciaForm.business_name || !residenciaForm.email) { toast.error('Nombre y email son obligatorios'); return; }
+                  try {
+                    const res = await api.post('/admin/residencias/create', residenciaForm);
+                    toast.success(`Residencia creada. Contraseña: ${res.data.password}`);
+                    setBulkResults({ total: 1, created: 1, errors: 0, results: [res.data] });
+                    setShowResidenciaModal(false);
+                    loadData();
+                  } catch (err) { toast.error(err.response?.data?.detail || 'Error al crear'); }
+                }}
+                className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
+                data-testid="residencia-form-save"
+              >
+                Crear Residencia
+              </Button>
+              <Button variant="outline" onClick={() => setShowResidenciaModal(false)} className="flex-1">Cancelar</Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Blog Modal */}
       {showBlogModal && (
