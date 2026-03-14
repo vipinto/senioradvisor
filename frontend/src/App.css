@@ -12,12 +12,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #E6202E;
+  background: #00e7ff;
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #D31522;
+  background: #00c4d4;
 }
 
 /* Button hover effects */
@@ -28,7 +28,7 @@ button {
 /* Input focus effects */
 input:focus, textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(230, 32, 46, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 231, 255, 0.1);
 }
 
 /* Link hover effects */
@@ -76,8 +76,8 @@ a {
 }
 
 /* Custom gradient backgrounds */
-.bg-gradient-red {
-  background: linear-gradient(135deg, #E6202E 0%, #D31522 100%);
+.bg-gradient-cyan {
+  background: linear-gradient(135deg, #00e7ff 0%, #00c4d4 100%);
 }
 
 /* Image overlay effects */
