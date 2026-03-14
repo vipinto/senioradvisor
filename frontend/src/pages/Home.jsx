@@ -75,121 +75,52 @@ const Home = () => {
       )}
 
       {/* Como usar SeniorAdvisor */}
-      <section className="py-20 bg-white" data-testid="how-to-use-section">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left - Steps */}
-            <div>
-              <h2 className="text-4xl sm:text-5xl font-extrabold text-[#33404f] mb-14 leading-tight">
-                ¿Cómo usar<br />SeniorAdvisor?
-              </h2>
-              <div className="space-y-10">
-                <div className="flex items-start gap-5">
-                  <div className="w-16 h-16 rounded-full bg-[#00e7ff] flex items-center justify-center shrink-0">
-                    <MapPin className="w-7 h-7 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-extrabold text-[#33404f] mb-1">Busca un servicio</h3>
-                    <p className="text-gray-500 leading-relaxed">Explora los distintos servicios, y ayúdanos a filtrar los mejores.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-5">
-                  <div className="w-16 h-16 rounded-full bg-[#00e7ff] flex items-center justify-center shrink-0">
-                    <MessageSquareText className="w-7 h-7 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-extrabold text-[#33404f] mb-1">Deja tu reseña</h3>
-                    <p className="text-gray-500 leading-relaxed">Escribe tu experiencia y otorga una valoración con estrellas.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-5">
-                  <div className="w-16 h-16 rounded-full bg-[#00e7ff] flex items-center justify-center shrink-0">
-                    <Users className="w-7 h-7 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-extrabold text-[#33404f] mb-1">Ayuda a otros</h3>
-                    <p className="text-gray-500 leading-relaxed">Tu opinión orienta a más personas a tomar una mejor decisión.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right - Phone Mockup */}
-            <div className="flex justify-center lg:justify-end">
-              <div className="relative">
-                {/* Phone frame */}
-                <div className="w-[280px] sm:w-[300px] rounded-[2.5rem] border-[10px] border-[#33404f] bg-[#33404f] shadow-2xl overflow-hidden">
-                  {/* Status bar */}
-                  <div className="bg-white px-4 py-2 flex items-center justify-between text-xs text-gray-600">
-                    <span className="font-medium">12:36</span>
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-3 border border-gray-400 rounded-sm relative"><div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gray-600 rounded-sm" /></div>
+      <section className="bg-[#00e7ff]" data-testid="cta-banner">
+        <div className="flex flex-col md:flex-row items-stretch">
+          <div className="md:w-4/12 relative min-h-[350px] md:min-h-0">
+            <img
+              src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=800"
+              alt="Adulto mayor feliz"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+          </div>
+          <div className="md:w-8/12 flex items-center px-8 py-14 md:py-16 md:px-12">
+              <div className="text-[#33404f] w-full">
+                <h2 className="text-3xl md:text-4xl font-extrabold mb-10">
+                  ¿Cómo usar SeniorAdvisor?
+                </h2>
+                <div className="space-y-8 mb-8">
+                  <div className="flex items-start gap-5">
+                    <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-[#33404f] flex items-center justify-center shrink-0">
+                      <MapPin className="w-7 h-7 text-[#33404f]" />
+                    </div>
+                    <div>
+                      <p className="font-extrabold text-xl mb-1">Busca un servicio</p>
+                      <p className="opacity-85 text-sm leading-relaxed">Explora los distintos servicios, y ayúdanos a filtrar los mejores.</p>
                     </div>
                   </div>
-                  {/* App header */}
-                  <div className="bg-white px-4 py-2 flex items-center justify-between border-b border-gray-100">
-                    <span className="font-bold text-[#33404f] text-sm tracking-tight">SeniorAdvisor.</span>
-                    <div className="flex flex-col gap-[3px]">
-                      <div className="w-4 h-[2px] bg-[#33404f] rounded" />
-                      <div className="w-4 h-[2px] bg-[#33404f] rounded" />
-                      <div className="w-4 h-[2px] bg-[#33404f] rounded" />
+                  <div className="flex items-start gap-5">
+                    <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-[#33404f] flex items-center justify-center shrink-0">
+                      <MessageSquareText className="w-7 h-7 text-[#33404f]" />
+                    </div>
+                    <div>
+                      <p className="font-extrabold text-xl mb-1">Deja tu reseña</p>
+                      <p className="opacity-85 text-sm leading-relaxed">Escribe tu experiencia y otorga una valoración con estrellas.</p>
                     </div>
                   </div>
-                  {/* Map content */}
-                  <div className="relative bg-[#e8e4da] h-[400px] sm:h-[440px] overflow-hidden">
-                    {/* Map background using embedded iframe-like view */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-[#e8e4da] to-[#d4d0c6]">
-                      {/* Simulated streets */}
-                      <div className="absolute inset-0">
-                        <div className="absolute top-[20%] left-0 right-0 h-[2px] bg-white/80" />
-                        <div className="absolute top-[40%] left-0 right-0 h-[2px] bg-white/80" />
-                        <div className="absolute top-[60%] left-0 right-0 h-[3px] bg-white/90" />
-                        <div className="absolute top-[80%] left-0 right-0 h-[2px] bg-white/80" />
-                        <div className="absolute top-0 bottom-0 left-[25%] w-[2px] bg-white/80" />
-                        <div className="absolute top-0 bottom-0 left-[50%] w-[3px] bg-white/90" />
-                        <div className="absolute top-0 bottom-0 left-[75%] w-[2px] bg-white/80" />
-                        {/* Diagonal streets */}
-                        <div className="absolute top-0 left-0 w-[140%] h-[2px] bg-white/70 origin-top-left rotate-[25deg]" />
-                        <div className="absolute bottom-[10%] left-0 w-[140%] h-[2px] bg-white/70 origin-bottom-left -rotate-[15deg]" />
-                      </div>
-                      {/* Map pins */}
-                      {[
-                        { top: '15%', left: '30%' },
-                        { top: '35%', left: '55%' },
-                        { top: '25%', left: '70%' },
-                        { top: '50%', left: '40%' },
-                        { top: '65%', left: '20%' },
-                        { top: '55%', left: '65%' },
-                        { top: '75%', left: '50%' },
-                      ].map((pos, i) => (
-                        <div key={i} className="absolute" style={{ top: pos.top, left: pos.left }}>
-                          <div className="w-5 h-5 bg-[#00e7ff] rounded-full border-2 border-white shadow-md" />
-                        </div>
-                      ))}
+                  <div className="flex items-start gap-5">
+                    <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-[#33404f] flex items-center justify-center shrink-0">
+                      <Users className="w-7 h-7 text-[#33404f]" />
                     </div>
-                    {/* Info card overlay */}
-                    <div className="absolute top-4 right-3 bg-white rounded-xl shadow-lg p-3 w-[140px]">
-                      <div className="w-full h-14 bg-gray-200 rounded-lg mb-2 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=200" alt="" className="w-full h-full object-cover" />
-                      </div>
-                      <p className="text-[10px] font-bold text-[#33404f] leading-tight">Casa Senior - Decombe</p>
-                      <p className="text-[8px] text-gray-400 mt-0.5">Residencia de Adultos Mayores</p>
-                    </div>
-                    {/* Bottom search bar */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-[#33404f] px-4 py-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-white text-xs font-medium">Buscar Residencia</span>
-                        <ChevronRight className="w-4 h-4 text-white/60" />
-                      </div>
+                    <div>
+                      <p className="font-extrabold text-xl mb-1">Ayuda a otros</p>
+                      <p className="opacity-85 text-sm leading-relaxed">Tu opinión orienta a más personas a tomar una mejor decisión.</p>
                     </div>
                   </div>
                 </div>
-                {/* Decorative cyan shape behind phone */}
-                <div className="absolute -bottom-6 -right-6 w-40 h-40 bg-[#00e7ff]/20 rounded-full -z-10 blur-xl" />
               </div>
             </div>
           </div>
-        </div>
       </section>
 
       {/* About Section */}
