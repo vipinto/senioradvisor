@@ -40,6 +40,36 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Nuestros Servicios */}
+      <section className="py-16 bg-white" data-testid="services-section">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-[#33404f] mb-2">Nuestros Servicios</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { id: 'residencias', title: 'Residencias', desc: 'Hogares especializados con atención 24/7, actividades recreativas y cuidado médico profesional', Icon: HomeIcon },
+              { id: 'cuidado-domicilio', title: 'Cuidado a Domicilio', desc: 'Cuidadores profesionales que van a tu hogar para brindar atención personalizada', Icon: Heart },
+              { id: 'salud-mental', title: 'Salud Mental', desc: 'Psicólogos, psiquiatras y terapeutas especializados en adultos mayores', Icon: Brain },
+            ].map((service) => (
+              <div
+                key={service.id}
+                onClick={() => navigate(`/search?service=${service.id}`)}
+                className="group cursor-pointer bg-white border border-gray-200 rounded-2xl p-8 flex items-center justify-between hover:shadow-lg hover:border-[#00e7ff] transition-all min-h-[200px]"
+              >
+                <div className="flex-1 pr-6">
+                  <h3 className="text-xl font-bold text-[#33404f] mb-2">{service.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{service.desc}</p>
+                </div>
+                <div className="w-20 h-20 rounded-full bg-[#00e7ff]/10 flex items-center justify-center shrink-0 group-hover:bg-[#00e7ff]/20 transition-colors">
+                  <service.Icon className="w-9 h-9 text-[#00e7ff]" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Residencias Destacadas */}
       {featured.length > 0 && (
         <FeaturedSlider featured={featured} />
@@ -96,46 +126,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-      </section>
-
-      {/* Services Section */}
-      <section className="py-20 bg-white" data-testid="services-section">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[#33404f] mb-4">Nuestros Servicios</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-12">
-            {[
-              { id: 'residencias', title: 'Residencias', desc: 'Hogares especializados con atención 24/7, actividades recreativas y cuidado médico profesional', icon: (
-                <svg className="w-16 h-16 text-[#00e7ff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M9 22V12h6v10" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              )},
-              { id: 'cuidado-domicilio', title: 'Cuidado a Domicilio', desc: 'Cuidadores profesionales que van a tu hogar para brindar atención personalizada', icon: (
-                <svg className="w-16 h-16 text-[#00e7ff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              )},
-              { id: 'salud-mental', title: 'Salud Mental', desc: 'Psicólogos, psiquiatras y terapeutas especializados en adultos mayores', icon: (
-                <svg className="w-16 h-16 text-[#00e7ff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M12 2a8 8 0 0 1 8 8c0 5.33-8 12-8 12S4 15.33 4 10a8 8 0 0 1 8-8z" strokeLinecap="round" strokeLinejoin="round"/>
-                  <circle cx="12" cy="10" r="3" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              )}
-            ].map((service, index) => (
-              <div key={index} className="text-center group cursor-pointer" onClick={() => navigate(`/search?service=${service.id}`)}>
-                <div className="flex justify-center mb-6">
-                  <div className="w-32 h-32 rounded-full border-4 border-[#00e7ff] flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 bg-cyan-50">
-                    {service.icon}
-                  </div>
-                </div>
-                <h3 className="text-2xl font-bold text-[#33404f]">{service.title}</h3>
-                <p className="text-gray-500 mt-2">{service.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
       {/* About Section */}
