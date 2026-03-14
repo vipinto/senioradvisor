@@ -550,7 +550,7 @@ export default function AdminPanel() {
                 {/* Bulk Upload */}
                 <div className="bg-gray-50 rounded-xl p-6">
                   <h3 className="text-lg font-bold text-[#33404f] mb-2">Carga Masiva desde Excel</h3>
-                  <p className="text-sm text-gray-500 mb-4">Sube un archivo .xlsx con las columnas: <strong>nombre, email</strong> (obligatorias), telefono, whatsapp, direccion, comuna, descripcion, tipo, precio</p>
+                  <p className="text-sm text-gray-500 mb-4">Sube un archivo <strong>.csv</strong> o <strong>.xlsx</strong>. Columna obligatoria: <strong>nombre residencia</strong>. Si no hay email, se genera automáticamente. Columnas soportadas: comuna, direccion, telefono, rating, website, latitud, longitud, imagenes, servicios, facebook, instagram, etc.</p>
                   
                   <div className="flex items-center gap-4 mb-4">
                     <Button variant="outline" className="text-sm" data-testid="download-template-btn" onClick={() => {

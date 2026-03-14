@@ -640,12 +640,7 @@ async def search_providers(
     query = {
         "approved": True,
         "business_name": {"$exists": True, "$ne": ""},
-        "description": {"$exists": True, "$ne": ""},
-        "phone": {"$exists": True, "$ne": ""},
         "comuna": {"$exists": True, "$ne": ""},
-        "gallery": {"$exists": True, "$not": {"$size": 0}},
-        "personal_info.housing_type": {"$exists": True, "$ne": ""},
-        "personal_info.animal_experience": {"$exists": True, "$ne": ""},
     }
     if comuna:
         query["comuna"] = {"$regex": comuna, "$options": "i"}
@@ -676,12 +671,16 @@ async def search_providers(
         providers = filtered_providers
 
     if service_type:
+        # Check both services collection and embedded services
         services = await db.services.find(
             {"service_type": service_type},
             {"_id": 0, "provider_id": 1},
         ).to_list(1000)
-        provider_ids = {s["provider_id"] for s in services}
-        providers = [p for p in providers if p["provider_id"] in provider_ids]
+        provider_ids_from_collection = {s["provider_id"] for s in services}
+        providers = [p for p in providers if 
+            p["provider_id"] in provider_ids_from_collection or
+            any(s.get("service_type") == service_type for s in p.get("services", []))
+        ]
 
     if dates:
         search_dates = [d.strip()[:10] for d in dates.split(",") if d.strip()]
@@ -718,9 +717,11 @@ async def search_providers(
 
     providers_with_services = []
     for provider in providers:
-        provider["services"] = services_by_provider.get(provider["provider_id"], [])
-        if len(provider["services"]) > 0:
-            providers_with_services.append(provider)
+        # Check both services collection and embedded services array
+        svc_from_collection = services_by_provider.get(provider["provider_id"], [])
+        svc_embedded = provider.get("services", [])
+        provider["services"] = svc_from_collection if svc_from_collection else svc_embedded
+        providers_with_services.append(provider)
     providers = providers_with_services
 
     for provider in providers:

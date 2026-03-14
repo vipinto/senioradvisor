@@ -4,96 +4,97 @@ The user wants to transform an existing application, U-CAN (a pet-sitter directo
 PRODUCT REQUIREMENTS:
 1.  **Re-brand and Re-credential:** Update all credentials and replace U-CAN branding with SeniorAdvisor.
 2.  **Update Functionality:** Change service categories to senior care-related (Residencias, Cuidado a Domicilio, Salud Mental).
-3.  **Improve Accessibility:** Make the UI more accessible for seniors (larger fonts, bigger buttons, high-contrast colors).
+3.  **Improve Accessibility:** Make the UI more accessible for seniors.
 4.  **Implement New Review System:** Introduce a 5-criteria rating system for reviews.
-5.  **Change Subscription Model:**
-    *   Remove subscription requirements for clients.
-    *   Implement a MercadoPago subscription for providers to access premium features (e.g., being featured).
+5.  **Change Subscription Model:** Remove client subscriptions and implement a MercadoPago subscription for providers.
 6.  **Fix Google Maps:** Ensure map functionality works correctly.
 7.  **Seed Database:** Populate the database with sample provider data.
-8.  **Add Provider-Specific Features:** Implement a gallery, amenities/services management, and social media links on the provider profile, all manageable from a provider dashboard.
-9.  **Add a Blog:** Create a blog section (Actualidad Mayor) on the homepage, with articles manageable from an admin panel.
+8.  **Add Provider-Specific Features:** Implement a gallery, amenities, social media links, all manageable from a provider dashboard.
+9.  **Add a Blog:** Create a blog section (Actualidad Mayor) manageable from an admin panel.
+10. **Add Partnerships (Convenios):** Create a section for partnerships with other companies, including a lead-capture form and admin management.
+11. **Bulk Upload Residences:** Implement a feature for the admin to upload a list of residences from a CSV/Excel file.
 
 **User's preferred language**: The user communicates in **Spanish**. The next agent MUST respond in Spanish.
 
 **what currently exists?**
-The SeniorAdvisor application is a full-featured directory for senior care services. The initial transformation from U-CAN is complete. Numerous features have been added and refined through iterative user feedback, including:
-*   A fully functional MercadoPago subscription system for providers, which unlocks a featured status.
-*   A Residencias Destacadas slider on the homepage that exclusively showcases premium providers with a rating of 4.0 or higher.
-*   Highly customized provider profiles with a photo gallery, manageable amenities (e.g., Geriatría, Wifi, Talleres), and social media links.
-*   A provider dashboard where service providers can manage their profile details, amenities, and social media links.
-*   A complete, dynamic blog section titled Actualidad Mayor. The public-facing pages (homepage section, blog list, and individual article pages) are complete and fetch data from the backend.
-*   The application's UI/UX has been extensively modified to match the user's design preferences, including a global font change to Poppins, specific color schemes (, ), and layout adjustments on the homepage and provider profiles.
+The SeniorAdvisor application is a full-featured directory for senior care services. Key features include:
+*   A complete user authentication system with three roles: Client, Provider (Residencia), and Admin. The registration flow is now streamlined so all public sign-ups are Clients by default.
+*   A provider dashboard () where residences can manage their profile.
+*   A comprehensive admin panel () for managing users, pending approvals, blog articles, and partnerships (convenios).
+*   A dynamic blog (Actualidad Mayor) with full CRUD functionality managed from the admin panel.
+*   A SeniorClub section for partnerships. It includes a homepage banner, a dedicated listing page (), and detail pages for each partner (e.g., ). It features a lead capture form that stores contact info in the database, which is viewable in the admin panel.
+*   The system for creating new residences is now handled exclusively by the admin, with UI for both individual creation and a bulk upload via an Excel/CSV file.
+*   Numerous UI/UX fixes have been implemented, including a global scroll-to-top on navigation, theme color consistency (changing a legacy red to the brand's cyan), and layout adjustments in dashboards and search results.
 
 **Last working item**:
-*   **Last item agent was working:** Implementing the admin panel functionality for the Actualidad Mayor blog. The user requested that the blog articles be manageable (Create, Read, Update, Delete) from a dedicated admin dashboard. The agent created the necessary backend API endpoints and started building the frontend interface in .
+*   **Last item agent was working:** Implementing the bulk upload feature for residences. The user requested a way to add many residences from a list they have. The agent created the backend API endpoint and the frontend interface in the admin panel. The user has just provided the CSV file with the data to be uploaded.
 *   **Status:** IN PROGRESS
 *   **Agent Testing Done:** N
 *   **Which testing method agent to use?** both
 *   **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-*   **Issue 1:** Complete and Test the Blog Admin Panel (P0)
+*   **Issue 1:** Process and Validate Bulk Residence Upload from User's CSV (P0)
 *   **Issue 2:** Google Maps API Error (P1)
 
 **Issues Detail:**
-*   **Issue 1: Complete and Test the Blog Admin Panel**
-    *   **Attempted fixes:** The agent created the backend CRUD routes in  and seeded initial articles. It also began creating the admin UI in , but the implementation is incomplete. The file is missing the UI form for creating/editing articles and the handler functions to call the API for create, update, and delete operations.
+*   **Issue 1: Process and Validate Bulk Residence Upload from User's CSV**
+    *   **Attempted fixes:** The agent successfully created the backend endpoint  using  to parse Excel files, and the corresponding UI in . This UI includes a file dropzone, a template download button, and a table to show results. The user then provided the actual data file: .
     *   **Next debug checklist:**
-        1.  Review and complete the file .
-        2.  Implement a form within the Blog tab for creating and editing articles (fields: Title, Slug, Image URL, Content).
-        3.  Add Edit and Delete buttons to the list of existing articles.
-        4.  Implement the , , and  functions to communicate with the backend API.
-        5.  Ensure new articles appear at the top of the list on both the admin panel and the public blog pages.
-        6.  Test the full CRUD flow from the admin panel to confirm functionality.
-    *   **Why fix this issue?** The blog feature is a key user request, and it is unusable from a management perspective without a functional admin panel.
+        1.  Inspect the user-provided file  to understand its structure, delimiter, and column names.
+        2.  Test the  endpoint by sending this file.
+        3.  Debug and adjust the parsing logic in  to correctly map the columns from the user's CSV to the provider data model. Pay attention to potential encoding issues or different column naming.
+        4.  Confirm that new user accounts (role: ) and provider profiles are created in the database.
+        5.  Ensure the automatically generated passwords are returned in the API response.
+        6.  Verify the frontend  correctly displays the list of newly created residences and their passwords.
+    *   **Why fix this issue?** This is a critical business requirement for the user to populate their directory with an initial large set of data.
     *   **Status:** IN PROGRESS
     *   **Is recurring issue?** N
     *   **Should Test frontend/backend/both after fix?** Both
     *   **Blocked on other issue:** None
 
 *   **Issue 2: Google Maps API Error**
-    *   **Attempted fixes:** The map component was commented out in  to prevent the app from crashing. This issue was identified in a previous session.
+    *   **Attempted fixes:** The map component was crashing the search page. An  was added, but the root cause is the Google Maps API key lacking an active billing account. The final fix was to conditionally disable the API loader () and display a Mapa no disponible message.
     *   **Next debug checklist:**
-        1.  Once other critical tasks are complete, confirm with the user if they have checked that a billing account is active for their Google Cloud project.
-        2.  If confirmed, re-enable the map component.
-        3.  Ask the user to check the browser's developer console on the provider profile page and report the specific Google Maps error message.
+        1.  Do not attempt to fix this further.
+        2.  Inform the user that the map functionality is intentionally disabled and will remain so until they provide a Google Maps API key associated with an active billing account.
     *   **Why fix this issue?** The map is a key feature for a location-based directory.
-    *   **Status:** BLOCKED (Requires user action/confirmation)
+    *   **Status:** BLOCKED (Requires user action)
     *   **Is recurring issue?** Y
     *   **Should Test frontend/backend/both after fix?** Frontend
+    *   **Blocked on other issue:** User needs to provide a valid API key.
 
 **In progress Task List**:
-*   **Task 1: Complete Blog Admin Panel**
-    *   **Where to resume:** . The file structure is there, but the forms, state management, and API call handlers for creating, editing, and deleting blog posts need to be implemented.
-    *   **What will be achieved with this?** A fully functional blog that the site administrator can manage without needing to touch the code.
+*   **Task 1: Complete Bulk Residence Upload**
+    *   **Where to resume:** The user has uploaded . The next step is to use this file to test and finalize the bulk upload feature in  and confirm the end-to-end flow from the admin panel.
+    *   **What will be achieved?** The admin will be able to populate the application with hundreds of residences from a single file upload.
     *   **Status:** IN PROGRESS
     *   **Should Test frontend/backend/both after fix?** Both
     *   **Blocked on something:** None.
 
 **Upcoming and Future Tasks**
 *   **Future Tasks:**
-    *   (P2) Perform a global search across the codebase for any remaining instances of U-CAN, mascota (pet), or cuidador (sitter) and replace them with the appropriate SeniorAdvisor terminology.
-    *   (P2) Review and potentially refactor the provider search query in  for simplicity and performance.
+    *   (P2) Perform a global search across the codebase for any remaining instances of U-CAN, mascota (pet), or cuidador (sitter) and replace them.
+    *   (P2) Review and potentially refactor the provider search query in  for performance.
 
 **Completed work in this session**
-- **Core Functionality & Bug Fixes:**
-  - Fixed a critical syntax error on the  page, making it functional again.
-  - Implemented the MercadoPago subscription flow for providers.
-  - Added logic to make the Residencias Destacadas section dynamic, showing only premium providers with a rating of 4.0 or higher.
-- **New Feature: Provider Profile Enhancements:**
-  - Added a Galería section for photos.
-  - Added a comprehensive Servicios (Amenities) section, fully manageable from the provider's dashboard.
-  - Added a Redes Sociales (Social Media) section with links, also manageable from the dashboard.
-- **New Feature: Dynamic Blog (Actualidad Mayor):**
-  - Created backend API and database models for blog articles.
-  - Built the public-facing blog pages (, ) and the blog section on the homepage, all fetching dynamic data.
-- **Extensive UI/UX Iteration:**
-  - Redesigned the homepage hero section, search bar, and Nuestros Servicios cards based on user-provided images and feedback.
-  - Changed the global font to Poppins and standardized title/text styles and colors across the site.
-  - Converted the static Residencias Destacadas grid into an expandable carousel slider.
-  - Replaced an image with an embedded YouTube video in the Sobre Nosotros section.
-  - Implemented dozens of small, specific styling adjustments requested by the user on the Home and Provider Profile pages.
+- **Admin Panel Overhaul:**
+  - Completed and fixed the **Blog Admin Panel**, enabling full CRUD operations. Verified with the testing agent.
+  - Implemented a **Partnerships (Convenios) management tab**, allowing the admin to create, read, update, and delete partners, which dynamically updates the public  page.
+  - Implemented a **Leads tab** to view contact information captured from the partnership pages.
+  - Implemented a **Create Residence feature** with two modes: a form for single-entry and a bulk-upload system using an Excel/CSV file.
+  - Replaced all outdated terminology like Proveedores and Cuidadores with Residencias. Removed obsolete sections like SOS Veterinario.
+- **New Feature: SeniorClub Partnerships:**
+  - Created backend models and API routes for  and .
+  - Built a full user flow: a CTA banner on , a listing page at , and detail pages for each partner with a lead-capture form.
+- **User Flow & Auth Refinements:**
+  - Simplified the registration process: all new sign-ups are now  role by default, removing the role selection step.
+  - Residence accounts can now only be created by an Admin.
+- **Critical Bug Fixes & UX Improvements:**
+  - **Fixed Search Page Crash:** Resolved a critical bug where changing filters on the search page would crash the app due to the Google Maps component. The map is now gracefully disabled.
+  - **Fixed Scroll Position:** Added a  component to ensure navigation to a new page always starts at the top.
+  - **Dashboard Cleanup:** Cleaned up the Client and Provider dashboards, removing incorrect or irrelevant information (¿Quieres ser cuidador?, Historial de Facturas for clients).
+  - **UI Consistency:** Standardized the style of the Destacado badge and updated the site's accent color from red to cyan across various elements like scrollbars and focus rings.
 
 **Known issue recurrence from previous fork**
 - N/A
@@ -102,85 +103,86 @@ The SeniorAdvisor application is a full-featured directory for senior care servi
 
 
 **Key Technical Concepts**
-*   **Frontend:** React, TailwindCSS, Shadcn UI, , 
+*   **Frontend:** React, TailwindCSS, Shadcn UI, 
 *   **Backend:** FastAPI, Pydantic, Motor (async MongoDB driver)
 *   **Database:** MongoDB Atlas
-*   **Authentication:** JWT (for custom roles: user, provider, admin), Google OAuth
-*   **Payments:** MercadoPago
+*   **Authentication:** JWT (custom roles: , , )
+*   **File Parsing:**  and  for Excel/CSV processing in the backend.
 
 **key DB schema**
-*   : { , , , ... }
-*   : { , ,  (dict),  (dict),  (list), , ... }
+*   : { , ,  ('client', 'provider', 'admin'), ... }
 *   : { , , , , , ... }
-*   : { , , , , ,  }
+*   : { , , , , ... }
+*   : { , , , ,  (list), ... }
+*   : { , , , , , ,  }
 
 **changes in tech stack**
-- Added  for the featured provider slider.
+- Added  and  to the backend for file parsing.
 
 **All files of reference**
-*   : **(Incomplete)** Needs to be finished to allow blog management.
-*   : Contains the CRUD API for the blog.
-*   : Heavily modified, contains the new search bar, services, and featured providers slider.
-*   : Heavily modified, contains the new gallery, amenities, and social links sections.
-*   : Modified to include management tabs for amenities and social links.
-*   : Modified to filter featured providers based on subscription status and rating.
+*   : Contains the new bulk upload endpoint to be tested and finalized.
+*   : Contains the UI for managing residences, including the new bulk upload interface.
+*   : Modified to remove role selection.
+*   : New page to list all partnerships.
+*   : New file containing CRUD API for partnerships and leads.
+*   : The user-provided file to be used for the bulk upload.
 
 **Areas that need refactoring**:
-*   The files  and  have undergone many rapid changes and have become very large. They could be broken down into smaller, more manageable components to improve maintainability.
+-  has grown significantly and manages state for many different features (Blog, Leads, Convenios, Residencias). It could be broken down into smaller components for better maintainability.
 
 **key api endpoints**
-*    (GET, POST): Manage blog articles.
-*    (GET, PUT, DELETE): Manage a single blog article.
-*   : Get featured providers (premium subscription + rating >= 4.0).
-*    (POST): Update provider amenities.
-*    (POST): Update provider social media links.
-*    (POST): Create a MercadoPago payment link.
+*    (POST): New endpoint for uploading an Excel/CSV file of residences.
+*    (POST): New endpoint for creating a single residence from the admin panel.
+*    (GET, POST): Manage partnerships.
+*    (GET, PUT, DELETE): Manage a single partnership.
+*    (POST): Submit a lead from a partnership page.
 
 **Critical Info for New Agent**
-*   **Your immediate priority is to finish the blog admin panel.** The backend is ready, but the frontend in  is incomplete. You need to build the form and logic for creating, updating, and deleting articles.
-*   **The user Residencia Villa Serena is the primary reference provider.** Ensure it has all features enabled (amenities, social links, premium subscription) so the user can easily review changes on its profile page.
-*   **Google Maps is intentionally disabled** and blocked pending user action. Do not attempt to fix it until the user confirms their Google Cloud billing account is active.
-*   The application's design is highly specific. Pay close attention to user feedback regarding colors (, ), fonts (Poppins), and layout.
+*   **Your immediate and only priority is to complete the bulk residence upload feature.** The user has provided the data file (). You must inspect this file, test the upload endpoint, fix any parsing issues, and confirm the data is correctly added to the database.
+*   The Google Maps issue is **blocked** and considered a known limitation. Do not spend time trying to fix it. The application is designed to function without it for now.
+*   The user registration flow has been intentionally changed. New users can only sign up as clients. Provider (residence) accounts are now created exclusively by the admin.
 
 **documents and test reports created in this job**
-*   /app/test_reports/iteration_1.json
-*   /app/test_reports/iteration_2.json
-*   /app/memory/PRD.md
+*   
+*   
+*    (updated)
+*    (User-provided data file)
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** The blog section needs to be manageable from an admin panel, with the newest posts appearing first. - **Status: IN PROGRESS**
-2.  **User:** Let's create the blog section Actualidad Mayor after Sobre Nosotros (provided a reference image). - **Status: DONE**
-3.  **User:** Use a YouTube video link for the Sobre Nosotros section. - **Status: DONE**
-4.  **User:** Featured providers should also have a rating of 4 or higher. - **Status: DONE**
-5.  **User:** The Residencias Destacadas should only be for premium (subscribed) providers. - **Status: DONE**
-6.  **User:** Re-style the Nuestros Servicios cards to be more compact, with the icon on the left and an arrow on the right. - **Status: DONE**
-7.  **User:** The button/card height for Nuestros Servicios is too large, make them more compact. - **Status: DONE**
-8.  **User:** Remove the title and description from the Nuestros Servicios cards and adjust icon colors. - **Status: DONE**
-9.  **User:** I want the Nuestros Servicios section to look like this (provided reference image). - **Status: DONE**
-10. **User:** Change the hover color on links to . - **Status: DONE**
+1.  **User:** I need to add many residences from a large list. How can we do that? - **Status: IN PROGRESS**
+2.  **Agent:** I can create a feature to upload an Excel file. I'll provide a template with the necessary columns. - **Status: DONE**
+3.  **User:** Excellent. The columns should be the same as what's shown on a residence's profile. - **Status: DONE**
+4.  **Agent:** I have implemented the feature in the admin panel. You can now upload an Excel/CSV file to create residences in bulk. - **Status: DONE**
+5.  **User:** Here is the data we need to add for the residences. (Uploaded ) - **Status: PENDING ACTION**
+6.  **User:** We need to change the term proveedores to residencias. - **Status: DONE**
+7.  **User:** Can we add the partnerships (convenios) from the admin panel? - **Status: DONE**
+8.  **User:** The admin panel needs to be updated. Remove SOS Veterinario and change terminology. - **Status: DONE**
+9.  **User:** I need accounts to test each user role (admin, client, residence). - **Status: DONE**
+10. **User:** When I navigate to another page, it starts from the bottom, not the top. - **Status: DONE**
 
 **Project Health Check:**
-*   **Broken:** The blog management feature in the admin panel is non-functional as it's incomplete.
-*   **Mocked:** Google Maps is disabled in the code. The YouTube video in the Sobre Nosotros section uses a placeholder URL.
+*   **Broken:** The bulk residence upload feature is incomplete as it has not been tested with the user's actual data file.
+*   **Mocked:** Google Maps functionality is intentionally disabled across the application to prevent crashes. It displays a Map not available message.
 
 **3rd Party Integrations**
 *   **MongoDB Atlas:** Database service.
 *   **Google OAuth:** User authentication.
-*   **Google Maps Platform:** (Maps JavaScript, Places, Geocoding) - Currently disabled due to errors.
+*   **Google Maps Platform:** (Disabled) Requires a billing-enabled API key from the user.
 *   **Resend:** Email service.
-*   **MercadoPago:** Payment provider for premium subscriptions.
-*   **Embla Carousel React:** Used for the featured provider slider on the homepage.
+*   **MercadoPago:** Payment provider.
+*   **Pandas / openpyxl:** Python libraries for file parsing on the backend.
 
 **Testing status**
-*   **Testing agent used after significant changes:** YES (Used twice for major features)
+*   **Testing agent used after significant changes:** YES (used for blog and partnership features)
 *   **Troubleshoot agent used after agent stuck in loop:** NO
-*   **Test files created:** None in this session.
+*   **Test files created:** None.
 *   **Known regressions:** None.
 
 **Credentials to test flow:**
 *   **Admin:**  / 
-*   **Client/User:**  / 
-*   **Provider (for testing):** Log in as the owner of Residencia Villa Serena (). The password was set dynamically; if login fails, a new password may need to be set via a script for testing purposes.
+*   **Client:**  / 
+*   **Provider (Residencia):**  / 
+*   **Provider (Residencia):**  / 
 
 **What agent forgot to execute**
-- The agent did not complete the implementation of the blog management UI in . The file was created, but the forms, state handlers, and API integration for CRUD operations are missing.</analysis>
+The agent was in the middle of implementing the user's request for bulk uploads when the session ended. The immediate next step is to process the CSV file the user just uploaded () to complete the feature.</analysis>

@@ -61,7 +61,7 @@
 
   "critical_code_review_comments": [
     "Route ordering in FastAPI is important - specific routes must come before parameterized routes",
-    "Google Maps API key needs domain authorization for https://advisor-content-hub.preview.emergentagent.com"
+    "Google Maps API key needs domain authorization for https://residence-loader.preview.emergentagent.com"
   ],
 
   "updated_files": [

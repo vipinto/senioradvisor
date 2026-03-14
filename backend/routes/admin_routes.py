@@ -357,6 +357,9 @@ def generate_password(length=10):
     chars = string.ascii_letters + string.digits
     return ''.join(random.choice(chars) for _ in range(length))
 
+# Faster bcrypt for bulk operations (reduced rounds)
+_bcrypt_bulk = bcrypt.using(rounds=6)
+
 @router.post("/residencias/create")
 async def create_residencia(data: ResidenciaCreate, request: Request):
     user = await get_current_user(request, db)
@@ -455,7 +458,7 @@ async def bulk_create_residencias(data: BulkResidenciaCreate, request: Request):
             "email": item.email,
             "name": item.business_name,
             "role": "provider",
-            "hashed_password": bcrypt.hash(password),
+            "hashed_password": _bcrypt_bulk.hash(password),
             "created_at": now.isoformat(),
             "active": True,
         }
@@ -505,120 +508,240 @@ async def bulk_create_residencias(data: BulkResidenciaCreate, request: Request):
 async def upload_excel_residencias(request: Request, file: UploadFile = File(...)):
     user = await get_current_user(request, db)
     await require_admin(user)
-    
-    import openpyxl
+
+    import pandas as pd
     content = await file.read()
-    wb = openpyxl.load_workbook(io.BytesIO(content))
-    ws = wb.active
-    
-    headers = [str(cell.value or "").strip().lower() for cell in ws[1]]
-    
-    # Map common column names
+    filename = (file.filename or "").lower()
+
+    # Parse CSV or XLSX
+    try:
+        if filename.endswith(".csv"):
+            df = pd.read_csv(io.BytesIO(content), encoding="utf-8", dtype=str, keep_default_na=False)
+        else:
+            df = pd.read_excel(io.BytesIO(content), dtype=str, keep_default_na=False)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error al leer archivo: {str(e)}")
+
+    # Normalize column names to lowercase stripped
+    df.columns = [c.strip().lower() for c in df.columns]
+
+    # Build column map for flexible naming
     col_map = {}
-    for i, h in enumerate(headers):
-        if h in ("nombre", "business_name", "residencia", "nombre residencia", "nombre_residencia"):
-            col_map["business_name"] = i
-        elif h in ("email", "correo", "correo electrónico", "correo electronico", "mail"):
-            col_map["email"] = i
-        elif h in ("telefono", "teléfono", "phone", "fono"):
-            col_map["phone"] = i
-        elif h in ("whatsapp", "wsp"):
-            col_map["whatsapp"] = i
-        elif h in ("direccion", "dirección", "address"):
-            col_map["address"] = i
-        elif h in ("comuna", "ciudad"):
-            col_map["comuna"] = i
-        elif h in ("descripcion", "descripción", "description"):
-            col_map["description"] = i
-        elif h in ("tipo", "tipo servicio", "tipo_servicio", "service_type", "categoria"):
-            col_map["service_type"] = i
-        elif h in ("precio", "price", "precio_desde", "price_from"):
-            col_map["price_from"] = i
-    
-    if "business_name" not in col_map or "email" not in col_map:
-        raise HTTPException(status_code=400, detail="El archivo debe tener al menos columnas 'nombre' y 'email'")
-    
-    results = []
-    now = datetime.now(timezone.utc)
-    
-    for row in ws.iter_rows(min_row=2, values_only=False):
-        values = [str(cell.value or "").strip() for cell in row]
-        bname = values[col_map["business_name"]]
-        email = values[col_map["email"]]
-        
-        if not bname or not email:
+    for col in df.columns:
+        if col in ("nombre residencia", "nombre_residencia", "nombre", "business_name", "residencia"):
+            col_map["business_name"] = col
+        elif col in ("correo", "email", "mail", "correo electrónico", "correo electronico"):
+            col_map["email"] = col
+        elif col in ("telefono", "teléfono", "phone", "fono"):
+            col_map["phone"] = col
+        elif col in ("direccion", "dirección", "address"):
+            col_map["address"] = col
+        elif col == "comuna":
+            col_map["comuna"] = col
+        elif col == "ciudad":
+            col_map["ciudad"] = col
+        elif col in ("descripcion", "descripción", "description"):
+            col_map["description"] = col
+        elif col == "rating":
+            col_map["rating"] = col
+        elif col == "website":
+            col_map["website"] = col
+        elif col in ("latitud", "latitude"):
+            col_map["latitude"] = col
+        elif col in ("longitud", "longitude"):
+            col_map["longitude"] = col
+        elif col == "imagen_1":
+            col_map["imagen_1"] = col
+        elif col == "imagen_2":
+            col_map["imagen_2"] = col
+        elif col == "imagen_3":
+            col_map["imagen_3"] = col
+        elif col in ("palabras clave", "keywords", "amenidades"):
+            col_map["amenities"] = col
+        elif col == "facebook":
+            col_map["facebook"] = col
+        elif col == "instagram":
+            col_map["instagram"] = col
+        elif col in ("cant reseñas", "cant_resenas", "total_reviews"):
+            col_map["total_reviews"] = col
+        elif col in ("precio", "price", "precio_desde", "price_from"):
+            col_map["price_from"] = col
+        elif col == "place_id":
+            col_map["place_id"] = col
+        elif col in ("tipo", "tipo servicio", "service_type", "categoria"):
+            col_map["service_type"] = col
+        elif col in ("servicios", "services"):
+            col_map["servicios"] = col
+        elif col == "logo":
+            col_map["logo"] = col
+        elif col in ("tipo personal", "staff_type"):
+            col_map["staff_type"] = col
+        elif col in ("region", "región"):
+            col_map["region"] = col
+        elif col in ("disponibilidad", "availability"):
+            col_map["disponibilidad"] = col
+        elif col in ("video promocional", "video"):
+            col_map["video"] = col
+        elif col == "whatsapp":
+            col_map["whatsapp"] = col
+
+    if "business_name" not in col_map:
+        raise HTTPException(status_code=400, detail="El archivo debe tener la columna 'nombre residencia' o 'nombre'")
+
+    def get_val(row, key):
+        if key in col_map:
+            v = str(row.get(col_map[key], "")).strip()
+            return v if v and v != "nan" else ""
+        return ""
+
+    def parse_float(val):
+        try:
+            return float(val)
+        except (ValueError, TypeError):
+            return 0.0
+
+    def parse_int(val):
+        try:
+            return int(float(val))
+        except (ValueError, TypeError):
+            return 0
+
+    # Pre-fetch all existing emails to avoid per-row queries
+    all_emails_in_csv = set()
+    rows_data = []
+    for _, row in df.iterrows():
+        bname = get_val(row, "business_name")
+        if not bname:
             continue
-        
-        existing = await db.users.find_one({"email": email})
-        if existing:
+        email = get_val(row, "email")
+        short_id = uuid.uuid4().hex[:8]
+        if not email:
+            slug = bname.lower().replace(" ", "-")[:30]
+            slug = "".join(c for c in slug if c.isalnum() or c == "-")
+            email = f"{slug}-{short_id}@senioradvisor.cl"
+        all_emails_in_csv.add(email)
+        rows_data.append((row, bname, email))
+
+    # Batch check existing emails
+    existing_emails_docs = await db.users.find(
+        {"email": {"$in": list(all_emails_in_csv)}},
+        {"_id": 0, "email": 1}
+    ).to_list(len(all_emails_in_csv))
+    existing_emails = {d["email"] for d in existing_emails_docs}
+
+    results = []
+    users_to_insert = []
+    providers_to_insert = []
+    now = datetime.now(timezone.utc)
+
+    for row, bname, email in rows_data:
+        if email in existing_emails:
             results.append({"business_name": bname, "email": email, "status": "error", "detail": "Email ya registrado"})
             continue
-        
+
         password = generate_password()
         user_id = str(uuid.uuid4())
         provider_id = str(uuid.uuid4())
-        
-        phone = values[col_map["phone"]] if "phone" in col_map else ""
-        whatsapp = values[col_map["whatsapp"]] if "whatsapp" in col_map else phone
-        address = values[col_map["address"]] if "address" in col_map else ""
-        comuna = values[col_map["comuna"]] if "comuna" in col_map else ""
-        description = values[col_map["description"]] if "description" in col_map else ""
-        service_type = values[col_map["service_type"]] if "service_type" in col_map else "residencias"
-        
-        price_from = 0
-        if "price_from" in col_map:
-            try:
-                price_from = int(float(values[col_map["price_from"]].replace(".", "").replace("$", "").replace(",", "")))
-            except:
-                pass
-        
-        # Normalize service type
-        st_lower = service_type.lower()
-        if "domicilio" in st_lower:
-            service_type = "cuidado_domicilio"
-        elif "mental" in st_lower or "psico" in st_lower:
-            service_type = "salud_mental"
-        else:
-            service_type = "residencias"
-        
-        user = {
+
+        phone = get_val(row, "phone")
+        whatsapp = get_val(row, "whatsapp") or phone
+        address = get_val(row, "address")
+        comuna = get_val(row, "comuna") or get_val(row, "ciudad")
+        description = get_val(row, "description")
+        region = get_val(row, "region")
+        rating = parse_float(get_val(row, "rating"))
+        total_reviews = parse_int(get_val(row, "total_reviews"))
+        latitude = parse_float(get_val(row, "latitude"))
+        longitude = parse_float(get_val(row, "longitude"))
+        website = get_val(row, "website")
+        facebook = get_val(row, "facebook")
+        instagram = get_val(row, "instagram")
+        video = get_val(row, "video")
+        place_id = get_val(row, "place_id")
+        logo = get_val(row, "logo")
+        staff_type = get_val(row, "staff_type")
+        disponibilidad = get_val(row, "disponibilidad")
+
+        gallery = []
+        for img_key in ["imagen_1", "imagen_2", "imagen_3"]:
+            img_url = get_val(row, img_key)
+            if img_url and img_url.startswith("http"):
+                gallery.append({
+                    "photo_id": f"csv_{uuid.uuid4().hex[:8]}",
+                    "url": img_url,
+                    "thumbnail_url": img_url,
+                    "uploaded_at": now.isoformat(),
+                })
+
+        amenities_str = get_val(row, "amenities") or get_val(row, "servicios")
+        amenities = [a.strip() for a in amenities_str.split(",") if a.strip()] if amenities_str else []
+
+        social_links = {}
+        if website:
+            social_links["website"] = website
+        if facebook:
+            social_links["facebook"] = facebook
+        if instagram:
+            social_links["instagram"] = instagram
+        if video:
+            social_links["video"] = video
+
+        service_type_raw = get_val(row, "service_type")
+        service_type = "residencias"
+        if service_type_raw:
+            st_lower = service_type_raw.lower()
+            if "domicilio" in st_lower:
+                service_type = "cuidado_domicilio"
+            elif "mental" in st_lower or "psico" in st_lower:
+                service_type = "salud_mental"
+
+        price_from = parse_int(get_val(row, "price_from"))
+
+        users_to_insert.append({
             "user_id": user_id,
             "email": email,
             "name": bname,
             "role": "provider",
-            "hashed_password": bcrypt.hash(password),
+            "hashed_password": _bcrypt_bulk.hash(password),
             "created_at": now.isoformat(),
             "active": True,
-        }
-        await db.users.insert_one(user)
-        
-        provider = {
+        })
+
+        providers_to_insert.append({
             "provider_id": provider_id,
             "user_id": user_id,
             "business_name": bname,
             "phone": phone,
-            "whatsapp": whatsapp or phone,
+            "whatsapp": whatsapp,
             "address": address,
             "comuna": comuna,
+            "region": region,
             "description": description,
             "services": [{"service_type": service_type, "price_from": price_from, "description": ""}],
             "photos": [],
-            "gallery": [],
-            "amenities": [],
-            "social_links": {},
-            "personal_info": {},
-            "rating": 0,
-            "total_reviews": 0,
+            "gallery": gallery,
+            "amenities": amenities,
+            "social_links": social_links,
+            "personal_info": {"housing_type": "residencia", "animal_experience": "N/A"},
+            "rating": rating,
+            "total_reviews": total_reviews,
             "approved": True,
             "verified": False,
-            "latitude": 0,
-            "longitude": 0,
+            "latitude": latitude,
+            "longitude": longitude,
+            "place_id": place_id,
+            "logo": logo,
+            "staff_type": staff_type,
+            "disponibilidad": disponibilidad,
             "coverage_zone": "10",
             "created_at": now,
             "approved_at": now,
-        }
-        await db.providers.insert_one(provider)
-        
+            "profile_photo": logo if logo and logo.startswith("http") else (gallery[0]["url"] if gallery else ""),
+        })
+
+        # Mark as existing to handle intra-file duplicates
+        existing_emails.add(email)
+
         results.append({
             "business_name": bname,
             "email": email,
@@ -626,7 +749,13 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
             "provider_id": provider_id,
             "status": "created"
         })
-    
+
+    # Batch insert all at once
+    if users_to_insert:
+        await db.users.insert_many(users_to_insert)
+    if providers_to_insert:
+        await db.providers.insert_many(providers_to_insert)
+
     created = len([r for r in results if r["status"] == "created"])
     errors = len([r for r in results if r["status"] == "error"])
     return {"total": len(results), "created": created, "errors": errors, "results": results}

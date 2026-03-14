@@ -3,7 +3,7 @@ import sys
 from datetime import datetime
 
 class UCCanlAPITester:
-    def __init__(self, base_url="https://advisor-content-hub.preview.emergentagent.com"):
+    def __init__(self, base_url="https://residence-loader.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.tests_run = 0
