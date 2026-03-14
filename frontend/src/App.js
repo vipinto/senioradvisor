@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Toaster } from 'sonner';
@@ -47,6 +47,10 @@ const authPages = ['/login', '/register', '/forgot-password', '/reset-password',
 function AppRouter() {
   const location = useLocation();
   const hideNavbar = authPages.some(p => location.pathname.startsWith(p));
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <>
