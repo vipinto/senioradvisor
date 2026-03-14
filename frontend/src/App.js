@@ -23,6 +23,8 @@ import PaymentResult from '@/pages/PaymentResult';
 import RegisterProvider from '@/pages/RegisterProvider';
 import GoogleCallback from '@/pages/GoogleCallback';
 import PetSetup from '@/pages/PetSetup';
+import Blog from '@/pages/Blog';
+import BlogArticle from '@/pages/BlogArticle';
 import FAQ from '@/pages/FAQ';
 import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
@@ -58,6 +60,8 @@ function AppRouter() {
         <Route path="/auth/google-success" element={<GoogleAuthSuccess />} />
         <Route path="/search" element={<SearchSimple />} />
         <Route path="/planes" element={<Plans />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogArticle />} />
         <Route path="/provider/:providerId" element={<ProviderProfile />} />
         <Route path="/dashboard" element={
           <ProtectedRoute><Dashboard /></ProtectedRoute>
