@@ -25,11 +25,11 @@ const Home = () => {
           <div className="text-center max-w-4xl mx-auto" data-testid="hero-section">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#33404f] leading-tight mb-6">
               Encuentra el mejor
-              <span className="block text-[#00e7ff]">cuidado</span>
+              <span className="block text-[#33404f]">cuidado</span>
               para adultos mayores
             </h1>
             <p className="text-sm text-gray-500 max-w-2xl mx-auto mb-10">
-              Conectamos familias con <span className="font-bold text-[#00e7ff]">residencias</span>, <span className="font-bold">cuidado a domicilio</span> y servicios de <span className="font-bold text-[#00e7ff]">salud mental</span> de confianza.
+              Conectamos familias con <span className="font-bold text-[#33404f]">residencias</span>, <span className="font-bold">cuidado a domicilio</span> y servicios de <span className="font-bold text-[#33404f]">salud mental</span> de confianza.
             </p>
           </div>
 
