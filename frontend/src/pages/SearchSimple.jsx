@@ -612,7 +612,7 @@ const SearchPage = () => {
                           {provider.business_name}
                         </h3>
                         {provider.is_featured && (
-                          <span className="bg-[#00e7ff]/15 text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap" data-testid="featured-badge">
+                          <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap" data-testid="featured-badge">
                             <Crown className="w-3 h-3" />Destacado
                           </span>
                         )}
