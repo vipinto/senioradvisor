@@ -52,12 +52,13 @@ const Home = () => {
               <div
                 key={service.id}
                 onClick={() => navigate(`/search?service=${service.id}`)}
-                className="group cursor-pointer bg-white border border-gray-200 rounded-2xl px-6 py-4 flex items-center justify-between hover:shadow-lg hover:border-[#00e7ff] transition-all"
+                className="group cursor-pointer bg-white border border-gray-200 rounded-xl px-5 py-3 flex items-center gap-4 hover:shadow-lg hover:border-[#00e7ff] transition-all"
               >
-                <h3 className="text-xl font-bold text-[#33404f]">{service.title}</h3>
-                <div className="w-16 h-16 rounded-full bg-[#00e7ff] flex items-center justify-center shrink-0">
-                  <service.Icon className="w-7 h-7 text-[#33404f]" />
+                <div className="w-10 h-10 rounded-full bg-[#00e7ff] flex items-center justify-center shrink-0">
+                  <service.Icon className="w-5 h-5 text-[#33404f]" />
                 </div>
+                <h3 className="text-base font-bold text-[#33404f] flex-1">{service.title}</h3>
+                <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
               </div>
             ))}
           </div>
