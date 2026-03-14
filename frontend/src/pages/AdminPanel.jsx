@@ -11,7 +11,7 @@ const COLORS = ['#00e7ff', '#4285F4', '#34A853', '#FBBC05'];
 function MetricsChart({ data }) {
   if (!data || data.length === 0) return <p className="text-gray-400 text-center py-8">Sin datos</p>;
   const keys = ['users', 'providers', 'subscriptions', 'reviews'];
-  const labels = ['Usuarios', 'Proveedores', 'Suscripciones', 'Reseñas'];
+  const labels = ['Usuarios', 'Residencias', 'Suscripciones', 'Reseñas'];
   const maxVal = Math.max(...data.flatMap(d => keys.map(k => d[k] || 0)), 1);
 
   return (
@@ -168,17 +168,17 @@ export default function AdminPanel() {
   };
 
   const approveProvider = async (providerId) => {
-    try { await api.post(`/admin/providers/${providerId}/approve`); toast.success('Proveedor aprobado'); loadData(); }
+    try { await api.post(`/admin/providers/${providerId}/approve`); toast.success('Residencia aprobada'); loadData(); }
     catch (e) { toast.error('Error'); }
   };
   const rejectProvider = async (providerId) => {
     const reason = prompt('Razon del rechazo:');
     if (!reason) return;
-    try { await api.post(`/admin/providers/${providerId}/reject`, { reason }); toast.success('Proveedor rechazado'); loadData(); }
+    try { await api.post(`/admin/providers/${providerId}/reject`, { reason }); toast.success('Residencia rechazada'); loadData(); }
     catch (e) { toast.error('Error'); }
   };
   const verifyProvider = async (providerId) => {
-    try { await api.post(`/admin/providers/${providerId}/verify`); toast.success('Proveedor verificado'); loadData(); }
+    try { await api.post(`/admin/providers/${providerId}/verify`); toast.success('Residencia verificada'); loadData(); }
     catch (e) { toast.error('Error'); }
   };
   const unverifyProvider = async (providerId) => {
@@ -205,7 +205,7 @@ export default function AdminPanel() {
         {stats && (
           <div className="grid md:grid-cols-5 gap-4 mb-8">
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Usuarios</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-users">{stats.total_users}</p></div>
-            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Proveedores</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-providers">{stats.total_providers}</p></div>
+            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Residencias</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-providers">{stats.total_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Pendientes</p><p className="text-3xl font-bold text-orange-500" data-testid="stat-pending">{stats.pending_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Verificados</p><p className="text-3xl font-bold text-green-600" data-testid="stat-verified">{stats.verified_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Suscripciones</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-subscriptions">{stats.active_subscriptions}</p></div>
@@ -218,7 +218,7 @@ export default function AdminPanel() {
               Pendientes ({pendingProviders.length})
             </button>
             <button onClick={() => setActiveTab('all')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'all' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-all">
-              Proveedores ({allProviders.filter(p => p.approved).length})
+              Residencias ({allProviders.filter(p => p.approved).length})
             </button>
             <button onClick={() => setActiveTab('plans')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'plans' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-plans">
               <CreditCard className="w-4 h-4 inline mr-1" />Planes ({plans.length})
@@ -237,7 +237,7 @@ export default function AdminPanel() {
           <div className="p-6">
             {activeTab === 'pending' && (
               pendingProviders.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">No hay proveedores pendientes</p>
+                <p className="text-gray-500 text-center py-8">No hay residencias pendientes</p>
               ) : (
                 <div className="space-y-4">
                   {pendingProviders.map(p => (
@@ -368,13 +368,13 @@ export default function AdminPanel() {
                     <h4 className="font-semibold text-gray-700 mb-3">Resumen</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between"><span className="text-gray-500">Usuarios totales</span><span className="font-bold">{stats?.total_users || 0}</span></div>
-                      <div className="flex justify-between"><span className="text-gray-500">Proveedores activos</span><span className="font-bold">{stats?.total_providers || 0}</span></div>
+                      <div className="flex justify-between"><span className="text-gray-500">Residencias activas</span><span className="font-bold">{stats?.total_providers || 0}</span></div>
                       <div className="flex justify-between"><span className="text-gray-500">Suscripciones activas</span><span className="font-bold text-[#00e7ff]">{stats?.active_subscriptions || 0}</span></div>
                       <div className="flex justify-between"><span className="text-gray-500">Reseñas totales</span><span className="font-bold">{stats?.total_reviews || 0}</span></div>
                     </div>
                   </div>
                   <div className="bg-gray-50 rounded-xl p-5">
-                    <h4 className="font-semibold text-gray-700 mb-3">Proveedores</h4>
+                    <h4 className="font-semibold text-gray-700 mb-3">Residencias</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between"><span className="text-gray-500">Aprobados</span><span className="font-bold text-green-600">{stats?.total_providers || 0}</span></div>
                       <div className="flex justify-between"><span className="text-gray-500">Pendientes</span><span className="font-bold text-orange-500">{stats?.pending_providers || 0}</span></div>
@@ -656,7 +656,7 @@ export default function AdminPanel() {
               <div className="mt-6 p-4 bg-yellow-50 rounded-xl">
                 <p className="text-sm text-yellow-800">
                   <strong>Instrucciones:</strong> Compara la foto del carnet con la selfie para verificar que sea la misma persona. 
-                  Si todo esta correcto, aprueba y verifica al proveedor.
+                  Si todo esta correcto, aprueba y verifica la residencia.
                 </p>
               </div>
             </div>
