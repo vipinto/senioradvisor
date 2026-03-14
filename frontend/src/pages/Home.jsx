@@ -11,7 +11,7 @@ const Home = () => {
   const [featured, setFeatured] = useState([]);
 
   useEffect(() => {
-    api.get('/providers?limit=10').then(res => {
+    api.get('/providers?featured=true').then(res => {
       const sorted = res.data.sort((a, b) => (b.rating || 0) - (a.rating || 0));
       setFeatured(sorted);
     }).catch(() => {});

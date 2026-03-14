@@ -625,6 +625,7 @@ async def search_providers(
     dates: Optional[str] = None,
     skip: int = 0,
     limit: int = 50,
+    featured: bool = False,
 ):
     """Search providers with filters"""
     user = await get_current_user_optional(request, db)
@@ -743,6 +744,10 @@ async def search_providers(
             return (2, -(p.get("rating") or 0))
 
     providers.sort(key=sort_key)
+
+    # Filter featured only
+    if featured:
+        providers = [p for p in providers if p.get("is_featured")]
 
     return providers
 
