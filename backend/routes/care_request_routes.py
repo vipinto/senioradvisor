@@ -15,12 +15,19 @@ router = APIRouter()
 
 
 class CareRequestCreate(BaseModel):
-    pet_id: str
-    service_type: str  # paseo, cuidado, daycare
-    description: str
-    preferred_dates: List[str] = []  # ISO date strings
+    service_type: str  # residencia, cuidado_domicilio, salud_mental
+    patient_name: str
+    patient_age: Optional[int] = None
+    patient_gender: Optional[str] = ""  # masculino, femenino, otro
+    relationship: Optional[str] = ""  # hijo/a, nieto/a, conyuge, otro
+    room_type: Optional[str] = ""  # individual, compartida, no_aplica
+    special_needs: List[str] = []  # demencia, movilidad_reducida, oxigeno, medicacion, etc
+    urgency: Optional[str] = "explorando"  # inmediata, dentro_1_mes, dentro_3_meses, explorando
+    budget_min: Optional[int] = 0
+    budget_max: Optional[int] = 0
     comuna: str
-    flexible_dates: bool = False
+    region: Optional[str] = ""
+    description: str
 
 
 class CareRequestUpdate(BaseModel):
@@ -44,35 +51,40 @@ class ProposalRespond(BaseModel):
 
 @router.post("/care-requests")
 async def create_care_request(data: CareRequestCreate, request: Request):
-    """Create a care request (client only)"""
+    """Create a senior care service request (client only)"""
     user = await get_current_user(request, db)
-    
-    # Verify pet belongs to user
-    pet = await db.pets.find_one({"pet_id": data.pet_id, "user_id": user["user_id"]})
-    if not pet:
-        raise HTTPException(status_code=404, detail="Mascota no encontrada")
-    
+
+    if not data.patient_name.strip():
+        raise HTTPException(status_code=400, detail="El nombre del paciente es obligatorio")
+    if not data.description.strip():
+        raise HTTPException(status_code=400, detail="La descripción es obligatoria")
+    if not data.comuna.strip():
+        raise HTTPException(status_code=400, detail="La comuna es obligatoria")
+
     request_id = f"care_{uuid.uuid4().hex[:12]}"
     care_request = {
         "request_id": request_id,
         "client_id": user["user_id"],
         "client_name": user.get("name", "Cliente"),
-        "pet_id": data.pet_id,
-        "pet_name": pet.get("name"),
-        "pet_species": pet.get("species"),
-        "pet_breed": pet.get("breed"),
-        "pet_size": pet.get("size"),
-        "pet_photo": pet.get("photo"),
         "service_type": data.service_type,
-        "description": data.description,
-        "preferred_dates": data.preferred_dates,
+        "patient_name": data.patient_name,
+        "patient_age": data.patient_age,
+        "patient_gender": data.patient_gender or "",
+        "relationship": data.relationship or "",
+        "room_type": data.room_type or "",
+        "special_needs": data.special_needs or [],
+        "urgency": data.urgency or "explorando",
+        "budget_min": data.budget_min or 0,
+        "budget_max": data.budget_max or 0,
         "comuna": data.comuna,
-        "flexible_dates": data.flexible_dates,
-        "status": "active",  # active, paused, completed, cancelled
+        "region": data.region or "",
+        "description": data.description,
+        "status": "active",
+        "proposal_count": 0,
         "created_at": datetime.now(timezone.utc),
         "updated_at": datetime.now(timezone.utc)
     }
-    
+
     await db.care_requests.insert_one(care_request)
     care_request.pop("_id", None)
     return care_request
