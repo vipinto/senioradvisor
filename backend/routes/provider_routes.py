@@ -259,6 +259,45 @@ async def update_my_profile_services(request: Request):
     return {"message": f"{len(services)} servicio(s) actualizado(s)"}
 
 
+@router.put("/providers/my-profile/amenities")
+async def update_my_amenities(request: Request):
+    """Update provider's amenities"""
+    user = await get_current_user(request, db)
+    data = await request.json()
+    amenities = data.get("amenities", [])
+
+    result = await db.providers.update_one(
+        {"user_id": user["user_id"]},
+        {"$set": {"amenities": amenities}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="No tienes perfil de proveedor")
+    return {"message": "Amenidades actualizadas", "amenities": amenities}
+
+
+@router.put("/providers/my-profile/social")
+async def update_my_social(request: Request):
+    """Update provider's social links"""
+    user = await get_current_user(request, db)
+    data = await request.json()
+
+    social_links = {}
+    if data.get("instagram"):
+        social_links["instagram"] = data["instagram"]
+    if data.get("facebook"):
+        social_links["facebook"] = data["facebook"]
+    if data.get("website"):
+        social_links["website"] = data["website"]
+
+    result = await db.providers.update_one(
+        {"user_id": user["user_id"]},
+        {"$set": {"social_links": social_links}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="No tienes perfil de proveedor")
+    return {"message": "Redes sociales actualizadas", "social_links": social_links}
+
+
 @router.put("/providers/my-profile/personal-info")
 async def update_personal_info(request: Request):
     """Update carer's personal information (Más Datos)"""
