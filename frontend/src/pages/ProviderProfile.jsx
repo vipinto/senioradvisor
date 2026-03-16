@@ -517,10 +517,10 @@ export default function ProviderProfile() {
             )}
 
             {/* Precio */}
-            {provider.services?.length > 0 && (
+            {provider.services?.filter(s => s.price_from > 0 || s.description).length > 0 && (
               <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <h3 className="font-bold text-lg mb-4">Precio</h3>
-                {provider.services.map((s, i) => {
+                {provider.services.filter(s => s.price_from > 0 || s.description).map((s, i) => {
                   const formatServiceName = (type) => {
                     const names = {
                       'residencias': 'Residencias',

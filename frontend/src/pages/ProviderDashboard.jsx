@@ -42,7 +42,12 @@ const ProviderDashboard = () => {
   const [savingPersonalInfo, setSavingPersonalInfo] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(null);
   const [profileForm, setProfileForm] = useState({
-    business_name: '', phone: '', address: '', region: '', comuna: '', place_id: '', price_from: 0
+    business_name: '', phone: '', address: '', region: '', comuna: '', place_id: ''
+  });
+  const [servicesForm, setServicesForm] = useState({
+    residencias: { price_from: '', description: '' },
+    'cuidado-domicilio': { price_from: '', description: '' },
+    'salud-mental': { price_from: '', description: '' },
   });
   const [savingProfile, setSavingProfile] = useState(false);
   const [editingServices, setEditingServices] = useState(false);
@@ -68,7 +73,14 @@ const ProviderDashboard = () => {
         region: p.region || '',
         comuna: p.comuna || '',
         place_id: p.place_id || '',
-        price_from: p.services?.[0]?.price_from || 0,
+      });
+      // Load services into 3-category form
+      const svcMap = {};
+      (p.services || []).forEach(s => { svcMap[s.service_type] = s; });
+      setServicesForm({
+        residencias: { price_from: svcMap['residencias']?.price_from || '', description: svcMap['residencias']?.description || '' },
+        'cuidado-domicilio': { price_from: svcMap['cuidado-domicilio']?.price_from || '', description: svcMap['cuidado-domicilio']?.description || '' },
+        'salud-mental': { price_from: svcMap['salud-mental']?.price_from || '', description: svcMap['salud-mental']?.description || '' },
       });
       setHasSubscription(subRes.data.has_subscription || subRes.data.status === 'active');
       setAlwaysActive(p.always_active !== false);
@@ -279,16 +291,17 @@ const ProviderDashboard = () => {
               e.preventDefault();
               setSavingProfile(true);
               try {
-                const { price_from, ...profileData } = profileForm;
-                await api.put('/providers/my-profile', profileData);
-                // Update price in services
-                if (provider.services?.[0]) {
-                  const updatedServices = [...(provider.services || [])];
-                  updatedServices[0] = { ...updatedServices[0], price_from: parseInt(price_from) || 0 };
-                  await api.put('/providers/my-profile', { services: updatedServices });
-                }
+                // Build services array from form (only non-empty)
+                const services = [];
+                Object.entries(servicesForm).forEach(([type, data]) => {
+                  const price = parseInt(data.price_from) || 0;
+                  if (price > 0 || data.description) {
+                    services.push({ service_type: type, price_from: price, description: data.description || '' });
+                  }
+                });
+                await api.put('/providers/my-profile', { ...profileForm, services, social_links: socialLinks });
                 toast.success('Perfil actualizado correctamente');
-                setProvider(prev => ({ ...prev, ...profileData }));
+                setProvider(prev => ({ ...prev, ...profileForm, services }));
               } catch (err) {
                 toast.error(err.response?.data?.detail || 'Error al guardar');
               } finally {
@@ -347,26 +360,51 @@ const ProviderDashboard = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Precio (desde CLP)</label>
-                  <Input
-                    type="number"
-                    value={profileForm.price_from}
-                    onChange={(e) => setProfileForm(prev => ({ ...prev, price_from: e.target.value }))}
-                    placeholder="500000"
-                    data-testid="profile-price"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Place ID (Google)</label>
-                  <Input
-                    value={profileForm.place_id}
-                    onChange={(e) => setProfileForm(prev => ({ ...prev, place_id: e.target.value }))}
-                    placeholder="ChIJ..."
-                    data-testid="profile-place-id"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Place ID (Google)</label>
+                <Input
+                  value={profileForm.place_id}
+                  onChange={(e) => setProfileForm(prev => ({ ...prev, place_id: e.target.value }))}
+                  placeholder="ChIJ..."
+                  data-testid="profile-place-id"
+                />
+              </div>
+
+              {/* Precios por categoría */}
+              <div className="border-t pt-4 mt-4">
+                <h3 className="text-sm font-bold text-[#33404f] mb-3">Precios por Categoría</h3>
+                <p className="text-xs text-gray-400 mb-4">Solo las categorías con precio o descripción aparecerán en tu perfil público.</p>
+                
+                {[
+                  { key: 'residencias', label: 'Residencias' },
+                  { key: 'cuidado-domicilio', label: 'Cuidado a Domicilio' },
+                  { key: 'salud-mental', label: 'Salud Mental' },
+                ].map(({ key, label }) => (
+                  <div key={key} className="p-4 bg-gray-50 rounded-xl mb-3">
+                    <span className="font-semibold text-sm text-[#33404f]">{label}</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">Precio desde (CLP)</label>
+                        <Input
+                          type="number"
+                          value={servicesForm[key].price_from}
+                          onChange={(e) => setServicesForm(prev => ({ ...prev, [key]: { ...prev[key], price_from: e.target.value } }))}
+                          placeholder="0"
+                          data-testid={`price-${key}`}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">Descripción</label>
+                        <Input
+                          value={servicesForm[key].description}
+                          onChange={(e) => setServicesForm(prev => ({ ...prev, [key]: { ...prev[key], description: e.target.value } }))}
+                          placeholder="Ej: Suite premium"
+                          data-testid={`desc-${key}`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
 
               <div className="border-t pt-4 mt-4">

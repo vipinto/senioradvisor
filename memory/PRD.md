@@ -1,37 +1,23 @@
 # SeniorAdvisor - Directorio de Servicios para Adultos Mayores
 
-## Problema Original
-Plataforma web para encontrar residencias, cuidado a domicilio y servicios de salud mental para adultos mayores en Chile.
+## Campos de Residencia
+Nombre, Direccion, Region, Comuna, Sitio Web, Telefono, Correo Electronico, Facebook, Instagram, PlaceID
+**Precio por 3 categorias**: Residencias, Cuidado a Domicilio, Salud Mental (cada una con precio desde + descripcion). Si no se rellena, no aparece en perfil publico.
 
 ## Roles
-- **Cliente/Familiar**: Buscar servicios, ver perfiles, dejar resenas
-- **Proveedor (Residencia)**: Perfil editable, galeria, servicios, suscripcion Premium via MercadoPago
-- **Admin**: Panel completo de administracion
+- Cliente/Familiar: Buscar, ver perfiles, resenas
+- Proveedor: Editar perfil, galeria, precios por categoria, redes sociales
+- Admin: Panel completo, crear residencias individual y masivo
 
-## Campos de Residencia
-Nombre, Direccion, Region, Comuna, Sitio Web, Telefono, Correo Electronico, Facebook, Instagram, Precio (desde CLP), PlaceID, Tipo de Servicio
+## Estado (Marzo 2026) - FUNCIONAL
 
-## Estado Actual (Marzo 2026) - TODO FUNCIONAL
-
-### Paginas Verificadas
-- Home: Hero, categorias, residencias destacadas, blog, SeniorClub
-- Busqueda (/search): Mapa + lista, filtros por tipo, busqueda por comuna
-- Detalle Proveedor (/provider/:id): Galeria, rating, servicios, precios, contacto
-- Blog (/blog): CRUD admin
-- SeniorClub (/seniorclub): Convenios con formulario contacto
-- Auth: Login/Register 3 roles
-- Admin Panel (/admin): Stats, residencias (crear individual + carga masiva CSV), blog, leads, convenios
-- Provider Dashboard (/provider/dashboard): Editar Perfil (todos los campos), servicios, galeria, suscripcion
+### Formularios actualizados
+- Admin: Crear residencia con todos los campos + 3 precios por categoria
+- Provider Dashboard: Editar perfil con todos los campos + 3 precios por categoria
+- Perfil publico: Solo muestra categorias con precio > 0 o descripcion
 
 ### Base de Datos
-- 260+ usuarios, 257+ proveedores (10 seed + 246 CSV), 5 resenas, 6 articulos blog
-
-### API Endpoints
-- Auth: POST /api/auth/login, /register, GET /api/auth/me
-- Providers: GET /api/providers, GET /api/providers/:id, PUT /api/providers/my-profile
-- Blog: CRUD /api/blog/articles
-- Partners: GET/POST /api/partners, POST /api/partners/leads
-- Admin: GET /api/admin/stats, POST /api/admin/residencias/create, /upload-excel
+- 260+ usuarios, 258+ proveedores, 6 articulos blog
 
 ### Credenciales
 - Admin: admin@senioradvisor.cl / admin123
@@ -42,6 +28,3 @@ Nombre, Direccion, Region, Comuna, Sitio Web, Telefono, Correo Electronico, Face
 - Google Maps: Usuario activara billing
 - Limpieza terminologia antigua
 - Refactorizar AdminPanel.jsx
-
-## Tech Stack
-React, TailwindCSS, Shadcn UI, FastAPI, MongoDB Atlas, JWT, Google OAuth, MercadoPago, pandas

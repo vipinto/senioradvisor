@@ -138,7 +138,12 @@ export default function AdminPanel() {
   const [editingConvenio, setEditingConvenio] = useState(null);
   const [convenioForm, setConvenioForm] = useState({ name: '', logo: '', description: '', location: '', plans: [], featured: false });
   const [showResidenciaModal, setShowResidenciaModal] = useState(false);
-  const [residenciaForm, setResidenciaForm] = useState({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', price_from: 0, place_id: '', service_type: 'residencias' });
+  const [residenciaForm, setResidenciaForm] = useState({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', place_id: '' });
+  const [residenciaServices, setResidenciaServices] = useState({
+    residencias: { price_from: '', description: '' },
+    'cuidado-domicilio': { price_from: '', description: '' },
+    'salud-mental': { price_from: '', description: '' },
+  });
   const [bulkResults, setBulkResults] = useState(null);
   const [uploading, setUploading] = useState(false);
 
@@ -541,7 +546,7 @@ export default function AdminPanel() {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-[#33404f]">Crear Residencia Individual</h3>
-                    <Button onClick={() => { setResidenciaForm({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', price_from: 0, place_id: '', service_type: 'residencias' }); setShowResidenciaModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-residencia-btn">
+                    <Button onClick={() => { setResidenciaForm({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', place_id: '' }); setResidenciaServices({ residencias: { price_from: '', description: '' }, 'cuidado-domicilio': { price_from: '', description: '' }, 'salud-mental': { price_from: '', description: '' } }); setShowResidenciaModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-residencia-btn">
                       <Plus className="w-4 h-4 mr-1" /> Nueva Residencia
                     </Button>
                   </div>
@@ -677,15 +682,9 @@ export default function AdminPanel() {
                   <input type="text" value={residenciaForm.comuna} onChange={e => setResidenciaForm(p => ({ ...p, comuna: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Las Condes" data-testid="residencia-form-comuna" />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Teléfono</label>
-                  <input type="tel" value={residenciaForm.phone} onChange={e => setResidenciaForm(p => ({ ...p, phone: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="+56 9 1234 5678" data-testid="residencia-form-phone" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Precio (desde CLP)</label>
-                  <input type="number" value={residenciaForm.price_from} onChange={e => setResidenciaForm(p => ({ ...p, price_from: parseInt(e.target.value) || 0 }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="500000" data-testid="residencia-form-price" />
-                </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Teléfono</label>
+                <input type="tel" value={residenciaForm.phone} onChange={e => setResidenciaForm(p => ({ ...p, phone: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="+56 9 1234 5678" data-testid="residencia-form-phone" />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Sitio Web</label>
@@ -705,22 +704,41 @@ export default function AdminPanel() {
                 <label className="block text-sm font-medium mb-1">Place ID (Google)</label>
                 <input type="text" value={residenciaForm.place_id} onChange={e => setResidenciaForm(p => ({ ...p, place_id: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="ChIJ..." data-testid="residencia-form-placeid" />
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Tipo de Servicio</label>
-                <select value={residenciaForm.service_type} onChange={e => setResidenciaForm(p => ({ ...p, service_type: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff] bg-white" data-testid="residencia-form-type">
-                  <option value="residencias">Residencia</option>
-                  <option value="cuidado-domicilio">Cuidado a Domicilio</option>
-                  <option value="salud-mental">Salud Mental</option>
-                </select>
+
+              {/* Precios por categoría */}
+              <div className="border-t pt-3 mt-3">
+                <h4 className="text-sm font-bold text-[#33404f] mb-2">Precios por Categoría</h4>
+                <p className="text-xs text-gray-400 mb-3">Solo las categorías con precio aparecerán en el perfil público.</p>
+                {[
+                  { key: 'residencias', label: 'Residencias' },
+                  { key: 'cuidado-domicilio', label: 'Cuidado a Domicilio' },
+                  { key: 'salud-mental', label: 'Salud Mental' },
+                ].map(({ key, label }) => (
+                  <div key={key} className="p-3 bg-gray-50 rounded-xl mb-2">
+                    <span className="font-semibold text-xs text-[#33404f]">{label}</span>
+                    <div className="grid grid-cols-2 gap-2 mt-1">
+                      <input type="number" value={residenciaServices[key].price_from} onChange={e => setResidenciaServices(p => ({ ...p, [key]: { ...p[key], price_from: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Precio desde" data-testid={`admin-price-${key}`} />
+                      <input type="text" value={residenciaServices[key].description} onChange={e => setResidenciaServices(p => ({ ...p, [key]: { ...p[key], description: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Descripción" data-testid={`admin-desc-${key}`} />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-            <p className="text-xs text-gray-400 mt-3">Se generará una contraseña automática que podrás enviar a la residencia.</p>
             <div className="flex gap-3 mt-4">
               <Button
                 onClick={async () => {
                   if (!residenciaForm.business_name || !residenciaForm.email) { toast.error('Nombre y email son obligatorios'); return; }
                   try {
-                    const res = await api.post('/admin/residencias/create', residenciaForm);
+                    // Build services array
+                    const services = [];
+                    Object.entries(residenciaServices).forEach(([type, data]) => {
+                      const price = parseInt(data.price_from) || 0;
+                      if (price > 0 || data.description) {
+                        services.push({ service_type: type, price_from: price, description: data.description || '' });
+                      }
+                    });
+                    const payload = { ...residenciaForm, services };
+                    const res = await api.post('/admin/residencias/create', payload);
                     toast.success(`Residencia creada. Contraseña: ${res.data.password}`);
                     setBulkResults({ total: 1, created: 1, errors: 0, results: [res.data] });
                     setShowResidenciaModal(false);

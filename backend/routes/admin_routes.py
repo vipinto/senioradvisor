@@ -352,9 +352,10 @@ class ResidenciaCreate(BaseModel):
     website: Optional[str] = ""
     facebook: Optional[str] = ""
     instagram: Optional[str] = ""
-    price_from: Optional[int] = 0
     place_id: Optional[str] = ""
     service_type: Optional[str] = "residencias"
+    price_from: Optional[int] = 0
+    services: Optional[list] = None
 
 def generate_password(length=10):
     chars = string.ascii_letters + string.digits
@@ -398,7 +399,7 @@ async def create_residencia(data: ResidenciaCreate, request: Request):
         "region": data.region or "",
         "comuna": data.comuna or "",
         "description": "",
-        "services": [{"service_type": data.service_type or "residencias", "price_from": data.price_from or 0, "description": ""}],
+        "services": data.services if data.services else [{"service_type": data.service_type or "residencias", "price_from": data.price_from or 0, "description": ""}],
         "photos": [],
         "gallery": [],
         "amenities": [],
