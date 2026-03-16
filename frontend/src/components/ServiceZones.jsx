@@ -111,7 +111,7 @@ const ServiceZones = () => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="font-bold text-xl flex items-center gap-2">
           <MapPin className="w-5 h-5 text-[#00e7ff]" />
-          Zona de Paseo
+          Zona de Cobertura
         </h2>
         <Button
           onClick={handleSave}
@@ -230,7 +230,7 @@ const ServiceZones = () => {
       <div>
         <div className="flex items-center gap-2 mb-2">
           <label className="block text-sm font-medium text-gray-700">
-            Zonas de paseo favoritas
+            Zonas de cobertura
           </label>
           <span className="text-xs text-gray-400">(Opcional)</span>
           <div className="relative">

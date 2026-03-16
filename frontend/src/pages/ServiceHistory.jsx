@@ -12,9 +12,9 @@ const STATUS_MAP = {
 };
 
 const SERVICE_LABELS = {
-  paseo: 'Paseo',
+  paseo: 'Residencia',
   cuidado: 'Cuidado',
-  daycare: 'Daycare',
+  daycare: 'Cuidado a Domicilio',
 };
 
 function formatDate(dateStr) {

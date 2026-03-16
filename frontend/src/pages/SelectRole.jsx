@@ -99,7 +99,7 @@ const SelectRole = () => {
             </div>
             <div className="text-left flex-1">
               <h3 className="font-bold text-[#33404f]">Cliente</h3>
-              <p className="text-sm text-gray-500">Buscar cuidadores para mis mascotas</p>
+              <p className="text-sm text-gray-500">Buscar residencias y servicios para adultos mayores</p>
             </div>
             {selectedRole === 'client' && (
               <div className="w-6 h-6 bg-[#00e7ff] rounded-full flex items-center justify-center">

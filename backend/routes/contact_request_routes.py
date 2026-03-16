@@ -72,7 +72,7 @@ async def send_contact_request(data: ContactRequestCreate, request: Request):
     # Must have premium subscription
     subscription = await db.subscriptions.find_one({"user_id": user["user_id"], "status": "active"})
     if not subscription:
-        raise HTTPException(status_code=403, detail="Necesitas suscripcion Premium para contactar cuidadores directamente")
+        raise HTTPException(status_code=403, detail="Necesitas suscripcion Premium para contactar proveedores directamente")
 
     # Provider must exist
     provider = await db.providers.find_one({"user_id": data.provider_user_id, "approved": True})
@@ -86,12 +86,12 @@ async def send_contact_request(data: ContactRequestCreate, request: Request):
         "status": "pending"
     })
     if existing:
-        raise HTTPException(status_code=400, detail="Ya tienes una solicitud pendiente con este cuidador")
+        raise HTTPException(status_code=400, detail="Ya tienes una solicitud pendiente con este proveedor")
 
     # Check if already connected
     already_connected = await check_connection(user["user_id"], data.provider_user_id)
     if already_connected:
-        raise HTTPException(status_code=400, detail="Ya estas conectado con este cuidador")
+        raise HTTPException(status_code=400, detail="Ya estas conectado con este proveedor")
 
     request_id = f"cr_{uuid.uuid4().hex[:12]}"
     contact_request = {
@@ -215,14 +215,14 @@ async def respond_contact_request(request_id: str, action: str, request: Request
         await create_notification(
             user_id=contact_req["client_user_id"],
             title="Solicitud aceptada!",
-            message=f"{contact_req.get('provider_name', 'El cuidador')} acepto tu solicitud. Ya puedes chatear.",
+            message=f"{contact_req.get('provider_name', 'El servicio')} acepto tu solicitud. Ya puedes chatear.",
             notification_type="contact_accepted"
         )
     else:
         await create_notification(
             user_id=contact_req["client_user_id"],
             title="Solicitud rechazada",
-            message=f"{contact_req.get('provider_name', 'El cuidador')} no acepto tu solicitud.",
+            message=f"{contact_req.get('provider_name', 'El servicio')} no acepto tu solicitud.",
             notification_type="contact_rejected"
         )
 

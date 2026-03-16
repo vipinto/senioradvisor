@@ -1,114 +1,85 @@
 import React from 'react';
+import { Shield, UserCheck, Star, AlertTriangle, FileText, Mail } from 'lucide-react';
 
 export default function Seguridad() {
   return (
-    <div className="min-h-screen bg-gray-50 py-12" data-testid="security-page">
+    <div className="min-h-screen bg-gray-50 py-12" data-testid="seguridad-page">
       <div className="max-w-3xl mx-auto px-4">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-[#33404f] mb-3">Seguridad en U-CAN</h1>
-          <p className="text-gray-500">Última actualización: Febrero 2026</p>
+          <h1 className="text-4xl font-bold text-[#33404f] mb-3">Seguridad en SeniorAdvisor</h1>
+          <p className="text-gray-500 text-lg">Tu tranquilidad es nuestra prioridad</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-6 sm:p-10 space-y-8 text-gray-700 leading-relaxed text-sm">
-          <section>
-            <h2 className="text-xl font-bold text-[#33404f] mb-3">1. Nuestro enfoque de seguridad</h2>
-            <p>
-              En U-CAN nos tomamos la seguridad muy en serio. Nuestro objetivo es ayudarte a tomar decisiones informadas al momento
-              de contactar cuidadores y contratar servicios para tu mascota. U-CAN es una plataforma de intermediación operada por
-              COMERCIAL OVNI LIMITADA, y los servicios son prestados por cuidadores independientes.
+        <div className="space-y-8">
+          <div className="bg-white rounded-2xl shadow-sm p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <Shield className="w-6 h-6 text-[#00e7ff]" />
+              <h2 className="text-xl font-bold text-[#33404f]">Compromiso con la Seguridad</h2>
+            </div>
+            <p className="text-gray-600 leading-relaxed">
+              En SeniorAdvisor nos tomamos la seguridad muy en serio. Nuestro objetivo es ayudarte a tomar decisiones informadas al momento
+              de buscar servicios de cuidado para adultos mayores. SeniorAdvisor es una plataforma de intermediación operada por
+              COMERCIAL OVNI LIMITADA, que facilita la conexión entre familias y proveedores de servicios de cuidado senior.
             </p>
-            <p className="mt-2">
-              Esta página resume las medidas disponibles dentro de la plataforma y recomendaciones prácticas para clientes y cuidadores.
-            </p>
-          </section>
+          </div>
 
-          <section>
-            <h2 className="text-xl font-bold text-[#33404f] mb-3">2. Cuidadores verificados</h2>
-            <p>
-              U-CAN cuenta con un sistema de cuidadores verificados para aumentar la confianza dentro de la comunidad. Para optar a la
-              verificación, los cuidadores deben enviar documentación que permita validar su identidad.
+          <div className="bg-white rounded-2xl shadow-sm p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <UserCheck className="w-6 h-6 text-[#00e7ff]" />
+              <h2 className="text-xl font-bold text-[#33404f]">Verificación de Residencias</h2>
+            </div>
+            <p className="text-gray-600 leading-relaxed">
+              SeniorAdvisor cuenta con un sistema de residencias verificadas para aumentar la confianza dentro de la comunidad. Para optar a la
+              verificación, cada residencia pasa por un proceso de revisión que incluye validación de datos de contacto,
+              verificación de la existencia física de la residencia, y revisión de la información proporcionada.
+              Las residencias verificadas se destacan con un badge especial en su perfil.
             </p>
-            <p className="mt-2">El proceso de verificación puede incluir:</p>
-            <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Certificado de antecedentes.</li>
-              <li>Fotografía del carnet de identidad por ambos lados.</li>
-              <li>Fotografía personal o foto de perfil.</li>
-            </ul>
-            <p className="mt-2">
-              La verificación busca confirmar identidad y coherencia de datos. Sin embargo, no es una garantía absoluta de conducta futura
-              ni de calidad del servicio. Recomendamos siempre conversar previamente y acordar condiciones claras antes de contratar.
-            </p>
-          </section>
+          </div>
 
-          <section>
-            <h2 className="text-xl font-bold text-[#33404f] mb-3">3. Botón SOS veterinario</h2>
-            <p>
-              Durante un servicio, si ocurre un percance o un problema de salud con la mascota, el cuidador puede utilizar el botón SOS
-              (cuando esté disponible) para contactar directamente a un veterinario y recibir orientación profesional.
+          <div className="bg-white rounded-2xl shadow-sm p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <Star className="w-6 h-6 text-[#00e7ff]" />
+              <h2 className="text-xl font-bold text-[#33404f]">Sistema de Reseñas</h2>
+            </div>
+            <p className="text-gray-600 leading-relaxed mb-3">
+              SeniorAdvisor cuenta con un sistema de calificaciones y reseñas para ayudar a la comunidad a tomar mejores decisiones. Las reseñas reflejan la
+              experiencia real de las familias con los servicios recibidos.
             </p>
-            <p className="mt-2">
-              El botón SOS es una herramienta de apoyo y orientación. No reemplaza la atención veterinaria presencial ni constituye garantía
-              de resultado. En emergencias graves, se debe acudir de inmediato a un centro veterinario y contactar a los servicios de emergencia
-              pertinentes si corresponde.
+            <p className="text-gray-600 leading-relaxed">
+              SeniorAdvisor puede moderar o eliminar contenido ofensivo, falso o que incumpla las políticas de la plataforma.
             </p>
-          </section>
+          </div>
 
-          <section>
-            <h2 className="text-xl font-bold text-[#33404f] mb-3">4. Sistema de calificaciones y reseñas</h2>
-            <p>
-              U-CAN puede habilitar calificaciones y reseñas para ayudar a la comunidad a tomar mejores decisiones. Las reseñas reflejan la
-              experiencia de otros usuarios y son un insumo útil al momento de elegir con quién trabajar.
+          <div className="bg-white rounded-2xl shadow-sm p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <AlertTriangle className="w-6 h-6 text-[#00e7ff]" />
+              <h2 className="text-xl font-bold text-[#33404f]">Moderación y Seguridad</h2>
+            </div>
+            <p className="text-gray-600 leading-relaxed">
+              SeniorAdvisor puede suspender o eliminar cuentas ante sospechas de fraude, suplantación, información falsa, acoso, amenazas o cualquier
+              conducta que ponga en riesgo a la comunidad. Si detectas algo sospechoso, repórtalo inmediatamente.
             </p>
-            <p className="mt-2">
-              U-CAN puede moderar o eliminar contenido ofensivo, falso o que incumpla las políticas de la plataforma.
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <FileText className="w-6 h-6 text-[#00e7ff]" />
+              <h2 className="text-xl font-bold text-[#33404f]">Limitación de Responsabilidad</h2>
+            </div>
+            <p className="text-gray-600 leading-relaxed">
+              SeniorAdvisor es una plataforma de intermediación. Los servicios son prestados por las residencias y proveedores independientes y la contratación ocurre
+              directamente entre las familias y estos proveedores. SeniorAdvisor no garantiza la calidad, seguridad o resultado de los servicios prestados por terceros.
             </p>
-          </section>
+          </div>
 
-          <section>
-            <h2 className="text-xl font-bold text-[#33404f] mb-3">5. Recomendaciones para clientes</h2>
-            <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Revisa si el cuidador está verificado y revisa su perfil y calificaciones.</li>
-              <li>Conversa antes de contratar: rutina, horarios, cuidados, medicación, conducta y necesidades especiales.</li>
-              <li>Entrega información completa de tu mascota (vacunas, alergias, historial, reactividad, escapes, etc.).</li>
-              <li>Deja un contacto de emergencia y una autorización clara en caso de veterinario.</li>
-              <li>Define por escrito (por chat) el acuerdo: precio, horarios, lugar, entregas y devoluciones.</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-[#33404f] mb-3">6. Recomendaciones para cuidadores</h2>
-            <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Solicita información completa de la mascota antes de aceptar el servicio.</li>
-              <li>Confirma conducta, salud, vacunas, necesidades especiales y contactos de emergencia.</li>
-              <li>Usa siempre correa en paseos y aplica medidas de seguridad razonables.</li>
-              <li>Mantén comunicación oportuna con el cliente durante el servicio.</li>
-              <li>Ante una emergencia, utiliza el botón SOS (si está disponible) y coordina con el cliente.</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-[#33404f] mb-3">7. Fraude, suplantación y conductas indebidas</h2>
-            <p>
-              U-CAN puede suspender o eliminar cuentas ante sospechas de fraude, suplantación, información falsa, acoso, amenazas o cualquier
-              conducta que ponga en riesgo a la comunidad. Si detectas una situación sospechosa, recomendamos dejar registro por escrito y
-              reportarla.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-[#33404f] mb-3">8. Limitación importante</h2>
-            <p>
-              U-CAN es una plataforma de intermediación. Los servicios son prestados por cuidadores independientes y la contratación ocurre
-              directamente entre cliente y cuidador. Aunque trabajamos para mejorar la seguridad, ningún mecanismo elimina completamente los riesgos
-              asociados al cuidado de mascotas.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-[#33404f] mb-3">9. Contacto</h2>
-            <p>Si necesitas ayuda o quieres reportar un caso, puedes contactarnos en:</p>
-            <p className="mt-2 font-medium text-[#00e7ff]">contacto@u-can.cl</p>
-          </section>
+          <div className="bg-white rounded-2xl shadow-sm p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <Mail className="w-6 h-6 text-[#00e7ff]" />
+              <h2 className="text-xl font-bold text-[#33404f]">Contacto</h2>
+            </div>
+            <p className="text-gray-600">Si tienes preguntas o necesitas reportar un problema de seguridad, contáctanos:</p>
+            <p className="mt-2 font-medium text-[#00e7ff]">contacto@senioradvisor.cl</p>
+          </div>
         </div>
       </div>
     </div>

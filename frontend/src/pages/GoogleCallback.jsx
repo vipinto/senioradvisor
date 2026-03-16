@@ -44,7 +44,7 @@ const GoogleCallback = () => {
         if (registerRole === 'provider') {
           navigate('/provider/register', { replace: true });
         } else if (registerRole === 'client') {
-          navigate('/mis-mascotas/nueva', { replace: true });
+          navigate('/dashboard', { replace: true });
         } else {
           navigate('/dashboard', { replace: true });
         }

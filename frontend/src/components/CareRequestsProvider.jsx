@@ -7,9 +7,9 @@ import { toast } from 'sonner';
 import api from '@/lib/api';
 
 const SERVICE_LABELS = {
-  paseo: 'Paseo',
+  paseo: 'Residencia',
   cuidado: 'Cuidado',
-  daycare: 'Daycare'
+  daycare: 'Cuidado a Domicilio'
 };
 
 const PET_SIZE_LABELS = {
@@ -77,7 +77,7 @@ const ProposalForm = ({ requestId, onSubmit, onCancel }) => {
         <textarea
           value={message}
           onChange={e => setMessage(e.target.value)}
-          placeholder="Hola! Me encantaria cuidar a tu mascota. Tengo experiencia con..."
+          placeholder="Hola! Me encantaría atender su solicitud. Tenemos experiencia en..."
           rows={3}
           className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:outline-none text-sm resize-none"
           data-testid="proposal-message-input"
@@ -119,7 +119,7 @@ const CareRequestsProvider = ({ hasSubscription = false }) => {
       setRequests(res.data);
     } catch (error) {
       if (error.response?.status === 403) {
-        toast.error('Solo cuidadores pueden ver solicitudes');
+        toast.error('Solo proveedores pueden ver solicitudes');
       }
     } finally {
       setLoading(false);
@@ -167,7 +167,7 @@ const CareRequestsProvider = ({ hasSubscription = false }) => {
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-bold text-xl flex items-center gap-2">
           <Dog className="w-5 h-5 text-[#00e7ff]" />
-          Clientes Buscando Cuidador
+          Familias Buscando Servicio
           <span className="text-sm font-normal text-gray-500">({requests.length})</span>
         </h2>
       </div>
@@ -181,7 +181,7 @@ const CareRequestsProvider = ({ hasSubscription = false }) => {
                 Suscribete para enviar propuestas y ver datos de contacto
               </p>
               <p className="text-xs text-yellow-600">
-                Los cuidadores Premium pueden contactar directamente a los clientes
+                Los proveedores Premium pueden contactar directamente a las familias
               </p>
             </div>
           </div>
@@ -196,9 +196,9 @@ const CareRequestsProvider = ({ hasSubscription = false }) => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos</SelectItem>
-            <SelectItem value="paseo">Paseo</SelectItem>
+            <SelectItem value="paseo">Residencia</SelectItem>
             <SelectItem value="cuidado">Cuidado</SelectItem>
-            <SelectItem value="daycare">Daycare</SelectItem>
+            <SelectItem value="daycare">Cuidado a Domicilio</SelectItem>
           </SelectContent>
         </Select>
         <input

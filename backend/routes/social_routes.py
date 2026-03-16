@@ -242,7 +242,7 @@ async def create_client_review(data: ClientReviewCreate, request: Request):
     # Verify the reviewer is a provider
     provider = await db.providers.find_one({"user_id": user["user_id"]})
     if not provider:
-        raise HTTPException(status_code=403, detail="Solo cuidadores pueden calificar clientes")
+        raise HTTPException(status_code=403, detail="Solo proveedores pueden calificar clientes")
 
     # Check client exists
     client = await db.users.find_one({"user_id": data.client_user_id})
@@ -329,7 +329,7 @@ async def get_reviews_given_by_provider(request: Request):
 
     provider = await db.providers.find_one({"user_id": user["user_id"]})
     if not provider:
-        raise HTTPException(status_code=403, detail="No tienes perfil de cuidador")
+        raise HTTPException(status_code=403, detail="No tienes perfil de proveedor")
 
     reviews = await db.client_reviews.find(
         {"provider_user_id": user["user_id"]},

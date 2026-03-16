@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Cookie, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const COOKIE_CONSENT_KEY = 'ucan_cookie_consent';
+const COOKIE_CONSENT_KEY = 'senioradvisor_cookie_consent';
 
 const CookieConsent = () => {
   const [visible, setVisible] = useState(false);

@@ -103,7 +103,7 @@ async def get_care_requests_for_providers(
     # Check if user is a provider
     provider = await db.providers.find_one({"user_id": user["user_id"], "approved": True})
     if not provider:
-        raise HTTPException(status_code=403, detail="Solo cuidadores pueden ver solicitudes")
+        raise HTTPException(status_code=403, detail="Solo proveedores pueden ver solicitudes")
     
     # Must have active subscription (premium carers only)
     subscription = await db.subscriptions.find_one({
@@ -234,7 +234,7 @@ async def create_proposal(data: ProposalCreate, request: Request):
     # Must be an approved provider
     provider = await db.providers.find_one({"user_id": user["user_id"], "approved": True})
     if not provider:
-        raise HTTPException(status_code=403, detail="Solo cuidadores aprobados pueden enviar propuestas")
+        raise HTTPException(status_code=403, detail="Solo proveedores aprobados pueden enviar propuestas")
 
     # Must have active subscription
     subscription = await db.subscriptions.find_one({"user_id": user["user_id"], "status": "active"})

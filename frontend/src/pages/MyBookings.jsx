@@ -131,7 +131,7 @@ export default function MyBookings() {
             <h3 className="text-xl font-semibold text-gray-700 mb-2">Sin reservas</h3>
             <p className="text-gray-500 mb-6">
               {filter === 'all' 
-                ? 'Aun no tienes reservas. Busca un cuidador para hacer tu primera reserva.'
+                ? 'Aun no tienes reservas. Busca un servicio para hacer tu primera reserva.'
                 : 'No hay reservas con este filtro.'}
             </p>
             <Link to="/search">
@@ -213,7 +213,7 @@ export default function MyBookings() {
 
                   {booking.provider_notes && (
                     <div className="bg-cyan-50 rounded-xl p-3 mb-4">
-                      <p className="text-xs text-blue-700 font-medium mb-1">Mensaje del cuidador</p>
+                      <p className="text-xs text-blue-700 font-medium mb-1">Mensaje del servicio</p>
                       <p className="text-sm text-blue-800">{booking.provider_notes}</p>
                     </div>
                   )}

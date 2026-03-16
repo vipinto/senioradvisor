@@ -9,11 +9,11 @@ logger = logging.getLogger(__name__)
 resend.api_key = os.environ.get("RESEND_API_KEY", "")
 
 # Default sender email (must be verified in Resend)
-DEFAULT_FROM_EMAIL = "U-CAN <noreply@u-can.cl>"
-FALLBACK_FROM_EMAIL = "U-CAN <onboarding@resend.dev>"  # Resend's test domain
+DEFAULT_FROM_EMAIL = "SeniorAdvisor <noreply@senioradvisor.cl>"
+FALLBACK_FROM_EMAIL = "SeniorAdvisor <onboarding@resend.dev>"  # Resend's test domain
 
 # Base URL for email links
-FRONTEND_BASE_URL = os.environ.get("FRONTEND_URL", "https://u-can.cl")
+FRONTEND_BASE_URL = os.environ.get("FRONTEND_URL", "https://senioradvisor.cl")
 
 
 async def send_email(
@@ -110,7 +110,7 @@ def booking_request_email(
                 </p>
             </div>
             <div class="footer">
-                <p>Este email fue enviado por U-CAN</p>
+                <p>Este email fue enviado por SeniorAdvisor</p>
             </div>
         </div>
     </body>
@@ -133,7 +133,7 @@ def booking_confirmed_email(
     
     notes_section = f"""
         <div style="background: #D4EDDA; border-radius: 8px; padding: 12px; margin-top: 16px;">
-            <strong>Mensaje del cuidador:</strong><br>
+            <strong>Mensaje del proveedor:</strong><br>
             {provider_notes}
         </div>
     """ if provider_notes else ""
@@ -177,7 +177,7 @@ def booking_confirmed_email(
                 </p>
             </div>
             <div class="footer">
-                <p>Este email fue enviado por U-CAN</p>
+                <p>Este email fue enviado por SeniorAdvisor</p>
             </div>
         </div>
     </body>
@@ -198,7 +198,7 @@ def booking_rejected_email(
     
     notes_section = f"""
         <div style="background: #FFF3CD; border-radius: 8px; padding: 12px; margin-top: 16px;">
-            <strong>Mensaje del cuidador:</strong><br>
+            <strong>Mensaje del proveedor:</strong><br>
             {provider_notes}
         </div>
     """ if provider_notes else ""
@@ -229,7 +229,7 @@ def booking_rejected_email(
                 
                 {notes_section}
                 
-                <p>No te preocupes, hay muchos otros cuidadores disponibles:</p>
+                <p>No te preocupes, hay muchos otros servicios disponibles:</p>
                 
                 <p style="text-align: center; margin-top: 24px;">
                     <a href="{FRONTEND_BASE_URL}/search" class="button">
@@ -238,7 +238,7 @@ def booking_rejected_email(
                 </p>
             </div>
             <div class="footer">
-                <p>Este email fue enviado por U-CAN</p>
+                <p>Este email fue enviado por SeniorAdvisor</p>
             </div>
         </div>
     </body>
@@ -294,7 +294,7 @@ def new_message_email(
                 </p>
             </div>
             <div class="footer">
-                <p>Este email fue enviado por U-CAN</p>
+                <p>Este email fue enviado por SeniorAdvisor</p>
             </div>
         </div>
     </body>
@@ -313,7 +313,7 @@ def care_request_contact_email(
     description: str
 ) -> tuple:
     """Email to client when a provider contacts them about their care request"""
-    subject = f"¡Un cuidador quiere contactarte! - {provider_name}"
+    subject = f"¡Un servicio quiere contactarte! - {provider_name}"
     
     html = f"""
     <!DOCTYPE html>
@@ -337,7 +337,7 @@ def care_request_contact_email(
             </div>
             <div class="content">
                 <p>Hola <strong>{client_name}</strong>,</p>
-                <p>El cuidador <strong>{provider_name}</strong> está interesado en tu solicitud de cuidado para <strong>{pet_name}</strong>.</p>
+                <p>El servicio <strong>{provider_name}</strong> está interesado en tu solicitud de cuidado para <strong>{pet_name}</strong>.</p>
                 
                 <div class="info-box">
                     <p><strong>Tu solicitud:</strong> {service_type.capitalize()}</p>
@@ -353,7 +353,7 @@ def care_request_contact_email(
                 </p>
             </div>
             <div class="footer">
-                <p>Este email fue enviado por U-CAN</p>
+                <p>Este email fue enviado por SeniorAdvisor</p>
             </div>
         </div>
     </body>
@@ -402,7 +402,7 @@ def new_proposal_email(
             </div>
             <div class="content">
                 <p>Hola <strong>{client_name}</strong>,</p>
-                <p>El cuidador <strong>{provider_name}</strong> te envio una propuesta para el cuidado de <strong>{pet_name}</strong>:</p>
+                <p>El servicio <strong>{provider_name}</strong> te envio una propuesta para el cuidado de <strong>{pet_name}</strong>:</p>
 
                 <div class="info-box">
                     <p><strong>Servicio:</strong> {service_type.capitalize()}</p>
@@ -424,7 +424,7 @@ def new_proposal_email(
                 </p>
             </div>
             <div class="footer">
-                <p>Este email fue enviado por U-CAN</p>
+                <p>Este email fue enviado por SeniorAdvisor</p>
             </div>
         </div>
     </body>

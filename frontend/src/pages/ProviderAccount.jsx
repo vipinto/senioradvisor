@@ -11,9 +11,9 @@ import ServiceZones from '@/components/ServiceZones';
 import ProviderGallery from '@/components/ProviderGallery';
 
 const SERVICE_OPTIONS = [
-  { id: 'paseo', label: 'Paseo', icon: Dog, desc: 'Retiro, paseo, ejercicio y devolución' },
-  { id: 'cuidado', label: 'Cuidado', icon: Home, desc: 'Cuidado mientras viajan sus dueños' },
-  { id: 'daycare', label: 'Daycare', icon: TreePine, desc: 'Cuidado diurno mientras trabajan' },
+  { id: 'residencias', label: 'Residencias', icon: Home, desc: 'Estadía permanente con cuidado integral' },
+  { id: 'cuidado-domicilio', label: 'Cuidado a Domicilio', icon: Home, desc: 'Atención profesional en el hogar' },
+  { id: 'salud-mental', label: 'Salud Mental', icon: Briefcase, desc: 'Apoyo psicológico y terapias' },
 ];
 
 const PET_SIZES = [
@@ -251,7 +251,7 @@ const ProviderAccount = () => {
   if (!provider) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">No tienes un perfil de cuidador</p>
+        <p className="text-gray-500">No tienes un perfil de proveedor</p>
       </div>
     );
   }
@@ -564,13 +564,13 @@ const ProviderAccount = () => {
                   className="w-5 h-5 text-[#00e7ff] rounded"
                 />
                 <label htmlFor="hasOwnPets" className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                  <PawPrint className="w-4 h-4" /> Tengo mascotas propias
+                  <PawPrint className="w-4 h-4" /> Cuento con espacios al aire libre
                 </label>
               </div>
 
               {personalInfo.has_own_pets && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Describe tus mascotas</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Describe los espacios</label>
                   <textarea
                     value={personalInfo.own_pets_description}
                     onChange={(e) => setPersonalInfo(prev => ({ ...prev, own_pets_description: e.target.value }))}
@@ -580,11 +580,11 @@ const ProviderAccount = () => {
                   />
 
                   <div className="mt-3">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Fotos de tus mascotas</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Fotos de las instalaciones</label>
                     <div className="flex flex-wrap gap-2">
                       {(personalInfo.pets_photos || []).map((photo) => (
                         <div key={photo.photo_id} className="relative w-20 h-20">
-                          <img src={photo.url} alt="Mascota" className="w-full h-full object-cover rounded-lg" />
+                          <img src={photo.url} alt="Instalación" className="w-full h-full object-cover rounded-lg" />
                           <button
                             onClick={() => deletePhoto(photo.photo_id, 'pets')}
                             className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"

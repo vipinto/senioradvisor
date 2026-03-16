@@ -8,9 +8,9 @@ import { toast } from 'sonner';
 import api from '@/lib/api';
 
 const SERVICE_LABELS = {
-  paseo: 'Paseo',
+  paseo: 'Residencia',
   cuidado: 'Cuidado',
-  daycare: 'Daycare'
+  daycare: 'Cuidado a Domicilio'
 };
 
 export default function BookingForm({ provider, onClose, onSuccess }) {
@@ -57,7 +57,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
       return;
     }
     if (selectedPets.length === 0) {
-      toast.error('Selecciona al menos una mascota');
+      toast.error('Selecciona al menos un servicio');
       return;
     }
 
@@ -71,7 +71,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
         pet_ids: selectedPets,
         notes: notes.trim() || null
       });
-      toast.success('Reserva enviada! El cuidador respondera pronto.');
+      toast.success('Reserva enviada! El servicio respondera pronto.');
       onSuccess?.();
       onClose?.();
     } catch (e) {
@@ -102,7 +102,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
           {[
             { num: 1, label: 'Servicio' },
             { num: 2, label: 'Fecha' },
-            { num: 3, label: 'Mascotas' }
+            { num: 3, label: 'Detalles' }
           ].map(({ num, label }) => (
             <button
               key={num}
@@ -166,7 +166,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
               ) : (
                 <div className="text-center py-8 text-gray-400">
                   <AlertCircle className="w-12 h-12 mx-auto mb-2" />
-                  <p>Este cuidador no tiene servicios configurados</p>
+                  <p>Este servicio no tiene servicios configurados</p>
                 </div>
               )}
             </div>
@@ -220,7 +220,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
           {/* Step 3: Pet Selection & Notes */}
           {step === 3 && (
             <div data-testid="step-pets">
-              <p className="text-sm text-gray-500 mb-4">Selecciona las mascotas para este servicio:</p>
+              <p className="text-sm text-gray-500 mb-4">Selecciona los servicios requeridos:</p>
               
               {loadingPets ? (
                 <div className="flex justify-center py-8">
@@ -229,13 +229,13 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
               ) : pets.length === 0 ? (
                 <div className="text-center py-8 bg-gray-50 rounded-xl">
                   <PawPrint className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                  <p className="text-gray-500 mb-3">No tienes mascotas registradas</p>
+                  <p className="text-gray-500 mb-3">No tienes servicios registrados</p>
                   <Button 
                     variant="outline" 
                     size="sm"
                     onClick={() => window.open('/mis-mascotas/nueva', '_blank')}
                   >
-                    Agregar Mascota
+                    Agregar Servicio
                   </Button>
                 </div>
               ) : (
@@ -285,7 +285,7 @@ export default function BookingForm({ provider, onClose, onSuccess }) {
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Información adicional para el cuidador..."
+                  placeholder="Información adicional para el servicio..."
                   className="w-full mt-1 border rounded-xl p-3 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
                   data-testid="booking-notes"
                 />

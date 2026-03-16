@@ -9,7 +9,7 @@ from auth import google_auth_login
 
 logger = logging.getLogger(__name__)
 
-FRONTEND_URL = os.getenv("FRONTEND_URL", "https://u-can.cl")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://senioradvisor.cl")
 
 router = APIRouter(prefix="/auth")
 
@@ -34,7 +34,7 @@ async def google_callback(request: Request):
 
         result = await google_auth_login(
             code=code,
-            redirect_uri="https://ucan-backend.onrender.com/auth/google",
+            redirect_uri=f"{os.environ.get('REACT_APP_BACKEND_URL', 'https://senioradvisor.cl')}/auth/google",
             db=db
         )
 

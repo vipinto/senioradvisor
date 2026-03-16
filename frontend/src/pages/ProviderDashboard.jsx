@@ -761,8 +761,8 @@ const ProviderDashboard = () => {
                     className="w-5 h-5 accent-[#00e7ff]"
                   />
                   <div>
-                    <span className="font-semibold text-sm">Tengo mascotas propias</span>
-                    <p className="text-xs text-gray-500">Los clientes quieren saber si hay otros animales</p>
+                    <span className="font-semibold text-sm">Contamos con jardín o espacios al aire libre</span>
+                    <p className="text-xs text-gray-500">Las familias valoran los espacios abiertos</p>
                   </div>
                 </label>
                 {personalInfo.has_own_pets && (
@@ -770,13 +770,13 @@ const ProviderDashboard = () => {
                     <textarea
                       value={personalInfo.own_pets_description}
                       onChange={e => setPersonalInfo(prev => ({ ...prev, own_pets_description: e.target.value }))}
-                      placeholder="Describe tus mascotas (ej: 2 perros golden, 1 gato...)"
+                      placeholder="Describe los espacios e instalaciones disponibles..."
                       className="w-full mt-2 border rounded-xl p-3 text-sm min-h-[60px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
                       data-testid="personal-pets-desc"
                     />
                     {/* Pets Photos */}
                     <div className="mt-3">
-                      <p className="text-xs text-gray-500 mb-2">Fotos de tus mascotas (máx. 3)</p>
+                      <p className="text-xs text-gray-500 mb-2">Fotos de las instalaciones (máx. 3)</p>
                       <div className="flex flex-wrap gap-2">
                         {(personalInfo.pets_photos || []).map(photo => (
                           <div key={photo.photo_id} className="relative w-24 h-24 rounded-lg overflow-hidden border group">
@@ -830,7 +830,7 @@ const ProviderDashboard = () => {
               {/* Animal Experience */}
               <div>
                 <label className="text-sm font-medium text-gray-700 flex items-center gap-1.5 mb-1.5">
-                  <PawPrint className="w-4 h-4 text-gray-500" /> Experiencia con animales
+                  <PawPrint className="w-4 h-4 text-gray-500" /> Experiencia en cuidado senior
                 </label>
                 <textarea
                   value={personalInfo.animal_experience}
@@ -1043,7 +1043,7 @@ const ProviderDashboard = () => {
                           {[
                             { key: 'rating', label: 'Calificacion General' },
                             { key: 'punctuality', label: 'Puntualidad' },
-                            { key: 'pet_behavior', label: 'Comportamiento de la Mascota' },
+                            { key: 'pet_behavior', label: 'Calidad del Servicio' },
                             { key: 'communication', label: 'Comunicacion' },
                           ].map(({ key, label }) => (
                             <div key={key}>

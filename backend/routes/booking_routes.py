@@ -223,7 +223,7 @@ async def get_provider_bookings(
     
     provider = await db.providers.find_one({"user_id": user["user_id"]})
     if not provider:
-        raise HTTPException(status_code=404, detail="No tienes perfil de cuidador")
+        raise HTTPException(status_code=404, detail="No tienes perfil de proveedor")
     
     query = {"provider_id": provider["provider_id"]}
     if status:
@@ -247,7 +247,7 @@ async def respond_to_booking(
     
     provider = await db.providers.find_one({"user_id": user["user_id"]})
     if not provider:
-        raise HTTPException(status_code=404, detail="No tienes perfil de cuidador")
+        raise HTTPException(status_code=404, detail="No tienes perfil de proveedor")
     
     booking = await db.bookings.find_one({
         "booking_id": booking_id,
@@ -320,7 +320,7 @@ async def complete_booking(booking_id: str, request: Request):
     
     provider = await db.providers.find_one({"user_id": user["user_id"]})
     if not provider:
-        raise HTTPException(status_code=404, detail="No tienes perfil de cuidador")
+        raise HTTPException(status_code=404, detail="No tienes perfil de proveedor")
     
     booking = await db.bookings.find_one({
         "booking_id": booking_id,
@@ -400,7 +400,7 @@ async def get_booking_stats(request: Request):
     
     provider = await db.providers.find_one({"user_id": user["user_id"]})
     if not provider:
-        raise HTTPException(status_code=404, detail="No tienes perfil de cuidador")
+        raise HTTPException(status_code=404, detail="No tienes perfil de proveedor")
     
     pipeline = [
         {"$match": {"provider_id": provider["provider_id"]}},

@@ -115,7 +115,7 @@ const Plans = () => {
             Elige tu Plan
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-            Accede a todos los contactos de cuidadores y comunicate directamente con ellos
+            Accede a todos los contactos de residencias y comunicate directamente con ellas
           </p>
         </div>
 

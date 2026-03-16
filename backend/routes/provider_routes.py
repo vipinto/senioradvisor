@@ -442,7 +442,7 @@ async def update_my_services(request: Request):
 
     provider = await db.providers.find_one({"user_id": user["user_id"]})
     if not provider:
-        raise HTTPException(status_code=404, detail="No tienes perfil de cuidador")
+        raise HTTPException(status_code=404, detail="No tienes perfil de proveedor")
 
     provider_id = provider["provider_id"]
     await db.services.delete_many({"provider_id": provider_id})
@@ -836,7 +836,7 @@ async def create_provider(provider_data: ProviderCreate, request: Request):
 
     existing = await db.providers.find_one({"user_id": user["user_id"]})
     if existing:
-        raise HTTPException(status_code=400, detail="Ya tienes un perfil de cuidador")
+        raise HTTPException(status_code=400, detail="Ya tienes un perfil de proveedor")
 
     if not provider_data.services_offered:
         raise HTTPException(status_code=400, detail="Debes seleccionar al menos un servicio")

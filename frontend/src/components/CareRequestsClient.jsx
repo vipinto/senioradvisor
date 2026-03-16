@@ -7,9 +7,9 @@ import { toast } from 'sonner';
 import api from '@/lib/api';
 
 const SERVICE_LABELS = {
-  paseo: 'Paseo',
+  paseo: 'Residencia',
   cuidado: 'Cuidado',
-  daycare: 'Daycare'
+  daycare: 'Cuidado a Domicilio'
 };
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
@@ -27,7 +27,7 @@ const ProposalCard = ({ proposal, onRespond }) => {
     setResponding(true);
     try {
       await api.put(`/proposals/${proposal.proposal_id}/respond`, { status });
-      toast.success(status === 'accepted' ? 'Propuesta aceptada! El cuidador sera notificado.' : 'Propuesta rechazada.');
+      toast.success(status === 'accepted' ? 'Propuesta aceptada! El servicio sera notificado.' : 'Propuesta rechazada.');
       onRespond(proposal.proposal_id, status);
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Error al responder');
@@ -181,7 +181,7 @@ const CareRequestsClient = ({ pets = [] }) => {
       setRequests(prev => [res.data, ...prev]);
       setShowForm(false);
       setFormData({ pet_id: '', service_type: 'paseo', description: '', preferred_dates: [], comuna: '', flexible_dates: false });
-      toast.success('Solicitud creada. Los cuidadores suscritos podran verla y enviarte propuestas.');
+      toast.success('Solicitud creada. Los proveedores suscritos podran verla y enviarte propuestas.');
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Error al crear solicitud');
     } finally {
@@ -264,19 +264,19 @@ const CareRequestsClient = ({ pets = [] }) => {
       {showForm && (
         <form onSubmit={handleSubmit} className="mb-6 p-4 bg-gray-50 rounded-xl space-y-4" data-testid="care-request-form">
           <p className="text-sm text-gray-600 mb-2">
-            Crea una solicitud y los cuidadores suscritos podran enviarte propuestas con presupuesto y mensaje.
+            Crea una solicitud y los proveedores suscritos podran enviarte propuestas con presupuesto y mensaje.
           </p>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Mascota *</label>
+              <label className="block text-sm font-medium mb-1">Servicio *</label>
               <Select value={formData.pet_id} onValueChange={v => setFormData(prev => ({ ...prev, pet_id: v }))}>
-                <SelectTrigger data-testid="select-pet"><SelectValue placeholder="Selecciona mascota" /></SelectTrigger>
+                <SelectTrigger data-testid="select-pet"><SelectValue placeholder="Selecciona servicio" /></SelectTrigger>
                 <SelectContent>
                   {pets.map(pet => (<SelectItem key={pet.pet_id} value={pet.pet_id}>{pet.name} ({pet.species})</SelectItem>))}
                 </SelectContent>
               </Select>
               {pets.length === 0 && (
-                <p className="text-xs text-orange-600 mt-1">Primero <Link to="/mis-mascotas/nueva" className="underline">agrega una mascota</Link></p>
+                <p className="text-xs text-orange-600 mt-1">Primero <Link to="/registrar-residencia" className="underline">registra un servicio</Link></p>
               )}
             </div>
             <div>
@@ -284,9 +284,9 @@ const CareRequestsClient = ({ pets = [] }) => {
               <Select value={formData.service_type} onValueChange={v => setFormData(prev => ({ ...prev, service_type: v }))}>
                 <SelectTrigger data-testid="select-service"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="paseo">Paseo</SelectItem>
+                  <SelectItem value="paseo">Residencia</SelectItem>
                   <SelectItem value="cuidado">Cuidado</SelectItem>
-                  <SelectItem value="daycare">Daycare</SelectItem>
+                  <SelectItem value="daycare">Cuidado a Domicilio</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -317,7 +317,7 @@ const CareRequestsClient = ({ pets = [] }) => {
         <div className="text-center py-8">
           <Dog className="w-12 h-12 text-gray-200 mx-auto mb-3" />
           <p className="text-gray-500 mb-2">No tienes solicitudes de cuidado</p>
-          <p className="text-sm text-gray-400">Crea una solicitud y los cuidadores suscritos podran enviarte propuestas</p>
+          <p className="text-sm text-gray-400">Crea una solicitud y los proveedores suscritos podran enviarte propuestas</p>
         </div>
       ) : (
         <div className="space-y-4">

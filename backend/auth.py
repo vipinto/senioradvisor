@@ -259,7 +259,7 @@ async def forgot_password(email: str, db: AsyncIOMotorDatabase, frontend_url: st
             <div style="display: inline-block; background-color: #E6202E; border-radius: 12px; padding: 12px 16px;">
                 <span style="color: white; font-size: 28px; font-weight: bold;">U</span>
             </div>
-            <h1 style="color: #1a1a1a; margin-top: 16px;">U-CAN</h1>
+            <h1 style="color: #1a1a1a; margin-top: 16px;">SeniorAdvisor</h1>
         </div>
         <h2 style="color: #333;">Recuperar Contraseña</h2>
         <p style="color: #555;">Hola {user.get('name', '')},</p>
@@ -277,7 +277,7 @@ async def forgot_password(email: str, db: AsyncIOMotorDatabase, frontend_url: st
         params = {
             "from": SENDER_EMAIL,
             "to": [email],
-            "subject": "U-CAN - Recuperar Contraseña",
+            "subject": "SeniorAdvisor - Recuperar Contraseña",
             "html": html_content
         }
         await asyncio.to_thread(resend.Emails.send, params)

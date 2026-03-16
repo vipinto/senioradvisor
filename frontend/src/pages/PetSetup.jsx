@@ -150,7 +150,7 @@ export default function PetSetup() {
             <PawPrint className="w-8 h-8 text-[#00e7ff]" />
           </div>
           <h1 className="text-3xl font-bold text-[#33404f]">Agrega tu Mascota</h1>
-          <p className="text-gray-500 mt-2">Asi los cuidadores podran conocer mejor a tu companerito</p>
+          <p className="text-gray-500 mt-2">Asi los residencias podran conocer mejor a tu companerito</p>
         </div>
 
         {/* List of saved pets */}

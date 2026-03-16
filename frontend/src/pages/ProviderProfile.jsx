@@ -347,7 +347,7 @@ export default function ProviderProfile() {
                 
                 {provider.walking_zones?.length > 0 && (
                   <div>
-                    <h3 className="text-sm font-medium text-gray-600 mb-2">Zonas de paseo favoritas:</h3>
+                    <h3 className="text-sm font-medium text-gray-600 mb-2">Zonas de cobertura:</h3>
                     <div className="flex flex-wrap gap-2">
                       {provider.walking_zones.map(zone => (
                         <span 
@@ -589,7 +589,7 @@ export default function ProviderProfile() {
                   </div>
                   <p className="text-sm font-medium text-yellow-700">Solicitud enviada</p>
                   <p className="text-xs text-gray-500">
-                    Esperando que el cuidador acepte tu solicitud de contacto. Te notificaremos cuando responda.
+                    Esperando que el servicio acepte tu solicitud de contacto. Te notificaremos cuando responda.
                   </p>
                 </div>
 

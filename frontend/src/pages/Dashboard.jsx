@@ -74,7 +74,7 @@ const Dashboard = () => {
       setPets(prev => [...prev, res.data]);
       setShowPetForm(false);
       setNewPet({ name: '', type: 'perro', breed: '', size: 'mediano', age: '', notes: '' });
-      toast.success('Mascota agregada');
+      toast.success('Registro agregado');
     } catch { toast.error('Error al guardar'); }
     finally { setSavingPet(false); }
   };
@@ -86,7 +86,7 @@ const Dashboard = () => {
       await api.put(`/pets/${petId}`, editPetData);
       setPets(prev => prev.map(p => p.pet_id === petId ? { ...p, ...editPetData } : p));
       setEditingPet(null);
-      toast.success('Mascota actualizada');
+      toast.success('Registro actualizado');
     } catch { toast.error('Error al guardar'); }
     finally { setSavingPet(false); }
   };
@@ -194,7 +194,7 @@ const Dashboard = () => {
               <div className="text-center py-12 text-gray-500">
                 <CalendarCheck className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                 <p>No tienes reservas activas</p>
-                <Link to="/search" className="text-[#00e7ff] hover:underline text-sm">Buscar cuidadores</Link>
+                <Link to="/search" className="text-[#00e7ff] hover:underline text-sm">Buscar residencias</Link>
               </div>
             ) : (
               <div className="space-y-4">
@@ -202,7 +202,7 @@ const Dashboard = () => {
                   <div key={booking.booking_id} className="border rounded-xl p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="font-bold">{booking.provider_name || 'Cuidador'}</h4>
+                        <h4 className="font-bold">{booking.provider_name || 'Servicio'}</h4>
                         <p className="text-sm text-gray-500">{booking.service_type}</p>
                         <p className="text-xs text-gray-400">{new Date(booking.start_date).toLocaleDateString('es-CL')}</p>
                       </div>
@@ -230,7 +230,7 @@ const Dashboard = () => {
             </h2>
             <div className="text-center py-12 text-gray-500">
               <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-              <p>Tus conversaciones con cuidadores</p>
+              <p>Tus conversaciones con residencias</p>
               <Link to="/chat" className="text-[#00e7ff] hover:underline text-sm">Ir al chat</Link>
             </div>
           </div>

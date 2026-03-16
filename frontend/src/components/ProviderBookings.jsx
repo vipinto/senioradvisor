@@ -15,9 +15,9 @@ const STATUS_CONFIG = {
 };
 
 const SERVICE_LABELS = {
-  paseo: 'Paseo',
+  paseo: 'Residencia',
   cuidado: 'Cuidado',
-  daycare: 'Daycare'
+  daycare: 'Cuidado a Domicilio'
 };
 
 export default function ProviderBookings() {
@@ -232,7 +232,7 @@ export default function ProviderBookings() {
                       <div className="mb-4">
                         <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1">
                           <PawPrint className="w-4 h-4 text-[#00e7ff]" />
-                          Mascotas ({booking.pets.length})
+                          Servicios ({booking.pets.length})
                         </h4>
                         <div className="grid sm:grid-cols-2 gap-2">
                           {booking.pets.map((pet, i) => (
