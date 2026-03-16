@@ -138,6 +138,12 @@ export default function AdminPanel() {
   const [editingConvenio, setEditingConvenio] = useState(null);
   const [convenioForm, setConvenioForm] = useState({ name: '', logo: '', description: '', location: '', plans: [], featured: false });
   const [showResidenciaModal, setShowResidenciaModal] = useState(false);
+  const [editingProvider, setEditingProvider] = useState(null);
+  const [editProviderTab, setEditProviderTab] = useState('profile');
+  const [editProfileForm, setEditProfileForm] = useState({});
+  const [editServicesForm, setEditServicesForm] = useState({ residencias: { price_from: '', description: '' }, 'cuidado-domicilio': { price_from: '', description: '' }, 'salud-mental': { price_from: '', description: '' } });
+  const [editAmenities, setEditAmenities] = useState([]);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [residenciaForm, setResidenciaForm] = useState({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', place_id: '' });
   const [residenciaServices, setResidenciaServices] = useState({
     residencias: { price_from: '', description: '' },
@@ -183,6 +189,88 @@ export default function AdminPanel() {
       setLoading(false);
     }
   };
+
+  const openEditProvider = async (providerId) => {
+    try {
+      const res = await api.get(`/admin/providers/${providerId}/detail`);
+      const p = res.data;
+      setEditingProvider(p);
+      setEditProfileForm({
+        business_name: p.business_name || '', phone: p.phone || '', address: p.address || '',
+        region: p.region || '', comuna: p.comuna || '', place_id: p.place_id || '',
+      });
+      const svcMap = {};
+      (p.services || []).forEach(s => { svcMap[s.service_type] = s; });
+      setEditServicesForm({
+        residencias: { price_from: svcMap['residencias']?.price_from || '', description: svcMap['residencias']?.description || '' },
+        'cuidado-domicilio': { price_from: svcMap['cuidado-domicilio']?.price_from || '', description: svcMap['cuidado-domicilio']?.description || '' },
+        'salud-mental': { price_from: svcMap['salud-mental']?.price_from || '', description: svcMap['salud-mental']?.description || '' },
+      });
+      setEditAmenities(p.amenities || []);
+      setEditProviderTab('profile');
+    } catch (err) { toast.error('Error al cargar proveedor'); }
+  };
+
+  const saveEditProfile = async () => {
+    if (!editingProvider) return;
+    try {
+      const services = [];
+      Object.entries(editServicesForm).forEach(([type, data]) => {
+        const price = parseInt(data.price_from) || 0;
+        if (price > 0 || data.description) services.push({ service_type: type, price_from: price, description: data.description || '' });
+      });
+      await api.put(`/admin/providers/${editingProvider.provider_id}/profile`, { ...editProfileForm, services });
+      toast.success('Perfil actualizado');
+      loadData();
+      // Refresh provider detail
+      const res = await api.get(`/admin/providers/${editingProvider.provider_id}/detail`);
+      setEditingProvider(res.data);
+    } catch (err) { toast.error('Error al guardar'); }
+  };
+
+  const uploadAdminGallery = async (e) => {
+    if (!editingProvider) return;
+    const files = Array.from(e.target.files);
+    setUploadingPhoto(true);
+    try {
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+        await api.post(`/admin/providers/${editingProvider.provider_id}/gallery/upload`, formData);
+      }
+      toast.success(`${files.length} foto(s) subida(s)`);
+      const res = await api.get(`/admin/providers/${editingProvider.provider_id}/detail`);
+      setEditingProvider(res.data);
+    } catch (err) { toast.error(err.response?.data?.detail || 'Error al subir'); }
+    finally { setUploadingPhoto(false); }
+  };
+
+  const deleteAdminGallery = async (photoId) => {
+    if (!editingProvider) return;
+    try {
+      await api.delete(`/admin/providers/${editingProvider.provider_id}/gallery/${photoId}`);
+      toast.success('Foto eliminada');
+      setEditingProvider(prev => ({ ...prev, gallery: prev.gallery.filter(p => p.photo_id !== photoId) }));
+    } catch (err) { toast.error('Error al eliminar'); }
+  };
+
+  const toggleAdminAmenity = async (amenity) => {
+    if (!editingProvider) return;
+    const updated = editAmenities.includes(amenity) ? editAmenities.filter(a => a !== amenity) : [...editAmenities, amenity];
+    setEditAmenities(updated);
+    try {
+      await api.put(`/admin/providers/${editingProvider.provider_id}/amenities`, { amenities: updated });
+    } catch (err) { toast.error('Error al actualizar'); }
+  };
+
+  const AMENITY_CATEGORIES = [
+    { name: 'Cuidado y Salud', items: ['geriatria', 'enfermeria', 'kinesiologia', 'psicologia', 'nutricion', 'fonoaudiologia', 'terapia_ocupacional', 'medico_residente'] },
+    { name: 'Servicios e Instalaciones', items: ['aire_acondicionado', 'calefaccion', 'camaras_seguridad', 'lavanderia', 'cocina_propia', 'estacionamiento', 'jardin', 'capilla'] },
+    { name: 'Habitaciones', items: ['bano_privado', 'tv', 'boton_asistencia', 'wifi', 'habitacion_individual', 'habitacion_compartida'] },
+    { name: 'Actividades', items: ['actividades_familiares', 'celebraciones', 'talleres_cognitivos', 'talleres_actividad_fisica', 'salidas_recreativas', 'musicoterapia'] },
+  ];
+  const formatAmenityName = (a) => a.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
 
   const approveProvider = async (providerId) => {
     try { await api.post(`/admin/providers/${providerId}/approve`); toast.success('Residencia aprobada'); loadData(); }
@@ -311,17 +399,18 @@ export default function AdminPanel() {
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-lg bg-gray-200 overflow-hidden">
-                          {p.photos?.[0] && <img src={p.photos[0]} alt="" className="w-full h-full object-cover" />}
+                          {(p.profile_photo || p.gallery?.[0]?.url || p.photos?.[0]) && <img src={p.profile_photo || p.gallery?.[0]?.url || p.photos?.[0]} alt="" className="w-full h-full object-cover" />}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-bold">{p.business_name}</h3>
                             {p.verified && <ShieldCheck className="w-5 h-5 text-[#00e7ff]" />}
                           </div>
-                          <p className="text-sm text-gray-500">{p.comuna}</p>
+                          <p className="text-sm text-gray-500">{p.comuna || p.region || ''}</p>
                         </div>
                       </div>
                       <div className="flex gap-2">
+                        <Button size="sm" variant="outline" onClick={() => openEditProvider(p.provider_id)} data-testid={`edit-provider-${p.provider_id}`}><Pencil className="w-4 h-4" /></Button>
                         <Link to={`/provider/${p.provider_id}`}><Button variant="outline" size="sm"><Eye className="w-4 h-4" /></Button></Link>
                         {p.verified ? (
                           <Button size="sm" variant="outline" onClick={() => unverifyProvider(p.provider_id)}>Quitar Badge</Button>
@@ -1032,6 +1121,133 @@ export default function AdminPanel() {
               </Button>
               <Button variant="outline" onClick={() => setShowConvenioModal(false)} className="flex-1">Cancelar</Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Provider Modal */}
+      {editingProvider && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold text-[#33404f]">Editar: {editingProvider.business_name}</h3>
+              <button onClick={() => setEditingProvider(null)} className="text-gray-400 hover:text-gray-600"><XCircle className="w-6 h-6" /></button>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex gap-2 mb-4 border-b pb-3">
+              {[
+                { key: 'profile', label: 'Perfil' },
+                { key: 'gallery', label: 'Galería' },
+                { key: 'amenities', label: 'Servicios' },
+              ].map(t => (
+                <button key={t.key} onClick={() => setEditProviderTab(t.key)} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${editProviderTab === t.key ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`} data-testid={`edit-tab-${t.key}`}>
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Profile Tab */}
+            {editProviderTab === 'profile' && (
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium mb-1">Nombre *</label>
+                    <input type="text" value={editProfileForm.business_name || ''} onChange={e => setEditProfileForm(p => ({ ...p, business_name: e.target.value }))} className="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-[#00e7ff]" data-testid="edit-name" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1">Teléfono</label>
+                    <input type="tel" value={editProfileForm.phone || ''} onChange={e => setEditProfileForm(p => ({ ...p, phone: e.target.value }))} className="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-[#00e7ff]" data-testid="edit-phone" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium mb-1">Dirección</label>
+                  <input type="text" value={editProfileForm.address || ''} onChange={e => setEditProfileForm(p => ({ ...p, address: e.target.value }))} className="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-[#00e7ff]" data-testid="edit-address" />
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium mb-1">Región</label>
+                    <input type="text" value={editProfileForm.region || ''} onChange={e => setEditProfileForm(p => ({ ...p, region: e.target.value }))} className="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-[#00e7ff]" data-testid="edit-region" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1">Comuna</label>
+                    <input type="text" value={editProfileForm.comuna || ''} onChange={e => setEditProfileForm(p => ({ ...p, comuna: e.target.value }))} className="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-[#00e7ff]" data-testid="edit-comuna" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1">Place ID</label>
+                    <input type="text" value={editProfileForm.place_id || ''} onChange={e => setEditProfileForm(p => ({ ...p, place_id: e.target.value }))} className="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-[#00e7ff]" data-testid="edit-placeid" />
+                  </div>
+                </div>
+
+                <div className="border-t pt-3">
+                  <h4 className="text-sm font-bold text-[#33404f] mb-2">Precios por Categoría</h4>
+                  {[
+                    { key: 'residencias', label: 'Residencias' },
+                    { key: 'cuidado-domicilio', label: 'Cuidado a Domicilio' },
+                    { key: 'salud-mental', label: 'Salud Mental' },
+                  ].map(({ key, label }) => (
+                    <div key={key} className="p-3 bg-gray-50 rounded-lg mb-2">
+                      <span className="font-semibold text-xs text-[#33404f]">{label}</span>
+                      <div className="grid grid-cols-2 gap-2 mt-1">
+                        <input type="number" value={editServicesForm[key]?.price_from || ''} onChange={e => setEditServicesForm(p => ({ ...p, [key]: { ...p[key], price_from: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm" placeholder="Precio desde" data-testid={`edit-price-${key}`} />
+                        <input type="text" value={editServicesForm[key]?.description || ''} onChange={e => setEditServicesForm(p => ({ ...p, [key]: { ...p[key], description: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm" placeholder="Descripción" data-testid={`edit-desc-${key}`} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <Button onClick={saveEditProfile} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="edit-save-profile">Guardar Perfil</Button>
+              </div>
+            )}
+
+            {/* Gallery Tab */}
+            {editProviderTab === 'gallery' && (
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <p className="text-sm text-gray-500">{editingProvider.gallery?.length || 0}/10 fotos</p>
+                  <label className={`px-4 py-2 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold text-sm rounded-lg cursor-pointer ${uploadingPhoto ? 'opacity-50 pointer-events-none' : ''}`}>
+                    {uploadingPhoto ? 'Subiendo...' : 'Subir Fotos'}
+                    <input type="file" multiple accept="image/*" className="hidden" onChange={uploadAdminGallery} data-testid="edit-gallery-upload" />
+                  </label>
+                </div>
+                {editingProvider.gallery?.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-3">
+                    {editingProvider.gallery.map((photo) => (
+                      <div key={photo.photo_id} className="relative group aspect-square rounded-xl overflow-hidden bg-gray-100">
+                        <img src={photo.url?.startsWith('http') ? photo.url : `${process.env.REACT_APP_BACKEND_URL}${photo.url}`} alt="" className="w-full h-full object-cover" />
+                        <button onClick={() => deleteAdminGallery(photo.photo_id)} className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" data-testid={`delete-photo-${photo.photo_id}`}>
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-400">
+                    <Camera className="w-12 h-12 mx-auto mb-2" />
+                    <p>Sin fotos en la galería</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Amenities Tab */}
+            {editProviderTab === 'amenities' && (
+              <div className="space-y-4">
+                <p className="text-sm text-gray-500">Activa o desactiva los servicios. Los cambios se guardan automáticamente.</p>
+                {AMENITY_CATEGORIES.map(cat => (
+                  <div key={cat.name}>
+                    <h4 className="text-sm font-bold text-[#33404f] mb-2">{cat.name}</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {cat.items.map(amenity => (
+                        <button key={amenity} onClick={() => toggleAdminAmenity(amenity)} className={`px-3 py-2 rounded-lg text-xs font-medium transition-all text-left ${editAmenities.includes(amenity) ? 'bg-[#00e7ff]/20 text-[#33404f] border-2 border-[#00e7ff]' : 'bg-gray-100 text-gray-500 border-2 border-transparent hover:border-gray-300'}`} data-testid={`amenity-${amenity}`}>
+                          {editAmenities.includes(amenity) ? '✓ ' : ''}{formatAmenityName(amenity)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
