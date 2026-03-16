@@ -195,7 +195,7 @@ const ProviderGallery = ({ editable = true }) => {
         <div className="mb-4 bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start gap-2" data-testid="gallery-photo-tip">
           <Camera className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-amber-700">
-            <strong>Tip:</strong> Sube fotos junto a las mascotas que cuidas. Los perfiles con fotos de mascotas generan mas confianza y reciben hasta 3x mas solicitudes.
+            <strong>Tip:</strong> Sube fotos de las instalaciones, habitaciones y áreas comunes de tu residencia. Los perfiles con fotos generan más confianza y reciben hasta 3x más solicitudes.
           </p>
         </div>
       )}
@@ -219,7 +219,7 @@ const ProviderGallery = ({ editable = true }) => {
           <ImageIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
           <p className="text-gray-500 mb-2">No tienes fotos en tu galería</p>
           <p className="text-sm text-gray-400 mb-4">
-            Sube fotos de tu espacio, tus servicios o las mascotas que cuidas
+            Sube fotos de las instalaciones, habitaciones y áreas comunes
           </p>
           {editable && (
             <Button

@@ -257,8 +257,9 @@ const ProviderDashboard = () => {
         <div className="flex gap-2 mb-6 border-b overflow-x-auto">
           {[
             { key: 'profile', label: 'Editar Perfil', icon: Settings },
-            { key: 'contact-requests', label: 'Solicitudes Directas', icon: Inbox },
+            { key: 'gallery', label: 'Galería', icon: Camera },
             { key: 'amenities', label: 'Servicios', icon: ListChecks },
+            { key: 'contact-requests', label: 'Solicitudes Directas', icon: Inbox },
             { key: 'requests', label: 'Solicitudes Publicadas', icon: Users },
             { key: 'bookings', label: 'Reservas', icon: CalendarCheck },
           ].map(({ key, label, icon: Icon }) => (
