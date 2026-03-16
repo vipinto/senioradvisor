@@ -94,7 +94,7 @@ def booking_request_email(
                     <p><strong>Cliente:</strong> {client_name}</p>
                     <p><strong>Servicio:</strong> {service_type.capitalize()}</p>
                     <p><strong>Fecha:</strong> {start_date} - {end_date}</p>
-                    <p><strong>Mascotas:</strong> {pets_text}</p>
+                    <p><strong>Detalles:</strong> {pets_text}</p>
                 </div>
                 
                 {notes_section}
@@ -163,7 +163,7 @@ def booking_confirmed_email(
                 <p>Tu reserva ha sido confirmada:</p>
                 
                 <div class="info-box">
-                    <p><strong>Cuidador:</strong> {provider_name}</p>
+                    <p><strong>Servicio:</strong> {provider_name}</p>
                     <p><strong>Servicio:</strong> {service_type.capitalize()}</p>
                     <p><strong>Fecha:</strong> {start_date} - {end_date}</p>
                 </div>
@@ -233,7 +233,7 @@ def booking_rejected_email(
                 
                 <p style="text-align: center; margin-top: 24px;">
                     <a href="{FRONTEND_BASE_URL}/search" class="button">
-                        Buscar Otros Cuidadores
+                        Buscar Otros Servicios
                     </a>
                 </p>
             </div>
@@ -337,7 +337,7 @@ def care_request_contact_email(
             </div>
             <div class="content">
                 <p>Hola <strong>{client_name}</strong>,</p>
-                <p>El servicio <strong>{provider_name}</strong> está interesado en tu solicitud de cuidado para <strong>{pet_name}</strong>.</p>
+                <p>El servicio <strong>{provider_name}</strong> está interesado en tu solicitud de servicio para <strong>{pet_name}</strong>.</p>
                 
                 <div class="info-box">
                     <p><strong>Tu solicitud:</strong> {service_type.capitalize()}</p>
@@ -402,7 +402,7 @@ def new_proposal_email(
             </div>
             <div class="content">
                 <p>Hola <strong>{client_name}</strong>,</p>
-                <p>El servicio <strong>{provider_name}</strong> te envio una propuesta para el cuidado de <strong>{pet_name}</strong>:</p>
+                <p>El servicio <strong>{provider_name}</strong> te envio una propuesta para <strong>{pet_name}</strong>:</p>
 
                 <div class="info-box">
                     <p><strong>Servicio:</strong> {service_type.capitalize()}</p>
