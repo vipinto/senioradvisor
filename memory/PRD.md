@@ -1,46 +1,35 @@
 # SeniorAdvisor - PRD
 
 ## Descripción
-Directorio de servicios para el cuidado de adultos mayores en Chile. Conecta familias con residencias, cuidado a domicilio y servicios de salud mental.
+Buscador de residencias para adultos mayores en Chile. Las familias buscan residencias viendo fotos, ratings, comentarios y contactándose directamente. El equipo sube la base de datos; las residencias pueden reclamar su ficha o registrarse públicamente. Los admins también agregan residencias.
 
-## Campos de Residencia
-Nombre, Dirección, Región, Comuna, Sitio Web, Teléfono, Correo, Facebook, Instagram, PlaceID
-Precio por 3 categorías (Residencias, Cuidado a Domicilio, Salud Mental) - si no se rellena, no aparece
-
-## Gestión de Residencias (Admin + Provider)
-- **Editar Perfil**: Todos los campos + 3 precios por categoría
-- **Galería**: Subir/eliminar hasta 10 fotos
-- **Servicios (Amenidades)**: Toggles activar/desactivar por categorías (Cuidado y Salud, Instalaciones, Habitaciones, Actividades)
-
-## Registro Público de Residencias (Marzo 2026)
-- Formulario público de 6 pasos en `/registrar-residencia`
-- Paso 1: Datos de acceso (nombre residencia, email, contraseña)
-- Paso 2: Contacto (teléfono, dirección, comuna, región, sitio web)
-- Paso 3: Redes sociales (Facebook, Instagram)
-- Paso 4: Servicios y precios (3 categorías)
-- Paso 5: Amenidades
-- Paso 6: Confirmación y envío
-- Requiere aprobación de admin antes de aparecer en el directorio
-- Backend: `POST /api/auth/register-provider` (sin autenticación)
-- Página de éxito en `/registro-exitoso`
-
-## Limpieza de Branding (Marzo 2026) - COMPLETADA
-- Todas las referencias a U-CAN reemplazadas por SeniorAdvisor
-- Terminología de mascotas (mascota, cuidador, paseo, daycare, perro) reemplazada por equivalentes de cuidado senior
-- Páginas legales (FAQ, Términos, Privacidad, Seguridad) reescritas completamente
-- Email templates actualizados
-- Backend error messages actualizados
+## Modelo de Negocio
+- SeniorAdvisor sube toda la base de datos de residencias
+- Las residencias pueden contactar para hacerse cargo de su ficha
+- También pueden registrarse públicamente (formulario 6 pasos, requiere aprobación admin)
+- Una residencia puede agregar sucursales (hasta 5)
+- El fuerte: ratings y comentarios de familias
 
 ## Roles
-- Cliente: Buscar, ver perfiles, reseñas
-- Proveedor: Editar perfil, galería, servicios, suscripción Premium
-- Admin: Panel completo, crear/editar residencias, gestionar galería y amenidades, aprobar/rechazar registros
+- Cliente: Buscar, ver perfiles, reseñas, calificar
+- Proveedor: Editar perfil, galería, servicios, sucursales, suscripción Premium
+- Admin: Panel completo, crear/editar residencias, aprobar registros, blog, convenios
 
-## Estado (Marzo 2026) - FUNCIONAL
+## Funcionalidades Implementadas
+- Búsqueda de residencias con filtros
+- Perfil detallado con fotos, amenidades, precios por 3 categorías
+- Sistema de reseñas y ratings (5 criterios)
+- Registro público multi-paso (6 pasos) con aprobación admin
+- Sucursales: cada residencia puede agregar hasta 5 ubicaciones adicionales
+- Dashboard proveedor: perfil, galería, amenidades, servicios, sucursales, reservas
+- Admin panel: gestión completa de residencias, usuarios, blog, convenios
+- Carga masiva CSV optimizada (~5 seg)
+- Blog "Actualidad Mayor"
+- SeniorClub (convenios)
+
+## Estado (Marzo 2026)
 - 265+ usuarios, 262+ residencias
-- Home, Búsqueda, Perfil Proveedor, Blog, SeniorClub, Admin Panel, Provider Dashboard
-- Registro público multi-paso para residencias con aprobación admin
-- Branding limpio SeniorAdvisor en todo el sitio
+- Branding 100% SeniorAdvisor (sin referencias U-CAN)
 
 ## Credenciales
 - Admin: admin@senioradvisor.cl / admin123
@@ -48,9 +37,10 @@ Precio por 3 categorías (Residencias, Cuidado a Domicilio, Salud Mental) - si n
 - Proveedor: proveedor1@senioradvisor.cl / demo123
 
 ## Pendiente
-- Google Maps: Usuario activará billing
+- Google Maps (bloqueado por billing del usuario)
 - Paginación en resultados de búsqueda
-- Autocompletado de comuna/región en búsqueda
+- Autocompletado comuna/región en búsqueda
+- Refactoring de componentes grandes (AdminDashboard, ProviderDashboard)
 
 ## Arquitectura
 ```
@@ -58,10 +48,17 @@ Precio por 3 categorías (Residencias, Cuidado a Domicilio, Salud Mental) - si n
 ├── backend/
 │   ├── routes/ (auth_routes.py, provider_routes.py, admin_routes.py, blog_routes.py, partner_routes.py, etc.)
 │   ├── auth.py, database.py, models.py, server.py, email_service.py
-│   └── uploads/ (gallery/, profile/, personal/)
+│   └── uploads/
 ├── frontend/
 │   ├── src/
 │   │   ├── pages/ (RegisterProvider.jsx, RegistroExitoso.jsx, AdminPanel.jsx, ProviderDashboard.jsx, SearchSimple.jsx, FAQ.jsx, Terms.jsx, Privacy.jsx, Seguridad.jsx, etc.)
-│   │   ├── components/ (Navbar, Footer, ProviderGallery, AmenitiesToggle, CookieConsent, etc.)
+│   │   ├── components/
 │   │   └── App.js
 ```
+
+## Key API Endpoints
+- POST /api/auth/register-provider - Registro público de residencia
+- GET/POST/DELETE /api/providers/my-branches - CRUD sucursales
+- GET /api/providers - Búsqueda pública
+- PUT /api/my-profile - Actualizar perfil proveedor
+- POST /api/providers/bulk-upload-excel - Carga masiva
