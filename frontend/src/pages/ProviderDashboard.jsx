@@ -29,7 +29,7 @@ const ProviderDashboard = () => {
   const [showReviewForm, setShowReviewForm] = useState(null);
   const [reviewForm, setReviewForm] = useState({ rating: 5, punctuality: 5, pet_behavior: 5, communication: 5, comment: '' });
   const [submittingReview, setSubmittingReview] = useState(false);
-  const [activeTab, setActiveTab] = useState('contact-requests');
+  const [activeTab, setActiveTab] = useState('profile');
   const [hasSubscription, setHasSubscription] = useState(false);
   const [contactRequests, setContactRequests] = useState([]);
   const [respondingTo, setRespondingTo] = useState(null);
@@ -244,6 +244,7 @@ const ProviderDashboard = () => {
         {/* Tabs Navigation */}
         <div className="flex gap-2 mb-6 border-b overflow-x-auto">
           {[
+            { key: 'profile', label: 'Editar Perfil', icon: Settings },
             { key: 'contact-requests', label: 'Solicitudes Directas', icon: Inbox },
             { key: 'amenities', label: 'Servicios', icon: ListChecks },
             { key: 'requests', label: 'Solicitudes Publicadas', icon: Users },
