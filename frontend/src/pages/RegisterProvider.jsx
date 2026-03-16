@@ -1,299 +1,144 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Home, TreePine, Dog, Loader2, X, MapPin, Camera, ChevronRight, ChevronLeft, Check, ImagePlus, PawPrint, Calendar, Clock } from 'lucide-react';
-import { useJsApiLoader } from '@react-google-maps/api';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Building2, Mail, Lock, Phone, MapPin, Globe, Facebook, Instagram, DollarSign, Heart, Brain, Home, ChevronRight, ChevronLeft, Check, Loader2, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import { es } from 'date-fns/locale';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 
-const GOOGLE_MAPS_KEY = process.env.REACT_APP_GOOGLE_MAPS_KEY || '';
-const LIBRARIES = ['places'];
-
-const SERVICE_OPTIONS = [
-  { id: 'paseo', label: 'Paseo', icon: Dog, desc: 'Retiro, paseo, ejercicio y devolución' },
-  { id: 'cuidado', label: 'Cuidado', icon: Home, desc: 'Cuidado mientras viajan sus dueños' },
-  { id: 'daycare', label: 'Daycare', icon: TreePine, desc: 'Cuidado diurno mientras trabajan' },
-];
-
-const PET_SIZES = [
-  { id: 'pequeno', label: 'Pequeño' },
-  { id: 'mediano', label: 'Mediano' },
-  { id: 'grande', label: 'Grande' },
-];
-
 const STEPS = [
-  { id: 1, title: 'Información Personal', required: true },
-  { id: 2, title: 'Más Datos', required: false },
-  { id: 3, title: 'Servicios', required: false },
-  { id: 4, title: 'Disponibilidad', required: false },
-  { id: 5, title: 'Zonas', required: false },
-  { id: 6, title: 'Galería', required: false },
+  { id: 1, title: 'Datos de Acceso', icon: Building2 },
+  { id: 2, title: 'Contacto', icon: Phone },
+  { id: 3, title: 'Redes Sociales', icon: Globe },
+  { id: 4, title: 'Servicios y Precios', icon: DollarSign },
+  { id: 5, title: 'Amenidades', icon: Heart },
+  { id: 6, title: 'Confirmación', icon: Check },
 ];
+
+const SERVICE_CATEGORIES = [
+  { key: 'residencias', label: 'Residencias', icon: Home, desc: 'Estadía permanente con cuidado integral' },
+  { key: 'cuidado-domicilio', label: 'Cuidado a Domicilio', icon: Heart, desc: 'Atención profesional en el hogar' },
+  { key: 'salud-mental', label: 'Salud Mental', icon: Brain, desc: 'Apoyo psicológico y terapias' },
+];
+
+const AMENITY_CATEGORIES = [
+  { name: 'Cuidado y Salud', items: ['geriatria', 'enfermeria', 'kinesiologia', 'psicologia', 'nutricion', 'fonoaudiologia', 'terapia_ocupacional', 'medico_residente'] },
+  { name: 'Servicios e Instalaciones', items: ['aire_acondicionado', 'calefaccion', 'camaras_seguridad', 'lavanderia', 'cocina_propia', 'estacionamiento', 'jardin', 'capilla'] },
+  { name: 'Habitaciones', items: ['bano_privado', 'tv', 'boton_asistencia', 'wifi', 'habitacion_individual', 'habitacion_compartida'] },
+  { name: 'Actividades', items: ['actividades_familiares', 'celebraciones', 'talleres_cognitivos', 'talleres_actividad_fisica', 'salidas_recreativas', 'musicoterapia'] },
+];
+
+const formatAmenity = (a) => a.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
 export default function RegisterProvider() {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  
-  // Step 1: Personal Info
-  const [form, setForm] = useState({
-    business_name: '', description: '', address: '', comuna: '', phone: '', whatsapp: '',
-    latitude: null, longitude: null
-  });
-  const [profilePhoto, setProfilePhoto] = useState(null);
-  const [profilePhotoPreview, setProfilePhotoPreview] = useState(null);
-  const [uploadingProfilePhoto, setUploadingProfilePhoto] = useState(false);
-  
-  // Step 2: More Data
-  const [moreData, setMoreData] = useState({
-    housing_type: '', has_yard: false, yard_description: '',
-    has_own_pets: false, own_pets_description: '',
-    animal_experience: '', daily_availability: '', additional_info: ''
-  });
-  
-  // Step 3: Services
-  const [selectedServices, setSelectedServices] = useState({});
-  
-  // Step 4: Availability
-  const [alwaysActive, setAlwaysActive] = useState(true);
-  const [availableDates, setAvailableDates] = useState([]);
-  
-  // Step 5: Zones
-  const [serviceZones, setServiceZones] = useState([]);
-  const [newZone, setNewZone] = useState('');
-  
-  // Step 6: Gallery
-  const [galleryPhotos, setGalleryPhotos] = useState([]);
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  
-  const addressInputRef = useRef(null);
-  const autocompleteRef = useRef(null);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: GOOGLE_MAPS_KEY,
-    libraries: LIBRARIES
+  // Step 1
+  const [businessName, setBusinessName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  // Step 2
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [comuna, setComuna] = useState('');
+  const [region, setRegion] = useState('');
+  const [website, setWebsite] = useState('');
+
+  // Step 3
+  const [facebook, setFacebook] = useState('');
+  const [instagram, setInstagram] = useState('');
+
+  // Step 4
+  const [services, setServices] = useState({
+    residencias: { price_from: '', description: '' },
+    'cuidado-domicilio': { price_from: '', description: '' },
+    'salud-mental': { price_from: '', description: '' },
   });
 
-  // Load user data and pre-fill form
-  useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const res = await api.get('/auth/me');
-        const user = res.data;
-        // Pre-fill the form with user's name
-        setForm(prev => ({
-          ...prev,
-          business_name: user.name || '',
-          phone: user.phone || '',
-          comuna: user.comuna || '',
-          address: user.address || ''
-        }));
-      } catch (err) {
-        navigate('/login');
-      }
-    };
-    loadUserData();
-  }, [navigate]);
+  // Step 5
+  const [amenities, setAmenities] = useState([]);
 
-  // Initialize Places Autocomplete
-  useEffect(() => {
-    if (isLoaded && addressInputRef.current && !autocompleteRef.current && window.google?.maps?.places) {
-      autocompleteRef.current = new window.google.maps.places.Autocomplete(addressInputRef.current, {
-        componentRestrictions: { country: 'cl' },
-        fields: ['geometry', 'formatted_address', 'address_components']
-      });
-
-      autocompleteRef.current.addListener('place_changed', () => {
-        const place = autocompleteRef.current.getPlace();
-        if (place.geometry) {
-          const lat = place.geometry.location.lat();
-          const lng = place.geometry.location.lng();
-          const address = place.formatted_address || '';
-          let comuna = '';
-          if (place.address_components) {
-            const localityComp = place.address_components.find(c =>
-              c.types.includes('locality') || c.types.includes('administrative_area_level_3')
-            );
-            if (localityComp) comuna = localityComp.long_name;
-          }
-          setForm(prev => ({ ...prev, address, latitude: lat, longitude: lng, ...(comuna ? { comuna } : {}) }));
-        }
-      });
-    }
-  }, [isLoaded, currentStep]);
-
-  const toggleService = (id) => {
-    setSelectedServices(prev => {
-      const copy = { ...prev };
-      if (copy[id]) { delete copy[id]; }
-      else { copy[id] = { service_type: id, price_from: '', description: '', rules: '', pet_sizes: [] }; }
-      return copy;
-    });
+  const toggleAmenity = (item) => {
+    setAmenities(prev => prev.includes(item) ? prev.filter(a => a !== item) : [...prev, item]);
   };
 
-  const updateService = (id, field, value) => {
-    setSelectedServices(prev => ({ ...prev, [id]: { ...prev[id], [field]: value } }));
-  };
-
-  const togglePetSize = (serviceId, size) => {
-    setSelectedServices(prev => {
-      const svc = prev[serviceId];
-      const sizes = svc.pet_sizes.includes(size) ? svc.pet_sizes.filter(s => s !== size) : [...svc.pet_sizes, size];
-      return { ...prev, [serviceId]: { ...svc, pet_sizes: sizes } };
-    });
-  };
-
-  const addZone = () => {
-    if (newZone.trim() && !serviceZones.includes(newZone.trim())) {
-      setServiceZones(prev => [...prev, newZone.trim()]);
-      setNewZone('');
-    }
-  };
-
-  const removeZone = (zone) => {
-    setServiceZones(prev => prev.filter(z => z !== zone));
-  };
-
-  const handleProfilePhotoSelect = (file) => {
-    if (!file) return;
-    setProfilePhoto(file);
-    const reader = new FileReader();
-    reader.onload = (e) => setProfilePhotoPreview(e.target.result);
-    reader.readAsDataURL(file);
-  };
-
-  const uploadGalleryPhoto = async (file) => {
-    setUploadingPhoto(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      // This will be uploaded after account creation, store locally for now
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setGalleryPhotos(prev => [...prev, { id: Date.now(), preview: e.target.result, file }]);
-      };
-      reader.readAsDataURL(file);
-    } catch (err) {
-      toast.error('Error al procesar foto');
-    } finally {
-      setUploadingPhoto(false);
-    }
-  };
-
-  const removeGalleryPhoto = (id) => {
-    setGalleryPhotos(prev => prev.filter(p => p.id !== id));
-  };
-
-  const validateStep1 = () => {
-    if (!form.business_name || !form.address || !form.comuna || !form.phone) {
-      toast.error('Completa los campos obligatorios');
-      return false;
+  const validateStep = (s) => {
+    if (s === 1) {
+      if (!businessName.trim()) { toast.error('Ingresa el nombre de la residencia'); return false; }
+      if (!email.trim()) { toast.error('Ingresa un correo electrónico'); return false; }
+      if (password.length < 6) { toast.error('La contraseña debe tener al menos 6 caracteres'); return false; }
+      if (password !== confirmPassword) { toast.error('Las contraseñas no coinciden'); return false; }
     }
     return true;
   };
 
   const nextStep = () => {
-    if (currentStep === 1 && !validateStep1()) return;
-    if (currentStep < 6) setCurrentStep(prev => prev + 1);
+    if (!validateStep(step)) return;
+    if (step < 6) setStep(s => s + 1);
   };
 
   const prevStep = () => {
-    if (currentStep > 1) setCurrentStep(prev => prev - 1);
-  };
-
-  const skipStep = () => {
-    if (currentStep < 6) setCurrentStep(prev => prev + 1);
+    if (step > 1) setStep(s => s - 1);
   };
 
   const handleSubmit = async () => {
-    if (!validateStep1()) {
-      setCurrentStep(1);
-      return;
-    }
-    
+    if (!validateStep(1)) { setStep(1); return; }
     setSubmitting(true);
     try {
-      // Add provider role if needed
-      const userRes = await api.get('/auth/me');
-      const currentUser = userRes.data;
-      const roles = currentUser.roles || [currentUser.role];
-      if (!roles.includes('provider')) {
-        await api.post('/auth/add-role', { role: 'provider' });
-      }
-      
-      // Create provider profile
-      const services = Object.values(selectedServices).map(s => ({
-        ...s, price_from: Number(s.price_from) || 0
-      }));
-      
+      const svcArray = [];
+      Object.entries(services).forEach(([type, data]) => {
+        const price = parseInt(data.price_from) || 0;
+        if (price > 0 || data.description) {
+          svcArray.push({ service_type: type, price_from: price, description: data.description || '' });
+        }
+      });
+
       const payload = {
-        ...form,
-        services_offered: services,
-        always_active: alwaysActive,
-        available_dates: availableDates.map(d => d.toISOString()),
-        service_comunas: serviceZones,
-        personal_info: moreData
+        business_name: businessName,
+        email,
+        password,
+        phone,
+        address,
+        comuna,
+        region,
+        website,
+        facebook,
+        instagram,
+        services: svcArray,
+        amenities,
       };
-      
-      const providerRes = await api.post('/providers', payload);
-      
-      // Upload profile photo if selected
-      if (profilePhoto) {
-        try {
-          const fd = new FormData();
-          fd.append('file', profilePhoto);
-          await api.post('/providers/my-profile/photo', fd, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-          });
-        } catch (err) {
-          console.error('Error uploading profile photo:', err);
-        }
-      }
-      
-      // Upload gallery photos if any
-      for (const photo of galleryPhotos) {
-        if (photo.file) {
-          try {
-            const fd = new FormData();
-            fd.append('file', photo.file);
-            await api.post('/providers/gallery/upload', fd, {
-              headers: { 'Content-Type': 'multipart/form-data' }
-            });
-          } catch (err) {
-            console.error('Error uploading gallery photo:', err);
-          }
-        }
-      }
-      
-      toast.success('¡Perfil de cuidador creado exitosamente!');
-      navigate('/provider/dashboard');
+
+      await api.post('/auth/register-provider', payload);
+      toast.success('Registro enviado. Un administrador revisará tu solicitud.');
+      navigate('/registro-exitoso');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Error al crear perfil');
+      toast.error(error.response?.data?.detail || 'Error al registrar');
     } finally {
       setSubmitting(false);
     }
   };
 
   const renderStepIndicator = () => (
-    <div className="flex items-center justify-center gap-1 mb-8">
-      {STEPS.map((step, idx) => (
-        <React.Fragment key={step.id}>
-          <div 
+    <div className="flex items-center justify-center gap-1 mb-8" data-testid="step-indicator">
+      {STEPS.map((s, idx) => (
+        <React.Fragment key={s.id}>
+          <button
+            type="button"
+            onClick={() => { if (s.id < step || (s.id === step)) return; if (validateStep(step)) setStep(s.id); }}
             className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
-              currentStep === step.id 
-                ? 'bg-[#00e7ff] text-[#33404f]' 
-                : currentStep > step.id 
-                  ? 'bg-green-500 text-white' 
-                  : 'bg-gray-200 text-gray-500'
+              step === s.id ? 'bg-[#00e7ff] text-[#33404f] shadow-lg' : step > s.id ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'
             }`}
+            data-testid={`step-${s.id}-indicator`}
           >
-            {currentStep > step.id ? <Check className="w-5 h-5" /> : step.id}
-          </div>
+            {step > s.id ? <Check className="w-5 h-5" /> : s.id}
+          </button>
           {idx < STEPS.length - 1 && (
-            <div className={`w-8 h-1 rounded ${currentStep > step.id ? 'bg-green-500' : 'bg-gray-200'}`} />
+            <div className={`w-6 sm:w-10 h-1 rounded ${step > s.id ? 'bg-green-500' : 'bg-gray-200'}`} />
           )}
         </React.Fragment>
       ))}
@@ -301,360 +146,273 @@ export default function RegisterProvider() {
   );
 
   const renderStep1 = () => (
-    <div className="space-y-4">
+    <div className="space-y-5" data-testid="step-1-content">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Información Personal</h2>
-        <p className="text-gray-500">Datos básicos de tu perfil de cuidador</p>
+        <Building2 className="w-12 h-12 text-[#00e7ff] mx-auto mb-3" />
+        <h2 className="text-2xl font-bold text-[#33404f]">Datos de Acceso</h2>
+        <p className="text-gray-500 mt-1">Información básica para crear tu cuenta</p>
       </div>
-
-      {/* Profile Photo */}
-      <div className="flex justify-center mb-4">
-        <div className="text-center">
-          <label className="block text-sm font-medium mb-2">Foto de Perfil</label>
-          <div className="relative inline-block">
-            <div className="w-28 h-28 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden cursor-pointer hover:border-[#00e7ff] transition-colors">
-              {profilePhotoPreview ? (
-                <img src={profilePhotoPreview} alt="Preview" className="w-full h-full object-cover" />
-              ) : (
-                <div className="text-center">
-                  <Camera className="w-8 h-8 text-gray-400 mx-auto" />
-                  <span className="text-xs text-gray-400">Subir foto</span>
-                </div>
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                className="absolute inset-0 opacity-0 cursor-pointer"
-                onChange={e => e.target.files[0] && handleProfilePhotoSelect(e.target.files[0])}
-              />
-            </div>
-            {profilePhotoPreview && (
-              <button
-                type="button"
-                onClick={() => { setProfilePhoto(null); setProfilePhotoPreview(null); }}
-                className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            )}
-          </div>
-          <p className="text-xs text-gray-400 mt-1">Esta foto aparecerá en tu perfil público</p>
-        </div>
-      </div>
-
       <div>
-        <label className="block text-sm font-medium mb-1">Tu Nombre Completo *</label>
-        <Input placeholder="Ej: María González" value={form.business_name} onChange={e => setForm({...form, business_name: e.target.value})} />
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Nombre de la Residencia *</label>
+        <div className="relative">
+          <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Input value={businessName} onChange={e => setBusinessName(e.target.value)} placeholder="Ej: Residencia Villa Serena" className="pl-11 py-6 text-lg rounded-xl border-2 border-gray-200 focus:border-[#00e7ff]" data-testid="reg-business-name" />
+        </div>
       </div>
-      
       <div>
-        <label className="block text-sm font-medium mb-1">Descripción</label>
-        <textarea 
-          value={form.description} 
-          onChange={e => setForm({...form, description: e.target.value})} 
-          placeholder="Cuéntanos sobre ti y tu experiencia con mascotas..." 
-          className="w-full border rounded-xl p-3 text-sm min-h-[100px] focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" 
-        />
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Dirección *</label>
-          <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              ref={addressInputRef}
-              type="text"
-              placeholder="Busca tu dirección..."
-              value={form.address}
-              onChange={e => setForm({...form, address: e.target.value, latitude: null, longitude: null})}
-              className="flex h-10 w-full rounded-md border border-input bg-background pl-9 pr-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
-          </div>
-          {form.latitude && <p className="text-xs text-green-600 mt-1">✓ Ubicación detectada</p>}
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Comuna *</label>
-          <Input placeholder="Ej: Providencia" value={form.comuna} onChange={e => setForm({...form, comuna: e.target.value})} />
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Correo Electrónico *</label>
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="residencia@email.cl" className="pl-11 py-6 text-lg rounded-xl border-2 border-gray-200 focus:border-[#00e7ff]" data-testid="reg-email" />
         </div>
       </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Teléfono *</label>
-          <Input placeholder="+56 9 1234 5678" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Contraseña *</label>
+        <div className="relative">
+          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="Mínimo 6 caracteres" className="pl-11 pr-12 py-6 text-lg rounded-xl border-2 border-gray-200 focus:border-[#00e7ff]" data-testid="reg-password" />
+          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+          </button>
         </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">WhatsApp</label>
-          <Input placeholder="56912345678" value={form.whatsapp} onChange={e => setForm({...form, whatsapp: e.target.value})} />
+      </div>
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Confirmar Contraseña *</label>
+        <div className="relative">
+          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Input type={showPassword ? 'text' : 'password'} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Repite tu contraseña" className="pl-11 py-6 text-lg rounded-xl border-2 border-gray-200 focus:border-[#00e7ff]" data-testid="reg-confirm-password" />
         </div>
       </div>
     </div>
   );
 
   const renderStep2 = () => (
-    <div className="space-y-4">
+    <div className="space-y-5" data-testid="step-2-content">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Más Datos</h2>
-        <p className="text-gray-500">Información adicional sobre tu hogar y experiencia</p>
+        <Phone className="w-12 h-12 text-[#00e7ff] mx-auto mb-3" />
+        <h2 className="text-2xl font-bold text-[#33404f]">Datos de Contacto</h2>
+        <p className="text-gray-500 mt-1">¿Cómo pueden encontrarte?</p>
       </div>
-
       <div>
-        <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-          <Home className="w-4 h-4" /> Tipo de vivienda
-        </label>
-        <select
-          value={moreData.housing_type}
-          onChange={e => setMoreData(prev => ({ ...prev, housing_type: e.target.value }))}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00e7ff]"
-        >
-          <option value="">Selecciona...</option>
-          <option value="casa">Casa</option>
-          <option value="departamento">Departamento</option>
-          <option value="parcela">Parcela</option>
-        </select>
-      </div>
-
-      <div className="flex items-center gap-3 p-3 rounded-xl border hover:border-[#00e7ff] transition-colors">
-        <input
-          type="checkbox"
-          checked={moreData.has_yard}
-          onChange={e => setMoreData(prev => ({ ...prev, has_yard: e.target.checked }))}
-          className="w-5 h-5 accent-[#00e7ff]"
-        />
-        <span className="font-medium">Tengo patio o jardín</span>
-      </div>
-
-      {moreData.has_yard && (
-        <div>
-          <label className="block text-sm font-medium mb-1">Describe tu patio/jardín</label>
-          <textarea
-            value={moreData.yard_description}
-            onChange={e => setMoreData(prev => ({ ...prev, yard_description: e.target.value }))}
-            placeholder="Tamaño, si está cercado, etc."
-            rows={2}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-          />
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Teléfono</label>
+        <div className="relative">
+          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+56 9 1234 5678" className="pl-11 py-5 rounded-xl border-2 border-gray-200 focus:border-[#00e7ff]" data-testid="reg-phone" />
         </div>
-      )}
-
-      <div className="flex items-center gap-3 p-3 rounded-xl border hover:border-[#00e7ff] transition-colors">
-        <input
-          type="checkbox"
-          checked={moreData.has_own_pets}
-          onChange={e => setMoreData(prev => ({ ...prev, has_own_pets: e.target.checked }))}
-          className="w-5 h-5 accent-[#00e7ff]"
-        />
-        <span className="font-medium flex items-center gap-2"><PawPrint className="w-4 h-4" /> Tengo mascotas propias</span>
       </div>
-
-      {moreData.has_own_pets && (
-        <div>
-          <label className="block text-sm font-medium mb-1">Describe tus mascotas</label>
-          <textarea
-            value={moreData.own_pets_description}
-            onChange={e => setMoreData(prev => ({ ...prev, own_pets_description: e.target.value }))}
-            placeholder="Tipo, raza, edad, temperamento..."
-            rows={2}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-          />
-        </div>
-      )}
-
       <div>
-        <label className="block text-sm font-medium mb-1">Experiencia con animales</label>
-        <textarea
-          value={moreData.animal_experience}
-          onChange={e => setMoreData(prev => ({ ...prev, animal_experience: e.target.value }))}
-          placeholder="¿Cuántos años de experiencia tienes? ¿Has trabajado profesionalmente con mascotas?"
-          rows={2}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-        />
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Dirección</label>
+        <div className="relative">
+          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Input value={address} onChange={e => setAddress(e.target.value)} placeholder="Av. Principal 123" className="pl-11 py-5 rounded-xl border-2 border-gray-200 focus:border-[#00e7ff]" data-testid="reg-address" />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Comuna</label>
+          <Input value={comuna} onChange={e => setComuna(e.target.value)} placeholder="Las Condes" className="py-5 rounded-xl border-2 border-gray-200 focus:border-[#00e7ff]" data-testid="reg-comuna" />
+        </div>
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Región</label>
+          <Input value={region} onChange={e => setRegion(e.target.value)} placeholder="Región Metropolitana" className="py-5 rounded-xl border-2 border-gray-200 focus:border-[#00e7ff]" data-testid="reg-region" />
+        </div>
+      </div>
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Sitio Web</label>
+        <div className="relative">
+          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Input value={website} onChange={e => setWebsite(e.target.value)} placeholder="https://www.ejemplo.cl" className="pl-11 py-5 rounded-xl border-2 border-gray-200 focus:border-[#00e7ff]" data-testid="reg-website" />
+        </div>
       </div>
     </div>
   );
 
   const renderStep3 = () => (
-    <div className="space-y-4">
+    <div className="space-y-5" data-testid="step-3-content">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Servicios que Ofreces</h2>
-        <p className="text-gray-500">Selecciona los servicios que deseas ofrecer</p>
+        <Globe className="w-12 h-12 text-[#00e7ff] mx-auto mb-3" />
+        <h2 className="text-2xl font-bold text-[#33404f]">Redes Sociales</h2>
+        <p className="text-gray-500 mt-1">Conecta con tus visitantes (opcional)</p>
       </div>
-
-      <div className="grid grid-cols-3 gap-3">
-        {SERVICE_OPTIONS.map(opt => {
-          const Icon = opt.icon;
-          const isSelected = !!selectedServices[opt.id];
-          return (
-            <button key={opt.id} type="button" onClick={() => toggleService(opt.id)}
-              className={`p-4 rounded-xl border-2 text-center transition-all ${isSelected ? 'border-[#00e7ff] bg-red-50' : 'border-gray-200 hover:border-gray-300'}`}
-            >
-              <Icon className={`w-8 h-8 mx-auto mb-2 ${isSelected ? 'text-[#00e7ff]' : 'text-gray-400'}`} />
-              <p className={`font-semibold text-sm ${isSelected ? 'text-[#00e7ff]' : 'text-gray-600'}`}>{opt.label}</p>
-              <p className="text-xs text-gray-400 mt-1">{opt.desc}</p>
-            </button>
-          );
-        })}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Facebook</label>
+        <div className="relative">
+          <Facebook className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Input value={facebook} onChange={e => setFacebook(e.target.value)} placeholder="https://facebook.com/tu-residencia" className="pl-11 py-5 rounded-xl border-2 border-gray-200 focus:border-[#00e7ff]" data-testid="reg-facebook" />
+        </div>
       </div>
-
-      {Object.entries(selectedServices).map(([id, svc]) => {
-        const opt = SERVICE_OPTIONS.find(o => o.id === id);
-        return (
-          <div key={id} className="border rounded-xl p-4 space-y-3 bg-gray-50">
-            <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-[#00e7ff]">{opt?.label}</h3>
-              <button type="button" onClick={() => toggleService(id)} className="text-gray-400 hover:text-red-500"><X className="w-4 h-4" /></button>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-medium mb-1">Precio desde (CLP)</label>
-                <Input type="number" placeholder="8000" value={svc.price_from} onChange={e => updateService(id, 'price_from', e.target.value)} />
-              </div>
-              <div>
-                <label className="block text-xs font-medium mb-1">Tamaño de perros</label>
-                <div className="flex gap-2 mt-1">
-                  {PET_SIZES.map(ps => (
-                    <button key={ps.id} type="button" onClick={() => togglePetSize(id, ps.id)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${svc.pet_sizes.includes(ps.id) ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-white border text-gray-600'}`}
-                    >{ps.label}</button>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs font-medium mb-1">Descripción del servicio</label>
-              <Input placeholder="Ej: Paseos de 30min a 1h" value={svc.description} onChange={e => updateService(id, 'description', e.target.value)} />
-            </div>
-          </div>
-        );
-      })}
-
-      {Object.keys(selectedServices).length === 0 && (
-        <p className="text-center text-gray-400 py-4">Selecciona al menos un servicio para continuar</p>
-      )}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Instagram</label>
+        <div className="relative">
+          <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Input value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="https://instagram.com/tu-residencia" className="pl-11 py-5 rounded-xl border-2 border-gray-200 focus:border-[#00e7ff]" data-testid="reg-instagram" />
+        </div>
+      </div>
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-700">
+        Las redes sociales ayudan a las familias a conocer mejor tu residencia. Puedes agregarlas ahora o después desde tu panel.
+      </div>
     </div>
   );
 
   const renderStep4 = () => (
-    <div className="space-y-4">
+    <div className="space-y-5" data-testid="step-4-content">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Disponibilidad</h2>
-        <p className="text-gray-500">¿Cuándo estás disponible para cuidar mascotas?</p>
+        <DollarSign className="w-12 h-12 text-[#00e7ff] mx-auto mb-3" />
+        <h2 className="text-2xl font-bold text-[#33404f]">Servicios y Precios</h2>
+        <p className="text-gray-500 mt-1">Indica los servicios que ofreces y sus precios</p>
       </div>
-
-      <label className="flex items-center gap-3 cursor-pointer p-4 rounded-xl border-2 transition-all hover:border-[#00e7ff]">
-        <input type="checkbox" checked={alwaysActive} onChange={e => setAlwaysActive(e.target.checked)} className="w-5 h-5 accent-[#00e7ff]" />
-        <div>
-          <span className="font-semibold flex items-center gap-2"><Clock className="w-4 h-4" /> Siempre activo</span>
-          <p className="text-xs text-gray-500">Apareceré en las búsquedas sin importar las fechas</p>
+      <p className="text-xs text-gray-400 text-center">Solo las categorías con precio aparecerán en tu perfil público.</p>
+      {SERVICE_CATEGORIES.map(({ key, label, icon: Icon, desc }) => (
+        <div key={key} className="p-4 bg-gray-50 rounded-xl border-2 border-gray-100 hover:border-[#00e7ff]/30 transition-colors">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-lg bg-[#00e7ff]/10 flex items-center justify-center">
+              <Icon className="w-5 h-5 text-[#00e7ff]" />
+            </div>
+            <div>
+              <span className="font-bold text-[#33404f]">{label}</span>
+              <p className="text-xs text-gray-400">{desc}</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Precio desde (CLP)</label>
+              <Input
+                type="number"
+                value={services[key].price_from}
+                onChange={e => setServices(prev => ({ ...prev, [key]: { ...prev[key], price_from: e.target.value } }))}
+                placeholder="Ej: 1.500.000"
+                className="rounded-lg border-gray-200"
+                data-testid={`reg-price-${key}`}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Descripción</label>
+              <Input
+                value={services[key].description}
+                onChange={e => setServices(prev => ({ ...prev, [key]: { ...prev[key], description: e.target.value } }))}
+                placeholder="Ej: Incluye alimentación"
+                className="rounded-lg border-gray-200"
+                data-testid={`reg-desc-${key}`}
+              />
+            </div>
+          </div>
         </div>
-      </label>
-
-      {!alwaysActive && (
-        <div className="bg-gray-50 rounded-xl p-4">
-          <p className="text-sm font-medium mb-3">Selecciona tus fechas disponibles:</p>
-          <CalendarComponent
-            mode="multiple"
-            selected={availableDates}
-            onSelect={setAvailableDates}
-            locale={es}
-            className="rounded-xl border bg-white"
-            disabled={(date) => date < new Date()}
-          />
-          {availableDates.length > 0 && (
-            <p className="text-sm text-green-600 mt-2">{availableDates.length} fecha(s) seleccionada(s)</p>
-          )}
-        </div>
-      )}
+      ))}
     </div>
   );
 
   const renderStep5 = () => (
-    <div className="space-y-4">
+    <div className="space-y-5" data-testid="step-5-content">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Zonas de Servicio</h2>
-        <p className="text-gray-500">¿En qué comunas o sectores ofreces tus servicios?</p>
+        <Heart className="w-12 h-12 text-[#00e7ff] mx-auto mb-3" />
+        <h2 className="text-2xl font-bold text-[#33404f]">Amenidades</h2>
+        <p className="text-gray-500 mt-1">Selecciona los servicios que ofrece tu residencia</p>
       </div>
-
-      <div className="flex gap-2">
-        <Input 
-          placeholder="Ej: Las Condes, Providencia..." 
-          value={newZone}
-          onChange={e => setNewZone(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addZone())}
-        />
-        <Button type="button" onClick={addZone} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">Agregar</Button>
-      </div>
-
-      {serviceZones.length > 0 ? (
-        <div className="flex flex-wrap gap-2 mt-4">
-          {serviceZones.map(zone => (
-            <span key={zone} className="bg-red-100 text-[#00e7ff] px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2">
-              <MapPin className="w-3 h-3" />
-              {zone}
-              <button type="button" onClick={() => removeZone(zone)} className="hover:bg-red-200 rounded-full p-0.5">
-                <X className="w-3 h-3" />
+      {AMENITY_CATEGORIES.map(cat => (
+        <div key={cat.name}>
+          <h3 className="text-sm font-bold text-[#33404f] mb-2">{cat.name}</h3>
+          <div className="flex flex-wrap gap-2">
+            {cat.items.map(item => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => toggleAmenity(item)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                  amenities.includes(item)
+                    ? 'bg-[#00e7ff] text-[#33404f] shadow-sm'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+                data-testid={`amenity-${item}`}
+              >
+                {formatAmenity(item)}
               </button>
-            </span>
-          ))}
+            ))}
+          </div>
         </div>
-      ) : (
-        <p className="text-center text-gray-400 py-4">Tu comuna principal ({form.comuna || 'no especificada'}) será tu zona por defecto</p>
+      ))}
+      {amenities.length > 0 && (
+        <p className="text-sm text-green-600 text-center font-medium">{amenities.length} amenidad(es) seleccionada(s)</p>
       )}
     </div>
   );
 
-  const renderStep6 = () => (
-    <div className="space-y-4">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Galería de Fotos</h2>
-        <p className="text-gray-500">Sube fotos para mostrar en tu perfil</p>
-      </div>
+  const renderStep6 = () => {
+    const activeServices = Object.entries(services).filter(([, d]) => parseInt(d.price_from) > 0 || d.description);
+    return (
+      <div className="space-y-5" data-testid="step-6-content">
+        <div className="text-center mb-6">
+          <ShieldCheck className="w-12 h-12 text-[#00e7ff] mx-auto mb-3" />
+          <h2 className="text-2xl font-bold text-[#33404f]">Confirmar Registro</h2>
+          <p className="text-gray-500 mt-1">Revisa los datos antes de enviar</p>
+        </div>
 
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-        <Camera className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-        <div>
-          <p className="text-sm text-amber-800 font-medium">Tip: Las fotos con mascotas generan más confianza</p>
-          <p className="text-xs text-amber-600 mt-0.5">Los cuidadores con buenas fotos reciben más solicitudes.</p>
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+          <strong>Nota:</strong> Tu residencia será revisada por un administrador antes de aparecer en el directorio. Te notificaremos por correo cuando sea aprobada.
+        </div>
+
+        <div className="space-y-3">
+          <div className="bg-white border rounded-xl p-4">
+            <h4 className="font-bold text-sm text-gray-500 mb-2">Residencia</h4>
+            <p className="font-semibold text-lg text-[#33404f]">{businessName}</p>
+            <p className="text-sm text-gray-500">{email}</p>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4">
+            <h4 className="font-bold text-sm text-gray-500 mb-2">Contacto</h4>
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              {phone && <p><span className="text-gray-400">Tel:</span> {phone}</p>}
+              {address && <p><span className="text-gray-400">Dir:</span> {address}</p>}
+              {comuna && <p><span className="text-gray-400">Comuna:</span> {comuna}</p>}
+              {region && <p><span className="text-gray-400">Región:</span> {region}</p>}
+              {website && <p><span className="text-gray-400">Web:</span> {website}</p>}
+            </div>
+            {!phone && !address && !comuna && <p className="text-sm text-gray-400 italic">No se proporcionó información de contacto</p>}
+          </div>
+
+          {(facebook || instagram) && (
+            <div className="bg-white border rounded-xl p-4">
+              <h4 className="font-bold text-sm text-gray-500 mb-2">Redes Sociales</h4>
+              <div className="text-sm space-y-1">
+                {facebook && <p className="flex items-center gap-2"><Facebook className="w-4 h-4 text-blue-600" /> {facebook}</p>}
+                {instagram && <p className="flex items-center gap-2"><Instagram className="w-4 h-4 text-pink-500" /> {instagram}</p>}
+              </div>
+            </div>
+          )}
+
+          {activeServices.length > 0 && (
+            <div className="bg-white border rounded-xl p-4">
+              <h4 className="font-bold text-sm text-gray-500 mb-2">Servicios</h4>
+              {activeServices.map(([type, data]) => {
+                const cat = SERVICE_CATEGORIES.find(c => c.key === type);
+                return (
+                  <div key={type} className="flex justify-between items-center py-1 text-sm">
+                    <span className="text-gray-700">{cat?.label || type}</span>
+                    <span className="font-semibold text-[#33404f]">
+                      {parseInt(data.price_from) > 0 ? `$${parseInt(data.price_from).toLocaleString('es-CL')} CLP` : data.description}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {amenities.length > 0 && (
+            <div className="bg-white border rounded-xl p-4">
+              <h4 className="font-bold text-sm text-gray-500 mb-2">Amenidades ({amenities.length})</h4>
+              <div className="flex flex-wrap gap-1.5">
+                {amenities.map(a => (
+                  <span key={a} className="bg-[#00e7ff]/10 text-[#33404f] text-xs px-2 py-1 rounded-full">{formatAmenity(a)}</span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      <div className="grid grid-cols-3 gap-3">
-        {galleryPhotos.map(photo => (
-          <div key={photo.id} className="relative aspect-square rounded-xl overflow-hidden border-2 border-gray-200">
-            <img src={photo.preview} alt="" className="w-full h-full object-cover" />
-            <button
-              type="button"
-              onClick={() => removeGalleryPhoto(photo.id)}
-              className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        ))}
-        
-        <label className="aspect-square border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#00e7ff] transition-colors">
-          {uploadingPhoto ? (
-            <Loader2 className="w-8 h-8 text-[#00e7ff] animate-spin" />
-          ) : (
-            <>
-              <ImagePlus className="w-10 h-10 text-gray-400 mb-2" />
-              <span className="text-sm text-gray-500">Subir foto</span>
-            </>
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={e => e.target.files[0] && uploadGalleryPhoto(e.target.files[0])}
-          />
-        </label>
-      </div>
-    </div>
-  );
+    );
+  };
 
   const renderCurrentStep = () => {
-    switch (currentStep) {
+    switch (step) {
       case 1: return renderStep1();
       case 2: return renderStep2();
       case 3: return renderStep3();
@@ -666,48 +424,51 @@ export default function RegisterProvider() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8" data-testid="register-provider">
-      <div className="max-w-2xl mx-auto px-4">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-center mb-2">Registra tu Perfil de Cuidador</h1>
-          <p className="text-gray-500 text-center mb-6">Paso {currentStep} de 6: {STEPS[currentStep - 1].title}</p>
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-white py-8 px-4" data-testid="register-provider-page">
+      <div className="max-w-2xl mx-auto">
+        <div className="text-center mb-6">
+          <Link to="/">
+            <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-14 mx-auto mb-4" />
+          </Link>
+          <h1 className="text-3xl font-bold text-[#33404f]" data-testid="register-provider-title">Registra tu Residencia</h1>
+          <p className="text-gray-500 mt-1">Paso {step} de 6: {STEPS[step - 1].title}</p>
+        </div>
 
+        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
           {renderStepIndicator()}
-          
+
           <form onSubmit={e => e.preventDefault()}>
             {renderCurrentStep()}
 
-            {/* Navigation Buttons */}
             <div className="flex gap-3 mt-8">
-              {currentStep > 1 && (
-                <Button type="button" variant="outline" onClick={prevStep} className="flex-1">
+              {step > 1 && (
+                <Button type="button" variant="outline" onClick={prevStep} className="flex-1 py-5 rounded-xl text-base" data-testid="btn-prev-step">
                   <ChevronLeft className="w-4 h-4 mr-1" /> Anterior
                 </Button>
               )}
-              
-              {currentStep < 6 ? (
-                <>
-                  {currentStep > 1 && (
-                    <Button type="button" variant="ghost" onClick={skipStep} className="text-gray-500">
-                      Omitir
-                    </Button>
-                  )}
-                  <Button type="button" onClick={nextStep} className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
-                    Siguiente <ChevronRight className="w-4 h-4 ml-1" />
-                  </Button>
-                </>
+
+              {step < 6 ? (
+                <Button type="button" onClick={nextStep} className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-5 rounded-xl text-base font-bold shadow-md hover:shadow-lg transition-all" data-testid="btn-next-step">
+                  Siguiente <ChevronRight className="w-4 h-4 ml-1" />
+                </Button>
               ) : (
-                <Button 
-                  type="button" 
-                  onClick={handleSubmit} 
+                <Button
+                  type="button"
+                  onClick={handleSubmit}
                   disabled={submitting}
-                  className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6"
+                  className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-6 rounded-xl text-base font-bold shadow-md hover:shadow-lg transition-all"
+                  data-testid="btn-submit-registration"
                 >
-                  {submitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Creando...</> : 'Crear Perfil de Cuidador'}
+                  {submitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Enviando...</> : 'Enviar Registro'}
                 </Button>
               )}
             </div>
           </form>
+
+          <div className="text-center mt-6 text-sm text-gray-500">
+            ¿Ya tienes cuenta?{' '}
+            <Link to="/login" className="text-[#00e7ff] hover:underline font-bold" data-testid="login-link">Inicia sesión</Link>
+          </div>
         </div>
       </div>
     </div>

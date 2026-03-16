@@ -1,6 +1,8 @@
 <analysis>**original_problem_statement:**
 The user wants to transform an existing application, U-CAN (a pet-sitter directory), into a new application called SeniorAdvisor. This new platform will serve as a directory for senior care services, including residences, in-home care, and mental health services.
 
+The latest user request is to re-implement a public-facing, multi-step registration process for providers (residencias), similar to how the old U-CAN application worked. This new flow should consist of 6 steps to gather detailed provider information. Crucially, any new provider registered this way must be approved by an administrator before they appear publicly on the site.
+
 PRODUCT REQUIREMENTS:
 1.  **Re-brand and Re-credential:** Update all credentials and replace U-CAN branding with SeniorAdvisor.
 2.  **Update Functionality:** Change service categories to senior care-related (Residencias, Cuidado a Domicilio, Salud Mental).
@@ -9,92 +11,67 @@ PRODUCT REQUIREMENTS:
 5.  **Change Subscription Model:** Remove client subscriptions and implement a MercadoPago subscription for providers.
 6.  **Fix Google Maps:** Ensure map functionality works correctly.
 7.  **Seed Database:** Populate the database with sample provider data.
-8.  **Add Provider-Specific Features:** Implement a gallery, amenities, social media links, all manageable from a provider dashboard.
+8.  **Add Provider-Specific Features:** Implement a gallery, amenities, and social media links, all manageable from a provider dashboard.
 9.  **Add a Blog:** Create a blog section (Actualidad Mayor) manageable from an admin panel.
-10. **Add Partnerships (Convenios):** Create a section for partnerships with other companies, including a lead-capture form and admin management.
-11. **Bulk Upload Residences:** Implement a feature for the admin to upload a list of residences from a CSV/Excel file.
+10. **Add Partnerships (Convenios):** Create a section for partnerships with other companies.
+11. **Implement Multi-Step Provider Registration:** Allow anyone to register a residence via a 6-step public form, with mandatory admin approval before the listing goes live.
 
 **User's preferred language**: The user communicates in **Spanish**. The next agent MUST respond in Spanish.
 
 **what currently exists?**
-The SeniorAdvisor application is a full-featured directory for senior care services. Key features include:
-*   A complete user authentication system with three roles: Client, Provider (Residencia), and Admin. The registration flow is now streamlined so all public sign-ups are Clients by default.
-*   A provider dashboard () where residences can manage their profile.
-*   A comprehensive admin panel () for managing users, pending approvals, blog articles, and partnerships (convenios).
-*   A dynamic blog (Actualidad Mayor) with full CRUD functionality managed from the admin panel.
-*   A SeniorClub section for partnerships. It includes a homepage banner, a dedicated listing page (), and detail pages for each partner (e.g., ). It features a lead capture form that stores contact info in the database, which is viewable in the admin panel.
-*   The system for creating new residences is now handled exclusively by the admin, with UI for both individual creation and a bulk upload via an Excel/CSV file.
-*   Numerous UI/UX fixes have been implemented, including a global scroll-to-top on navigation, theme color consistency (changing a legacy red to the brand's cyan), and layout adjustments in dashboards and search results.
+The SeniorAdvisor application is a functional directory for senior care services with user authentication for Client, Provider, and Admin roles.
+-   The **Admin Panel** is comprehensive, allowing management of users, blog articles, partnerships, and residences. Admins can create new residences and edit every aspect of an existing one (profile details, 3-tier pricing, photo gallery, and service amenities) via a dedicated edit modal.
+-   The **Provider Dashboard** allows residences to manage their own profiles, including updating all contact info, social media, pricing for three service categories, uploading/deleting gallery photos, and toggling available amenities.
+-   The **Search Page** displays residences with a list/map view. It has been fixed to show providers from the bulk upload and correctly handle images and service tags. The original Google Maps UI is preserved but displays Map not available due to a billing issue with the user's API key.
+-   The bulk upload feature for residences via CSV has been successfully implemented and is highly optimized, reducing processing time from over 2 minutes to ~5 seconds using batch database operations.
 
 **Last working item**:
-*   **Last item agent was working:** Implementing the bulk upload feature for residences. The user requested a way to add many residences from a list they have. The agent created the backend API endpoint and the frontend interface in the admin panel. The user has just provided the CSV file with the data to be uploaded.
-*   **Status:** IN PROGRESS
+*   **Last item agent was working:** The agent was gathering requirements and planning the implementation of a new public, multi-step registration flow for providers. The user confirmed a 6-step process and the requirement for admin approval before a new residence is published. The agent had just started examining the existing registration files ( and ) to prepare for the implementation.
+*   **Status:** NOT STARTED
 *   **Agent Testing Done:** N
 *   **Which testing method agent to use?** both
 *   **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-*   **Issue 1:** Process and Validate Bulk Residence Upload from User's CSV (P0)
-*   **Issue 2:** Google Maps API Error (P1)
+*   **Issue 1:** Google Maps API Error (P1)
 
 **Issues Detail:**
-*   **Issue 1: Process and Validate Bulk Residence Upload from User's CSV**
-    *   **Attempted fixes:** The agent successfully created the backend endpoint  using  to parse Excel files, and the corresponding UI in . This UI includes a file dropzone, a template download button, and a table to show results. The user then provided the actual data file: .
-    *   **Next debug checklist:**
-        1.  Inspect the user-provided file  to understand its structure, delimiter, and column names.
-        2.  Test the  endpoint by sending this file.
-        3.  Debug and adjust the parsing logic in  to correctly map the columns from the user's CSV to the provider data model. Pay attention to potential encoding issues or different column naming.
-        4.  Confirm that new user accounts (role: ) and provider profiles are created in the database.
-        5.  Ensure the automatically generated passwords are returned in the API response.
-        6.  Verify the frontend  correctly displays the list of newly created residences and their passwords.
-    *   **Why fix this issue?** This is a critical business requirement for the user to populate their directory with an initial large set of data.
-    *   **Status:** IN PROGRESS
-    *   **Is recurring issue?** N
-    *   **Should Test frontend/backend/both after fix?** Both
-    *   **Blocked on other issue:** None
-
-*   **Issue 2: Google Maps API Error**
-    *   **Attempted fixes:** The map component was crashing the search page. An  was added, but the root cause is the Google Maps API key lacking an active billing account. The final fix was to conditionally disable the API loader () and display a Mapa no disponible message.
-    *   **Next debug checklist:**
-        1.  Do not attempt to fix this further.
-        2.  Inform the user that the map functionality is intentionally disabled and will remain so until they provide a Google Maps API key associated with an active billing account.
-    *   **Why fix this issue?** The map is a key feature for a location-based directory.
-    *   **Status:** BLOCKED (Requires user action)
+*   **Issue 1: Google Maps API Error**
+    *   **Attempted fixes:** The UI is stable and shows a Mapa no disponible message instead of crashing. The user has been informed that the issue is due to their Google Maps API key lacking an active billing account.
+    *   **Next debug checklist:** Do not attempt to fix this. The user is aware and has instructed the agent to ignore this issue. The application should continue to be developed with the map feature gracefully disabled.
+    *   **Why fix this issue?** It's a core feature for a location-based directory, but it is blocked by the user.
+    *   **Status:** BLOCKED
     *   **Is recurring issue?** Y
     *   **Should Test frontend/backend/both after fix?** Frontend
-    *   **Blocked on other issue:** User needs to provide a valid API key.
+    *   **Blocked on other issue:** User needs to provide a valid, billing-enabled Google Maps API key.
 
 **In progress Task List**:
-*   **Task 1: Complete Bulk Residence Upload**
-    *   **Where to resume:** The user has uploaded . The next step is to use this file to test and finalize the bulk upload feature in  and confirm the end-to-end flow from the admin panel.
-    *   **What will be achieved?** The admin will be able to populate the application with hundreds of residences from a single file upload.
-    *   **Status:** IN PROGRESS
+*   **Task 1: Implement Multi-Step Public Registration for Providers (P0)**
+    *   **Where to resume:** Start by modifying  to introduce a new path for provider registration that leads to a multi-step form component. Create this new component to handle the 6-step process. On the backend (), create a new endpoint to handle the submission, creating a  and a  profile with a  field. The admin panel also needs a new section to display and approve these pending residences.
+    *   **What will be achieved?** The application will allow the public to register new residences. These new listings will enter an approval queue for the admin, ensuring data quality before they are visible on the main site.
+    *   **Status:** NOT STARTED
     *   **Should Test frontend/backend/both after fix?** Both
     *   **Blocked on something:** None.
 
 **Upcoming and Future Tasks**
 *   **Future Tasks:**
     *   (P2) Perform a global search across the codebase for any remaining instances of U-CAN, mascota (pet), or cuidador (sitter) and replace them.
-    *   (P2) Review and potentially refactor the provider search query in  for performance.
+    *   (P2) Add pagination to the search results page (), as it currently only shows the first 50 results.
+    *   (P2) Add an autocomplete search bar for comuna or región on the search page to improve usability with a large number of residences.
 
 **Completed work in this session**
-- **Admin Panel Overhaul:**
-  - Completed and fixed the **Blog Admin Panel**, enabling full CRUD operations. Verified with the testing agent.
-  - Implemented a **Partnerships (Convenios) management tab**, allowing the admin to create, read, update, and delete partners, which dynamically updates the public  page.
-  - Implemented a **Leads tab** to view contact information captured from the partnership pages.
-  - Implemented a **Create Residence feature** with two modes: a form for single-entry and a bulk-upload system using an Excel/CSV file.
-  - Replaced all outdated terminology like Proveedores and Cuidadores with Residencias. Removed obsolete sections like SOS Veterinario.
-- **New Feature: SeniorClub Partnerships:**
-  - Created backend models and API routes for  and .
-  - Built a full user flow: a CTA banner on , a listing page at , and detail pages for each partner with a lead-capture form.
-- **User Flow & Auth Refinements:**
-  - Simplified the registration process: all new sign-ups are now  role by default, removing the role selection step.
-  - Residence accounts can now only be created by an Admin.
-- **Critical Bug Fixes & UX Improvements:**
-  - **Fixed Search Page Crash:** Resolved a critical bug where changing filters on the search page would crash the app due to the Google Maps component. The map is now gracefully disabled.
-  - **Fixed Scroll Position:** Added a  component to ensure navigation to a new page always starts at the top.
-  - **Dashboard Cleanup:** Cleaned up the Client and Provider dashboards, removing incorrect or irrelevant information (¿Quieres ser cuidador?, Historial de Facturas for clients).
-  - **UI Consistency:** Standardized the style of the Destacado badge and updated the site's accent color from red to cyan across various elements like scrollbars and focus rings.
+- **Comprehensive Provider Management:**
+  - Implemented forms in both the **Provider Dashboard** and **Admin Panel** to edit all key residence details: name, address, region, comuna, phone, website, social links, and Google PlaceID.
+  - Implemented a **3-tier pricing system** where providers can set a price and description for Residencias, Cuidado a Domicilio, and Salud Mental. Categories with no price/description are hidden from the public profile.
+  - Added full **gallery management** (upload/delete photos) and **amenity management** (on/off toggles) for providers in their dashboard and for admins in the edit modal.
+- **Bulk Upload Feature (Completed & Optimized):**
+  - Successfully implemented and tested the bulk CSV upload feature for residences.
+  - **Optimized performance dramatically**, reducing a 2.5-minute timeout-prone process to a ~5-second operation by refactoring the backend to use batch  operations.
+- **Search Page Overhaul:**
+  - Fixed multiple bugs on the search page (), including showing images from the , deduplicating service tags, and removing legacy code that caused crashes.
+  - Modified the backend search API () to be less strict, ensuring that newly imported providers are visible.
+  - Restored the original Google Maps UI layout as requested by the user, while keeping it gracefully disabled.
+- **Testing:** Successfully used the testing agent multiple times to validate backend and frontend functionality after major changes, achieving 100% pass rates on all tested flows.
 
 **Known issue recurrence from previous fork**
 - N/A
@@ -103,66 +80,64 @@ The SeniorAdvisor application is a full-featured directory for senior care servi
 
 
 **Key Technical Concepts**
-*   **Frontend:** React, TailwindCSS, Shadcn UI, 
-*   **Backend:** FastAPI, Pydantic, Motor (async MongoDB driver)
-*   **Database:** MongoDB Atlas
-*   **Authentication:** JWT (custom roles: , , )
-*   **File Parsing:**  and  for Excel/CSV processing in the backend.
+*   **Backend:** FastAPI, Motor, Pydantic, Pandas (for CSV parsing).
+*   **Database Optimization:** Use of  for batch inserts to significantly improve performance of bulk operations.
+*   **Frontend:** React, TailwindCSS, Shadcn UI, .
+*   **State Management:** Complex forms with multiple states managed within React components (, ).
 
 **key DB schema**
+*   : { , , , , , , , , , , , : [urls], : [strings], : [{ , ,  }], ****: ('active', 'pending_approval') - *to be added* }
 *   : { , ,  ('client', 'provider', 'admin'), ... }
-*   : { , , , , , ... }
-*   : { , , , , ... }
-*   : { , , , ,  (list), ... }
-*   : { , , , , , ,  }
 
 **changes in tech stack**
-- Added  and  to the backend for file parsing.
+- No new technologies, but  was confirmed and used.
 
 **All files of reference**
-*   : Contains the new bulk upload endpoint to be tested and finalized.
-*   : Contains the UI for managing residences, including the new bulk upload interface.
-*   : Modified to remove role selection.
-*   : New page to list all partnerships.
-*   : New file containing CRUD API for partnerships and leads.
-*   : The user-provided file to be used for the bulk upload.
+*   : Contains all provider-related endpoints, including the optimized bulk upload and new admin editing endpoints.
+*   : Contains the UI for managing residences, including the new edit modal with profile, gallery, and amenity tabs.
+*   : Contains the provider's self-service dashboard with tabs for profile, gallery, and services.
+*   : The main search page, heavily modified to fix bugs and preserve the user-requested layout.
+*   : The starting point for implementing the new public registration flow.
+*   : The backend file to be modified for the new registration logic.
 
 **Areas that need refactoring**:
--  has grown significantly and manages state for many different features (Blog, Leads, Convenios, Residencias). It could be broken down into smaller components for better maintainability.
+-  and  are very large and manage a lot of state. They could be broken down into smaller, more focused components. For example, the profile form, gallery manager, and amenity toggles within  could be separate components. The edit modal in  is also a candidate for refactoring into its own file.
 
 **key api endpoints**
-*    (POST): New endpoint for uploading an Excel/CSV file of residences.
-*    (POST): New endpoint for creating a single residence from the admin panel.
-*    (GET, POST): Manage partnerships.
-*    (GET, PUT, DELETE): Manage a single partnership.
-*    (POST): Submit a lead from a partnership page.
+*    (POST): Highly optimized endpoint for bulk creating residences from a CSV.
+*    (PUT): Updates a provider's full profile from the admin panel.
+*    (POST): Adds a photo to a provider's gallery from the admin panel.
+*    (PUT): Updates a provider's amenities from the admin panel.
+*    (PUT): Endpoint for a provider to update their own profile.
+*    (POST): *To be created* for the new multi-step public registration flow.
 
 **Critical Info for New Agent**
-*   **Your immediate and only priority is to complete the bulk residence upload feature.** The user has provided the data file (). You must inspect this file, test the upload endpoint, fix any parsing issues, and confirm the data is correctly added to the database.
-*   The Google Maps issue is **blocked** and considered a known limitation. Do not spend time trying to fix it. The application is designed to function without it for now.
-*   The user registration flow has been intentionally changed. New users can only sign up as clients. Provider (residence) accounts are now created exclusively by the admin.
+*   **Your top priority is to implement the public, multi-step registration for providers with admin approval.** This is a major new feature requested by the user. The flow should have 6 steps as discussed.
+*   **DO NOT work on the Google Maps issue.** It is blocked pending a valid API key from the user. The current state (map disabled, Mapa no disponible message) is the desired behavior for now.
+*   The registration flow for clients should remain as-is. The new flow is an alternative path specifically for providers (residencias).
+*   A new  field (e.g., 'pending_approval', 'active') will be required on the  model to manage the approval workflow.
 
 **documents and test reports created in this job**
 *   
 *   
+*   
 *    (updated)
-*    (User-provided data file)
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** I need to add many residences from a large list. How can we do that? - **Status: IN PROGRESS**
-2.  **Agent:** I can create a feature to upload an Excel file. I'll provide a template with the necessary columns. - **Status: DONE**
-3.  **User:** Excellent. The columns should be the same as what's shown on a residence's profile. - **Status: DONE**
-4.  **Agent:** I have implemented the feature in the admin panel. You can now upload an Excel/CSV file to create residences in bulk. - **Status: DONE**
-5.  **User:** Here is the data we need to add for the residences. (Uploaded ) - **Status: PENDING ACTION**
-6.  **User:** We need to change the term proveedores to residencias. - **Status: DONE**
-7.  **User:** Can we add the partnerships (convenios) from the admin panel? - **Status: DONE**
-8.  **User:** The admin panel needs to be updated. Remove SOS Veterinario and change terminology. - **Status: DONE**
-9.  **User:** I need accounts to test each user role (admin, client, residence). - **Status: DONE**
-10. **User:** When I navigate to another page, it starts from the bottom, not the top. - **Status: DONE**
+1.  **User:** Give me accounts to check each role. - **Status: DONE** (Agent provided credentials).
+2.  **User:** Can we have the residence registration like we had in U-CAN? - **Status: IN PROGRESS** (This kicked off the new task).
+3.  **Agent:** (Confirms the 6 steps) Will it be public registration or admin-only? - **Status: DONE**.
+4.  **User:** Public registration, but the admin will have to approve them to appear. - **Status: PENDING ACTION** (This is the core requirement for the next agent).
+5.  **User:** (Asks about pricing model) - **Status: DONE** (Clarified and implemented the 3-category pricing).
+6.  **User:** The price has to be for 3 categories, and if not filled out, it shouldn't appear. - **Status: DONE**.
+7.  **User:** You removed the photo gallery upload. I need the residence and admin to be able to manage photos and services. - **Status: DONE**.
+8.  **User:** (Asks to add gallery/amenity management to admin panel). - **Status: DONE**.
+9.  **User:** The map is gone, I want to see the location of each residence. Bring it back. - **Status: DONE** (Agent restored the original layout but explained the API key issue).
+10. **User:** Don't worry about the billing, just program what I ask. - **Status: DONE** (Agent acknowledged and proceeded).
 
 **Project Health Check:**
-*   **Broken:** The bulk residence upload feature is incomplete as it has not been tested with the user's actual data file.
-*   **Mocked:** Google Maps functionality is intentionally disabled across the application to prevent crashes. It displays a Map not available message.
+*   **Broken:** The public registration for providers is missing and is the next major task.
+*   **Mocked:** Google Maps functionality is intentionally disabled site-wide to prevent crashes, displaying a Map not available placeholder.
 
 **3rd Party Integrations**
 *   **MongoDB Atlas:** Database service.
@@ -173,7 +148,7 @@ The SeniorAdvisor application is a full-featured directory for senior care servi
 *   **Pandas / openpyxl:** Python libraries for file parsing on the backend.
 
 **Testing status**
-*   **Testing agent used after significant changes:** YES (used for blog and partnership features)
+*   **Testing agent used after significant changes:** YES
 *   **Troubleshoot agent used after agent stuck in loop:** NO
 *   **Test files created:** None.
 *   **Known regressions:** None.
@@ -182,7 +157,6 @@ The SeniorAdvisor application is a full-featured directory for senior care servi
 *   **Admin:**  / 
 *   **Client:**  / 
 *   **Provider (Residencia):**  / 
-*   **Provider (Residencia):**  / 
 
 **What agent forgot to execute**
-The agent was in the middle of implementing the user's request for bulk uploads when the session ended. The immediate next step is to process the CSV file the user just uploaded () to complete the feature.</analysis>
+The agent was in the process of gathering requirements for the new multi-step registration feature when the session ended. The immediate next step is to begin the implementation of this user-requested feature.</analysis>

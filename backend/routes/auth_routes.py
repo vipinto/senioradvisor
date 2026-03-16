@@ -290,3 +290,116 @@ async def delete_client_photo(request: Request, photo_id: str):
     
     return {"message": "Foto eliminada"}
 
+
+# ============= PUBLIC PROVIDER REGISTRATION =============
+
+class ProviderRegistrationRequest(BaseModel):
+    # Step 1: Basic info
+    business_name: str
+    email: str
+    password: str
+    # Step 2: Contact
+    phone: Optional[str] = ""
+    address: Optional[str] = ""
+    comuna: Optional[str] = ""
+    region: Optional[str] = ""
+    website: Optional[str] = ""
+    # Step 3: Social
+    facebook: Optional[str] = ""
+    instagram: Optional[str] = ""
+    # Step 4: Services
+    services: Optional[list] = []
+    # Step 5: Amenities
+    amenities: Optional[list] = []
+
+
+@router.post("/register-provider")
+async def register_provider_public(data: ProviderRegistrationRequest):
+    """Public registration for a new residence/provider. Requires admin approval."""
+    import uuid
+    from datetime import datetime, timezone
+    from passlib.hash import bcrypt
+
+    if len(data.password) < 6:
+        raise HTTPException(status_code=400, detail="La contraseña debe tener al menos 6 caracteres")
+    if not data.business_name.strip():
+        raise HTTPException(status_code=400, detail="El nombre de la residencia es obligatorio")
+    if not data.email.strip():
+        raise HTTPException(status_code=400, detail="El correo electrónico es obligatorio")
+
+    existing = await db.users.find_one({"email": data.email})
+    if existing:
+        raise HTTPException(status_code=400, detail="Este correo ya está registrado")
+
+    user_id = f"user_{uuid.uuid4().hex[:12]}"
+    provider_id = f"prov_{uuid.uuid4().hex[:12]}"
+    now = datetime.now(timezone.utc)
+
+    # Create user
+    user_doc = {
+        "user_id": user_id,
+        "email": data.email,
+        "name": data.business_name,
+        "role": "provider",
+        "hashed_password": bcrypt.hash(data.password),
+        "auth_type": "email",
+        "created_at": now,
+        "active": True,
+    }
+    await db.users.insert_one(user_doc)
+
+    # Build social links
+    social_links = {}
+    if data.website:
+        social_links["website"] = data.website
+    if data.facebook:
+        social_links["facebook"] = data.facebook
+    if data.instagram:
+        social_links["instagram"] = data.instagram
+
+    # Build services array
+    services = []
+    for svc in (data.services or []):
+        if isinstance(svc, dict):
+            price = int(svc.get("price_from", 0) or 0)
+            desc = svc.get("description", "")
+            stype = svc.get("service_type", "residencias")
+            if price > 0 or desc:
+                services.append({"service_type": stype, "price_from": price, "description": desc})
+
+    # Create provider with approved=False (pending admin approval)
+    provider_doc = {
+        "provider_id": provider_id,
+        "user_id": user_id,
+        "business_name": data.business_name,
+        "phone": data.phone or "",
+        "whatsapp": data.phone or "",
+        "address": data.address or "",
+        "comuna": data.comuna or "",
+        "region": data.region or "",
+        "description": "",
+        "services": services if services else [],
+        "photos": [],
+        "gallery": [],
+        "amenities": data.amenities or [],
+        "social_links": social_links,
+        "personal_info": {"housing_type": "residencia"},
+        "rating": 0,
+        "total_reviews": 0,
+        "approved": False,
+        "verified": False,
+        "latitude": 0,
+        "longitude": 0,
+        "place_id": "",
+        "coverage_zone": "10",
+        "created_at": now,
+        "registration_source": "public_form",
+    }
+    await db.providers.insert_one(provider_doc)
+
+    return {
+        "message": "Registro exitoso. Tu residencia será revisada por un administrador antes de aparecer en el directorio.",
+        "provider_id": provider_id,
+        "status": "pending_approval"
+    }
+

@@ -117,6 +117,11 @@ const Register = () => {
             ¿Ya tienes cuenta?{' '}
             <Link to="/login" className="text-[#00e7ff] hover:underline font-bold" data-testid="login-link">Inicia sesión</Link>
           </div>
+
+          <div className="text-center text-sm text-gray-500 mt-2 pt-3 border-t border-gray-100">
+            ¿Eres una residencia?{' '}
+            <Link to="/registrar-residencia" className="text-[#00e7ff] hover:underline font-bold" data-testid="register-provider-link">Registra tu residencia aquí</Link>
+          </div>
         </div>
       </div>
     </div>

@@ -45,7 +45,7 @@
 
   "critical_code_review_comments": [
     "Google OAuth redirect_uri needs to be registered in Google Cloud Console for production domain",
-    "The preview domain https://residence-loader.preview.emergentagent.com/auth/google/callback is not registered, causing redirect_uri_mismatch error from Google"
+    "The preview domain https://care-directory-form.preview.emergentagent.com/auth/google/callback is not registered, causing redirect_uri_mismatch error from Google"
   ],
 
   "updated_files": [
@@ -81,5 +81,5 @@
     "navbar_hiding": "Navbar is correctly hidden on /auth/google/callback page"
   },
 
-  "notes": "The Google OAuth redirect_uri_mismatch error seen in testing is EXPECTED because the preview domain is not registered in Google Cloud Console. The code implementation is correct. To enable actual Google sign-in, the redirect URI https://residence-loader.preview.emergentagent.com/auth/google/callback must be added to the Authorized redirect URIs in Google Cloud Console for the OAuth client."
+  "notes": "The Google OAuth redirect_uri_mismatch error seen in testing is EXPECTED because the preview domain is not registered in Google Cloud Console. The code implementation is correct. To enable actual Google sign-in, the redirect URI https://care-directory-form.preview.emergentagent.com/auth/google/callback must be added to the Authorized redirect URIs in Google Cloud Console for the OAuth client."
 }

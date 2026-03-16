@@ -21,6 +21,7 @@ import AdminPanel from '@/pages/AdminPanel';
 import Dashboard from '@/pages/Dashboard';
 import PaymentResult from '@/pages/PaymentResult';
 import RegisterProvider from '@/pages/RegisterProvider';
+import RegistroExitoso from '@/pages/RegistroExitoso';
 import GoogleCallback from '@/pages/GoogleCallback';
 import PetSetup from '@/pages/PetSetup';
 import Blog from '@/pages/Blog';
@@ -42,7 +43,7 @@ import GoogleAuthSuccess from '@/pages/GoogleAuthSuccess';
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
-const authPages = ['/login', '/register', '/forgot-password', '/reset-password', '/auth/google/callback', '/auth/google-success', '/mis-mascotas/nueva'];
+const authPages = ['/login', '/register', '/forgot-password', '/reset-password', '/auth/google/callback', '/auth/google-success', '/mis-mascotas/nueva', '/registrar-residencia', '/registro-exitoso'];
 
 function AppRouter() {
   const location = useLocation();
@@ -92,9 +93,9 @@ function AppRouter() {
         <Route path="/provider/account" element={
           <ProtectedRoute><ProviderAccount /></ProtectedRoute>
         } />
-        <Route path="/provider/register" element={
-          <ProtectedRoute><RegisterProvider /></ProtectedRoute>
-        } />
+        <Route path="/registrar-residencia" element={<RegisterProvider />} />
+        <Route path="/registro-exitoso" element={<RegistroExitoso />} />
+        <Route path="/provider/register" element={<RegisterProvider />} />
         <Route path="/mis-mascotas/nueva" element={
           <ProtectedRoute><PetSetup /></ProtectedRoute>
         } />
