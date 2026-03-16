@@ -789,7 +789,18 @@ async def search_providers(
     if featured:
         providers = [p for p in providers if p.get("is_featured") and (p.get("rating") or 0) >= 4.0]
 
-    return providers
+    # Count total for pagination (re-run query without skip/limit)
+    total_count = await db.providers.count_documents(query)
+
+    return {"results": providers, "total": total_count, "skip": skip, "limit": limit}
+
+
+@router.get("/providers/comunas")
+async def get_comunas():
+    """Get distinct comunas for autocomplete"""
+    comunas = await db.providers.distinct("comuna", {"approved": True, "comuna": {"$exists": True, "$ne": ""}})
+    comunas = sorted([c for c in comunas if c and c.strip()])
+    return comunas
 
 
 # ============= SUCURSALES (BRANCHES) =============

@@ -72,6 +72,16 @@ const SearchPage = () => {
   const [mapBounds, setMapBounds] = useState(null);
   const [isMapSearchActive, setIsMapSearchActive] = useState(true);
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
+  const PAGE_SIZE = 20;
+
+  // Autocomplete
+  const [comunas, setComunas] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [filteredComunas, setFilteredComunas] = useState([]);
+
   const mapRef = useRef(null);
   const autocompleteRef = useRef(null);
   const inputRef = useRef(null);
@@ -83,7 +93,12 @@ const SearchPage = () => {
 
   useEffect(() => {
     loadProviders();
-  }, [activeService]);
+  }, [activeService, currentPage]);
+
+  useEffect(() => {
+    // Load comunas for autocomplete
+    api.get('/providers/comunas').then(res => setComunas(res.data)).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (isLoaded && inputRef.current && !autocompleteRef.current && window.google?.maps?.places) {
@@ -115,6 +130,9 @@ const SearchPage = () => {
     try {
       const params = new URLSearchParams();
       if (activeService) params.set('service_type', activeService);
+      if (searchAddress.trim()) params.set('comuna', searchAddress.trim());
+      params.set('skip', ((currentPage - 1) * PAGE_SIZE).toString());
+      params.set('limit', PAGE_SIZE.toString());
 
       let datesStr = '';
       if (activeService === 'alojamiento' && dateRange.from) {
@@ -139,8 +157,12 @@ const SearchPage = () => {
       }
 
       const response = await api.get(`/providers?${params.toString()}`);
-      setProviders(response.data);
-      setFilteredProviders(response.data);
+      const data = response.data;
+      const providersList = data.results || data;
+      const total = data.total || providersList.length;
+      setProviders(providersList);
+      setFilteredProviders(providersList);
+      setTotalResults(total);
     } catch (error) {
       console.error('Error loading providers:', error);
     } finally {
@@ -236,6 +258,8 @@ const SearchPage = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    setCurrentPage(1);
+    setShowSuggestions(false);
     loadProviders();
 
     if (searchAddress.trim() && isLoaded && window.google?.maps?.Geocoder) {
@@ -258,6 +282,8 @@ const SearchPage = () => {
 
   const clearSearch = () => {
     setSearchAddress('');
+    setActiveService('');
+    setCurrentPage(1);
     setUserLocation(null);
     setFilteredProviders(providers);
     setMapCenter(DEFAULT_CENTER);
@@ -340,6 +366,7 @@ const SearchPage = () => {
                 key={tab.id}
                 onClick={() => {
                   setActiveService(tab.id);
+                  setCurrentPage(1);
                   setDateRange({ from: undefined, to: undefined });
                   setSelectedDates([]);
                   if (searchAddress) {
@@ -362,16 +389,50 @@ const SearchPage = () => {
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Buscar por dirección o comuna..."
+                placeholder="Buscar por comuna..."
                 value={searchAddress}
-                onChange={(e) => setSearchAddress(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setSearchAddress(val);
+                  if (val.trim().length >= 1) {
+                    const matches = comunas.filter(c => c.toLowerCase().includes(val.toLowerCase())).slice(0, 8);
+                    setFilteredComunas(matches);
+                    setShowSuggestions(matches.length > 0);
+                  } else {
+                    setShowSuggestions(false);
+                  }
+                }}
+                onFocus={() => {
+                  if (searchAddress.trim().length >= 1) {
+                    const matches = comunas.filter(c => c.toLowerCase().includes(searchAddress.toLowerCase())).slice(0, 8);
+                    setFilteredComunas(matches);
+                    setShowSuggestions(matches.length > 0);
+                  }
+                }}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                 className="w-full pl-14 pr-10 h-14 text-lg border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00e7ff] focus:border-[#00e7ff] text-[#33404f] placeholder-gray-500"
                 data-testid="search-input"
               />
+              {showSuggestions && filteredComunas.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-gray-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto" data-testid="comuna-suggestions">
+                  {filteredComunas.map((comuna, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onMouseDown={(e) => { e.preventDefault(); setSearchAddress(comuna); setShowSuggestions(false); setCurrentPage(1); }}
+                      className="w-full text-left px-4 py-3 text-sm hover:bg-cyan-50 flex items-center gap-2 border-b border-gray-100 last:border-0 transition-colors"
+                      data-testid={`suggestion-${i}`}
+                    >
+                      <MapPin className="w-4 h-4 text-[#00e7ff] flex-shrink-0" />
+                      <span className="text-[#33404f]">{comuna}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
               {searchAddress && (
                 <button
                   type="button"
-                  onClick={clearSearch}
+                  onClick={() => { setSearchAddress(''); setShowSuggestions(false); clearSearch(); }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#33404f]"
                 >
                   <X className="w-6 h-6" />
@@ -572,12 +633,15 @@ const SearchPage = () => {
         <div className="w-full lg:w-1/2 h-full overflow-y-auto bg-white border-l">
           <div className="p-4 border-b bg-gray-50 sticky top-0 z-10">
             <h2 className="font-bold text-lg text-[#33404f]">
-              {loading ? 'Buscando...' : `${filteredProviders.length} Servicios encontrados`}
+              {loading ? 'Buscando...' : `${totalResults} Servicios encontrados`}
             </h2>
             {searchAddress && !loading && (
               <p className="text-sm text-gray-500 mt-1">
                 Cerca de: {searchAddress}
               </p>
+            )}
+            {totalResults > PAGE_SIZE && (
+              <p className="text-xs text-gray-400 mt-1">Página {currentPage} de {Math.ceil(totalResults / PAGE_SIZE)}</p>
             )}
           </div>
 
@@ -695,6 +759,55 @@ const SearchPage = () => {
                   </div>
                 </Link>
               ))}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {totalResults > PAGE_SIZE && !loading && (
+            <div className="flex items-center justify-center gap-2 py-6 border-t bg-gray-50" data-testid="pagination">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPage <= 1}
+                onClick={() => { setCurrentPage(p => p - 1); window.scrollTo(0, 0); }}
+                data-testid="prev-page"
+              >
+                Anterior
+              </Button>
+              {Array.from({ length: Math.min(Math.ceil(totalResults / PAGE_SIZE), 7) }, (_, i) => {
+                const totalPages = Math.ceil(totalResults / PAGE_SIZE);
+                let page;
+                if (totalPages <= 7) {
+                  page = i + 1;
+                } else if (currentPage <= 4) {
+                  page = i + 1;
+                } else if (currentPage >= totalPages - 3) {
+                  page = totalPages - 6 + i;
+                } else {
+                  page = currentPage - 3 + i;
+                }
+                return (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? 'default' : 'outline'}
+                    size="sm"
+                    className={currentPage === page ? 'bg-[#00e7ff] text-[#33404f] hover:bg-[#00c4d4]' : ''}
+                    onClick={() => { setCurrentPage(page); window.scrollTo(0, 0); }}
+                    data-testid={`page-${page}`}
+                  >
+                    {page}
+                  </Button>
+                );
+              })}
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPage >= Math.ceil(totalResults / PAGE_SIZE)}
+                onClick={() => { setCurrentPage(p => p + 1); window.scrollTo(0, 0); }}
+                data-testid="next-page"
+              >
+                Siguiente
+              </Button>
             </div>
           )}
         </div>
