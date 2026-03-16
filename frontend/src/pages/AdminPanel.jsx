@@ -138,7 +138,7 @@ export default function AdminPanel() {
   const [editingConvenio, setEditingConvenio] = useState(null);
   const [convenioForm, setConvenioForm] = useState({ name: '', logo: '', description: '', location: '', plans: [], featured: false });
   const [showResidenciaModal, setShowResidenciaModal] = useState(false);
-  const [residenciaForm, setResidenciaForm] = useState({ business_name: '', email: '', phone: '', address: '', comuna: '', description: '', service_type: 'residencias' });
+  const [residenciaForm, setResidenciaForm] = useState({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', price_from: 0, place_id: '', service_type: 'residencias' });
   const [bulkResults, setBulkResults] = useState(null);
   const [uploading, setUploading] = useState(false);
 
@@ -541,7 +541,7 @@ export default function AdminPanel() {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-[#33404f]">Crear Residencia Individual</h3>
-                    <Button onClick={() => { setResidenciaForm({ business_name: '', email: '', phone: '', address: '', comuna: '', description: '', service_type: 'residencias' }); setShowResidenciaModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-residencia-btn">
+                    <Button onClick={() => { setResidenciaForm({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', price_from: 0, place_id: '', service_type: 'residencias' }); setShowResidenciaModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-residencia-btn">
                       <Plus className="w-4 h-4 mr-1" /> Nueva Residencia
                     </Button>
                   </div>
@@ -660,33 +660,57 @@ export default function AdminPanel() {
                 <input type="text" value={residenciaForm.business_name} onChange={e => setResidenciaForm(p => ({ ...p, business_name: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Ej: Residencia Villa Serena" data-testid="residencia-form-name" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Email *</label>
+                <label className="block text-sm font-medium mb-1">Correo Electrónico *</label>
                 <input type="email" value={residenciaForm.email} onChange={e => setResidenciaForm(p => ({ ...p, email: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="residencia@email.cl" data-testid="residencia-form-email" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Dirección</label>
+                <input type="text" value={residenciaForm.address} onChange={e => setResidenciaForm(p => ({ ...p, address: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Av. Principal 123" data-testid="residencia-form-address" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Región</label>
+                  <input type="text" value={residenciaForm.region} onChange={e => setResidenciaForm(p => ({ ...p, region: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Región Metropolitana" data-testid="residencia-form-region" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Comuna</label>
+                  <input type="text" value={residenciaForm.comuna} onChange={e => setResidenciaForm(p => ({ ...p, comuna: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Las Condes" data-testid="residencia-form-comuna" />
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium mb-1">Teléfono</label>
-                  <input type="tel" value={residenciaForm.phone} onChange={e => setResidenciaForm(p => ({ ...p, phone: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="+56 9 1234 5678" />
+                  <input type="tel" value={residenciaForm.phone} onChange={e => setResidenciaForm(p => ({ ...p, phone: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="+56 9 1234 5678" data-testid="residencia-form-phone" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Comuna</label>
-                  <input type="text" value={residenciaForm.comuna} onChange={e => setResidenciaForm(p => ({ ...p, comuna: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Las Condes" />
+                  <label className="block text-sm font-medium mb-1">Precio (desde CLP)</label>
+                  <input type="number" value={residenciaForm.price_from} onChange={e => setResidenciaForm(p => ({ ...p, price_from: parseInt(e.target.value) || 0 }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="500000" data-testid="residencia-form-price" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Dirección</label>
-                <input type="text" value={residenciaForm.address} onChange={e => setResidenciaForm(p => ({ ...p, address: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Av. Principal 123" />
+                <label className="block text-sm font-medium mb-1">Sitio Web</label>
+                <input type="url" value={residenciaForm.website} onChange={e => setResidenciaForm(p => ({ ...p, website: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="https://www.ejemplo.cl" data-testid="residencia-form-website" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Facebook</label>
+                  <input type="url" value={residenciaForm.facebook} onChange={e => setResidenciaForm(p => ({ ...p, facebook: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="https://facebook.com/..." data-testid="residencia-form-facebook" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Instagram</label>
+                  <input type="url" value={residenciaForm.instagram} onChange={e => setResidenciaForm(p => ({ ...p, instagram: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="https://instagram.com/..." data-testid="residencia-form-instagram" />
+                </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Descripción</label>
-                <textarea value={residenciaForm.description} onChange={e => setResidenciaForm(p => ({ ...p, description: e.target.value }))} rows={3} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Descripción del servicio..." />
+                <label className="block text-sm font-medium mb-1">Place ID (Google)</label>
+                <input type="text" value={residenciaForm.place_id} onChange={e => setResidenciaForm(p => ({ ...p, place_id: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="ChIJ..." data-testid="residencia-form-placeid" />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Tipo de Servicio</label>
-                <select value={residenciaForm.service_type} onChange={e => setResidenciaForm(p => ({ ...p, service_type: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff] bg-white">
+                <select value={residenciaForm.service_type} onChange={e => setResidenciaForm(p => ({ ...p, service_type: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff] bg-white" data-testid="residencia-form-type">
                   <option value="residencias">Residencia</option>
-                  <option value="cuidado_domicilio">Cuidado a Domicilio</option>
-                  <option value="salud_mental">Salud Mental</option>
+                  <option value="cuidado-domicilio">Cuidado a Domicilio</option>
+                  <option value="salud-mental">Salud Mental</option>
                 </select>
               </div>
             </div>

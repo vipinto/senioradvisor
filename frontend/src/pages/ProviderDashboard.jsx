@@ -42,7 +42,7 @@ const ProviderDashboard = () => {
   const [savingPersonalInfo, setSavingPersonalInfo] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(null);
   const [profileForm, setProfileForm] = useState({
-    business_name: '', description: '', phone: '', address: '', comuna: ''
+    business_name: '', phone: '', address: '', region: '', comuna: '', place_id: '', price_from: 0
   });
   const [savingProfile, setSavingProfile] = useState(false);
   const [editingServices, setEditingServices] = useState(false);
@@ -63,10 +63,12 @@ const ProviderDashboard = () => {
       setProvider(p);
       setProfileForm({
         business_name: p.business_name || '',
-        description: p.description || '',
         phone: p.phone || '',
         address: p.address || '',
-        comuna: p.comuna || ''
+        region: p.region || '',
+        comuna: p.comuna || '',
+        place_id: p.place_id || '',
+        price_from: p.services?.[0]?.price_from || 0,
       });
       setHasSubscription(subRes.data.has_subscription || subRes.data.status === 'active');
       setAlwaysActive(p.always_active !== false);
@@ -276,9 +278,16 @@ const ProviderDashboard = () => {
               e.preventDefault();
               setSavingProfile(true);
               try {
-                await api.put('/providers/my-profile', profileForm);
+                const { price_from, ...profileData } = profileForm;
+                await api.put('/providers/my-profile', profileData);
+                // Update price in services
+                if (provider.services?.[0]) {
+                  const updatedServices = [...(provider.services || [])];
+                  updatedServices[0] = { ...updatedServices[0], price_from: parseInt(price_from) || 0 };
+                  await api.put('/providers/my-profile', { services: updatedServices });
+                }
                 toast.success('Perfil actualizado correctamente');
-                setProvider(prev => ({ ...prev, ...profileForm }));
+                setProvider(prev => ({ ...prev, ...profileData }));
               } catch (err) {
                 toast.error(err.response?.data?.detail || 'Error al guardar');
               } finally {
@@ -286,28 +295,46 @@ const ProviderDashboard = () => {
               }
             }} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de tu Servicio</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de la Residencia</label>
                 <Input
                   value={profileForm.business_name}
                   onChange={(e) => setProfileForm(prev => ({ ...prev, business_name: e.target.value }))}
-                  placeholder="Ej: Guardería Canina Feliz"
+                  placeholder="Ej: Residencia Villa Serena"
                   data-testid="profile-business-name"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                <textarea
-                  value={profileForm.description}
-                  onChange={(e) => setProfileForm(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Describe tu servicio, experiencia y lo que ofreces..."
-                  rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:border-transparent"
-                  data-testid="profile-description"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                  <Input
+                    value={profileForm.address}
+                    onChange={(e) => setProfileForm(prev => ({ ...prev, address: e.target.value }))}
+                    placeholder="Av. Principal 123"
+                    data-testid="profile-address"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Región</label>
+                  <Input
+                    value={profileForm.region}
+                    onChange={(e) => setProfileForm(prev => ({ ...prev, region: e.target.value }))}
+                    placeholder="Región Metropolitana"
+                    data-testid="profile-region"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Comuna</label>
+                  <Input
+                    value={profileForm.comuna}
+                    onChange={(e) => setProfileForm(prev => ({ ...prev, comuna: e.target.value }))}
+                    placeholder="Las Condes"
+                    data-testid="profile-comuna"
+                  />
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
                   <Input
@@ -317,25 +344,61 @@ const ProviderDashboard = () => {
                     data-testid="profile-phone"
                   />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Comuna</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Precio (desde CLP)</label>
                   <Input
-                    value={profileForm.comuna}
-                    onChange={(e) => setProfileForm(prev => ({ ...prev, comuna: e.target.value }))}
-                    placeholder="Ej: Las Condes"
-                    data-testid="profile-comuna"
+                    type="number"
+                    value={profileForm.price_from}
+                    onChange={(e) => setProfileForm(prev => ({ ...prev, price_from: e.target.value }))}
+                    placeholder="500000"
+                    data-testid="profile-price"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Place ID (Google)</label>
+                  <Input
+                    value={profileForm.place_id}
+                    onChange={(e) => setProfileForm(prev => ({ ...prev, place_id: e.target.value }))}
+                    placeholder="ChIJ..."
+                    data-testid="profile-place-id"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
-                <Input
-                  value={profileForm.address}
-                  onChange={(e) => setProfileForm(prev => ({ ...prev, address: e.target.value }))}
-                  placeholder="Calle, número, depto (opcional)"
-                  data-testid="profile-address"
-                />
+              <div className="border-t pt-4 mt-4">
+                <h3 className="text-sm font-bold text-[#33404f] mb-3">Redes Sociales y Web</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Sitio Web</label>
+                    <Input
+                      value={socialLinks.website}
+                      onChange={(e) => setSocialLinks(prev => ({ ...prev, website: e.target.value }))}
+                      placeholder="https://www.ejemplo.cl"
+                      data-testid="profile-website"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Facebook</label>
+                    <Input
+                      value={socialLinks.facebook}
+                      onChange={(e) => setSocialLinks(prev => ({ ...prev, facebook: e.target.value }))}
+                      placeholder="https://facebook.com/..."
+                      data-testid="profile-facebook"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Instagram</label>
+                    <Input
+                      value={socialLinks.instagram}
+                      onChange={(e) => setSocialLinks(prev => ({ ...prev, instagram: e.target.value }))}
+                      placeholder="https://instagram.com/..."
+                      data-testid="profile-instagram"
+                    />
+                  </div>
+                </div>
               </div>
 
               <Button 

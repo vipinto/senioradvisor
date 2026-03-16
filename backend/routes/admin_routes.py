@@ -346,12 +346,15 @@ class ResidenciaCreate(BaseModel):
     email: str
     password: Optional[str] = None
     phone: Optional[str] = ""
-    whatsapp: Optional[str] = ""
     address: Optional[str] = ""
+    region: Optional[str] = ""
     comuna: Optional[str] = ""
-    description: Optional[str] = ""
-    service_type: Optional[str] = "residencias"
+    website: Optional[str] = ""
+    facebook: Optional[str] = ""
+    instagram: Optional[str] = ""
     price_from: Optional[int] = 0
+    place_id: Optional[str] = ""
+    service_type: Optional[str] = "residencias"
 
 def generate_password(length=10):
     chars = string.ascii_letters + string.digits
@@ -390,22 +393,30 @@ async def create_residencia(data: ResidenciaCreate, request: Request):
         "user_id": user_id,
         "business_name": data.business_name,
         "phone": data.phone or "",
-        "whatsapp": data.whatsapp or "",
+        "whatsapp": data.phone or "",
         "address": data.address or "",
+        "region": data.region or "",
         "comuna": data.comuna or "",
-        "description": data.description or "",
+        "description": "",
         "services": [{"service_type": data.service_type or "residencias", "price_from": data.price_from or 0, "description": ""}],
         "photos": [],
         "gallery": [],
         "amenities": [],
-        "social_links": {},
-        "personal_info": {},
+        "social_links": {
+            k: v for k, v in {
+                "website": data.website or "",
+                "facebook": data.facebook or "",
+                "instagram": data.instagram or "",
+            }.items() if v
+        },
+        "personal_info": {"housing_type": "residencia"},
         "rating": 0,
         "total_reviews": 0,
         "approved": True,
         "verified": False,
         "latitude": 0,
         "longitude": 0,
+        "place_id": data.place_id or "",
         "coverage_zone": "10",
         "created_at": now,
         "approved_at": now,
