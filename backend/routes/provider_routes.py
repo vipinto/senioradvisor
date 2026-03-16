@@ -753,6 +753,116 @@ async def search_providers(
     return providers
 
 
+# ============= SUCURSALES (BRANCHES) =============
+# NOTE: These routes must be BEFORE /providers/{provider_id} to avoid route conflicts
+
+from pydantic import BaseModel as PydanticBaseModel
+
+class BranchCreate(PydanticBaseModel):
+    business_name: str
+    phone: Optional[str] = ""
+    address: Optional[str] = ""
+    comuna: Optional[str] = ""
+    region: Optional[str] = ""
+    website: Optional[str] = ""
+    facebook: Optional[str] = ""
+    instagram: Optional[str] = ""
+
+
+@router.get("/providers/my-branches")
+async def get_my_branches(request: Request):
+    """Get branches of the current provider"""
+    user = await get_current_user(request, db)
+    provider = await db.providers.find_one({"user_id": user["user_id"], "parent_provider_id": {"$exists": False}}, {"_id": 0})
+    if not provider:
+        raise HTTPException(status_code=404, detail="No tienes perfil de proveedor")
+
+    branches = await db.providers.find(
+        {"parent_provider_id": provider["provider_id"]},
+        {"_id": 0}
+    ).to_list(20)
+    return branches
+
+
+@router.post("/providers/my-branches")
+async def create_branch(data: BranchCreate, request: Request):
+    """Create a branch (sucursal) for the current provider"""
+    user = await get_current_user(request, db)
+    parent = await db.providers.find_one({"user_id": user["user_id"], "parent_provider_id": {"$exists": False}}, {"_id": 0})
+    if not parent:
+        raise HTTPException(status_code=404, detail="No tienes perfil de proveedor principal")
+
+    if not data.business_name.strip():
+        raise HTTPException(status_code=400, detail="El nombre de la sucursal es obligatorio")
+
+    branch_count = await db.providers.count_documents({"parent_provider_id": parent["provider_id"]})
+    if branch_count >= 5:
+        raise HTTPException(status_code=400, detail="Máximo 5 sucursales permitidas")
+
+    branch_id = f"prov_{uuid.uuid4().hex[:12]}"
+    now = datetime.now(timezone.utc)
+
+    social_links = {}
+    if data.website:
+        social_links["website"] = data.website
+    if data.facebook:
+        social_links["facebook"] = data.facebook
+    if data.instagram:
+        social_links["instagram"] = data.instagram
+
+    branch_doc = {
+        "provider_id": branch_id,
+        "user_id": user["user_id"],
+        "parent_provider_id": parent["provider_id"],
+        "business_name": data.business_name,
+        "phone": data.phone or parent.get("phone", ""),
+        "whatsapp": data.phone or parent.get("whatsapp", ""),
+        "address": data.address or "",
+        "comuna": data.comuna or "",
+        "region": data.region or "",
+        "description": parent.get("description", ""),
+        "services": parent.get("services", []),
+        "photos": [],
+        "gallery": parent.get("gallery", []),
+        "amenities": parent.get("amenities", []),
+        "social_links": social_links if social_links else parent.get("social_links", {}),
+        "personal_info": parent.get("personal_info", {}),
+        "rating": 0,
+        "total_reviews": 0,
+        "approved": parent.get("approved", True),
+        "verified": parent.get("verified", False),
+        "latitude": 0,
+        "longitude": 0,
+        "place_id": "",
+        "coverage_zone": parent.get("coverage_zone", "10"),
+        "created_at": now,
+        "registration_source": "branch",
+    }
+    await db.providers.insert_one(branch_doc)
+
+    return {
+        "message": "Sucursal creada exitosamente",
+        "provider_id": branch_id,
+        "business_name": data.business_name,
+    }
+
+
+@router.delete("/providers/my-branches/{branch_id}")
+async def delete_branch(branch_id: str, request: Request):
+    """Delete a branch"""
+    user = await get_current_user(request, db)
+    parent = await db.providers.find_one({"user_id": user["user_id"], "parent_provider_id": {"$exists": False}})
+    if not parent:
+        raise HTTPException(status_code=404, detail="No tienes perfil de proveedor")
+
+    branch = await db.providers.find_one({"provider_id": branch_id, "parent_provider_id": parent["provider_id"]})
+    if not branch:
+        raise HTTPException(status_code=404, detail="Sucursal no encontrada")
+
+    await db.providers.delete_one({"provider_id": branch_id})
+    return {"message": "Sucursal eliminada"}
+
+
 @router.get("/providers/{provider_id}")
 async def get_provider(provider_id: str, request: Request):
     """Get provider details"""

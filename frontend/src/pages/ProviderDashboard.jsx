@@ -55,6 +55,10 @@ const ProviderDashboard = () => {
   const [savingAmenities, setSavingAmenities] = useState(false);
   const [socialLinks, setSocialLinks] = useState({ instagram: '', facebook: '', website: '' });
   const [savingSocial, setSavingSocial] = useState(false);
+  const [branches, setBranches] = useState([]);
+  const [showBranchForm, setShowBranchForm] = useState(false);
+  const [branchForm, setBranchForm] = useState({ business_name: '', phone: '', address: '', comuna: '', region: '', website: '', facebook: '', instagram: '' });
+  const [savingBranch, setSavingBranch] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
@@ -112,6 +116,10 @@ const ProviderDashboard = () => {
       try {
         const crRes = await api.get('/contact-requests/received');
         setContactRequests(crRes.data);
+      } catch {}
+      try {
+        const brRes = await api.get('/providers/my-branches');
+        setBranches(brRes.data);
       } catch {}
     } catch {
       navigate('/provider/register');
@@ -262,6 +270,7 @@ const ProviderDashboard = () => {
             { key: 'contact-requests', label: 'Solicitudes Directas', icon: Inbox },
             { key: 'requests', label: 'Solicitudes Publicadas', icon: Users },
             { key: 'bookings', label: 'Reservas', icon: CalendarCheck },
+            { key: 'branches', label: 'Sucursales', icon: MapPin },
           ].map(({ key, label, icon: Icon }) => (
             <button
               key={key}
@@ -1082,6 +1091,121 @@ const ProviderDashboard = () => {
               </div>
             ) : (
               <p className="text-gray-400 text-center py-4">Aun no tienes conversaciones con clientes</p>
+            )}
+          </div>
+        )}
+
+        {/* Tab: Sucursales */}
+        {activeTab === 'branches' && (
+          <div className="bg-white rounded-xl shadow-sm p-6" data-testid="tab-branches-content">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-[#33404f]">Sucursales</h2>
+                <p className="text-sm text-gray-500">Agrega otras ubicaciones de tu residencia</p>
+              </div>
+              <Button
+                onClick={() => { setShowBranchForm(!showBranchForm); setBranchForm({ business_name: '', phone: '', address: '', comuna: '', region: '', website: '', facebook: '', instagram: '' }); }}
+                className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
+                data-testid="add-branch-btn"
+              >
+                {showBranchForm ? 'Cancelar' : '+ Agregar Sucursal'}
+              </Button>
+            </div>
+
+            {showBranchForm && (
+              <div className="border-2 border-[#00e7ff]/30 rounded-xl p-5 mb-6 space-y-4 bg-cyan-50/30" data-testid="branch-form">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Nombre de la Sucursal *</label>
+                    <Input value={branchForm.business_name} onChange={e => setBranchForm(prev => ({...prev, business_name: e.target.value}))} placeholder="Ej: Residencia Villa Serena - Sede Sur" data-testid="branch-name" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Teléfono</label>
+                    <Input value={branchForm.phone} onChange={e => setBranchForm(prev => ({...prev, phone: e.target.value}))} placeholder="+56 9 1234 5678" data-testid="branch-phone" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Dirección</label>
+                  <Input value={branchForm.address} onChange={e => setBranchForm(prev => ({...prev, address: e.target.value}))} placeholder="Av. Principal 456" data-testid="branch-address" />
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Comuna</label>
+                    <Input value={branchForm.comuna} onChange={e => setBranchForm(prev => ({...prev, comuna: e.target.value}))} placeholder="Providencia" data-testid="branch-comuna" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Región</label>
+                    <Input value={branchForm.region} onChange={e => setBranchForm(prev => ({...prev, region: e.target.value}))} placeholder="Región Metropolitana" data-testid="branch-region" />
+                  </div>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
+                  La sucursal heredará los servicios, amenidades y galería de la sede principal. Podrás personalizarlos después desde el panel de administración.
+                </div>
+                <Button
+                  onClick={async () => {
+                    if (!branchForm.business_name.trim()) { toast.error('El nombre es obligatorio'); return; }
+                    setSavingBranch(true);
+                    try {
+                      const res = await api.post('/providers/my-branches', branchForm);
+                      toast.success('Sucursal creada exitosamente');
+                      setBranches(prev => [...prev, { ...branchForm, provider_id: res.data.provider_id, created_at: new Date().toISOString() }]);
+                      setShowBranchForm(false);
+                    } catch (e) { toast.error(e.response?.data?.detail || 'Error al crear sucursal'); }
+                    finally { setSavingBranch(false); }
+                  }}
+                  disabled={savingBranch}
+                  className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] py-5 font-bold"
+                  data-testid="save-branch-btn"
+                >
+                  {savingBranch ? 'Guardando...' : 'Crear Sucursal'}
+                </Button>
+              </div>
+            )}
+
+            {branches.length === 0 && !showBranchForm ? (
+              <div className="text-center py-12 text-gray-500">
+                <MapPin className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                <p className="font-medium">No tienes sucursales registradas</p>
+                <p className="text-sm mt-1">Agrega ubicaciones adicionales de tu residencia</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {branches.map(branch => (
+                  <div key={branch.provider_id} className="border rounded-xl p-4 flex items-center justify-between hover:border-[#00e7ff]/40 transition-colors" data-testid={`branch-${branch.provider_id}`}>
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-cyan-50 rounded-xl flex items-center justify-center">
+                        <MapPin className="w-6 h-6 text-[#00e7ff]" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-[#33404f]">{branch.business_name}</h3>
+                        <p className="text-sm text-gray-500">{[branch.address, branch.comuna, branch.region].filter(Boolean).join(', ') || 'Sin dirección'}</p>
+                        {branch.phone && <p className="text-xs text-gray-400">{branch.phone}</p>}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Link to={`/provider/${branch.provider_id}`}>
+                        <Button variant="outline" size="sm"><Eye className="w-4 h-4" /></Button>
+                      </Link>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-red-500 border-red-200 hover:bg-red-50"
+                        onClick={async () => {
+                          if (!window.confirm('¿Eliminar esta sucursal?')) return;
+                          try {
+                            await api.delete(`/providers/my-branches/${branch.provider_id}`);
+                            setBranches(prev => prev.filter(b => b.provider_id !== branch.provider_id));
+                            toast.success('Sucursal eliminada');
+                          } catch { toast.error('Error al eliminar'); }
+                        }}
+                        data-testid={`delete-branch-${branch.provider_id}`}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         )}
