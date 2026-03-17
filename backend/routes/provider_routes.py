@@ -652,6 +652,7 @@ async def reorder_gallery(request: Request):
 async def search_providers(
     request: Request,
     comuna: Optional[str] = None,
+    q: Optional[str] = None,
     service_type: Optional[str] = None,
     min_rating: Optional[float] = None,
     verified_only: bool = False,
@@ -680,10 +681,16 @@ async def search_providers(
     query = {
         "approved": True,
         "business_name": {"$exists": True, "$ne": ""},
-        "comuna": {"$exists": True, "$ne": ""},
     }
-    if comuna:
-        query["comuna"] = {"$regex": comuna, "$options": "i"}
+
+    # Search by q (name, address, comuna) or just comuna
+    search_term = q or comuna
+    if search_term:
+        query["$or"] = [
+            {"business_name": {"$regex": search_term, "$options": "i"}},
+            {"address": {"$regex": search_term, "$options": "i"}},
+            {"comuna": {"$regex": search_term, "$options": "i"}},
+        ]
     if verified_only:
         query["verified"] = True
     if min_rating:
@@ -699,10 +706,16 @@ async def search_providers(
             {"_id": 0, "provider_id": 1},
         ).to_list(5000)
         provider_ids_from_collection = {s["provider_id"] for s in services_coll}
-        query["$or"] = [
+        svc_filter = {"$or": [
             {"provider_id": {"$in": list(provider_ids_from_collection)}},
             {"services": {"$elemMatch": {"service_type": service_type}}},
-        ]
+        ]}
+        # Combine with $and to avoid $or conflict
+        if "$or" in query:
+            existing_or = query.pop("$or")
+            query["$and"] = [{"$or": existing_or}, svc_filter]
+        else:
+            query.update(svc_filter)
 
     import logging
     logging.info(f"Provider search query: {query}")

@@ -58,7 +58,7 @@ const SearchPage = () => {
   const [providers, setProviders] = useState([]);
   const [filteredProviders, setFilteredProviders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchAddress, setSearchAddress] = useState(searchParams.get('comuna') || '');
+  const [searchAddress, setSearchAddress] = useState(searchParams.get('q') || searchParams.get('comuna') || '');
   const [activeService, setActiveService] = useState(searchParams.get('service') || '');
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [hoveredProvider, setHoveredProvider] = useState(null);
@@ -130,7 +130,7 @@ const SearchPage = () => {
     try {
       const params = new URLSearchParams();
       if (activeService) params.set('service_type', activeService);
-      if (searchAddress.trim()) params.set('comuna', searchAddress.trim());
+      if (searchAddress.trim()) params.set('q', searchAddress.trim());
       params.set('skip', ((currentPage - 1) * PAGE_SIZE).toString());
       params.set('limit', PAGE_SIZE.toString());
 
@@ -389,7 +389,7 @@ const SearchPage = () => {
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Buscar por comuna..."
+                placeholder="Buscar por nombre, dirección o comuna..."
                 value={searchAddress}
                 onChange={(e) => {
                   const val = e.target.value;
