@@ -1,162 +1,155 @@
 <analysis>**original_problem_statement:**
-The user wants to transform an existing application, U-CAN (a pet-sitter directory), into a new application called SeniorAdvisor. This new platform will serve as a directory for senior care services, including residences, in-home care, and mental health services.
-
-The latest user request is to re-implement a public-facing, multi-step registration process for providers (residencias), similar to how the old U-CAN application worked. This new flow should consist of 6 steps to gather detailed provider information. Crucially, any new provider registered this way must be approved by an administrator before they appear publicly on the site.
-
-PRODUCT REQUIREMENTS:
-1.  **Re-brand and Re-credential:** Update all credentials and replace U-CAN branding with SeniorAdvisor.
-2.  **Update Functionality:** Change service categories to senior care-related (Residencias, Cuidado a Domicilio, Salud Mental).
-3.  **Improve Accessibility:** Make the UI more accessible for seniors.
-4.  **Implement New Review System:** Introduce a 5-criteria rating system for reviews.
-5.  **Change Subscription Model:** Remove client subscriptions and implement a MercadoPago subscription for providers.
-6.  **Fix Google Maps:** Ensure map functionality works correctly.
-7.  **Seed Database:** Populate the database with sample provider data.
-8.  **Add Provider-Specific Features:** Implement a gallery, amenities, and social media links, all manageable from a provider dashboard.
-9.  **Add a Blog:** Create a blog section (Actualidad Mayor) manageable from an admin panel.
-10. **Add Partnerships (Convenios):** Create a section for partnerships with other companies.
-11. **Implement Multi-Step Provider Registration:** Allow anyone to register a residence via a 6-step public form, with mandatory admin approval before the listing goes live.
+The application, SeniorAdvisor, is a directory for senior care services (residences, in-home care, mental health). The user has requested two new major features: 
+1. **Gallery Restrictions & Premium Slider**: Limit the standard provider gallery to a maximum of 3 photos. Above the gallery, implement a full-width Premium Slide that allows up to 10 photos, exclusively visible/active for subscribed residences.
+2. **Admin Panel - Residence Creation enhancements**: When an admin adds a new residence using a Google , the system should automatically fetch and display the Google reviews and average rating. Furthermore, the user reported a bug where the map pin does not appear when a new residence is added.
 
 **User's preferred language**: The user communicates in **Spanish**. The next agent MUST respond in Spanish.
 
 **what currently exists?**
-The SeniorAdvisor application is a functional directory for senior care services with user authentication for Client, Provider, and Admin roles.
--   The **Admin Panel** is comprehensive, allowing management of users, blog articles, partnerships, and residences. Admins can create new residences and edit every aspect of an existing one (profile details, 3-tier pricing, photo gallery, and service amenities) via a dedicated edit modal.
--   The **Provider Dashboard** allows residences to manage their own profiles, including updating all contact info, social media, pricing for three service categories, uploading/deleting gallery photos, and toggling available amenities.
--   The **Search Page** displays residences with a list/map view. It has been fixed to show providers from the bulk upload and correctly handle images and service tags. The original Google Maps UI is preserved but displays Map not available due to a billing issue with the user's API key.
--   The bulk upload feature for residences via CSV has been successfully implemented and is highly optimized, reducing processing time from over 2 minutes to ~5 seconds using batch database operations.
+SeniorAdvisor is a highly functional, multi-role full-stack application. It features a complete public multi-step registration flow for residences, robust search functionality (paginated, autocomplete, filters by name/address/comuna), and a sophisticated dashboard system. Providers have separate Dashboard (for direct requests and branch management) and My Account (for profile, amenities, pricing, and gallery management) interfaces. Families can submit detailed 3-step Care Requests (Solicitudes de Servicio) to providers. All remnants of the previous app's domain (pet sitting/U-CAN) have been purged and replaced with senior care terminology.
 
 **Last working item**:
-*   **Last item agent was working:** The agent was gathering requirements and planning the implementation of a new public, multi-step registration flow for providers. The user confirmed a 6-step process and the requirement for admin approval before a new residence is published. The agent had just started examining the existing registration files ( and ) to prepare for the implementation.
-*   **Status:** NOT STARTED
-*   **Agent Testing Done:** N
-*   **Which testing method agent to use?** both
-*   **User Testing Done:** N
+- **Last item agent was working**: The agent was gathering context on  and  to implement the new 3-photo limit and the 10-photo Premium Slider, as well as investigating the Admin panel PlaceID/Map pin issue. The agent triggered an  tool to clarify details but the session ended before a response.
+- **Status**: NOT STARTED
+- **Agent Testing Done**: N
+- **Which testing method agent to use?** both (Use  once the gallery logic and Google Places backend integration are implemented).
+- **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
-*   **Issue 1:** Google Maps API Error (P1)
+Issue 1: Admin Add Residence - Map pin not appearing (P0)
+Issue 2: Google Maps API Error / Billing (P2)
 
-**Issues Detail:**
-*   **Issue 1: Google Maps API Error**
-    *   **Attempted fixes:** The UI is stable and shows a Mapa no disponible message instead of crashing. The user has been informed that the issue is due to their Google Maps API key lacking an active billing account.
-    *   **Next debug checklist:** Do not attempt to fix this. The user is aware and has instructed the agent to ignore this issue. The application should continue to be developed with the map feature gracefully disabled.
-    *   **Why fix this issue?** It's a core feature for a location-based directory, but it is blocked by the user.
-    *   **Status:** BLOCKED
-    *   **Is recurring issue?** Y
-    *   **Should Test frontend/backend/both after fix?** Frontend
-    *   **Blocked on other issue:** User needs to provide a valid, billing-enabled Google Maps API key.
+Issues Detail:
+- **Issue 1: Admin Add Residence - Map pin not appearing**
+    - **Attempted fixes**: None yet.
+    - **Next debug checklist**: Check  and  (specifically the creation endpoint). Determine if the coordinates are being correctly parsed and saved when an admin inputs an address or PlaceID. Note: This might be heavily tied to Issue 2.
+    - **Why fix this issue and what will be achieved with the fix?** Users rely on map visualization. Without coordinates/pins, the residence won't show on the search map.
+    - **Status**: NOT STARTED
+    - **Is recurring issue?** N
+    - **Should Test frontend/backend/both after fix?** both
+    - **Blocked on other issue**: None, but be aware of the Maps Billing issue.
+
+- **Issue 2: Google Maps API Error / Billing**
+    - **Attempted fixes**: Handled gracefully in UI in previous sessions.
+    - **Next debug checklist**: The user's Google Maps API key lacks an active billing account. Inform the user if the PlaceID/Reviews integration fails due to API restrictions.
+    - **Why fix this issue and what will be achieved with the fix?** Full map functionality.
+    - **Status**: BLOCKED
+    - **Is recurring issue?** Y
+    - **Should Test frontend/backend/both after fix?** NA
+    - **Blocked on other issue**: User needs to activate Google Cloud billing.
 
 **In progress Task List**:
-*   **Task 1: Implement Multi-Step Public Registration for Providers (P0)**
-    *   **Where to resume:** Start by modifying  to introduce a new path for provider registration that leads to a multi-step form component. Create this new component to handle the 6-step process. On the backend (), create a new endpoint to handle the submission, creating a  and a  profile with a  field. The admin panel also needs a new section to display and approve these pending residences.
-    *   **What will be achieved?** The application will allow the public to register new residences. These new listings will enter an approval queue for the admin, ensuring data quality before they are visible on the main site.
-    *   **Status:** NOT STARTED
-    *   **Should Test frontend/backend/both after fix?** Both
-    *   **Blocked on something:** None.
+Task 1: Provider Gallery Limits & Premium Slider (P0)
+Task 2: Admin Panel - Fetch Google Reviews via PlaceID (P0)
+
+Task Detail:
+- **Task 1: Provider Gallery Limits & Premium Slider**
+    - **Where to resume**: Modify  to limit standard uploads to 3 photos. Add a new premium slider component above it that allows up to 10 photos, conditionally rendered based on . Update  to display this premium slider to the public. 
+    - **What will be achieved with this?** Monetization incentive for providers to buy subscriptions.
+    - **Status**: NOT STARTED
+    - **Should Test frontend/backend/both after fix?** both
+    - **Blocked on something**: None.
+
+- **Task 2: Admin Panel - Fetch Google Reviews via PlaceID**
+    - **Where to resume**: Modify the backend ( or ) to call the Google Places API using the provided  upon residence creation. Fetch the  and  array and save them to the provider document or the local reviews collection. Update  to display these upon successful addition.
+    - **What will be achieved with this?** Automated reputation syncing for newly added residences.
+    - **Status**: NOT STARTED
+    - **Should Test frontend/backend/both after fix?** both
+    - **Blocked on something**: Potentially blocked by Google API billing restrictions (see Issue 2).
 
 **Upcoming and Future Tasks**
-*   **Future Tasks:**
-    *   (P2) Perform a global search across the codebase for any remaining instances of U-CAN, mascota (pet), or cuidador (sitter) and replace them.
-    *   (P2) Add pagination to the search results page (), as it currently only shows the first 50 results.
-    *   (P2) Add an autocomplete search bar for comuna or región on the search page to improve usability with a large number of residences.
+Upcoming Tasks:
+- Add advanced filters to search (filter by price range, specific amenities, minimum rating) (P2)
+Future Tasks:
+- Refactoring  (extract edit modals and forms into smaller components) (P2)
 
 **Completed work in this session**
-- **Comprehensive Provider Management:**
-  - Implemented forms in both the **Provider Dashboard** and **Admin Panel** to edit all key residence details: name, address, region, comuna, phone, website, social links, and Google PlaceID.
-  - Implemented a **3-tier pricing system** where providers can set a price and description for Residencias, Cuidado a Domicilio, and Salud Mental. Categories with no price/description are hidden from the public profile.
-  - Added full **gallery management** (upload/delete photos) and **amenity management** (on/off toggles) for providers in their dashboard and for admins in the edit modal.
-- **Bulk Upload Feature (Completed & Optimized):**
-  - Successfully implemented and tested the bulk CSV upload feature for residences.
-  - **Optimized performance dramatically**, reducing a 2.5-minute timeout-prone process to a ~5-second operation by refactoring the backend to use batch  operations.
-- **Search Page Overhaul:**
-  - Fixed multiple bugs on the search page (), including showing images from the , deduplicating service tags, and removing legacy code that caused crashes.
-  - Modified the backend search API () to be less strict, ensuring that newly imported providers are visible.
-  - Restored the original Google Maps UI layout as requested by the user, while keeping it gracefully disabled.
-- **Testing:** Successfully used the testing agent multiple times to validate backend and frontend functionality after major changes, achieving 100% pass rates on all tested flows.
+- Multi-step public provider registration flow  (DONE)
+- System-wide branding cleanup (U-CAN -> SeniorAdvisor, pet terms -> senior care terms) (DONE)
+- Implementation of Sucursales (Branches) for providers to add secondary locations (DONE)
+- Refactoring Solicitudes de Cuidado into a detailed 3-step Care Requests form for families (DONE)
+- Header UI color adjustment (DONE)
+- Complete restructuring of Provider UI: Split into  (lean, just requests/branches) and  (comprehensive settings/profile/amenities) (DONE)
+- Search Page Enhancements: Pagination, Comuna Autocomplete, and  querying by name/address/comuna (DONE)
+
+**Earlier issues found/mentioned but not fixed**
+None explicitly missed by the agent, but be highly aware that the user's Google Maps API key does not have an active billing account. This may block the PlaceID fetching requirements.
 
 **Known issue recurrence from previous fork**
-- N/A
+- Issue recurrence in previous fork: Google Maps API crashes/Map rendering failures.
+- Recurrence count: 3
+- Status: BLOCKED (User must add billing). App currently shows a graceful fallback.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-*   **Backend:** FastAPI, Motor, Pydantic, Pandas (for CSV parsing).
-*   **Database Optimization:** Use of  for batch inserts to significantly improve performance of bulk operations.
-*   **Frontend:** React, TailwindCSS, Shadcn UI, .
-*   **State Management:** Complex forms with multiple states managed within React components (, ).
+- Frontend: React, TailwindCSS, Shadcn UI, React Router.
+- Backend: FastAPI, Motor (async MongoDB).
+- State: Complex prop drilling and local state in large dashboard files.
+- Search: MongoDB  /  queries with regex for text matching, / for pagination.
 
 **key DB schema**
-*   : { , , , , , , , , , , , : [urls], : [strings], : [{ , ,  }], ****: ('active', 'pending_approval') - *to be added* }
-*   : { , ,  ('client', 'provider', 'admin'), ... }
+- : 
+- : 
 
 **changes in tech stack**
-- No new technologies, but  was confirmed and used.
+- None
 
 **All files of reference**
-*   : Contains all provider-related endpoints, including the optimized bulk upload and new admin editing endpoints.
-*   : Contains the UI for managing residences, including the new edit modal with profile, gallery, and amenity tabs.
-*   : Contains the provider's self-service dashboard with tabs for profile, gallery, and services.
-*   : The main search page, heavily modified to fix bugs and preserve the user-requested layout.
-*   : The starting point for implementing the new public registration flow.
-*   : The backend file to be modified for the new registration logic.
+-  (Target for 3-photo limit & premium slider)
+-  (Target for displaying premium slider)
+-  (Contains branch logic, search logic)
+-  (Target for fixing map pin and PlaceID reviews fetch)
 
 **Areas that need refactoring**:
--  and  are very large and manage a lot of state. They could be broken down into smaller, more focused components. For example, the profile form, gallery manager, and amenity toggles within  could be separate components. The edit modal in  is also a candidate for refactoring into its own file.
+-  is still extremely large and handles too many distinct state modalities.
 
 **key api endpoints**
-*    (POST): Highly optimized endpoint for bulk creating residences from a CSV.
-*    (PUT): Updates a provider's full profile from the admin panel.
-*    (POST): Adds a photo to a provider's gallery from the admin panel.
-*    (PUT): Updates a provider's amenities from the admin panel.
-*    (PUT): Endpoint for a provider to update their own profile.
-*    (POST): *To be created* for the new multi-step public registration flow.
+-  (Search with pagination ,  param)
+-  (Autocomplete)
+-  (Create sub-branch)
+-  (Submit detailed patient care request)
 
 **Critical Info for New Agent**
-*   **Your top priority is to implement the public, multi-step registration for providers with admin approval.** This is a major new feature requested by the user. The flow should have 6 steps as discussed.
-*   **DO NOT work on the Google Maps issue.** It is blocked pending a valid API key from the user. The current state (map disabled, Mapa no disponible message) is the desired behavior for now.
-*   The registration flow for clients should remain as-is. The new flow is an alternative path specifically for providers (residencias).
-*   A new  field (e.g., 'pending_approval', 'active') will be required on the  model to manage the approval workflow.
+- The user's Google Maps API key (used for Maps and Places) frequently fails due to missing billing. If you attempt to fetch Google Reviews via PlaceID using this key and it fails with a billing error, immediately notify the user rather than getting stuck in a debug loop. 
+- You must build a Premium Slider for the gallery. Check how  or  is defined on the provider model to conditionally render this.
 
 **documents and test reports created in this job**
-*   
-*   
-*   
-*    (updated)
+-  through 
+- 
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** Give me accounts to check each role. - **Status: DONE** (Agent provided credentials).
-2.  **User:** Can we have the residence registration like we had in U-CAN? - **Status: IN PROGRESS** (This kicked off the new task).
-3.  **Agent:** (Confirms the 6 steps) Will it be public registration or admin-only? - **Status: DONE**.
-4.  **User:** Public registration, but the admin will have to approve them to appear. - **Status: PENDING ACTION** (This is the core requirement for the next agent).
-5.  **User:** (Asks about pricing model) - **Status: DONE** (Clarified and implemented the 3-category pricing).
-6.  **User:** The price has to be for 3 categories, and if not filled out, it shouldn't appear. - **Status: DONE**.
-7.  **User:** You removed the photo gallery upload. I need the residence and admin to be able to manage photos and services. - **Status: DONE**.
-8.  **User:** (Asks to add gallery/amenity management to admin panel). - **Status: DONE**.
-9.  **User:** The map is gone, I want to see the location of each residence. Bring it back. - **Status: DONE** (Agent restored the original layout but explained the API key issue).
-10. **User:** Don't worry about the billing, just program what I ask. - **Status: DONE** (Agent acknowledged and proceeded).
+1. User: Make it so the dashboard only shows published requests, add branches, and main branch. Move everything else to my account. Make amenities look like this photo.
+2. Agent: Implemented dashboard restructure, separated ProviderAccount, updated backend endpoints. Tested successfully.
+3. User: Let's do the next action item (which was Pagination & Autocomplete).
+4. Agent: Implemented pagination and autocomplete in backend and frontend. Tested successfully.
+5. User: Make the search also filter by name, address, or comuna (currently only does comuna).
+6. Agent: Updated  query logic in backend, added  parameter, updated SearchBar and SearchSimple. Tested successfully.
+7. User: Now I need the Gallery to only allow 3 photos, not 10. Above the gallery, add a full-width slide (up to 10 photos) that activates ONLY for subscribed residences.
+8. Agent: Viewed  and .
+9. User: When I add a new residence from administration using PlaceID, I need it to show the reviews and average rating. Also, the map pin doesn't appear when added (uploaded screenshot).
+10. Agent: Triggered . *(Agent exited while waiting for response)*.
 
 **Project Health Check:**
-*   **Broken:** The public registration for providers is missing and is the next major task.
-*   **Mocked:** Google Maps functionality is intentionally disabled site-wide to prevent crashes, displaying a Map not available placeholder.
+- Broken: Map pin assignment on new Admin residence creation.
+- Mocked: Google Maps UI rendering.
 
 **3rd Party Integrations**
-*   **MongoDB Atlas:** Database service.
-*   **Google OAuth:** User authentication.
-*   **Google Maps Platform:** (Disabled) Requires a billing-enabled API key from the user.
-*   **Resend:** Email service.
-*   **MercadoPago:** Payment provider.
-*   **Pandas / openpyxl:** Python libraries for file parsing on the backend.
+- Resend (Emails) — requires User API Key
+- Google OAuth — requires User API Key
+- Google Maps / Places — requires User API Key (Billing currently inactive)
 
 **Testing status**
-*   **Testing agent used after significant changes:** YES
-*   **Troubleshoot agent used after agent stuck in loop:** NO
-*   **Test files created:** None.
-*   **Known regressions:** None.
+- Testing agent used after significant changes: YES (Iterations 34 to 40 all 100% PASS)
+- Troubleshoot agent used after agent stuck in loop: NO
+- Test files created: None explicitly created by agent, automated tests run via subagent.
+- Known regressions: None currently known.
 
 **Credentials to test flow:**
-*   **Admin:**  / 
-*   **Client:**  / 
-*   **Provider (Residencia):**  / 
+- Admin:  / 
+- Client:  / 
+- Provider:  / 
 
 **What agent forgot to execute**
-The agent was in the process of gathering requirements for the new multi-step registration feature when the session ended. The immediate next step is to begin the implementation of this user-requested feature.</analysis>
+The agent did not start the implementation of the Gallery limits, the Premium slider, or the PlaceID/Map Pin fixes because the user submitted multiple requests back-to-back and the job ended while waiting for the  tool resolution. These are P0 tasks for the new agent.</analysis>
