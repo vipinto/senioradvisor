@@ -174,6 +174,9 @@ const SearchPage = () => {
 
   const handleBoundsChanged = useCallback(() => {
     if (!mapRef.current || !isMapSearchActive) return;
+    // Don't filter by bounds when there's a text search
+    const searchText = searchAddress.trim() || searchParams.get('q') || '';
+    if (searchText) return;
 
     if (boundsTimeoutRef.current) {
       clearTimeout(boundsTimeoutRef.current);
