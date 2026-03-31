@@ -2,7 +2,7 @@
 
 ## Admin
 - Email: admin@senioradvisor.cl
-- Password: admin123
+- Password: EmiLuci2$$$
 
 ## Client (Demo)
 - Email: demo@senioradvisor.cl
