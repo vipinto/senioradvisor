@@ -307,15 +307,13 @@ export default function ProviderProfile() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
 
-            {/* Premium Gallery - Inside left column */}
-            {allPhotos.length > 0 && (
+            {/* PREMIUM Gallery - Only for is_featured providers */}
+            {provider.is_featured && allPhotos.length > 0 && (
               <div data-testid="premium-gallery">
                 <div className="relative">
-                  {provider.is_featured && (
-                    <div className="absolute top-3 left-3 z-10 bg-yellow-400 text-[#33404f] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg" data-testid="premium-badge">
-                      <Crown className="w-3.5 h-3.5" /> Premium
-                    </div>
-                  )}
+                  <div className="absolute top-3 left-3 z-10 bg-yellow-400 text-[#33404f] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg" data-testid="premium-badge">
+                    <Crown className="w-3.5 h-3.5" /> Premium
+                  </div>
                   {canEdit && (
                     <div className="absolute top-3 right-3 z-10">
                       <EditBtn label="Gestionar Slider" testId="manage-slider-btn" />
@@ -372,8 +370,8 @@ export default function ProviderProfile() {
               </div>
             )}
 
-            {/* Slider placeholder - only when canEdit AND no photos */}
-            {canEdit && allPhotos.length === 0 && (
+            {/* Premium Slider placeholder - canEdit + premium + no photos */}
+            {canEdit && provider.is_featured && allPhotos.length === 0 && (
               <div className="space-y-2">
                 <div className="flex justify-center">
                   <EditBtn label="Gestionar Slider" testId="manage-slider-btn" />
@@ -384,8 +382,8 @@ export default function ProviderProfile() {
               </div>
             )}
 
-            {/* YouTube Video placeholder (edit mode) */}
-            {canEdit && (
+            {/* YouTube Video placeholder (premium edit mode only) */}
+            {canEdit && provider.is_featured && (
               <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center" data-testid="video-placeholder">
                 <p className="text-gray-400 mb-3">Sin video YouTube</p>
                 <EditBtn label="Agregar Video" testId="add-video-btn" />
@@ -422,13 +420,13 @@ export default function ProviderProfile() {
               </div>
             )}
 
-            {/* Gallery management section (edit mode only) */}
-            {canEdit && (
+            {/* Standard Gallery - for NON-premium providers (all users) OR for premium providers in edit mode */}
+            {((!provider.is_featured && allPhotos.length > 0) || (canEdit)) && (
               <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="gallery-section">
                 <div className="flex items-center gap-3 mb-4">
                   <Camera className="w-5 h-5 text-[#00e7ff]" />
                   <h2 className="text-xl font-bold">Galería</h2>
-                  <EditBtn label="Gestionar Fotos" testId="manage-photos-btn" />
+                  {canEdit && <EditBtn label="Gestionar Fotos" testId="manage-photos-btn" />}
                 </div>
                 {allPhotos.length > 0 ? (
                   <div className="grid grid-cols-3 gap-3">
