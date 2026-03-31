@@ -245,6 +245,10 @@ export default function ProviderProfile() {
       formData.housing_type = provider.personal_info?.housing_type || '';
       formData.daily_availability = provider.personal_info?.daily_availability || '';
       formData.bio = provider.personal_info?.bio || provider.personal_info?.additional_info || '';
+    } else if (section === 'featured') {
+      formData.is_featured = provider.is_featured || false;
+      formData.verified = provider.verified || false;
+      formData.place_id = provider.place_id || '';
     }
     setEditForm(formData);
     setEditingSection(section);
@@ -288,6 +292,18 @@ export default function ProviderProfile() {
           await api.put(`/admin/providers/${provider.provider_id}/profile`, { personal_info: editForm });
         } else {
           await api.put('/providers/my-profile/personal-info', editForm);
+        }
+      } else if (section === 'featured') {
+        // Admin-only: update verified, place_id via admin endpoints
+        if (editForm.verified !== provider.verified) {
+          if (editForm.verified) {
+            await api.post(`/admin/providers/${provider.provider_id}/verify`);
+          } else {
+            await api.post(`/admin/providers/${provider.provider_id}/unverify`);
+          }
+        }
+        if (editForm.place_id !== (provider.place_id || '')) {
+          await api.put(`/admin/providers/${provider.provider_id}/profile`, { place_id: editForm.place_id });
         }
       }
       toast.success('Cambios guardados');
@@ -363,13 +379,58 @@ export default function ProviderProfile() {
           </div>
           {isAdmin && (
             <button
-              onClick={() => navigate(editUrl)}
+              onClick={() => startEditing('featured')}
               className="px-4 py-1.5 border border-white/40 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors"
               data-testid="admin-featured-btn"
             >
-              Destacado / Suscripción / Place ID
+              Premium / Suscripción / Place ID
             </button>
           )}
+        </div>
+      )}
+
+      {/* Inline edit for Premium / Suscripción / Place ID */}
+      {editingSection === 'featured' && (
+        <div className="bg-[#2a3540] px-4 py-4" data-testid="edit-featured-form">
+          <div className="max-w-6xl mx-auto grid sm:grid-cols-3 gap-4">
+            <div>
+              <label className="text-xs text-white/70 font-medium block mb-1">Premium (Destacado)</label>
+              <select value={editForm.is_featured ? 'true' : 'false'}
+                onChange={e => setEditForm(prev => ({...prev, is_featured: e.target.value === 'true'}))}
+                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#00e7ff]">
+                <option value="false" className="text-black">No</option>
+                <option value="true" className="text-black">Sí</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-xs text-white/70 font-medium block mb-1">Verificado</label>
+              <select value={editForm.verified ? 'true' : 'false'}
+                onChange={e => setEditForm(prev => ({...prev, verified: e.target.value === 'true'}))}
+                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#00e7ff]">
+                <option value="false" className="text-black">No</option>
+                <option value="true" className="text-black">Sí</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-xs text-white/70 font-medium block mb-1">Place ID (Google)</label>
+              <input type="text" value={editForm.place_id || ''} placeholder="ChIJ..."
+                onChange={e => setEditForm(prev => ({...prev, place_id: e.target.value}))}
+                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
+                data-testid="edit-input-place-id" />
+            </div>
+          </div>
+          <div className="max-w-6xl mx-auto flex gap-2 mt-3">
+            <button onClick={() => saveSection('featured')} disabled={saving}
+              className="px-4 py-1.5 bg-[#00e7ff] text-[#33404f] text-sm font-bold rounded-full hover:bg-[#00d4ea] disabled:opacity-50"
+              data-testid="save-featured-btn">
+              {saving ? 'Guardando...' : 'Guardar'}
+            </button>
+            <button onClick={cancelEditing}
+              className="px-4 py-1.5 bg-white/20 text-white text-sm font-medium rounded-full hover:bg-white/30"
+              data-testid="cancel-featured-btn">
+              Cancelar
+            </button>
+          </div>
         </div>
       )}
 
