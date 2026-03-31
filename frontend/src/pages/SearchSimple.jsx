@@ -151,7 +151,8 @@ const SearchPage = () => {
       }
       if (datesStr) params.set('dates', datesStr);
 
-      if (bounds) {
+      // Only apply bounds filter when there's no text search
+      if (bounds && !searchText) {
         params.set('bounds_south', bounds.south.toString());
         params.set('bounds_west', bounds.west.toString());
         params.set('bounds_north', bounds.north.toString());
@@ -165,6 +166,19 @@ const SearchPage = () => {
       setProviders(providersList);
       setFilteredProviders(providersList);
       setTotalResults(total);
+
+      // Center map on first result with coordinates
+      if (searchText && providersList.length > 0) {
+        const withCoords = providersList.find(p => p.latitude && p.longitude);
+        if (withCoords) {
+          const newCenter = { lat: withCoords.latitude, lng: withCoords.longitude };
+          setMapCenter(newCenter);
+          if (mapRef.current) {
+            mapRef.current.panTo(newCenter);
+            mapRef.current.setZoom(14);
+          }
+        }
+      }
     } catch (error) {
       console.error('Error loading providers:', error);
     } finally {
@@ -174,7 +188,7 @@ const SearchPage = () => {
 
   const handleBoundsChanged = useCallback(() => {
     if (!mapRef.current || !isMapSearchActive) return;
-    // Don't filter by bounds when there's a text search
+    // Skip bounds search when there's a text query
     const searchText = searchAddress.trim() || searchParams.get('q') || '';
     if (searchText) return;
 
