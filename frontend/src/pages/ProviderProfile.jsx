@@ -114,6 +114,11 @@ export default function ProviderProfile() {
   const [contactMessage, setContactMessage] = useState('');
   const fileInputRef = useRef(null);
 
+  // Inline editing state
+  const [editingSection, setEditingSection] = useState(null);
+  const [editForm, setEditForm] = useState({});
+  const [saving, setSaving] = useState(false);
+
   // Calcular promedio de los criterios
   const calculateAverageRating = () => {
     const values = Object.values(reviewCriteria);
@@ -218,6 +223,84 @@ export default function ProviderProfile() {
 
   const navigate = useNavigate();
 
+  // Start editing a section
+  const startEditing = (section) => {
+    const formData = {};
+    if (section === 'name') {
+      formData.business_name = provider.business_name || '';
+      formData.address = provider.address || '';
+      formData.comuna = provider.comuna || '';
+      formData.region = provider.region || '';
+      formData.description = provider.description || '';
+    } else if (section === 'social') {
+      formData.instagram = provider.social_links?.instagram || '';
+      formData.facebook = provider.social_links?.facebook || '';
+      formData.website = provider.social_links?.website || '';
+    } else if (section === 'price') {
+      formData.services = provider.services?.map(s => ({...s})) || [];
+    } else if (section === 'contact') {
+      formData.phone = provider.phone || '';
+      formData.whatsapp = provider.whatsapp || '';
+    } else if (section === 'info') {
+      formData.housing_type = provider.personal_info?.housing_type || '';
+      formData.daily_availability = provider.personal_info?.daily_availability || '';
+      formData.bio = provider.personal_info?.bio || provider.personal_info?.additional_info || '';
+    }
+    setEditForm(formData);
+    setEditingSection(section);
+  };
+
+  const cancelEditing = () => {
+    setEditingSection(null);
+    setEditForm({});
+  };
+
+  const saveSection = async (section) => {
+    setSaving(true);
+    try {
+      const isAdmin = user?.role === 'admin';
+      if (section === 'name') {
+        if (isAdmin) {
+          await api.put(`/admin/providers/${provider.provider_id}/profile`, editForm);
+        } else {
+          await api.put('/providers/my-profile', editForm);
+        }
+      } else if (section === 'social') {
+        if (isAdmin) {
+          await api.put(`/admin/providers/${provider.provider_id}/profile`, { social_links: editForm });
+        } else {
+          await api.put('/providers/my-profile/social', editForm);
+        }
+      } else if (section === 'price') {
+        if (isAdmin) {
+          await api.put(`/admin/providers/${provider.provider_id}/profile`, { services: editForm.services });
+        } else {
+          await api.put('/providers/my-profile/services', { services: editForm.services });
+        }
+      } else if (section === 'contact') {
+        if (isAdmin) {
+          await api.put(`/admin/providers/${provider.provider_id}/profile`, editForm);
+        } else {
+          await api.put('/providers/my-profile', editForm);
+        }
+      } else if (section === 'info') {
+        if (isAdmin) {
+          await api.put(`/admin/providers/${provider.provider_id}/profile`, { personal_info: editForm });
+        } else {
+          await api.put('/providers/my-profile/personal-info', editForm);
+        }
+      }
+      toast.success('Cambios guardados');
+      setEditingSection(null);
+      setEditForm({});
+      loadProvider();
+    } catch (e) {
+      toast.error(e.response?.data?.detail || 'Error al guardar');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full" /></div>;
   if (!provider) return <div className="min-h-screen flex items-center justify-center text-gray-500">Cuidador no encontrado</div>;
 
@@ -230,15 +313,42 @@ export default function ProviderProfile() {
   const hasAmenities = provider.amenities?.length > 0;
   const hasServices = provider.services?.filter(s => s.price_from > 0 || s.description).length > 0;
 
-  // Small reusable edit button
-  const EditBtn = ({ label = 'Editar', onClick, testId }) => (
+  // Small reusable edit button - opens inline edit
+  const EditBtn = ({ label = 'Editar', section, onClick, testId }) => (
     <button
-      onClick={onClick || (() => navigate(editUrl))}
+      onClick={onClick || (() => startEditing(section))}
       className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#33404f] text-white text-xs font-bold rounded-full hover:bg-[#2a3540] transition-colors"
       data-testid={testId || 'edit-btn'}
     >
       <Pencil className="w-3 h-3" /> {label}
     </button>
+  );
+
+  // Save/Cancel buttons for inline editing
+  const EditActions = ({ section }) => (
+    <div className="flex gap-2 mt-3">
+      <button onClick={() => saveSection(section)} disabled={saving}
+        className="px-4 py-1.5 bg-[#00e7ff] text-[#33404f] text-sm font-bold rounded-full hover:bg-[#00d4ea] disabled:opacity-50 transition-colors"
+        data-testid={`save-${section}-btn`}>
+        {saving ? 'Guardando...' : 'Guardar'}
+      </button>
+      <button onClick={cancelEditing}
+        className="px-4 py-1.5 bg-gray-200 text-gray-700 text-sm font-medium rounded-full hover:bg-gray-300 transition-colors"
+        data-testid={`cancel-${section}-btn`}>
+        Cancelar
+      </button>
+    </div>
+  );
+
+  // Inline input helper
+  const InlineInput = ({ label, field, type = 'text', placeholder }) => (
+    <div>
+      <label className="text-xs text-gray-500 font-medium block mb-1">{label}</label>
+      <input type={type} value={editForm[field] || ''} placeholder={placeholder}
+        onChange={e => setEditForm(prev => ({...prev, [field]: e.target.value}))}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff] focus:border-transparent"
+        data-testid={`edit-input-${field}`} />
+    </div>
   );
 
   return (
@@ -301,12 +411,31 @@ export default function ProviderProfile() {
                     <Crown className="w-3 h-3" /> Premium
                   </span>
                 )}
-                {canEdit && <EditBtn label="Editar" testId="edit-provider-name-btn" />}
+                {canEdit && <EditBtn label="Editar" section="name" testId="edit-provider-name-btn" />}
               </div>
               <p className="text-sm text-[#33404f]/80 mt-1">{provider.address || provider.comuna}</p>
               {provider.comuna && <p className="text-sm font-bold text-[#33404f]">{provider.comuna}</p>}
             </div>
           </div>
+          {/* Inline edit form for name section */}
+          {editingSection === 'name' && (
+            <div className="mt-4 bg-white/90 rounded-xl p-4 space-y-3" data-testid="edit-name-form">
+              <InlineInput label="Nombre" field="business_name" />
+              <InlineInput label="Dirección" field="address" />
+              <div className="grid grid-cols-2 gap-3">
+                <InlineInput label="Comuna" field="comuna" />
+                <InlineInput label="Región" field="region" />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 font-medium block mb-1">Descripción</label>
+                <textarea value={editForm.description || ''} rows={3}
+                  onChange={e => setEditForm(prev => ({...prev, description: e.target.value}))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff] focus:border-transparent"
+                  data-testid="edit-input-description" />
+              </div>
+              <EditActions section="name" />
+            </div>
+          )}
         </div>
       </div>
 
@@ -457,40 +586,65 @@ export default function ProviderProfile() {
                 <div className="flex items-center gap-2 mb-4">
                   <UserCircle className="w-5 h-5 text-[#00e7ff]" />
                   <h2 className="text-xl font-bold">Más Información</h2>
-                  {canEdit && <EditBtn label="Editar" testId="edit-info-btn" />}
+                  {canEdit && <EditBtn label="Editar" section="info" testId="edit-info-btn" />}
                 </div>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  {provider.personal_info?.housing_type && (
-                    <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
-                      <Home className="w-5 h-5 text-[#00e7ff] mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-xs text-gray-500 font-medium">Tipo de instalación</p>
-                        <p className="text-sm text-gray-800 capitalize">{provider.personal_info.housing_type}</p>
-                      </div>
+                {editingSection === 'info' ? (
+                  <div className="space-y-3" data-testid="edit-info-form">
+                    <div>
+                      <label className="text-xs text-gray-500 font-medium block mb-1">Tipo de instalación</label>
+                      <select value={editForm.housing_type || ''} onChange={e => setEditForm(prev => ({...prev, housing_type: e.target.value}))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]">
+                        <option value="">Seleccionar...</option>
+                        <option value="residencia">Residencia</option>
+                        <option value="hogar">Hogar</option>
+                        <option value="centro diurno">Centro Diurno</option>
+                        <option value="departamento">Departamento</option>
+                        <option value="casa">Casa</option>
+                      </select>
                     </div>
-                  )}
-                  {provider.personal_info?.daily_availability && (
-                    <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
-                      <Clock className="w-5 h-5 text-[#00e7ff] mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-xs text-gray-500 font-medium">Horario de atención</p>
-                        <p className="text-sm text-gray-800">{provider.personal_info.daily_availability}</p>
-                      </div>
+                    <InlineInput label="Horario de atención" field="daily_availability" placeholder="Ej: Lunes a Viernes 9:00 - 18:00" />
+                    <div>
+                      <label className="text-xs text-gray-500 font-medium block mb-1">Descripción adicional</label>
+                      <textarea value={editForm.bio || ''} rows={3}
+                        onChange={e => setEditForm(prev => ({...prev, bio: e.target.value}))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" />
                     </div>
-                  )}
-                  {provider.personal_info?.bio && (
-                    <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl sm:col-span-2">
-                      <UserCircle className="w-5 h-5 text-[#00e7ff] mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-xs text-gray-500 font-medium">Descripción adicional</p>
-                        <p className="text-sm text-gray-800">{provider.personal_info.bio}</p>
+                    <EditActions section="info" />
+                  </div>
+                ) : (
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {provider.personal_info?.housing_type && (
+                      <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
+                        <Home className="w-5 h-5 text-[#00e7ff] mt-0.5 shrink-0" />
+                        <div>
+                          <p className="text-xs text-gray-500 font-medium">Tipo de instalación</p>
+                          <p className="text-sm text-gray-800 capitalize">{provider.personal_info.housing_type}</p>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {canEdit && !provider.personal_info?.housing_type && !provider.personal_info?.daily_availability && !provider.personal_info?.bio && (
-                    <p className="text-gray-400 text-sm col-span-2 text-center py-2">Sin información adicional</p>
-                  )}
-                </div>
+                    )}
+                    {provider.personal_info?.daily_availability && (
+                      <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
+                        <Clock className="w-5 h-5 text-[#00e7ff] mt-0.5 shrink-0" />
+                        <div>
+                          <p className="text-xs text-gray-500 font-medium">Horario de atención</p>
+                          <p className="text-sm text-gray-800">{provider.personal_info.daily_availability}</p>
+                        </div>
+                      </div>
+                    )}
+                    {provider.personal_info?.bio && (
+                      <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl sm:col-span-2">
+                        <UserCircle className="w-5 h-5 text-[#00e7ff] mt-0.5 shrink-0" />
+                        <div>
+                          <p className="text-xs text-gray-500 font-medium">Descripción adicional</p>
+                          <p className="text-sm text-gray-800">{provider.personal_info.bio}</p>
+                        </div>
+                      </div>
+                    )}
+                    {canEdit && !provider.personal_info?.housing_type && !provider.personal_info?.daily_availability && !provider.personal_info?.bio && (
+                      <p className="text-gray-400 text-sm col-span-2 text-center py-2">Sin información adicional</p>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -706,36 +860,45 @@ export default function ProviderProfile() {
               <div className="bg-white rounded-2xl p-5 shadow-sm" data-testid="provider-social-links">
                 {canEdit && (
                   <div className="flex justify-end mb-3">
-                    <EditBtn label="Editar" testId="edit-social-btn" />
+                    <EditBtn label="Editar" section="social" testId="edit-social-btn" />
                   </div>
                 )}
-                <div className="flex items-center justify-center gap-5">
-                  {provider.social_links?.instagram && (
-                    <a href={provider.social_links.instagram} target="_blank" rel="noopener noreferrer" 
-                       className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
-                       data-testid="social-instagram">
-                      <Instagram className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
-                    </a>
-                  )}
-                  {provider.social_links?.facebook && (
-                    <a href={provider.social_links.facebook} target="_blank" rel="noopener noreferrer"
-                       className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
-                       data-testid="social-facebook">
-                      <Facebook className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
-                    </a>
-                  )}
-                  {provider.social_links?.website ? (
-                    <a href={provider.social_links.website} target="_blank" rel="noopener noreferrer"
-                       className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
-                       data-testid="social-website">
-                      <Globe className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
-                    </a>
-                  ) : canEdit ? (
-                    <div className="w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center">
-                      <Globe className="w-5 h-5 text-white" />
-                    </div>
-                  ) : null}
-                </div>
+                {editingSection === 'social' ? (
+                  <div className="space-y-3" data-testid="edit-social-form">
+                    <InlineInput label="Instagram URL" field="instagram" placeholder="https://instagram.com/..." />
+                    <InlineInput label="Facebook URL" field="facebook" placeholder="https://facebook.com/..." />
+                    <InlineInput label="Sitio Web" field="website" placeholder="https://..." />
+                    <EditActions section="social" />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center gap-5">
+                    {provider.social_links?.instagram && (
+                      <a href={provider.social_links.instagram} target="_blank" rel="noopener noreferrer" 
+                         className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
+                         data-testid="social-instagram">
+                        <Instagram className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
+                      </a>
+                    )}
+                    {provider.social_links?.facebook && (
+                      <a href={provider.social_links.facebook} target="_blank" rel="noopener noreferrer"
+                         className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
+                         data-testid="social-facebook">
+                        <Facebook className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
+                      </a>
+                    )}
+                    {provider.social_links?.website ? (
+                      <a href={provider.social_links.website} target="_blank" rel="noopener noreferrer"
+                         className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
+                         data-testid="social-website">
+                        <Globe className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
+                      </a>
+                    ) : canEdit ? (
+                      <div className="w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center">
+                        <Globe className="w-5 h-5 text-white" />
+                      </div>
+                    ) : null}
+                  </div>
+                )}
               </div>
             )}
 
@@ -744,27 +907,66 @@ export default function ProviderProfile() {
               <div className="bg-white rounded-2xl p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold text-lg">Precio</h3>
-                  {canEdit && <EditBtn label="Editar" testId="edit-price-btn" />}
+                  {canEdit && <EditBtn label="Editar" section="price" testId="edit-price-btn" />}
                 </div>
-                {provider.services?.filter(s => s.price_from > 0 || s.description).map((s, i) => {
-                  const formatServiceName = (type) => {
-                    const names = {
-                      'residencias': 'Residencias',
-                      'cuidado-domicilio': 'Cuidado a Domicilio',
-                      'salud-mental': 'Salud Mental'
-                    };
-                    return names[type] || type;
-                  };
-                  return (
-                    <div key={i} className="p-3 bg-gray-50 rounded-xl mb-3 last:mb-0">
-                      <span className="font-semibold text-[#33404f] text-sm">{formatServiceName(s.service_type)}</span>
-                      {s.description && <p className="text-xs text-gray-500 mt-0.5">{s.description}</p>}
-                      <span className="text-[#33404f] font-bold text-lg block mt-1">Desde ${s.price_from?.toLocaleString('es-CL')}</span>
-                    </div>
-                  );
-                })}
-                {canEdit && !hasServices && (
-                  <p className="text-gray-400 text-sm text-center py-2">Sin precios configurados</p>
+                {editingSection === 'price' ? (
+                  <div className="space-y-3" data-testid="edit-price-form">
+                    {(editForm.services || []).map((s, i) => (
+                      <div key={i} className="p-3 bg-gray-50 rounded-xl space-y-2">
+                        <select value={s.service_type || ''} onChange={e => {
+                          const services = [...editForm.services];
+                          services[i] = {...services[i], service_type: e.target.value};
+                          setEditForm(prev => ({...prev, services}));
+                        }} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                          <option value="residencias">Residencias</option>
+                          <option value="cuidado-domicilio">Cuidado a Domicilio</option>
+                          <option value="salud-mental">Salud Mental</option>
+                        </select>
+                        <input type="text" value={s.description || ''} placeholder="Descripción"
+                          onChange={e => {
+                            const services = [...editForm.services];
+                            services[i] = {...services[i], description: e.target.value};
+                            setEditForm(prev => ({...prev, services}));
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+                        <input type="number" value={s.price_from || ''} placeholder="Precio desde"
+                          onChange={e => {
+                            const services = [...editForm.services];
+                            services[i] = {...services[i], price_from: parseInt(e.target.value) || 0};
+                            setEditForm(prev => ({...prev, services}));
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+                        <button onClick={() => {
+                          const services = editForm.services.filter((_, j) => j !== i);
+                          setEditForm(prev => ({...prev, services}));
+                        }} className="text-red-500 text-xs font-medium">Eliminar</button>
+                      </div>
+                    ))}
+                    <button onClick={() => {
+                      const services = [...(editForm.services || []), {service_type: 'residencias', price_from: 0, description: ''}];
+                      setEditForm(prev => ({...prev, services}));
+                    }} className="text-[#00e7ff] text-sm font-bold">+ Agregar servicio</button>
+                    <EditActions section="price" />
+                  </div>
+                ) : (
+                  <>
+                    {provider.services?.filter(s => s.price_from > 0 || s.description).map((s, i) => {
+                      const formatServiceName = (type) => {
+                        const names = { 'residencias': 'Residencias', 'cuidado-domicilio': 'Cuidado a Domicilio', 'salud-mental': 'Salud Mental' };
+                        return names[type] || type;
+                      };
+                      return (
+                        <div key={i} className="p-3 bg-gray-50 rounded-xl mb-3 last:mb-0">
+                          <span className="font-semibold text-[#33404f] text-sm">{formatServiceName(s.service_type)}</span>
+                          {s.description && <p className="text-xs text-gray-500 mt-0.5">{s.description}</p>}
+                          <span className="text-[#33404f] font-bold text-lg block mt-1">Desde ${s.price_from?.toLocaleString('es-CL')}</span>
+                        </div>
+                      );
+                    })}
+                    {canEdit && !hasServices && (
+                      <p className="text-gray-400 text-sm text-center py-2">Sin precios configurados</p>
+                    )}
+                  </>
                 )}
               </div>
             )}
@@ -773,8 +975,16 @@ export default function ProviderProfile() {
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold text-lg">Contacto</h3>
-                {canEdit && <EditBtn label="Editar" testId="edit-contact-btn" />}
+                {canEdit && <EditBtn label="Editar" section="contact" testId="edit-contact-btn" />}
               </div>
+              {editingSection === 'contact' ? (
+                <div className="space-y-3" data-testid="edit-contact-form">
+                  <InlineInput label="Teléfono" field="phone" placeholder="+56 9 1234 5678" />
+                  <InlineInput label="WhatsApp" field="whatsapp" placeholder="+56 9 1234 5678" />
+                  <EditActions section="contact" />
+                </div>
+              ) : (
+                <>
 
               {/* Connected: Full contact visible */}
               {provider.viewer_is_connected ? (
@@ -884,9 +1094,9 @@ export default function ProviderProfile() {
                   </div>
                 </div>
               )}
+              </>
+              )}
             </div>
-
-            {/* Location Map */}
             {provider.latitude && provider.longitude && (
               <div className="bg-white rounded-2xl shadow-sm overflow-hidden" data-testid="provider-map">
                 <div className="p-4 border-b">
