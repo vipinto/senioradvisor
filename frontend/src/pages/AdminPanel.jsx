@@ -141,14 +141,14 @@ export default function AdminPanel() {
   const [editingProvider, setEditingProvider] = useState(null);
   const [editProviderTab, setEditProviderTab] = useState('profile');
   const [editProfileForm, setEditProfileForm] = useState({});
-  const [editServicesForm, setEditServicesForm] = useState({ residencias: { price_from: '', description: '' }, 'cuidado-domicilio': { price_from: '', description: '' }, 'salud-mental': { price_from: '', description: '' } });
+  const [editServicesForm, setEditServicesForm] = useState({ residencias: { active: false, price_from: '', description: '' }, 'cuidado-domicilio': { active: false, price_from: '', description: '' }, 'salud-mental': { active: false, price_from: '', description: '' } });
   const [editAmenities, setEditAmenities] = useState([]);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [residenciaForm, setResidenciaForm] = useState({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', place_id: '' });
   const [residenciaServices, setResidenciaServices] = useState({
-    residencias: { price_from: '', description: '' },
-    'cuidado-domicilio': { price_from: '', description: '' },
-    'salud-mental': { price_from: '', description: '' },
+    residencias: { active: true, price_from: '', description: '' },
+    'cuidado-domicilio': { active: false, price_from: '', description: '' },
+    'salud-mental': { active: false, price_from: '', description: '' },
   });
   const [bulkResults, setBulkResults] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -295,9 +295,9 @@ export default function AdminPanel() {
       const svcMap = {};
       (p.services || []).forEach(s => { svcMap[s.service_type] = s; });
       setEditServicesForm({
-        residencias: { price_from: svcMap['residencias']?.price_from || '', description: svcMap['residencias']?.description || '' },
-        'cuidado-domicilio': { price_from: svcMap['cuidado-domicilio']?.price_from || '', description: svcMap['cuidado-domicilio']?.description || '' },
-        'salud-mental': { price_from: svcMap['salud-mental']?.price_from || '', description: svcMap['salud-mental']?.description || '' },
+        residencias: { active: !!svcMap['residencias'], price_from: svcMap['residencias']?.price_from || '', description: svcMap['residencias']?.description || '' },
+        'cuidado-domicilio': { active: !!svcMap['cuidado-domicilio'], price_from: svcMap['cuidado-domicilio']?.price_from || '', description: svcMap['cuidado-domicilio']?.description || '' },
+        'salud-mental': { active: !!svcMap['salud-mental'], price_from: svcMap['salud-mental']?.price_from || '', description: svcMap['salud-mental']?.description || '' },
       });
       setEditAmenities(p.amenities || []);
       setEditProviderTab('profile');
@@ -309,8 +309,9 @@ export default function AdminPanel() {
     try {
       const services = [];
       Object.entries(editServicesForm).forEach(([type, data]) => {
-        const price = parseInt(data.price_from) || 0;
-        if (price > 0 || data.description) services.push({ service_type: type, price_from: price, description: data.description || '' });
+        if (data.active) {
+          services.push({ service_type: type, price_from: parseInt(data.price_from) || 0, description: data.description || '' });
+        }
       });
       await api.put(`/admin/providers/${editingProvider.provider_id}/profile`, { ...editProfileForm, services });
       toast.success('Perfil actualizado');
@@ -728,7 +729,7 @@ export default function AdminPanel() {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-[#33404f]">Crear Residencia Individual</h3>
-                    <Button onClick={() => { setResidenciaForm({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', place_id: '' }); setResidenciaServices({ residencias: { price_from: '', description: '' }, 'cuidado-domicilio': { price_from: '', description: '' }, 'salud-mental': { price_from: '', description: '' } }); setGooglePlaceData(null); setShowResidenciaModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-residencia-btn">
+                    <Button onClick={() => { setResidenciaForm({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', place_id: '' }); setResidenciaServices({ residencias: { active: true, price_from: '', description: '' }, 'cuidado-domicilio': { active: false, price_from: '', description: '' }, 'salud-mental': { active: false, price_from: '', description: '' } }); setGooglePlaceData(null); setShowResidenciaModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-residencia-btn">
                       <Plus className="w-4 h-4 mr-1" /> Nueva Residencia
                     </Button>
                   </div>
@@ -940,21 +941,32 @@ export default function AdminPanel() {
                 </div>
               )}
 
-              {/* Precios por categoría */}
+              {/* Servicios y Precios */}
               <div className="border-t pt-3 mt-3">
-                <h4 className="text-sm font-bold text-[#33404f] mb-2">Precios por Categoría</h4>
-                <p className="text-xs text-gray-400 mb-3">Solo las categorías con precio aparecerán en el perfil público.</p>
+                <h4 className="text-sm font-bold text-[#33404f] mb-2">Servicios que ofrece</h4>
+                <p className="text-xs text-gray-400 mb-3">Selecciona los servicios y opcionalmente agrega precios.</p>
                 {[
                   { key: 'residencias', label: 'Residencias' },
                   { key: 'cuidado-domicilio', label: 'Cuidado a Domicilio' },
                   { key: 'salud-mental', label: 'Salud Mental' },
                 ].map(({ key, label }) => (
-                  <div key={key} className="p-3 bg-gray-50 rounded-xl mb-2">
-                    <span className="font-semibold text-xs text-[#33404f]">{label}</span>
-                    <div className="grid grid-cols-2 gap-2 mt-1">
-                      <input type="number" value={residenciaServices[key].price_from} onChange={e => setResidenciaServices(p => ({ ...p, [key]: { ...p[key], price_from: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Precio desde" data-testid={`admin-price-${key}`} />
-                      <input type="text" value={residenciaServices[key].description} onChange={e => setResidenciaServices(p => ({ ...p, [key]: { ...p[key], description: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Descripción" data-testid={`admin-desc-${key}`} />
-                    </div>
+                  <div key={key} className={`p-3 rounded-xl mb-2 border-2 transition-all ${residenciaServices[key].active ? 'bg-cyan-50 border-[#00e7ff]' : 'bg-gray-50 border-gray-200'}`}>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        checked={residenciaServices[key].active} 
+                        onChange={e => setResidenciaServices(p => ({ ...p, [key]: { ...p[key], active: e.target.checked } }))} 
+                        className="w-4 h-4 accent-[#00e7ff]" 
+                        data-testid={`admin-service-check-${key}`} 
+                      />
+                      <span className="font-semibold text-sm text-[#33404f]">{label}</span>
+                    </label>
+                    {residenciaServices[key].active && (
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <input type="number" value={residenciaServices[key].price_from} onChange={e => setResidenciaServices(p => ({ ...p, [key]: { ...p[key], price_from: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Precio desde (opcional)" data-testid={`admin-price-${key}`} />
+                        <input type="text" value={residenciaServices[key].description} onChange={e => setResidenciaServices(p => ({ ...p, [key]: { ...p[key], description: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Descripción (opcional)" data-testid={`admin-desc-${key}`} />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -964,12 +976,11 @@ export default function AdminPanel() {
                 onClick={async () => {
                   if (!residenciaForm.business_name || !residenciaForm.email) { toast.error('Nombre y email son obligatorios'); return; }
                   try {
-                    // Build services array
+                    // Build services array from checked services
                     const services = [];
                     Object.entries(residenciaServices).forEach(([type, data]) => {
-                      const price = parseInt(data.price_from) || 0;
-                      if (price > 0 || data.description) {
-                        services.push({ service_type: type, price_from: price, description: data.description || '' });
+                      if (data.active) {
+                        services.push({ service_type: type, price_from: parseInt(data.price_from) || 0, description: data.description || '' });
                       }
                     });
                     const payload = { ...residenciaForm, services };
@@ -1342,18 +1353,29 @@ export default function AdminPanel() {
                 </div>
 
                 <div className="border-t pt-3">
-                  <h4 className="text-sm font-bold text-[#33404f] mb-2">Precios por Categoría</h4>
+                  <h4 className="text-sm font-bold text-[#33404f] mb-2">Servicios</h4>
                   {[
                     { key: 'residencias', label: 'Residencias' },
                     { key: 'cuidado-domicilio', label: 'Cuidado a Domicilio' },
                     { key: 'salud-mental', label: 'Salud Mental' },
                   ].map(({ key, label }) => (
-                    <div key={key} className="p-3 bg-gray-50 rounded-lg mb-2">
-                      <span className="font-semibold text-xs text-[#33404f]">{label}</span>
-                      <div className="grid grid-cols-2 gap-2 mt-1">
-                        <input type="number" value={editServicesForm[key]?.price_from || ''} onChange={e => setEditServicesForm(p => ({ ...p, [key]: { ...p[key], price_from: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm" placeholder="Precio desde" data-testid={`edit-price-${key}`} />
-                        <input type="text" value={editServicesForm[key]?.description || ''} onChange={e => setEditServicesForm(p => ({ ...p, [key]: { ...p[key], description: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm" placeholder="Descripción" data-testid={`edit-desc-${key}`} />
-                      </div>
+                    <div key={key} className={`p-3 rounded-lg mb-2 border-2 transition-all ${editServicesForm[key]?.active ? 'bg-cyan-50 border-[#00e7ff]' : 'bg-gray-50 border-gray-200'}`}>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={editServicesForm[key]?.active || false} 
+                          onChange={e => setEditServicesForm(p => ({ ...p, [key]: { ...p[key], active: e.target.checked } }))} 
+                          className="w-4 h-4 accent-[#00e7ff]" 
+                          data-testid={`edit-service-check-${key}`} 
+                        />
+                        <span className="font-semibold text-sm text-[#33404f]">{label}</span>
+                      </label>
+                      {editServicesForm[key]?.active && (
+                        <div className="grid grid-cols-2 gap-2 mt-2">
+                          <input type="number" value={editServicesForm[key]?.price_from || ''} onChange={e => setEditServicesForm(p => ({ ...p, [key]: { ...p[key], price_from: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm" placeholder="Precio desde (opcional)" data-testid={`edit-price-${key}`} />
+                          <input type="text" value={editServicesForm[key]?.description || ''} onChange={e => setEditServicesForm(p => ({ ...p, [key]: { ...p[key], description: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm" placeholder="Descripción (opcional)" data-testid={`edit-desc-${key}`} />
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
