@@ -219,84 +219,97 @@ export default function ProviderProfile() {
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full" /></div>;
   if (!provider) return <div className="min-h-screen flex items-center justify-center text-gray-500">Cuidador no encontrado</div>;
 
+  const allPhotos = provider.gallery?.length > 0 ? provider.gallery : [];
+  const remainingPhotos = allPhotos.length > 5 ? allPhotos.length - 5 : 0;
+
   return (
     <div className="min-h-screen bg-gray-50" data-testid="provider-profile">
-      {/* Hero */}
-      <div className="relative h-64 bg-[#00e7ff]">
-        <div className="absolute inset-0 flex items-end">
-          <div className="max-w-5xl mx-auto w-full px-4 pb-8">
-            <div className="flex items-end gap-4">
-              <div className="w-24 h-24 rounded-2xl bg-white shadow-xl flex items-center justify-center overflow-hidden">
-                {provider.profile_photo ? (
-                  <img src={getPhotoUrl(provider.profile_photo)} alt="" className="w-full h-full object-cover" />
-                ) : provider.gallery?.[0]?.url ? (
-                  <img src={getPhotoUrl(provider.gallery[0].url)} alt="" className="w-full h-full object-cover" />
-                ) : provider.photos?.[0] ? (
-                  <img src={provider.photos[0]} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-4xl font-bold text-[#00e7ff]">{provider.business_name?.[0]}</span>
+      {/* Premium Gallery */}
+      {allPhotos.length > 0 && (
+        <div className="relative max-w-6xl mx-auto px-4 pt-6" data-testid="premium-gallery">
+          {provider.is_featured && (
+            <div className="absolute top-8 left-6 z-10 bg-yellow-400 text-[#33404f] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg" data-testid="premium-badge">
+              <Crown className="w-3.5 h-3.5" /> Premium
+            </div>
+          )}
+          <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[400px] rounded-2xl overflow-hidden">
+            {/* Main large photo */}
+            <div 
+              className="col-span-2 row-span-2 cursor-pointer hover:opacity-95 transition-opacity relative"
+              onClick={() => window.open(getPhotoUrl(allPhotos[0]?.url), '_blank')}
+            >
+              <img src={getPhotoUrl(allPhotos[0]?.thumbnail_url || allPhotos[0]?.url)} alt="" className="w-full h-full object-cover" />
+            </div>
+            {/* Top right photo */}
+            {allPhotos[1] && (
+              <div className="col-span-2 cursor-pointer hover:opacity-95 transition-opacity"
+                onClick={() => window.open(getPhotoUrl(allPhotos[1]?.url), '_blank')}>
+                <img src={getPhotoUrl(allPhotos[1]?.thumbnail_url || allPhotos[1]?.url)} alt="" className="w-full h-full object-cover" />
+              </div>
+            )}
+            {/* Bottom right - 2 small photos */}
+            {allPhotos[2] && (
+              <div className="cursor-pointer hover:opacity-95 transition-opacity"
+                onClick={() => window.open(getPhotoUrl(allPhotos[2]?.url), '_blank')}>
+                <img src={getPhotoUrl(allPhotos[2]?.thumbnail_url || allPhotos[2]?.url)} alt="" className="w-full h-full object-cover" />
+              </div>
+            )}
+            {allPhotos[3] ? (
+              <div className="relative cursor-pointer hover:opacity-95 transition-opacity"
+                onClick={() => window.open(getPhotoUrl(allPhotos[3]?.url), '_blank')}>
+                <img src={getPhotoUrl(allPhotos[3]?.thumbnail_url || allPhotos[3]?.url)} alt="" className="w-full h-full object-cover" />
+                {remainingPhotos > 0 && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-xl">
+                    +{remainingPhotos} fotos
+                  </div>
                 )}
               </div>
-              <div className="pb-1">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold text-[#33404f]" data-testid="provider-name">{provider.business_name}</h1>
-                  {provider.verified && <Shield className="w-6 h-6 text-yellow-300" />}
-                  {provider.is_featured && (
-                    <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
-                      <Crown className="w-3 h-3" />Destacado
-                    </span>
-                  )}
-                </div>
-                <p className="font-bold text-[#33404f]">{provider.comuna}</p>
-              </div>
+            ) : (
+              <div className="bg-gray-200" />
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Provider Info Header */}
+      <div className="max-w-6xl mx-auto px-4 pt-6 pb-2">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-xl bg-white shadow-md flex items-center justify-center overflow-hidden border-2 border-gray-100">
+            {provider.profile_photo ? (
+              <img src={getPhotoUrl(provider.profile_photo)} alt="" className="w-full h-full object-cover" />
+            ) : allPhotos[0]?.url ? (
+              <img src={getPhotoUrl(allPhotos[0].url)} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-2xl font-bold text-[#00e7ff]">{provider.business_name?.[0]}</span>
+            )}
+          </div>
+          <div>
+            {/* Rating above name */}
+            <div className="flex items-center gap-1 mb-0.5" data-testid="provider-rating">
+              {[1,2,3,4,5].map(s => (
+                <Star key={s} className={`w-4 h-4 ${s <= Math.round(provider.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+              ))}
+              <span className="text-sm font-bold text-[#33404f] ml-1">{provider.rating?.toFixed(1) || '0.0'}</span>
+              <span className="text-xs text-gray-500">({provider.total_reviews || 0} reseñas)</span>
             </div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-[#33404f]" data-testid="provider-name">{provider.business_name}</h1>
+              {provider.verified && <Shield className="w-5 h-5 text-yellow-400" />}
+              {provider.is_featured && (
+                <span className="bg-yellow-400 text-[#33404f] text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <Crown className="w-3 h-3" /> Premium
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-gray-500">{provider.comuna}{provider.address ? ` · ${provider.address}` : ''}</p>
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-
-            {/* Rating */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-0.5">
-                  {[1,2,3,4,5].map(s => (
-                    <Star key={s} className={`w-5 h-5 ${s <= Math.round(provider.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
-                  ))}
-                </div>
-                <span className="text-lg font-bold text-[#33404f]" data-testid="provider-rating">{provider.rating?.toFixed(1) || 'Sin rating'}</span>
-                <span className="text-[#33404f]/60">({provider.total_reviews || 0} reseñas)</span>
-              </div>
-            </div>
-
-            {/* Photo Gallery */}
-            {provider.gallery?.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="provider-gallery-public">
-                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Camera className="w-5 h-5 text-[#00e7ff]" />
-                  Galería
-                </h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {provider.gallery.map((photo, index) => (
-                    <div 
-                      key={photo.photo_id} 
-                      className="aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 cursor-pointer hover:opacity-90 transition-opacity"
-                      onClick={() => window.open(getPhotoUrl(photo.url), '_blank')}
-                    >
-                      <img
-                        src={getPhotoUrl(photo.thumbnail_url || photo.url)}
-                        alt={`Foto ${index + 1}`}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Description - Sobre mi */}
             {provider.description && (
