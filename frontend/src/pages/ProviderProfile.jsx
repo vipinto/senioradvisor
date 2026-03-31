@@ -321,7 +321,8 @@ export default function ProviderProfile() {
   if (!provider) return <div className="min-h-screen flex items-center justify-center text-gray-500">Cuidador no encontrado</div>;
 
   const allPhotos = provider.gallery?.length > 0 ? provider.gallery : [];
-  const remainingPhotos = allPhotos.length > 5 ? allPhotos.length - 5 : 0;
+  const sliderPhotos = provider.slider_photos?.length > 0 ? provider.slider_photos : [];
+  const remainingSlider = sliderPhotos.length > 5 ? sliderPhotos.length - 5 : 0;
   const isAdmin = user?.role === 'admin';
   const isOwner = user?.user_id === provider?.user_id;
   const canEdit = isAdmin || isOwner;
@@ -505,8 +506,8 @@ export default function ProviderProfile() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
 
-            {/* PREMIUM Gallery - Only for is_featured providers */}
-            {provider.is_featured && allPhotos.length > 0 && (
+            {/* PREMIUM Slider - Only for is_featured providers, uses slider_photos */}
+            {provider.is_featured && sliderPhotos.length > 0 && (
               <div data-testid="premium-gallery">
                 <div className="relative">
                   <div className="absolute top-3 left-3 z-10 bg-yellow-400 text-[#33404f] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg" data-testid="premium-badge">
@@ -514,33 +515,33 @@ export default function ProviderProfile() {
                   </div>
                   {canEdit && (
                     <div className="absolute top-3 right-3 z-10">
-                      <EditBtn label="Gestionar Slider" testId="manage-slider-btn" />
+                      <EditBtn label="Gestionar Slider" section="slider" testId="manage-slider-btn" />
                     </div>
                   )}
                   <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[400px] rounded-2xl overflow-hidden">
                     <div className="col-span-2 row-span-2 cursor-pointer hover:opacity-95 transition-opacity"
-                      onClick={() => window.open(getPhotoUrl(allPhotos[0]?.url), '_blank')}>
-                      <img src={getPhotoUrl(allPhotos[0]?.thumbnail_url || allPhotos[0]?.url)} alt="" className="w-full h-full object-cover" />
+                      onClick={() => window.open(getPhotoUrl(sliderPhotos[0]?.url), '_blank')}>
+                      <img src={getPhotoUrl(sliderPhotos[0]?.thumbnail_url || sliderPhotos[0]?.url)} alt="" className="w-full h-full object-cover" />
                     </div>
-                    {allPhotos[1] && (
+                    {sliderPhotos[1] && (
                       <div className="col-span-2 cursor-pointer hover:opacity-95 transition-opacity"
-                        onClick={() => window.open(getPhotoUrl(allPhotos[1]?.url), '_blank')}>
-                        <img src={getPhotoUrl(allPhotos[1]?.thumbnail_url || allPhotos[1]?.url)} alt="" className="w-full h-full object-cover" />
+                        onClick={() => window.open(getPhotoUrl(sliderPhotos[1]?.url), '_blank')}>
+                        <img src={getPhotoUrl(sliderPhotos[1]?.thumbnail_url || sliderPhotos[1]?.url)} alt="" className="w-full h-full object-cover" />
                       </div>
                     )}
-                    {allPhotos[2] && (
+                    {sliderPhotos[2] && (
                       <div className="cursor-pointer hover:opacity-95 transition-opacity"
-                        onClick={() => window.open(getPhotoUrl(allPhotos[2]?.url), '_blank')}>
-                        <img src={getPhotoUrl(allPhotos[2]?.thumbnail_url || allPhotos[2]?.url)} alt="" className="w-full h-full object-cover" />
+                        onClick={() => window.open(getPhotoUrl(sliderPhotos[2]?.url), '_blank')}>
+                        <img src={getPhotoUrl(sliderPhotos[2]?.thumbnail_url || sliderPhotos[2]?.url)} alt="" className="w-full h-full object-cover" />
                       </div>
                     )}
-                    {allPhotos[3] ? (
+                    {sliderPhotos[3] ? (
                       <div className="relative cursor-pointer hover:opacity-95 transition-opacity"
-                        onClick={() => window.open(getPhotoUrl(allPhotos[3]?.url), '_blank')}>
-                        <img src={getPhotoUrl(allPhotos[3]?.thumbnail_url || allPhotos[3]?.url)} alt="" className="w-full h-full object-cover" />
-                        {remainingPhotos > 0 && (
+                        onClick={() => window.open(getPhotoUrl(sliderPhotos[3]?.url), '_blank')}>
+                        <img src={getPhotoUrl(sliderPhotos[3]?.thumbnail_url || sliderPhotos[3]?.url)} alt="" className="w-full h-full object-cover" />
+                        {remainingSlider > 0 && (
                           <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-xl">
-                            +{remainingPhotos} fotos
+                            +{remainingSlider} fotos
                           </div>
                         )}
                       </div>
@@ -549,16 +550,15 @@ export default function ProviderProfile() {
                     )}
                   </div>
                 </div>
-                {/* Thumbnail row below */}
-                {allPhotos.length > 4 && (
+                {sliderPhotos.length > 4 && (
                   <div className="flex gap-2 mt-2">
-                    {allPhotos.slice(4, 9).map((photo, i) => (
+                    {sliderPhotos.slice(4, 9).map((photo, i) => (
                       <div key={i} className="relative w-24 h-20 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
                         onClick={() => window.open(getPhotoUrl(photo.url), '_blank')}>
                         <img src={getPhotoUrl(photo.thumbnail_url || photo.url)} alt="" className="w-full h-full object-cover" />
-                        {i === 4 && allPhotos.length > 9 && (
+                        {i === 4 && sliderPhotos.length > 9 && (
                           <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-sm">
-                            +{allPhotos.length - 9} fotos
+                            +{sliderPhotos.length - 9} fotos
                           </div>
                         )}
                       </div>
@@ -568,11 +568,11 @@ export default function ProviderProfile() {
               </div>
             )}
 
-            {/* Premium Slider placeholder - canEdit + premium + no photos */}
-            {canEdit && provider.is_featured && allPhotos.length === 0 && (
+            {/* Premium Slider placeholder - canEdit + premium + no slider photos */}
+            {canEdit && provider.is_featured && sliderPhotos.length === 0 && (
               <div className="space-y-2">
                 <div className="flex justify-center">
-                  <EditBtn label="Gestionar Slider" testId="manage-slider-btn" />
+                  <EditBtn label="Gestionar Slider" section="slider" testId="manage-slider-btn" />
                 </div>
                 <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center" data-testid="slider-placeholder">
                   <p className="text-gray-400">Sin fotos en slider premium</p>
@@ -618,13 +618,14 @@ export default function ProviderProfile() {
               </div>
             )}
 
-            {/* Standard Gallery - for NON-premium providers (all users) OR for premium providers in edit mode */}
-            {((!provider.is_featured && allPhotos.length > 0) || (canEdit)) && (
+            {/* Standard Gallery - shows gallery photos for ALL providers (max 3) */}
+            {(allPhotos.length > 0 || canEdit) && (
               <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="gallery-section">
                 <div className="flex items-center gap-3 mb-4">
                   <Camera className="w-5 h-5 text-[#00e7ff]" />
                   <h2 className="text-xl font-bold">Galería</h2>
-                  {canEdit && <EditBtn label="Gestionar Fotos" testId="manage-photos-btn" />}
+                  {canEdit && <EditBtn label="Gestionar Fotos" section="gallery" testId="manage-photos-btn" />}
+                  {canEdit && <span className="text-xs text-gray-400">({allPhotos.length}/3)</span>}
                 </div>
                 {allPhotos.length > 0 ? (
                   <div className="grid grid-cols-3 gap-3">
