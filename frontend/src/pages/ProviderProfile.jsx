@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Star, Shield, MapPin, Phone, MessageSquare, Heart, Lock, Camera, X, CalendarPlus, Crown, Home, Clock, UserCircle, Send, CheckCircle, Loader2, Instagram, Facebook, Globe } from 'lucide-react';
+import { Star, Shield, MapPin, Phone, MessageSquare, Heart, Lock, Camera, X, CalendarPlus, Crown, Home, Clock, UserCircle, Send, CheckCircle, Loader2, Instagram, Facebook, Globe, Pencil, Settings, Video, Image } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import api, { API_BASE } from '@/lib/api';
@@ -216,100 +216,251 @@ export default function ProviderProfile() {
     }
   };
 
+  const navigate = useNavigate();
+
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-16 h-16 border-4 border-[#00e7ff] border-t-transparent rounded-full" /></div>;
   if (!provider) return <div className="min-h-screen flex items-center justify-center text-gray-500">Cuidador no encontrado</div>;
 
   const allPhotos = provider.gallery?.length > 0 ? provider.gallery : [];
   const remainingPhotos = allPhotos.length > 5 ? allPhotos.length - 5 : 0;
+  const isAdmin = user?.role === 'admin';
+  const isOwner = user?.user_id === provider?.user_id;
+  const canEdit = isAdmin || isOwner;
+  const editUrl = isAdmin ? '/admin' : '/provider/account';
+  const hasAmenities = provider.amenities?.length > 0;
+  const hasServices = provider.services?.filter(s => s.price_from > 0 || s.description).length > 0;
+
+  // Small reusable edit button
+  const EditBtn = ({ label = 'Editar', onClick, testId }) => (
+    <button
+      onClick={onClick || (() => navigate(editUrl))}
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#33404f] text-white text-xs font-bold rounded-full hover:bg-[#2a3540] transition-colors"
+      data-testid={testId || 'edit-btn'}
+    >
+      <Pencil className="w-3 h-3" /> {label}
+    </button>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50" data-testid="provider-profile">
-      {/* Premium Gallery */}
-      {allPhotos.length > 0 && (
-        <div className="relative max-w-6xl mx-auto px-4 pt-6" data-testid="premium-gallery">
-          {provider.is_featured && (
-            <div className="absolute top-8 left-6 z-10 bg-yellow-400 text-[#33404f] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg" data-testid="premium-badge">
-              <Crown className="w-3.5 h-3.5" /> Premium
-            </div>
-          )}
-          <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[400px] rounded-2xl overflow-hidden">
-            {/* Main large photo */}
-            <div 
-              className="col-span-2 row-span-2 cursor-pointer hover:opacity-95 transition-opacity relative"
-              onClick={() => window.open(getPhotoUrl(allPhotos[0]?.url), '_blank')}
-            >
-              <img src={getPhotoUrl(allPhotos[0]?.thumbnail_url || allPhotos[0]?.url)} alt="" className="w-full h-full object-cover" />
-            </div>
-            {/* Top right photo */}
-            {allPhotos[1] && (
-              <div className="col-span-2 cursor-pointer hover:opacity-95 transition-opacity"
-                onClick={() => window.open(getPhotoUrl(allPhotos[1]?.url), '_blank')}>
-                <img src={getPhotoUrl(allPhotos[1]?.thumbnail_url || allPhotos[1]?.url)} alt="" className="w-full h-full object-cover" />
-              </div>
-            )}
-            {/* Bottom right - 2 small photos */}
-            {allPhotos[2] && (
-              <div className="cursor-pointer hover:opacity-95 transition-opacity"
-                onClick={() => window.open(getPhotoUrl(allPhotos[2]?.url), '_blank')}>
-                <img src={getPhotoUrl(allPhotos[2]?.thumbnail_url || allPhotos[2]?.url)} alt="" className="w-full h-full object-cover" />
-              </div>
-            )}
-            {allPhotos[3] ? (
-              <div className="relative cursor-pointer hover:opacity-95 transition-opacity"
-                onClick={() => window.open(getPhotoUrl(allPhotos[3]?.url), '_blank')}>
-                <img src={getPhotoUrl(allPhotos[3]?.thumbnail_url || allPhotos[3]?.url)} alt="" className="w-full h-full object-cover" />
-                {remainingPhotos > 0 && (
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-xl">
-                    +{remainingPhotos} fotos
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="bg-gray-200" />
-            )}
+      {/* Admin/Owner Bar */}
+      {canEdit && (
+        <div className="bg-[#33404f] text-white px-4 py-2.5 flex items-center justify-between" data-testid="admin-bar">
+          <div className="flex items-center gap-2 text-sm">
+            <Settings className="w-4 h-4" />
+            <span className="font-bold">{isAdmin ? 'Modo Admin' : 'Tu Perfil'}</span>
+            <span className="text-white/70">- Haz clic en los botones "Editar" de cada sección</span>
           </div>
+          {isAdmin && (
+            <button
+              onClick={() => navigate(editUrl)}
+              className="px-4 py-1.5 border border-white/40 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors"
+              data-testid="admin-featured-btn"
+            >
+              Destacado / Suscripción / Place ID
+            </button>
+          )}
         </div>
       )}
 
-      {/* Provider Info Header */}
-      <div className="max-w-6xl mx-auto px-4 pt-6 pb-2">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-xl bg-white shadow-md flex items-center justify-center overflow-hidden border-2 border-gray-100">
-            {provider.profile_photo ? (
-              <img src={getPhotoUrl(provider.profile_photo)} alt="" className="w-full h-full object-cover" />
-            ) : allPhotos[0]?.url ? (
-              <img src={getPhotoUrl(allPhotos[0].url)} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-2xl font-bold text-[#00e7ff]">{provider.business_name?.[0]}</span>
-            )}
-          </div>
-          <div>
-            {/* Rating above name */}
-            <div className="flex items-center gap-1 mb-0.5" data-testid="provider-rating">
-              {[1,2,3,4,5].map(s => (
-                <Star key={s} className={`w-4 h-4 ${s <= Math.round(provider.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
-              ))}
-              <span className="text-sm font-bold text-[#33404f] ml-1">{provider.rating?.toFixed(1) || '0.0'}</span>
-              <span className="text-xs text-gray-500">({provider.total_reviews || 0} reseñas)</span>
+      {/* Hero Section with Cyan Background (when canEdit) */}
+      {canEdit ? (
+        <div className="bg-[#00e7ff]" data-testid="hero-section-edit">
+          <div className="max-w-6xl mx-auto px-4 py-8">
+            <div className="flex items-center gap-5">
+              <div className="w-24 h-24 rounded-2xl bg-white shadow-lg flex items-center justify-center overflow-hidden border-3 border-white shrink-0">
+                {provider.profile_photo ? (
+                  <img src={getPhotoUrl(provider.profile_photo)} alt="" className="w-full h-full object-cover" />
+                ) : allPhotos[0]?.url ? (
+                  <img src={getPhotoUrl(allPhotos[0].url)} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-3xl font-bold text-[#00e7ff]">{provider.business_name?.[0]}</span>
+                )}
+              </div>
+              <div>
+                <div className="flex items-center gap-1 mb-1" data-testid="provider-rating">
+                  {[1,2,3,4,5].map(s => (
+                    <Star key={s} className={`w-5 h-5 ${s <= Math.round(provider.google_rating || provider.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+                  ))}
+                  <span className="text-sm font-bold text-[#33404f] ml-1">{(provider.google_rating || provider.rating || 0).toFixed(1)}</span>
+                  <span className="text-xs text-[#33404f]/70">({provider.google_total_reviews || provider.total_reviews || 0} reseñas)</span>
+                </div>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h1 className="text-2xl font-bold text-[#33404f]" data-testid="provider-name">{provider.business_name}</h1>
+                  <EditBtn label="Editar" testId="edit-provider-name-btn" />
+                </div>
+                <p className="text-sm text-[#33404f]/80 mt-1">{provider.address || provider.comuna}</p>
+                {provider.comuna && <p className="text-sm font-bold text-[#33404f]">{provider.comuna}</p>}
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-[#33404f]" data-testid="provider-name">{provider.business_name}</h1>
-              {provider.verified && <Shield className="w-5 h-5 text-yellow-400" />}
-              {provider.is_featured && (
-                <span className="bg-yellow-400 text-[#33404f] text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                  <Crown className="w-3 h-3" /> Premium
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-gray-500">{provider.comuna}{provider.address ? ` · ${provider.address}` : ''}</p>
           </div>
         </div>
-      </div>
+      ) : (
+        <>
+          {/* Premium Gallery (public view) */}
+          {allPhotos.length > 0 && (
+            <div className="relative max-w-6xl mx-auto px-4 pt-6" data-testid="premium-gallery">
+              {provider.is_featured && (
+                <div className="absolute top-8 left-6 z-10 bg-yellow-400 text-[#33404f] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg" data-testid="premium-badge">
+                  <Crown className="w-3.5 h-3.5" /> Premium
+                </div>
+              )}
+              <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[400px] rounded-2xl overflow-hidden">
+                <div className="col-span-2 row-span-2 cursor-pointer hover:opacity-95 transition-opacity relative"
+                  onClick={() => window.open(getPhotoUrl(allPhotos[0]?.url), '_blank')}>
+                  <img src={getPhotoUrl(allPhotos[0]?.thumbnail_url || allPhotos[0]?.url)} alt="" className="w-full h-full object-cover" />
+                </div>
+                {allPhotos[1] && (
+                  <div className="col-span-2 cursor-pointer hover:opacity-95 transition-opacity"
+                    onClick={() => window.open(getPhotoUrl(allPhotos[1]?.url), '_blank')}>
+                    <img src={getPhotoUrl(allPhotos[1]?.thumbnail_url || allPhotos[1]?.url)} alt="" className="w-full h-full object-cover" />
+                  </div>
+                )}
+                {allPhotos[2] && (
+                  <div className="cursor-pointer hover:opacity-95 transition-opacity"
+                    onClick={() => window.open(getPhotoUrl(allPhotos[2]?.url), '_blank')}>
+                    <img src={getPhotoUrl(allPhotos[2]?.thumbnail_url || allPhotos[2]?.url)} alt="" className="w-full h-full object-cover" />
+                  </div>
+                )}
+                {allPhotos[3] ? (
+                  <div className="relative cursor-pointer hover:opacity-95 transition-opacity"
+                    onClick={() => window.open(getPhotoUrl(allPhotos[3]?.url), '_blank')}>
+                    <img src={getPhotoUrl(allPhotos[3]?.thumbnail_url || allPhotos[3]?.url)} alt="" className="w-full h-full object-cover" />
+                    {remainingPhotos > 0 && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-xl">
+                        +{remainingPhotos} fotos
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="bg-gray-200" />
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Provider Info Header (public view) */}
+          <div className="max-w-6xl mx-auto px-4 pt-6 pb-2">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-xl bg-white shadow-md flex items-center justify-center overflow-hidden border-2 border-gray-100">
+                {provider.profile_photo ? (
+                  <img src={getPhotoUrl(provider.profile_photo)} alt="" className="w-full h-full object-cover" />
+                ) : allPhotos[0]?.url ? (
+                  <img src={getPhotoUrl(allPhotos[0].url)} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-2xl font-bold text-[#00e7ff]">{provider.business_name?.[0]}</span>
+                )}
+              </div>
+              <div>
+                <div className="flex items-center gap-1 mb-0.5" data-testid="provider-rating">
+                  {[1,2,3,4,5].map(s => (
+                    <Star key={s} className={`w-4 h-4 ${s <= Math.round(provider.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+                  ))}
+                  <span className="text-sm font-bold text-[#33404f] ml-1">{provider.rating?.toFixed(1) || '0.0'}</span>
+                  <span className="text-xs text-gray-500">({provider.total_reviews || 0} reseñas)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-bold text-[#33404f]" data-testid="provider-name">{provider.business_name}</h1>
+                  {provider.verified && <Shield className="w-5 h-5 text-yellow-400" />}
+                  {provider.is_featured && (
+                    <span className="bg-yellow-400 text-[#33404f] text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <Crown className="w-3 h-3" /> Premium
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-gray-500">{provider.comuna}{provider.address ? ` · ${provider.address}` : ''}</p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
+
+            {/* Premium Slider placeholder (edit mode) */}
+            {canEdit && (
+              <div className="space-y-2">
+                <div className="flex justify-center">
+                  <EditBtn label="Gestionar Slider" testId="manage-slider-btn" />
+                </div>
+                {allPhotos.length === 0 && (
+                  <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center" data-testid="slider-placeholder">
+                    <p className="text-gray-400">Sin fotos en slider premium</p>
+                  </div>
+                )}
+                {allPhotos.length > 0 && (
+                  <div className="relative rounded-2xl overflow-hidden" data-testid="premium-gallery-edit">
+                    {provider.is_featured && (
+                      <div className="absolute top-3 left-3 z-10 bg-yellow-400 text-[#33404f] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                        <Crown className="w-3.5 h-3.5" /> Premium
+                      </div>
+                    )}
+                    <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[300px]">
+                      <div className="col-span-2 row-span-2 cursor-pointer hover:opacity-95 transition-opacity"
+                        onClick={() => window.open(getPhotoUrl(allPhotos[0]?.url), '_blank')}>
+                        <img src={getPhotoUrl(allPhotos[0]?.thumbnail_url || allPhotos[0]?.url)} alt="" className="w-full h-full object-cover" />
+                      </div>
+                      {allPhotos[1] && (
+                        <div className="col-span-2 cursor-pointer hover:opacity-95 transition-opacity"
+                          onClick={() => window.open(getPhotoUrl(allPhotos[1]?.url), '_blank')}>
+                          <img src={getPhotoUrl(allPhotos[1]?.thumbnail_url || allPhotos[1]?.url)} alt="" className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      {allPhotos[2] && (
+                        <div className="cursor-pointer hover:opacity-95 transition-opacity"
+                          onClick={() => window.open(getPhotoUrl(allPhotos[2]?.url), '_blank')}>
+                          <img src={getPhotoUrl(allPhotos[2]?.thumbnail_url || allPhotos[2]?.url)} alt="" className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      {allPhotos[3] ? (
+                        <div className="relative cursor-pointer hover:opacity-95 transition-opacity"
+                          onClick={() => window.open(getPhotoUrl(allPhotos[3]?.url), '_blank')}>
+                          <img src={getPhotoUrl(allPhotos[3]?.thumbnail_url || allPhotos[3]?.url)} alt="" className="w-full h-full object-cover" />
+                          {remainingPhotos > 0 && (
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-xl">
+                              +{remainingPhotos} fotos
+                            </div>
+                          )}
+                        </div>
+                      ) : allPhotos.length >= 3 ? <div className="bg-gray-200 rounded" /> : null}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* YouTube Video placeholder (edit mode) */}
+            {canEdit && (
+              <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center" data-testid="video-placeholder">
+                <p className="text-gray-400 mb-3">Sin video YouTube</p>
+                <EditBtn label="Agregar Video" testId="add-video-btn" />
+              </div>
+            )}
+
+            {/* Services / Amenidades */}
+            {canEdit && !hasAmenities ? (
+              <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center flex items-center justify-between" data-testid="services-placeholder">
+                <div className="flex items-center gap-2">
+                  <p className="text-gray-400">Sin servicios/amenidades</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <EditBtn label="Editar" testId="edit-services-btn" />
+                  <EditBtn label="Agregar Servicios" testId="add-services-btn" />
+                </div>
+              </div>
+            ) : (
+              <div className="relative">
+                {canEdit && (
+                  <div className="absolute top-4 right-4 z-10 flex gap-2">
+                    <EditBtn label="Editar" testId="edit-amenities-btn" />
+                  </div>
+                )}
+                <AmenitiesDisplay amenities={provider.amenities} />
+              </div>
+            )}
 
             {/* Description - Sobre mi */}
             {provider.description && (
@@ -319,16 +470,37 @@ export default function ProviderProfile() {
               </div>
             )}
 
-            {/* Amenidades / Servicios */}
-            <AmenitiesDisplay amenities={provider.amenities} />
+            {/* Gallery */}
+            {(allPhotos.length > 0 || canEdit) && (
+              <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="gallery-section">
+                <div className="flex items-center gap-3 mb-4">
+                  <Camera className="w-5 h-5 text-[#00e7ff]" />
+                  <h2 className="text-xl font-bold">Galería</h2>
+                  {canEdit && <EditBtn label="Gestionar Fotos" testId="manage-photos-btn" />}
+                </div>
+                {allPhotos.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-3">
+                    {allPhotos.map((photo, i) => (
+                      <div key={i} className="aspect-square rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => window.open(getPhotoUrl(photo.url), '_blank')}>
+                        <img src={getPhotoUrl(photo.thumbnail_url || photo.url)} alt="" className="w-full h-full object-cover" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-400 text-center py-4">Sin fotos en la galería</p>
+                )}
+              </div>
+            )}
 
-            {/* Personal Info (Más Datos) */}
-            {provider.personal_info && Object.values(provider.personal_info).some(v => v && v !== '' && v !== false && !(Array.isArray(v) && v.length === 0)) && (
+            {/* Personal Info (Más Información) */}
+            {(canEdit || (provider.personal_info && Object.values(provider.personal_info).some(v => v && v !== '' && v !== false && !(Array.isArray(v) && v.length === 0)))) && (
               <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="provider-personal-info">
-                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <div className="flex items-center gap-2 mb-4">
                   <UserCircle className="w-5 h-5 text-[#00e7ff]" />
-                  Más Información
-                </h2>
+                  <h2 className="text-xl font-bold">Más Información</h2>
+                  {canEdit && <EditBtn label="Editar" testId="edit-info-btn" />}
+                </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {provider.personal_info?.housing_type && (
                     <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
@@ -357,18 +529,20 @@ export default function ProviderProfile() {
                       </div>
                     </div>
                   )}
+                  {canEdit && !provider.personal_info?.housing_type && !provider.personal_info?.daily_availability && !provider.personal_info?.bio && (
+                    <p className="text-gray-400 text-sm col-span-2 text-center py-2">Sin información adicional</p>
+                  )}
                 </div>
               </div>
             )}
 
-            {/* Service Zones - Comunas and Walking Zones */}
+            {/* Service Zones */}
             {(provider.coverage_radius_km || provider.service_comunas?.length > 0 || provider.walking_zones?.length > 0) && (
               <div className="bg-white rounded-2xl p-6 shadow-sm" data-testid="provider-service-zones">
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-[#00e7ff]" />
                   Zona de Servicio
                 </h2>
-                
                 {provider.coverage_radius_km && (
                   <div className="mb-4 p-3 bg-cyan-50 rounded-xl">
                     <p className="text-sm text-blue-800">
@@ -376,34 +550,22 @@ export default function ProviderProfile() {
                     </p>
                   </div>
                 )}
-                
                 {provider.service_comunas?.length > 0 && (
                   <div className="mb-4">
                     <h3 className="text-sm font-medium text-gray-600 mb-2">Comunas donde ofrece servicio:</h3>
                     <div className="flex flex-wrap gap-2">
                       {provider.service_comunas.map(comuna => (
-                        <span 
-                          key={comuna}
-                          className="px-3 py-1.5 bg-gray-100 text-gray-800 rounded-full text-sm"
-                        >
-                          {comuna}
-                        </span>
+                        <span key={comuna} className="px-3 py-1.5 bg-gray-100 text-gray-800 rounded-full text-sm">{comuna}</span>
                       ))}
                     </div>
                   </div>
                 )}
-                
                 {provider.walking_zones?.length > 0 && (
                   <div>
                     <h3 className="text-sm font-medium text-gray-600 mb-2">Zonas de cobertura:</h3>
                     <div className="flex flex-wrap gap-2">
                       {provider.walking_zones.map(zone => (
-                        <span 
-                          key={zone}
-                          className="px-3 py-1.5 bg-green-100 text-green-800 rounded-full text-sm"
-                        >
-                          {zone}
-                        </span>
+                        <span key={zone} className="px-3 py-1.5 bg-green-100 text-green-800 rounded-full text-sm">{zone}</span>
                       ))}
                     </div>
                   </div>
@@ -586,40 +748,52 @@ export default function ProviderProfile() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Redes Sociales */}
-            {provider.social_links && (provider.social_links.instagram || provider.social_links.facebook || provider.social_links.website) && (
+            {/* Redes Sociales / Website */}
+            {(canEdit || (provider.social_links && (provider.social_links.instagram || provider.social_links.facebook || provider.social_links.website))) && (
               <div className="bg-white rounded-2xl p-5 shadow-sm" data-testid="provider-social-links">
+                {canEdit && (
+                  <div className="flex justify-end mb-3">
+                    <EditBtn label="Editar" testId="edit-social-btn" />
+                  </div>
+                )}
                 <div className="flex items-center justify-center gap-5">
-                  {provider.social_links.instagram && (
+                  {provider.social_links?.instagram && (
                     <a href={provider.social_links.instagram} target="_blank" rel="noopener noreferrer" 
                        className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
                        data-testid="social-instagram">
                       <Instagram className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
                     </a>
                   )}
-                  {provider.social_links.facebook && (
+                  {provider.social_links?.facebook && (
                     <a href={provider.social_links.facebook} target="_blank" rel="noopener noreferrer"
                        className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
                        data-testid="social-facebook">
                       <Facebook className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
                     </a>
                   )}
-                  {provider.social_links.website && (
+                  {provider.social_links?.website ? (
                     <a href={provider.social_links.website} target="_blank" rel="noopener noreferrer"
                        className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
                        data-testid="social-website">
                       <Globe className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
                     </a>
-                  )}
+                  ) : canEdit ? (
+                    <div className="w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center">
+                      <Globe className="w-5 h-5 text-white" />
+                    </div>
+                  ) : null}
                 </div>
               </div>
             )}
 
             {/* Precio */}
-            {provider.services?.filter(s => s.price_from > 0 || s.description).length > 0 && (
+            {(hasServices || canEdit) && (
               <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <h3 className="font-bold text-lg mb-4">Precio</h3>
-                {provider.services.filter(s => s.price_from > 0 || s.description).map((s, i) => {
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-lg">Precio</h3>
+                  {canEdit && <EditBtn label="Editar" testId="edit-price-btn" />}
+                </div>
+                {provider.services?.filter(s => s.price_from > 0 || s.description).map((s, i) => {
                   const formatServiceName = (type) => {
                     const names = {
                       'residencias': 'Residencias',
@@ -636,12 +810,18 @@ export default function ProviderProfile() {
                     </div>
                   );
                 })}
+                {canEdit && !hasServices && (
+                  <p className="text-gray-400 text-sm text-center py-2">Sin precios configurados</p>
+                )}
               </div>
             )}
 
             {/* Contacto */}
             <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <h3 className="font-bold text-lg mb-4">Contacto</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-lg">Contacto</h3>
+                {canEdit && <EditBtn label="Editar" testId="edit-contact-btn" />}
+              </div>
 
               {/* Connected: Full contact visible */}
               {provider.viewer_is_connected ? (
