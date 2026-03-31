@@ -26,7 +26,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress }) 
     setShowSuggestions(false);
     const params = new URLSearchParams();
     if (address.trim()) params.set('q', address);
-    params.set('service', activeService);
+    if (!address.trim()) params.set('service', activeService);
     if (onSearch) {
       onSearch({ service: activeService, address });
     } else {
