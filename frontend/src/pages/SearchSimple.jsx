@@ -130,7 +130,8 @@ const SearchPage = () => {
     try {
       const params = new URLSearchParams();
       if (activeService) params.set('service_type', activeService);
-      if (searchAddress.trim()) params.set('q', searchAddress.trim());
+      const searchText = searchAddress.trim() || searchParams.get('q') || '';
+      if (searchText) params.set('q', searchText);
       params.set('skip', ((currentPage - 1) * PAGE_SIZE).toString());
       params.set('limit', PAGE_SIZE.toString());
 
