@@ -87,9 +87,10 @@ const SearchPage = () => {
   const inputRef = useRef(null);
   const boundsTimeoutRef = useRef(null);
 
-  // Google Maps disabled - API key requires billing account activation
-  const isLoaded = false;
-  const loadError = true;
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: GOOGLE_MAPS_KEY,
+    libraries: LIBRARIES,
+  });
 
   useEffect(() => {
     loadProviders();
