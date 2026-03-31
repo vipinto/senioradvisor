@@ -20,13 +20,14 @@ Buscador de residencias para adultos mayores en Chile. Las familias buscan resid
 - **Admin: Crear Residencia con PlaceID** → obtiene coordenadas, rating y reseñas de Google automáticamente
 - Admin panel completo (sin límite de 200, muestra todos), carga masiva CSV, Blog, SeniorClub
 - Branding 100% SeniorAdvisor
+- **Perfil Proveedor con modo admin/owner**: hero cyan para TODOS los usuarios, barra admin + botones "Editar" solo para admin/dueño, placeholders para contenido vacío (slider, video, servicios), galería premium debajo del hero
 
 ## Credenciales
-- Admin: admin@senioradvisor.cl / admin123
+- Admin: admin@senioradvisor.cl / EmiLuci2$$$
 - Cliente: demo@senioradvisor.cl / demo123
 - Proveedor: proveedor1@senioradvisor.cl / demo123
 
-## Pendiente / P0
+## Pendiente / P1
 - Galería: limitar a 3 fotos estándar + Slider Premium (10 fotos, solo suscriptores)
 
 ## Pendiente / P2
