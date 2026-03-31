@@ -715,7 +715,7 @@ const SearchPage = () => {
                         </h3>
                         {provider.is_featured && (
                           <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap" data-testid="featured-badge">
-                            <Crown className="w-3 h-3" />Destacado
+                            <Crown className="w-3 h-3" />Premium
                           </span>
                         )}
                         {provider.verified && (
