@@ -1083,7 +1083,7 @@ export default function ProviderProfile() {
                 Si administras este servicio y deseas completar o actualizar la información de tu perfil, contáctanos y te ayudamos.
               </p>
               <a
-                href="mailto:contacto@senioradvisor.cl?subject=Quiero administrar mi residencia en SeniorAdvisor"
+                href="mailto:hola@senioradvisor.cl?subject=Quiero administrar mi residencia en SeniorAdvisor"
                 className="inline-block w-full py-3 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold rounded-xl transition-colors text-center"
                 data-testid="owner-cta-btn"
               >

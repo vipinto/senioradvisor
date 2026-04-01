@@ -732,7 +732,7 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
         if not email:
             slug = bname.lower().replace(" ", "-")[:30]
             slug = "".join(c for c in slug if c.isalnum() or c == "-")
-            email = f"{slug}-{short_id}@SeniorAdvisor.cl"
+            email = f"{slug}-{short_id}@senioradvisor.cl"
         all_emails_in_csv.add(email)
         if codigo:
             all_codigos_in_csv.add(codigo)

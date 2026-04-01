@@ -85,7 +85,7 @@ export default function Privacy() {
           <section>
             <h2 className="text-xl font-bold text-[#33404f] mb-3">9. Contacto</h2>
             <p className="text-gray-600">Para consultas sobre privacidad, escríbenos a:</p>
-            <p className="font-medium text-[#00e7ff] mt-1">contacto@senioradvisor.cl</p>
+            <p className="font-medium text-[#00e7ff] mt-1">hola@senioradvisor.cl</p>
           </section>
         </div>
       </div>

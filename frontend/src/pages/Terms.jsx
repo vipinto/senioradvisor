@@ -76,7 +76,7 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-bold text-[#33404f] mb-3">10. Contacto</h2>
             <p className="text-gray-600">Para consultas sobre estos términos, escríbenos a:</p>
-            <p className="mt-2 font-medium text-[#00e7ff]">contacto@senioradvisor.cl</p>
+            <p className="mt-2 font-medium text-[#00e7ff]">hola@senioradvisor.cl</p>
           </section>
         </div>
       </div>

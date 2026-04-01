@@ -96,15 +96,15 @@ const faqs = [
     questions: [
       {
         q: '¿Cómo me contacto con SeniorAdvisor?',
-        a: 'Puedes escribirnos a contacto@senioradvisor.cl para cualquier consulta, sugerencia o problema. Respondemos en un plazo máximo de 24-48 horas hábiles.'
+        a: 'Puedes escribirnos a hola@senioradvisor.cl para cualquier consulta, sugerencia o problema. Respondemos en un plazo máximo de 24-48 horas hábiles.'
       },
       {
         q: '¿Puedo solicitar un reembolso de mi suscripción?',
-        a: 'Los reembolsos se evalúan caso a caso. Si no has utilizado los servicios de la suscripción, puedes solicitar un reembolso dentro de los primeros 7 días escribiendo a contacto@senioradvisor.cl.'
+        a: 'Los reembolsos se evalúan caso a caso. Si no has utilizado los servicios de la suscripción, puedes solicitar un reembolso dentro de los primeros 7 días escribiendo a hola@senioradvisor.cl.'
       },
       {
         q: '¿Cómo cancelo mi suscripción?',
-        a: 'Puedes cancelar tu suscripción en cualquier momento desde tu panel de usuario o escribiendo a contacto@senioradvisor.cl. Seguirás teniendo acceso a los beneficios hasta que termine el período pagado.'
+        a: 'Puedes cancelar tu suscripción en cualquier momento desde tu panel de usuario o escribiendo a hola@senioradvisor.cl. Seguirás teniendo acceso a los beneficios hasta que termine el período pagado.'
       },
     ]
   },
@@ -155,7 +155,7 @@ export default function FAQ() {
 
         <div className="text-center mt-12">
           <p className="text-gray-500">¿No encontraste lo que buscabas?</p>
-          <a href="mailto:contacto@senioradvisor.cl" className="text-[#00e7ff] font-semibold hover:underline mt-1 inline-block">Escríbenos a contacto@senioradvisor.cl</a>
+          <a href="mailto:hola@senioradvisor.cl" className="text-[#00e7ff] font-semibold hover:underline mt-1 inline-block">Escríbenos a hola@senioradvisor.cl</a>
         </div>
       </div>
     </div>

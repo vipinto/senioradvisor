@@ -30,7 +30,7 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-semibold mb-4">Contacto</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="mailto:contacto@senioradvisor.cl" className="hover:text-white transition-colors">contacto@senioradvisor.cl</a></li>
+              <li><a href="mailto:hola@senioradvisor.cl" className="hover:text-white transition-colors">hola@senioradvisor.cl</a></li>
             </ul>
           </div>
 

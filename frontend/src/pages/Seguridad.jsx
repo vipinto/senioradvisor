@@ -78,7 +78,7 @@ export default function Seguridad() {
               <h2 className="text-xl font-bold text-[#33404f]">Contacto</h2>
             </div>
             <p className="text-gray-600">Si tienes preguntas o necesitas reportar un problema de seguridad, contáctanos:</p>
-            <p className="mt-2 font-medium text-[#00e7ff]">contacto@senioradvisor.cl</p>
+            <p className="mt-2 font-medium text-[#00e7ff]">hola@senioradvisor.cl</p>
           </div>
         </div>
       </div>
