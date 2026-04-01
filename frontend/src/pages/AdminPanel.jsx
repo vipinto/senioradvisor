@@ -1369,8 +1369,49 @@ export default function AdminPanel() {
                 <input type="text" value={blogForm.excerpt} onChange={e => setBlogForm(p => ({ ...p, excerpt: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="blog-form-excerpt" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">URL de Imagen</label>
-                <input type="text" value={blogForm.image} onChange={e => setBlogForm(p => ({ ...p, image: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="https://..." data-testid="blog-form-image" />
+                <label className="block text-sm font-medium mb-1">Imagen</label>
+                <div className="flex gap-2 mb-2">
+                  <button
+                    type="button"
+                    onClick={() => setBlogForm(p => ({ ...p, _imageMode: 'url' }))}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium ${!blogForm._imageMode || blogForm._imageMode === 'url' ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-200 text-gray-600'}`}
+                  >URL</button>
+                  <button
+                    type="button"
+                    onClick={() => setBlogForm(p => ({ ...p, _imageMode: 'upload' }))}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium ${blogForm._imageMode === 'upload' ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-200 text-gray-600'}`}
+                  >Subir Imagen</button>
+                </div>
+                {(!blogForm._imageMode || blogForm._imageMode === 'url') ? (
+                  <input type="text" value={blogForm.image} onChange={e => setBlogForm(p => ({ ...p, image: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="https://..." data-testid="blog-form-image" />
+                ) : (
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      data-testid="blog-form-image-upload"
+                      className="w-full border rounded-xl p-3 text-sm"
+                      onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('folder', 'blog');
+                        try {
+                          toast.loading('Subiendo imagen...');
+                          const res = await api.post('/cloudinary/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+                          setBlogForm(p => ({ ...p, image: res.data.url }));
+                          toast.dismiss();
+                          toast.success('Imagen subida');
+                        } catch {
+                          toast.dismiss();
+                          toast.error('Error al subir imagen. Verifica que Cloudinary esté configurado.');
+                        }
+                      }}
+                    />
+                    <p className="text-xs text-gray-400 mt-1">Max 10MB. Se guarda en Cloudinary.</p>
+                  </div>
+                )}
                 {blogForm.image && <img src={blogForm.image} alt="" className="mt-2 h-24 rounded-lg object-cover" />}
               </div>
               <div>
