@@ -385,6 +385,7 @@ class ResidenciaCreate(BaseModel):
     service_type: Optional[str] = "residencias"
     price_from: Optional[int] = 0
     services: Optional[list] = None
+    partner_provider_id: Optional[str] = ""
 
 def generate_password(length=10):
     chars = string.ascii_letters + string.digits
@@ -401,16 +402,24 @@ async def create_residencia(data: ResidenciaCreate, request: Request):
     user = await get_current_user(request, db)
     await require_admin(user)
     
-    existing = await db.users.find_one({"email": data.email})
+    # Check for partner or existing user
+    existing = None
+    if data.partner_provider_id:
+        partner = await db.providers.find_one({"provider_id": data.partner_provider_id})
+        if partner:
+            existing = await db.users.find_one({"user_id": partner["user_id"]})
+            if not data.email:
+                data.email = existing["email"] if existing else ""
+    
+    if not existing:
+        existing = await db.users.find_one({"email": data.email})
     
     provider_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc)
     
     if existing:
-        # Same company, new location - reuse existing user
         user_id = existing["user_id"]
     else:
-        # New company - create user
         password = data.password or generate_password()
         user_id = str(uuid.uuid4())
         user = {

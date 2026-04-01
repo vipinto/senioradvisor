@@ -1093,7 +1093,7 @@ export default function AdminPanel() {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-[#33404f]">Crear Residencia Individual</h3>
-                    <Button onClick={() => { setResidenciaForm({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', place_id: '' }); setResidenciaServices({ residencias: { price_from: '', description: '' }, 'cuidado-domicilio': { price_from: '', description: '' }, 'salud-mental': { price_from: '', description: '' } }); setShowResidenciaModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-residencia-btn">
+                    <Button onClick={() => { setResidenciaForm({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', place_id: '', partner_provider_id: '' }); setResidenciaServices({ residencias: { price_from: '', description: '' }, 'cuidado-domicilio': { price_from: '', description: '' }, 'salud-mental': { price_from: '', description: '' } }); setShowResidenciaModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-residencia-btn">
                       <Plus className="w-4 h-4 mr-1" /> Nueva Residencia
                     </Button>
                   </div>
@@ -1230,12 +1230,37 @@ export default function AdminPanel() {
             <h3 className="text-lg font-bold text-[#33404f] mb-4">Crear Nueva Residencia</h3>
             <div className="space-y-3">
               <div>
+                <label className="block text-sm font-medium mb-1">Residencia Partner (opcional)</label>
+                <p className="text-xs text-gray-400 mb-1">Selecciona una residencia existente para agregar una nueva sede de la misma empresa</p>
+                <select
+                  value={residenciaForm.partner_provider_id || ''}
+                  onChange={e => {
+                    const pid = e.target.value;
+                    if (pid) {
+                      const partner = allProviders.find(p => p.provider_id === pid);
+                      if (partner) {
+                        setResidenciaForm(p => ({ ...p, partner_provider_id: pid, email: partner.email || '' }));
+                      }
+                    } else {
+                      setResidenciaForm(p => ({ ...p, partner_provider_id: '', email: '' }));
+                    }
+                  }}
+                  className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
+                  data-testid="residencia-form-partner"
+                >
+                  <option value="">-- Nueva empresa (sin partner) --</option>
+                  {allProviders.map(p => (
+                    <option key={p.provider_id} value={p.provider_id}>{p.business_name} ({p.email})</option>
+                  ))}
+                </select>
+              </div>
+              <div>
                 <label className="block text-sm font-medium mb-1">Nombre de la Residencia *</label>
                 <input type="text" value={residenciaForm.business_name} onChange={e => setResidenciaForm(p => ({ ...p, business_name: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Ej: Residencia Villa Serena" data-testid="residencia-form-name" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Correo Electrónico *</label>
-                <input type="email" value={residenciaForm.email} onChange={e => setResidenciaForm(p => ({ ...p, email: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="residencia@email.cl" data-testid="residencia-form-email" />
+                <label className="block text-sm font-medium mb-1">Correo Electrónico {residenciaForm.partner_provider_id ? '(heredado del partner)' : '*'}</label>
+                <input type="email" value={residenciaForm.email} onChange={e => setResidenciaForm(p => ({ ...p, email: e.target.value }))} className={`w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff] ${residenciaForm.partner_provider_id ? 'bg-gray-100' : ''}`} placeholder="residencia@email.cl" readOnly={!!residenciaForm.partner_provider_id} data-testid="residencia-form-email" />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Dirección</label>
@@ -1308,7 +1333,11 @@ export default function AdminPanel() {
                     });
                     const payload = { ...residenciaForm, services };
                     const res = await api.post('/admin/residencias/create', payload);
-                    toast.success(`Residencia creada. Contraseña: ${res.data.password}`);
+                    if (res.data.note) {
+                      toast.success(`Sede creada: ${res.data.note}`);
+                    } else {
+                      toast.success(`Residencia creada. Contraseña: ${res.data.password}`);
+                    }
                     setBulkResults({ total: 1, created: 1, errors: 0, results: [res.data] });
                     setShowResidenciaModal(false);
                     loadData();
