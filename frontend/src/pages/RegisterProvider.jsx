@@ -55,9 +55,9 @@ export default function RegisterProvider() {
 
   // Step 4
   const [services, setServices] = useState({
-    residencias: { active: true, price_from: '', description: '' },
-    'cuidado-domicilio': { active: false, price_from: '', description: '' },
-    'salud-mental': { active: false, price_from: '', description: '' },
+    residencias: { price_from: '', description: '' },
+    'cuidado-domicilio': { price_from: '', description: '' },
+    'salud-mental': { price_from: '', description: '' },
   });
 
   // Step 5
@@ -92,8 +92,9 @@ export default function RegisterProvider() {
     try {
       const svcArray = [];
       Object.entries(services).forEach(([type, data]) => {
-        if (data.active) {
-          svcArray.push({ service_type: type, price_from: parseInt(data.price_from) || 0, description: data.description || '' });
+        const price = parseInt(data.price_from) || 0;
+        if (price > 0 || data.description) {
+          svcArray.push({ service_type: type, price_from: price, description: data.description || '' });
         }
       });
 
@@ -258,19 +259,12 @@ export default function RegisterProvider() {
       <div className="text-center mb-6">
         <DollarSign className="w-12 h-12 text-[#00e7ff] mx-auto mb-3" />
         <h2 className="text-2xl font-bold text-[#33404f]">Servicios y Precios</h2>
-        <p className="text-gray-500 mt-1">Selecciona los servicios que ofreces</p>
+        <p className="text-gray-500 mt-1">Indica los servicios que ofreces y sus precios</p>
       </div>
-      <p className="text-xs text-gray-400 text-center">Marca los servicios que ofrece tu residencia. Los precios son opcionales.</p>
+      <p className="text-xs text-gray-400 text-center">Solo las categorías con precio aparecerán en tu perfil público.</p>
       {SERVICE_CATEGORIES.map(({ key, label, icon: Icon, desc }) => (
-        <div key={key} className={`p-4 rounded-xl border-2 transition-all ${services[key].active ? 'bg-cyan-50 border-[#00e7ff]' : 'bg-gray-50 border-gray-200'}`}>
-          <label className="flex items-center gap-3 mb-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={services[key].active}
-              onChange={e => setServices(prev => ({ ...prev, [key]: { ...prev[key], active: e.target.checked } }))}
-              className="w-5 h-5 accent-[#00e7ff]"
-              data-testid={`reg-service-check-${key}`}
-            />
+        <div key={key} className="p-4 bg-gray-50 rounded-xl border-2 border-gray-100 hover:border-[#00e7ff]/30 transition-colors">
+          <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-lg bg-[#00e7ff]/10 flex items-center justify-center">
               <Icon className="w-5 h-5 text-[#00e7ff]" />
             </div>
@@ -278,32 +272,30 @@ export default function RegisterProvider() {
               <span className="font-bold text-[#33404f]">{label}</span>
               <p className="text-xs text-gray-400">{desc}</p>
             </div>
-          </label>
-          {services[key].active && (
-            <div className="grid grid-cols-2 gap-3 ml-8">
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Precio desde (CLP) - opcional</label>
-                <Input
-                  type="number"
-                  value={services[key].price_from}
-                  onChange={e => setServices(prev => ({ ...prev, [key]: { ...prev[key], price_from: e.target.value } }))}
-                  placeholder="Ej: 1.500.000"
-                  className="rounded-lg border-gray-200"
-                  data-testid={`reg-price-${key}`}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Descripción - opcional</label>
-                <Input
-                  value={services[key].description}
-                  onChange={e => setServices(prev => ({ ...prev, [key]: { ...prev[key], description: e.target.value } }))}
-                  placeholder="Ej: Incluye alimentación"
-                  className="rounded-lg border-gray-200"
-                  data-testid={`reg-desc-${key}`}
-                />
-              </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Precio desde (CLP)</label>
+              <Input
+                type="number"
+                value={services[key].price_from}
+                onChange={e => setServices(prev => ({ ...prev, [key]: { ...prev[key], price_from: e.target.value } }))}
+                placeholder="Ej: 1.500.000"
+                className="rounded-lg border-gray-200"
+                data-testid={`reg-price-${key}`}
+              />
             </div>
-          )}
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Descripción</label>
+              <Input
+                value={services[key].description}
+                onChange={e => setServices(prev => ({ ...prev, [key]: { ...prev[key], description: e.target.value } }))}
+                placeholder="Ej: Incluye alimentación"
+                className="rounded-lg border-gray-200"
+                data-testid={`reg-desc-${key}`}
+              />
+            </div>
+          </div>
         </div>
       ))}
     </div>
@@ -345,7 +337,7 @@ export default function RegisterProvider() {
   );
 
   const renderStep6 = () => {
-    const activeServices = Object.entries(services).filter(([, d]) => d.active);
+    const activeServices = Object.entries(services).filter(([, d]) => parseInt(d.price_from) > 0 || d.description);
     return (
       <div className="space-y-5" data-testid="step-6-content">
         <div className="text-center mb-6">

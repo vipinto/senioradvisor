@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Home, Heart, Brain, Search, X, LayoutGrid } from 'lucide-react';
+import { MapPin, Home, Heart, Brain, Search, X } from 'lucide-react';
 import api from '@/lib/api';
 
 const SERVICE_TABS = [
-  { id: '', label: 'Todos', icon: LayoutGrid },
   { id: 'residencias', label: 'Residencias', icon: Home },
   { id: 'cuidado-domicilio', label: 'Cuidado a Domicilio', icon: Heart },
   { id: 'salud-mental', label: 'Salud Mental', icon: Brain },
@@ -12,7 +11,7 @@ const SERVICE_TABS = [
 
 export default function SearchBar({ onSearch, initialService, initialAddress }) {
   const navigate = useNavigate();
-  const [activeService, setActiveService] = useState(initialService || '');
+  const [activeService, setActiveService] = useState(initialService || 'residencias');
   const [address, setAddress] = useState(initialAddress || '');
   const [comunas, setComunas] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -27,7 +26,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress }) 
     setShowSuggestions(false);
     const params = new URLSearchParams();
     if (address.trim()) params.set('q', address);
-    if (activeService) params.set('service', activeService);
+    params.set('service', activeService);
     if (onSearch) {
       onSearch({ service: activeService, address });
     } else {

@@ -87,10 +87,9 @@ const SearchPage = () => {
   const inputRef = useRef(null);
   const boundsTimeoutRef = useRef(null);
 
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: GOOGLE_MAPS_KEY,
-    libraries: LIBRARIES,
-  });
+  // Google Maps disabled - API key requires billing account activation
+  const isLoaded = false;
+  const loadError = true;
 
   useEffect(() => {
     loadProviders();
@@ -131,8 +130,7 @@ const SearchPage = () => {
     try {
       const params = new URLSearchParams();
       if (activeService) params.set('service_type', activeService);
-      const searchText = searchAddress.trim() || searchParams.get('q') || '';
-      if (searchText) params.set('q', searchText);
+      if (searchAddress.trim()) params.set('q', searchAddress.trim());
       params.set('skip', ((currentPage - 1) * PAGE_SIZE).toString());
       params.set('limit', PAGE_SIZE.toString());
 
@@ -151,8 +149,7 @@ const SearchPage = () => {
       }
       if (datesStr) params.set('dates', datesStr);
 
-      // Only apply bounds filter when there's no text search
-      if (bounds && !searchText) {
+      if (bounds) {
         params.set('bounds_south', bounds.south.toString());
         params.set('bounds_west', bounds.west.toString());
         params.set('bounds_north', bounds.north.toString());
@@ -166,19 +163,6 @@ const SearchPage = () => {
       setProviders(providersList);
       setFilteredProviders(providersList);
       setTotalResults(total);
-
-      // Center map on first result with coordinates
-      if (searchText && providersList.length > 0) {
-        const withCoords = providersList.find(p => p.latitude && p.longitude);
-        if (withCoords) {
-          const newCenter = { lat: withCoords.latitude, lng: withCoords.longitude };
-          setMapCenter(newCenter);
-          if (mapRef.current) {
-            mapRef.current.panTo(newCenter);
-            mapRef.current.setZoom(14);
-          }
-        }
-      }
     } catch (error) {
       console.error('Error loading providers:', error);
     } finally {
@@ -188,9 +172,6 @@ const SearchPage = () => {
 
   const handleBoundsChanged = useCallback(() => {
     if (!mapRef.current || !isMapSearchActive) return;
-    // Skip bounds search when there's a text query
-    const searchText = searchAddress.trim() || searchParams.get('q') || '';
-    if (searchText) return;
 
     if (boundsTimeoutRef.current) {
       clearTimeout(boundsTimeoutRef.current);
@@ -715,7 +696,7 @@ const SearchPage = () => {
                         </h3>
                         {provider.is_featured && (
                           <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap" data-testid="featured-badge">
-                            <Crown className="w-3 h-3" />Premium
+                            <Crown className="w-3 h-3" />Destacado
                           </span>
                         )}
                         {provider.verified && (

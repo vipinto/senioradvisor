@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShieldCheck, CheckCircle, XCircle, Badge, Eye, CreditCard, Plus, Pencil, Trash2, ToggleLeft, ToggleRight, BarChart3, Camera, FileText, User, Newspaper, Handshake, Upload, Download, MapPin, Star, RefreshCw, Loader2 } from 'lucide-react';
+import { ShieldCheck, CheckCircle, XCircle, Badge, Eye, CreditCard, Plus, Pencil, Trash2, ToggleLeft, ToggleRight, BarChart3, Camera, FileText, User, Newspaper, Handshake, Upload, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -141,110 +141,17 @@ export default function AdminPanel() {
   const [editingProvider, setEditingProvider] = useState(null);
   const [editProviderTab, setEditProviderTab] = useState('profile');
   const [editProfileForm, setEditProfileForm] = useState({});
-  const [editServicesForm, setEditServicesForm] = useState({ residencias: { active: false, price_from: '', description: '' }, 'cuidado-domicilio': { active: false, price_from: '', description: '' }, 'salud-mental': { active: false, price_from: '', description: '' } });
+  const [editServicesForm, setEditServicesForm] = useState({ residencias: { price_from: '', description: '' }, 'cuidado-domicilio': { price_from: '', description: '' }, 'salud-mental': { price_from: '', description: '' } });
   const [editAmenities, setEditAmenities] = useState([]);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [residenciaForm, setResidenciaForm] = useState({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', place_id: '' });
   const [residenciaServices, setResidenciaServices] = useState({
-    residencias: { active: true, price_from: '', description: '' },
-    'cuidado-domicilio': { active: false, price_from: '', description: '' },
-    'salud-mental': { active: false, price_from: '', description: '' },
+    residencias: { price_from: '', description: '' },
+    'cuidado-domicilio': { price_from: '', description: '' },
+    'salud-mental': { price_from: '', description: '' },
   });
   const [bulkResults, setBulkResults] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [googlePlaceData, setGooglePlaceData] = useState(null);
-  const [fetchingPlace, setFetchingPlace] = useState(false);
-  const placesServiceRef = useRef(null);
-  const mapDivRef = useRef(null);
-
-  // Initialize Google Places Service
-  const initPlacesService = useCallback(() => {
-    if (placesServiceRef.current) return;
-    if (!window.google?.maps?.places) {
-      // Load Google Maps script if not loaded
-      const existing = document.querySelector('script[src*="maps.googleapis.com"]');
-      if (!existing) {
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_KEY}&libraries=places`;
-        script.async = true;
-        script.onload = () => {
-          const div = document.createElement('div');
-          placesServiceRef.current = new window.google.maps.places.PlacesService(div);
-        };
-        document.head.appendChild(script);
-      } else {
-        // Script exists but may be loading
-        const check = setInterval(() => {
-          if (window.google?.maps?.places) {
-            const div = document.createElement('div');
-            placesServiceRef.current = new window.google.maps.places.PlacesService(div);
-            clearInterval(check);
-          }
-        }, 200);
-        setTimeout(() => clearInterval(check), 5000);
-      }
-    } else {
-      const div = document.createElement('div');
-      placesServiceRef.current = new window.google.maps.places.PlacesService(div);
-    }
-  }, []);
-
-  const fetchGooglePlace = useCallback(async (placeId) => {
-    if (!placeId) { toast.error('Ingresa un Place ID'); return; }
-    
-    initPlacesService();
-    setFetchingPlace(true);
-    setGooglePlaceData(null);
-
-    // Wait for service to be ready
-    let attempts = 0;
-    while (!placesServiceRef.current && attempts < 25) {
-      await new Promise(r => setTimeout(r, 200));
-      attempts++;
-    }
-
-    if (!placesServiceRef.current) {
-      toast.error('No se pudo inicializar Google Places. Verifica tu conexión.');
-      setFetchingPlace(false);
-      return;
-    }
-
-    const request = {
-      placeId: placeId,
-      fields: ['name', 'geometry', 'rating', 'user_ratings_total', 'reviews', 'formatted_address'],
-      language: 'es',
-    };
-
-    placesServiceRef.current.getDetails(request, (place, status) => {
-      setFetchingPlace(false);
-      if (status === window.google.maps.places.PlacesServiceStatus.OK && place) {
-        const reviews = (place.reviews || []).map(r => ({
-          author_name: r.author_name || '',
-          rating: r.rating || 0,
-          text: r.text || '',
-          relative_time_description: r.relative_time_description || '',
-          profile_photo_url: r.profile_photo_url || '',
-        }));
-        const data = {
-          latitude: place.geometry?.location?.lat() || 0,
-          longitude: place.geometry?.location?.lng() || 0,
-          google_rating: place.rating || 0,
-          google_total_reviews: place.user_ratings_total || 0,
-          google_reviews: reviews,
-          formatted_address: place.formatted_address || '',
-          google_name: place.name || '',
-        };
-        setGooglePlaceData(data);
-        // Auto-fill address if empty
-        if (!residenciaForm.address && data.formatted_address) {
-          setResidenciaForm(p => ({ ...p, address: data.formatted_address }));
-        }
-        toast.success(`Datos obtenidos: ${data.google_name} - ${data.google_rating} estrellas (${data.google_total_reviews} reseñas)`);
-      } else {
-        toast.error(`Error al buscar Place ID: ${status}`);
-      }
-    });
-  }, [initPlacesService, residenciaForm.address]);
 
   useEffect(() => { loadData(); }, []);
 
@@ -295,9 +202,9 @@ export default function AdminPanel() {
       const svcMap = {};
       (p.services || []).forEach(s => { svcMap[s.service_type] = s; });
       setEditServicesForm({
-        residencias: { active: !!svcMap['residencias'], price_from: svcMap['residencias']?.price_from || '', description: svcMap['residencias']?.description || '' },
-        'cuidado-domicilio': { active: !!svcMap['cuidado-domicilio'], price_from: svcMap['cuidado-domicilio']?.price_from || '', description: svcMap['cuidado-domicilio']?.description || '' },
-        'salud-mental': { active: !!svcMap['salud-mental'], price_from: svcMap['salud-mental']?.price_from || '', description: svcMap['salud-mental']?.description || '' },
+        residencias: { price_from: svcMap['residencias']?.price_from || '', description: svcMap['residencias']?.description || '' },
+        'cuidado-domicilio': { price_from: svcMap['cuidado-domicilio']?.price_from || '', description: svcMap['cuidado-domicilio']?.description || '' },
+        'salud-mental': { price_from: svcMap['salud-mental']?.price_from || '', description: svcMap['salud-mental']?.description || '' },
       });
       setEditAmenities(p.amenities || []);
       setEditProviderTab('profile');
@@ -309,9 +216,8 @@ export default function AdminPanel() {
     try {
       const services = [];
       Object.entries(editServicesForm).forEach(([type, data]) => {
-        if (data.active) {
-          services.push({ service_type: type, price_from: parseInt(data.price_from) || 0, description: data.description || '' });
-        }
+        const price = parseInt(data.price_from) || 0;
+        if (price > 0 || data.description) services.push({ service_type: type, price_from: price, description: data.description || '' });
       });
       await api.put(`/admin/providers/${editingProvider.provider_id}/profile`, { ...editProfileForm, services });
       toast.success('Perfil actualizado');
@@ -729,7 +635,7 @@ export default function AdminPanel() {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-[#33404f]">Crear Residencia Individual</h3>
-                    <Button onClick={() => { setResidenciaForm({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', place_id: '' }); setResidenciaServices({ residencias: { active: true, price_from: '', description: '' }, 'cuidado-domicilio': { active: false, price_from: '', description: '' }, 'salud-mental': { active: false, price_from: '', description: '' } }); setGooglePlaceData(null); setShowResidenciaModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-residencia-btn">
+                    <Button onClick={() => { setResidenciaForm({ business_name: '', email: '', phone: '', address: '', region: '', comuna: '', website: '', facebook: '', instagram: '', place_id: '' }); setResidenciaServices({ residencias: { price_from: '', description: '' }, 'cuidado-domicilio': { price_from: '', description: '' }, 'salud-mental': { price_from: '', description: '' } }); setShowResidenciaModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-residencia-btn">
                       <Plus className="w-4 h-4 mr-1" /> Nueva Residencia
                     </Button>
                   </div>
@@ -885,88 +791,24 @@ export default function AdminPanel() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Place ID (Google)</label>
-                <div className="flex gap-2">
-                  <input type="text" value={residenciaForm.place_id} onChange={e => setResidenciaForm(p => ({ ...p, place_id: e.target.value }))} className="flex-1 border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="ChIJ..." data-testid="residencia-form-placeid" />
-                  <Button 
-                    type="button"
-                    onClick={() => fetchGooglePlace(residenciaForm.place_id)} 
-                    disabled={fetchingPlace || !residenciaForm.place_id}
-                    className="bg-[#4285F4] hover:bg-[#3367D6] text-white px-4 whitespace-nowrap"
-                    data-testid="fetch-google-place-btn"
-                  >
-                    {fetchingPlace ? <Loader2 className="w-4 h-4 animate-spin" /> : <><MapPin className="w-4 h-4 mr-1" /> Buscar</>}
-                  </Button>
-                </div>
+                <input type="text" value={residenciaForm.place_id} onChange={e => setResidenciaForm(p => ({ ...p, place_id: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="ChIJ..." data-testid="residencia-form-placeid" />
               </div>
 
-              {/* Google Place Results */}
-              {googlePlaceData && (
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 space-y-3" data-testid="google-place-results">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-sm text-[#33404f] flex items-center gap-2">
-                      <svg className="w-4 h-4" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-                      {googlePlaceData.google_name}
-                    </h4>
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-bold">{googlePlaceData.google_rating}</span>
-                      <span className="text-gray-500">({googlePlaceData.google_total_reviews} reseñas)</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-gray-600">
-                      <MapPin className="w-4 h-4 text-red-400" />
-                      <span className="truncate">{googlePlaceData.latitude.toFixed(4)}, {googlePlaceData.longitude.toFixed(4)}</span>
-                    </div>
-                  </div>
-                  {googlePlaceData.formatted_address && (
-                    <p className="text-xs text-gray-500">{googlePlaceData.formatted_address}</p>
-                  )}
-                  {googlePlaceData.google_reviews?.length > 0 && (
-                    <div className="mt-2 max-h-40 overflow-y-auto space-y-2">
-                      <p className="text-xs font-semibold text-gray-500">{googlePlaceData.google_reviews.length} reseñas encontradas:</p>
-                      {googlePlaceData.google_reviews.slice(0, 3).map((r, i) => (
-                        <div key={i} className="bg-white rounded-lg p-2 text-xs">
-                          <div className="flex items-center gap-1 mb-1">
-                            <span className="font-medium">{r.author_name}</span>
-                            <div className="flex">{[1,2,3,4,5].map(s => <Star key={s} className={`w-3 h-3 ${s <= r.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />)}</div>
-                            <span className="text-gray-400 ml-auto">{r.relative_time_description}</span>
-                          </div>
-                          <p className="text-gray-600 line-clamp-2">{r.text}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Servicios y Precios */}
+              {/* Precios por categoría */}
               <div className="border-t pt-3 mt-3">
-                <h4 className="text-sm font-bold text-[#33404f] mb-2">Servicios que ofrece</h4>
-                <p className="text-xs text-gray-400 mb-3">Selecciona los servicios y opcionalmente agrega precios.</p>
+                <h4 className="text-sm font-bold text-[#33404f] mb-2">Precios por Categoría</h4>
+                <p className="text-xs text-gray-400 mb-3">Solo las categorías con precio aparecerán en el perfil público.</p>
                 {[
                   { key: 'residencias', label: 'Residencias' },
                   { key: 'cuidado-domicilio', label: 'Cuidado a Domicilio' },
                   { key: 'salud-mental', label: 'Salud Mental' },
                 ].map(({ key, label }) => (
-                  <div key={key} className={`p-3 rounded-xl mb-2 border-2 transition-all ${residenciaServices[key].active ? 'bg-cyan-50 border-[#00e7ff]' : 'bg-gray-50 border-gray-200'}`}>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        checked={residenciaServices[key].active} 
-                        onChange={e => setResidenciaServices(p => ({ ...p, [key]: { ...p[key], active: e.target.checked } }))} 
-                        className="w-4 h-4 accent-[#00e7ff]" 
-                        data-testid={`admin-service-check-${key}`} 
-                      />
-                      <span className="font-semibold text-sm text-[#33404f]">{label}</span>
-                    </label>
-                    {residenciaServices[key].active && (
-                      <div className="grid grid-cols-2 gap-2 mt-2">
-                        <input type="number" value={residenciaServices[key].price_from} onChange={e => setResidenciaServices(p => ({ ...p, [key]: { ...p[key], price_from: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Precio desde (opcional)" data-testid={`admin-price-${key}`} />
-                        <input type="text" value={residenciaServices[key].description} onChange={e => setResidenciaServices(p => ({ ...p, [key]: { ...p[key], description: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Descripción (opcional)" data-testid={`admin-desc-${key}`} />
-                      </div>
-                    )}
+                  <div key={key} className="p-3 bg-gray-50 rounded-xl mb-2">
+                    <span className="font-semibold text-xs text-[#33404f]">{label}</span>
+                    <div className="grid grid-cols-2 gap-2 mt-1">
+                      <input type="number" value={residenciaServices[key].price_from} onChange={e => setResidenciaServices(p => ({ ...p, [key]: { ...p[key], price_from: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Precio desde" data-testid={`admin-price-${key}`} />
+                      <input type="text" value={residenciaServices[key].description} onChange={e => setResidenciaServices(p => ({ ...p, [key]: { ...p[key], description: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Descripción" data-testid={`admin-desc-${key}`} />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -976,32 +818,17 @@ export default function AdminPanel() {
                 onClick={async () => {
                   if (!residenciaForm.business_name || !residenciaForm.email) { toast.error('Nombre y email son obligatorios'); return; }
                   try {
-                    // Build services array from checked services
+                    // Build services array
                     const services = [];
                     Object.entries(residenciaServices).forEach(([type, data]) => {
-                      if (data.active) {
-                        services.push({ service_type: type, price_from: parseInt(data.price_from) || 0, description: data.description || '' });
+                      const price = parseInt(data.price_from) || 0;
+                      if (price > 0 || data.description) {
+                        services.push({ service_type: type, price_from: price, description: data.description || '' });
                       }
                     });
                     const payload = { ...residenciaForm, services };
-                    // Include Google Place data if fetched
-                    if (googlePlaceData) {
-                      payload.latitude = googlePlaceData.latitude;
-                      payload.longitude = googlePlaceData.longitude;
-                      payload.google_rating = googlePlaceData.google_rating;
-                      payload.google_total_reviews = googlePlaceData.google_total_reviews;
-                      payload.google_reviews = googlePlaceData.google_reviews;
-                    }
                     const res = await api.post('/admin/residencias/create', payload);
-                    const gd = res.data.google_data;
-                    let msg = `Residencia creada. Contraseña: ${res.data.password}`;
-                    if (gd?.google_rating) {
-                      msg += ` | Google: ${gd.google_rating} estrellas (${gd.google_total_reviews} reseñas)`;
-                    }
-                    if (gd?.latitude && gd?.longitude) {
-                      msg += ' | Ubicación guardada';
-                    }
-                    toast.success(msg, { duration: 8000 });
+                    toast.success(`Residencia creada. Contraseña: ${res.data.password}`);
                     setBulkResults({ total: 1, created: 1, errors: 0, results: [res.data] });
                     setShowResidenciaModal(false);
                     loadData();
@@ -1353,29 +1180,18 @@ export default function AdminPanel() {
                 </div>
 
                 <div className="border-t pt-3">
-                  <h4 className="text-sm font-bold text-[#33404f] mb-2">Servicios</h4>
+                  <h4 className="text-sm font-bold text-[#33404f] mb-2">Precios por Categoría</h4>
                   {[
                     { key: 'residencias', label: 'Residencias' },
                     { key: 'cuidado-domicilio', label: 'Cuidado a Domicilio' },
                     { key: 'salud-mental', label: 'Salud Mental' },
                   ].map(({ key, label }) => (
-                    <div key={key} className={`p-3 rounded-lg mb-2 border-2 transition-all ${editServicesForm[key]?.active ? 'bg-cyan-50 border-[#00e7ff]' : 'bg-gray-50 border-gray-200'}`}>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          checked={editServicesForm[key]?.active || false} 
-                          onChange={e => setEditServicesForm(p => ({ ...p, [key]: { ...p[key], active: e.target.checked } }))} 
-                          className="w-4 h-4 accent-[#00e7ff]" 
-                          data-testid={`edit-service-check-${key}`} 
-                        />
-                        <span className="font-semibold text-sm text-[#33404f]">{label}</span>
-                      </label>
-                      {editServicesForm[key]?.active && (
-                        <div className="grid grid-cols-2 gap-2 mt-2">
-                          <input type="number" value={editServicesForm[key]?.price_from || ''} onChange={e => setEditServicesForm(p => ({ ...p, [key]: { ...p[key], price_from: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm" placeholder="Precio desde (opcional)" data-testid={`edit-price-${key}`} />
-                          <input type="text" value={editServicesForm[key]?.description || ''} onChange={e => setEditServicesForm(p => ({ ...p, [key]: { ...p[key], description: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm" placeholder="Descripción (opcional)" data-testid={`edit-desc-${key}`} />
-                        </div>
-                      )}
+                    <div key={key} className="p-3 bg-gray-50 rounded-lg mb-2">
+                      <span className="font-semibold text-xs text-[#33404f]">{label}</span>
+                      <div className="grid grid-cols-2 gap-2 mt-1">
+                        <input type="number" value={editServicesForm[key]?.price_from || ''} onChange={e => setEditServicesForm(p => ({ ...p, [key]: { ...p[key], price_from: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm" placeholder="Precio desde" data-testid={`edit-price-${key}`} />
+                        <input type="text" value={editServicesForm[key]?.description || ''} onChange={e => setEditServicesForm(p => ({ ...p, [key]: { ...p[key], description: e.target.value } }))} className="w-full border rounded-lg p-2 text-sm" placeholder="Descripción" data-testid={`edit-desc-${key}`} />
+                      </div>
                     </div>
                   ))}
                 </div>
