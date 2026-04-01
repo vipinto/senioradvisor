@@ -56,7 +56,7 @@
   "action_items": [],
 
   "critical_code_review_comments": [
-    "Google Maps API key needs domain authorization for https://senioradvisor-dev.preview.emergentagent.com - requires Google Cloud Console configuration"
+    "Google Maps API key needs domain authorization for https://senior-care-fixes.preview.emergentagent.com - requires Google Cloud Console configuration"
   ],
 
   "updated_files": [
