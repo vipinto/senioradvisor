@@ -119,7 +119,7 @@ const Navbar = () => {
               !loading && (
                 <>
                   <Link to="/login">
-                    <Button variant="outline" className="border-2 border-[#000000] text-[#33404f] hover:bg-gray-100 text-lg px-6 py-3 h-auto font-semibold">
+                    <Button variant="outline" className="border-2 border-[#33404f] text-[#33404f] hover:bg-gray-100 text-lg px-6 py-3 h-auto font-semibold">
                       Iniciar Sesión
                     </Button>
                   </Link>

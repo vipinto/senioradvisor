@@ -383,7 +383,7 @@ export default function ProviderProfile() {
   const EditBtn = ({ section, label }) => isAdmin ? (
     <button
       onClick={() => setEditSection(section)}
-      className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-white bg-[#000000] hover:bg-[#00e7ff] hover:text-[#33404f] rounded-full transition-colors ml-2"
+      className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-white bg-[#33404f] hover:bg-[#00e7ff] hover:text-[#33404f] rounded-full transition-colors ml-2"
       data-testid={`admin-edit-${section}`}
     >
       <Pencil className="w-3 h-3" />
@@ -405,7 +405,7 @@ export default function ProviderProfile() {
 
       {/* Admin Floating Bar */}
       {isAdmin && (
-        <div className="sticky top-0 z-40 bg-[#000000] text-white px-4 py-2 flex items-center justify-between shadow-lg" data-testid="admin-edit-bar">
+        <div className="sticky top-0 z-40 bg-[#33404f] text-white px-4 py-2 flex items-center justify-between shadow-lg" data-testid="admin-edit-bar">
           <div className="flex items-center gap-2">
             <Settings className="w-4 h-4" />
             <span className="text-sm font-medium">Modo Admin</span>
@@ -456,7 +456,7 @@ export default function ProviderProfile() {
                     </span>
                   )}
                   {provider.is_featured && !provider.provider_is_subscribed && (
-                    <span className="bg-[#000000] text-white text-xs px-3 py-1 rounded-full flex items-center gap-1">
+                    <span className="bg-[#33404f] text-white text-xs px-3 py-1 rounded-full flex items-center gap-1">
                       <Star className="w-3 h-3" />Destacado
                     </span>
                   )}
@@ -511,7 +511,7 @@ export default function ProviderProfile() {
                     </span>
                   )}
                   {provider.is_featured && !provider.provider_is_subscribed && (
-                    <span className="bg-[#000000] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
                       <Star className="w-3 h-3" />Destacado
                     </span>
                   )}
@@ -863,21 +863,21 @@ export default function ProviderProfile() {
                 <div className="flex items-center justify-center gap-5">
                   {provider.social_links?.instagram && (
                     <a href={provider.social_links.instagram} target="_blank" rel="noopener noreferrer" 
-                       className="group w-11 h-11 rounded-full bg-[#000000] flex items-center justify-center hover:bg-[#000000] transition-colors"
+                       className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
                        data-testid="social-instagram">
                       <Instagram className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
                     </a>
                   )}
                   {provider.social_links?.facebook && (
                     <a href={provider.social_links.facebook} target="_blank" rel="noopener noreferrer"
-                       className="group w-11 h-11 rounded-full bg-[#000000] flex items-center justify-center hover:bg-[#000000] transition-colors"
+                       className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
                        data-testid="social-facebook">
                       <Facebook className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
                     </a>
                   )}
                   {provider.social_links?.website && (
                     <a href={provider.social_links.website} target="_blank" rel="noopener noreferrer"
-                       className="group w-11 h-11 rounded-full bg-[#000000] flex items-center justify-center hover:bg-[#000000] transition-colors"
+                       className="group w-11 h-11 rounded-full bg-[#33404f] flex items-center justify-center hover:bg-[#33404f] transition-colors"
                        data-testid="social-website">
                       <Globe className="w-5 h-5 text-white group-hover:text-[#00e7ff] transition-colors" />
                     </a>
@@ -1077,7 +1077,7 @@ export default function ProviderProfile() {
             )}
 
             {/* CTA para dueños */}
-            <div className="bg-[#000000] rounded-2xl p-6 text-center" data-testid="owner-cta">
+            <div className="bg-[#33404f] rounded-2xl p-6 text-center" data-testid="owner-cta">
               <h3 className="font-bold text-white text-lg mb-2">¿Eres dueño de esta residencia?</h3>
               <p className="text-white/70 text-sm mb-4">
                 Si administras este servicio y deseas completar o actualizar la información de tu perfil, contáctanos y te ayudamos.

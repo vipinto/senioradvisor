@@ -88,7 +88,7 @@ const PremiumGallery = ({ isSubscribed = false }) => {
 
   if (!isSubscribed) {
     return (
-      <div className="bg-gradient-to-br from-[#000000] to-[#1a2530] rounded-2xl p-6 text-white" data-testid="premium-gallery-locked">
+      <div className="bg-gradient-to-br from-[#33404f] to-[#1a2530] rounded-2xl p-6 text-white" data-testid="premium-gallery-locked">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-xl bg-yellow-500/20 flex items-center justify-center">
             <Crown className="w-5 h-5 text-yellow-400" />

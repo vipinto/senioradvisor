@@ -109,7 +109,7 @@ const Dashboard = () => {
               <p className="text-[#33404f] text-sm font-medium">Hola, {user.name}!</p>
             </div>
             <Link to="/search">
-              <Button className="bg-[#000000] text-white hover:bg-[#4a5568]"><Search className="w-4 h-4 mr-2" /> Buscar</Button>
+              <Button className="bg-[#33404f] text-white hover:bg-[#4a5568]"><Search className="w-4 h-4 mr-2" /> Buscar</Button>
             </Link>
           </div>
         </div>

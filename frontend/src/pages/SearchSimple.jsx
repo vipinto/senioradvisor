@@ -814,7 +814,7 @@ const SearchPage = () => {
                           </span>
                         )}
                         {provider.is_featured && !provider.provider_is_subscribed && (
-                          <span className="bg-[#000000] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap" data-testid="featured-badge">
+                          <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap" data-testid="featured-badge">
                             <Star className="w-3 h-3" />Destacado
                           </span>
                         )}

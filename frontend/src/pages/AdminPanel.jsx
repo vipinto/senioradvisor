@@ -495,7 +495,7 @@ export default function AdminPanel() {
                       } catch (err) { toast.error('Error al sincronizar'); }
                     }}
                     size="sm"
-                    className="bg-[#000000] hover:bg-[#4a5568] text-white"
+                    className="bg-[#33404f] hover:bg-[#4a5568] text-white"
                     data-testid="sync-google-ratings-btn"
                   >
                     <Download className="w-4 h-4 mr-1" />
@@ -1163,7 +1163,7 @@ export default function AdminPanel() {
                           e.target.value = '';
                         }
                       }} />
-                      <Button className="bg-[#000000] hover:bg-[#4a5568] text-white" disabled={uploading} asChild>
+                      <Button className="bg-[#33404f] hover:bg-[#4a5568] text-white" disabled={uploading} asChild>
                         <span><Upload className="w-4 h-4 mr-1" />{uploading ? 'Subiendo...' : 'Subir Excel'}</span>
                       </Button>
                     </label>
