@@ -402,24 +402,27 @@ async def create_residencia(data: ResidenciaCreate, request: Request):
     await require_admin(user)
     
     existing = await db.users.find_one({"email": data.email})
-    if existing:
-        raise HTTPException(status_code=400, detail=f"El email {data.email} ya está registrado")
     
-    password = data.password or generate_password()
-    user_id = str(uuid.uuid4())
     provider_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc)
     
-    user = {
-        "user_id": user_id,
-        "email": data.email,
-        "name": data.business_name,
-        "role": "provider",
-        "hashed_password": _hash_password(password),
-        "created_at": now.isoformat(),
-        "active": True,
-    }
-    await db.users.insert_one(user)
+    if existing:
+        # Same company, new location - reuse existing user
+        user_id = existing["user_id"]
+    else:
+        # New company - create user
+        password = data.password or generate_password()
+        user_id = str(uuid.uuid4())
+        user = {
+            "user_id": user_id,
+            "email": data.email,
+            "name": data.business_name,
+            "role": "provider",
+            "hashed_password": _hash_password(password),
+            "created_at": now.isoformat(),
+            "active": True,
+        }
+        await db.users.insert_one(user)
     
     provider = {
         "provider_id": provider_id,
@@ -478,14 +481,18 @@ async def create_residencia(data: ResidenciaCreate, request: Request):
         except Exception as e:
             logging.error(f"Error fetching Google data for {data.business_name}: {e}")
     
-    return {
+    result = {
         "provider_id": provider_id,
         "user_id": user_id,
         "business_name": data.business_name,
         "email": data.email,
-        "password": password,
         "status": "created"
     }
+    if existing:
+        result["note"] = "Nueva sede agregada a empresa existente"
+    else:
+        result["password"] = password
+    return result
 
 class BulkResidenciaItem(BaseModel):
     business_name: str
