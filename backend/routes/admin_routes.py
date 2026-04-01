@@ -456,6 +456,28 @@ async def create_residencia(data: ResidenciaCreate, request: Request):
     }
     await db.providers.insert_one(provider)
     
+    # Auto-fetch Google data if place_id is provided
+    if data.place_id:
+        try:
+            api_key = os.environ.get("GOOGLE_MAPS_API_KEY", "")
+            if api_key:
+                google_data = await fetch_google_place_data(data.place_id, api_key)
+                if google_data:
+                    await db.providers.update_one(
+                        {"provider_id": provider_id},
+                        {"$set": {
+                            "google_rating": google_data["google_rating"],
+                            "google_total_reviews": google_data["google_total_reviews"],
+                            "google_reviews": google_data["google_reviews"],
+                            "rating": google_data["google_rating"] or 0,
+                            "total_reviews": google_data["google_total_reviews"],
+                            "latitude": google_data.get("latitude", 0),
+                            "longitude": google_data.get("longitude", 0),
+                        }}
+                    )
+        except Exception as e:
+            logging.error(f"Error fetching Google data for {data.business_name}: {e}")
+    
     return {
         "provider_id": provider_id,
         "user_id": user_id,
@@ -475,6 +497,7 @@ class BulkResidenciaItem(BaseModel):
     description: Optional[str] = ""
     service_type: Optional[str] = "residencias"
     price_from: Optional[int] = 0
+    place_id: Optional[str] = ""
 
 class BulkResidenciaCreate(BaseModel):
     residencias: List[BulkResidenciaItem]
@@ -530,10 +553,33 @@ async def bulk_create_residencias(data: BulkResidenciaCreate, request: Request):
             "latitude": 0,
             "longitude": 0,
             "coverage_zone": "10",
+            "place_id": item.place_id or "",
             "created_at": now,
             "approved_at": now,
         }
         await db.providers.insert_one(provider)
+        
+        # Auto-fetch Google data if place_id is provided
+        if item.place_id:
+            try:
+                api_key = os.environ.get("GOOGLE_MAPS_API_KEY", "")
+                if api_key:
+                    google_data = await fetch_google_place_data(item.place_id, api_key)
+                    if google_data:
+                        await db.providers.update_one(
+                            {"provider_id": provider_id},
+                            {"$set": {
+                                "google_rating": google_data["google_rating"],
+                                "google_total_reviews": google_data["google_total_reviews"],
+                                "google_reviews": google_data["google_reviews"],
+                                "rating": google_data["google_rating"] or 0,
+                                "total_reviews": google_data["google_total_reviews"],
+                                "latitude": google_data.get("latitude", 0),
+                                "longitude": google_data.get("longitude", 0),
+                            }}
+                        )
+            except Exception as e:
+                logging.error(f"Error fetching Google data for {item.business_name}: {e}")
         
         results.append({
             "business_name": item.business_name,
@@ -987,6 +1033,30 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
         user_ops = [UpdateOne({"user_id": u["user_id"]}, {"$set": {"name": u["name"]}}) for u in users_to_update]
         await db.users.bulk_write(user_ops, ordered=False)
 
+    # Auto-fetch Google data for new providers with place_id
+    api_key = os.environ.get("GOOGLE_MAPS_API_KEY", "")
+    if api_key:
+        for p in providers_to_insert:
+            pid = p.get("place_id", "").strip()
+            if pid and not pid.startswith("ChIJtest"):
+                try:
+                    google_data = await fetch_google_place_data(pid, api_key)
+                    if google_data:
+                        await db.providers.update_one(
+                            {"provider_id": p["provider_id"]},
+                            {"$set": {
+                                "google_rating": google_data["google_rating"],
+                                "google_total_reviews": google_data["google_total_reviews"],
+                                "google_reviews": google_data["google_reviews"],
+                                "rating": google_data["google_rating"] or 0,
+                                "total_reviews": google_data["google_total_reviews"],
+                                "latitude": google_data.get("latitude", 0),
+                                "longitude": google_data.get("longitude", 0),
+                            }}
+                        )
+                except Exception as e:
+                    logging.error(f"Excel Google sync error for {p['business_name']}: {e}")
+
     created = len([r for r in results if r["status"] == "created"])
     updated = len([r for r in results if r["status"] == "updated"])
     errors = len([r for r in results if r["status"] == "error"])
@@ -1325,8 +1395,8 @@ async def admin_update_provider_profile(provider_id: str, request: Request):
 async def fetch_google_place_data(place_id: str, api_key: str):
     """Fetch rating, review count, and reviews from Google Places API (New)"""
     url = f"https://places.googleapis.com/v1/places/{place_id}"
-    params = {"fields": "rating,userRatingCount,reviews", "languageCode": "es"}
-    headers = {"X-Goog-Api-Key": api_key, "Content-Type": "application/json"}
+    params = {"fields": "rating,userRatingCount,reviews,location", "languageCode": "es"}
+    headers = {"X-Goog-Api-Key": api_key, "Content-Type": "application/json", "Referer": "https://senioradvisor.cl"}
     
     async with httpx.AsyncClient(timeout=15) as client:
         resp = await client.get(url, params=params, headers=headers)
@@ -1348,10 +1418,14 @@ async def fetch_google_place_data(place_id: str, api_key: str):
                 "source": "google",
             })
         
+        location = data.get("location", {})
+        
         return {
             "google_rating": data.get("rating"),
             "google_total_reviews": data.get("userRatingCount", 0),
             "google_reviews": reviews,
+            "latitude": location.get("latitude", 0),
+            "longitude": location.get("longitude", 0),
         }
 
 
