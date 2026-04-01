@@ -48,7 +48,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress }) 
   return (
     <div className="w-full" data-testid="search-bar-component">
       {/* Category Tabs */}
-      <div className="flex justify-center gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row justify-center gap-3 mb-6">
         {SERVICE_TABS.map(tab => {
           const Icon = tab.icon;
           const isActive = activeService === tab.id;

@@ -308,12 +308,13 @@ export default function AdminPanel() {
         <h1 className="text-4xl font-bold mb-8">Panel de Administracion</h1>
 
         {stats && (
-          <div className="grid md:grid-cols-5 gap-4 mb-8">
+          <div className="grid md:grid-cols-6 gap-4 mb-8">
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Usuarios</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-users">{stats.total_users}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Residencias</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-providers">{stats.total_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Pendientes</p><p className="text-3xl font-bold text-orange-500" data-testid="stat-pending">{stats.pending_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Verificados</p><p className="text-3xl font-bold text-green-600" data-testid="stat-verified">{stats.verified_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Suscripciones</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-subscriptions">{stats.active_subscriptions}</p></div>
+            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Resenas</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-reviews">{stats.total_reviews}</p></div>
           </div>
         )}
 
