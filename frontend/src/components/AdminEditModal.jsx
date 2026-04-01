@@ -84,8 +84,8 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
         };
       case 'settings':
         return {
-          is_featured: provider.is_featured || provider.is_featured_admin || false,
-          is_subscribed: provider.provider_is_subscribed || provider.is_subscribed || false,
+          is_featured: provider.is_featured_admin || false,
+          is_subscribed: provider.is_subscribed || provider.provider_is_subscribed || false,
           place_id: provider.place_id || '',
         };
       case 'gallery':

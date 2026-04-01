@@ -872,15 +872,33 @@ async def admin_update_provider_profile(provider_id: str, request: Request):
     if not provider:
         raise HTTPException(status_code=404, detail="Proveedor no encontrado")
 
-    allowed = ["business_name", "phone", "address", "region", "comuna", "place_id",
-               "social_links", "services", "amenities", "description",
-               "is_featured", "is_subscribed", "provider_is_subscribed", "verified"]
+    allowed = ["business_name", "phone", "whatsapp", "address", "region", "comuna", "place_id",
+               "social_links", "services", "amenities", "description", "youtube_video_url",
+               "personal_info", "latitude", "longitude", "is_featured", "is_subscribed",
+               "service_type", "service_comunas", "walking_zones", "coverage_radius_km"]
     update = {k: v for k, v in body.items() if k in allowed}
-    # Sync is_subscribed with provider_is_subscribed
-    if "is_subscribed" in update:
-        update["provider_is_subscribed"] = update["is_subscribed"]
+    # Map admin toggles to admin-specific fields
+    if "is_featured" in update:
+        update["is_featured_admin"] = update.pop("is_featured")
     if update:
         await db.providers.update_one({"provider_id": provider_id}, {"$set": update})
+
+    # Sync services to separate services collection if updated
+    if "services" in update:
+        await db.services.delete_many({"provider_id": provider_id})
+        for svc in update["services"]:
+            service_doc = {
+                "service_id": f"serv_{uuid.uuid4().hex[:12]}",
+                "provider_id": provider_id,
+                "service_type": svc.get("service_type", "residencias"),
+                "price_from": svc.get("price_from", 0),
+                "description": svc.get("description", ""),
+                "sub_prices": svc.get("sub_prices", []),
+                "rules": svc.get("rules", ""),
+                "pet_sizes": svc.get("pet_sizes", []),
+                "created_at": datetime.now(timezone.utc),
+            }
+            await db.services.insert_one(service_doc)
     
     updated = await db.providers.find_one({"provider_id": provider_id}, {"_id": 0})
     return updated
