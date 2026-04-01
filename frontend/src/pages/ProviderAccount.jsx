@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Settings, Camera, MapPin, Home, Briefcase, ImagePlus, X, Globe, Instagram, Facebook, DollarSign, Heart, Brain, ListChecks, Stethoscope, Flame, ShieldCheck, Shirt, Bath, Tv, Wifi, Bell, Users, PartyPopper, Lightbulb, Dumbbell, Music, Bus, BedDouble, Bed } from 'lucide-react';
+import { Settings, Camera, MapPin, Home, Briefcase, ImagePlus, X, Globe, Instagram, Facebook, DollarSign, Heart, Brain, ListChecks, Stethoscope, Flame, ShieldCheck, Shirt, Bath, Tv, Wifi, Bell, Users, PartyPopper, Lightbulb, Dumbbell, Music, Bus, BedDouble, Bed, Youtube, Lock, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import ProviderGallery from '@/components/ProviderGallery';
+import PremiumGallery from '@/components/PremiumGallery';
 
 const SERVICE_CATEGORIES = [
   { key: 'residencias', label: 'Residencias', icon: Home, desc: 'Estadía permanente con cuidado integral' },
@@ -40,7 +41,7 @@ const ProviderAccount = () => {
   const [activeTab, setActiveTab] = useState('profile');
 
   // Profile
-  const [profileForm, setProfileForm] = useState({ business_name: '', description: '', phone: '', address: '', comuna: '', region: '', website: '' });
+  const [profileForm, setProfileForm] = useState({ business_name: '', description: '', phone: '', address: '', comuna: '', region: '', website: '', youtube_video_url: '' });
   const [savingProfile, setSavingProfile] = useState(false);
   const [uploadingProfilePhoto, setUploadingProfilePhoto] = useState(false);
 
@@ -75,12 +76,13 @@ const ProviderAccount = () => {
         comuna: p.comuna || '',
         region: p.region || '',
         website: p.social_links?.website || p.website || '',
+        youtube_video_url: p.youtube_video_url || '',
       });
       // Load pricing from services
-      const pricingObj = { residencias: { price_from: '', description: '' }, 'cuidado-domicilio': { price_from: '', description: '' }, 'salud-mental': { price_from: '', description: '' } };
+      const pricingObj = { residencias: { price_from: '', description: '', sub_prices: [] }, 'cuidado-domicilio': { price_from: '', description: '', sub_prices: [] }, 'salud-mental': { price_from: '', description: '', sub_prices: [] } };
       (p.services || []).forEach(svc => {
         if (pricingObj[svc.service_type] !== undefined) {
-          pricingObj[svc.service_type] = { price_from: svc.price_from || '', description: svc.description || '' };
+          pricingObj[svc.service_type] = { price_from: svc.price_from || '', description: svc.description || '', sub_prices: svc.sub_prices || [] };
         }
       });
       setPricing(pricingObj);
@@ -123,7 +125,8 @@ const ProviderAccount = () => {
     setSavingPricing(true);
     try {
       const svcArray = Object.entries(pricing).map(([type, data]) => ({
-        service_type: type, price_from: parseInt(data.price_from) || 0, description: data.description || ''
+        service_type: type, price_from: parseInt(data.price_from) || 0, description: data.description || '',
+        sub_prices: (data.sub_prices || []).filter(sp => sp.name)
       })).filter(s => s.price_from > 0 || s.description);
       await api.put('/providers/my-profile/services', { services: svcArray });
       toast.success('Precios actualizados');
@@ -211,6 +214,32 @@ const ProviderAccount = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
                 <textarea value={profileForm.description} onChange={e => setProfileForm(prev => ({ ...prev, description: e.target.value }))} placeholder="Describe tu residencia, experiencia y servicios..." rows={4} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:border-transparent" data-testid="profile-description" />
               </div>
+
+              {/* YouTube Video - Only for subscribed */}
+              {provider.is_subscribed ? (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <Youtube className="w-4 h-4 text-red-500" />
+                    Video de YouTube
+                    <span className="text-xs text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full font-medium flex items-center gap-1"><Crown className="w-3 h-3" /> Premium</span>
+                  </label>
+                  <Input
+                    value={profileForm.youtube_video_url}
+                    onChange={e => setProfileForm(prev => ({ ...prev, youtube_video_url: e.target.value }))}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    data-testid="profile-youtube-url"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">Pega la URL de tu video de YouTube. Aparecerá en tu perfil público.</p>
+                </div>
+              ) : (
+                <div className="bg-gray-50 rounded-xl p-4 flex items-center gap-3 border border-gray-200">
+                  <Lock className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Video de YouTube</p>
+                    <p className="text-xs text-gray-400">Suscríbete para agregar un video a tu perfil</p>
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
@@ -259,10 +288,59 @@ const ProviderAccount = () => {
                       <Input type="number" value={pricing[key].price_from} onChange={e => setPricing(prev => ({ ...prev, [key]: { ...prev[key], price_from: e.target.value } }))} placeholder="Ej: 1.500.000" data-testid={`price-${key}`} />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">Descripción</label>
-                      <Input value={pricing[key].description} onChange={e => setPricing(prev => ({ ...prev, [key]: { ...prev[key], description: e.target.value } }))} placeholder="Ej: Incluye alimentación" data-testid={`desc-${key}`} />
+                      <label className="block text-xs font-medium text-gray-500 mb-1">Descripcion</label>
+                      <Input value={pricing[key].description} onChange={e => setPricing(prev => ({ ...prev, [key]: { ...prev[key], description: e.target.value } }))} placeholder="Ej: Incluye alimentacion" data-testid={`desc-${key}`} />
                     </div>
                   </div>
+                  {/* Sub-prices */}
+                  {provider?.is_subscribed && (
+                    <div className="mt-3 ml-2 border-l-2 border-[#00e7ff]/30 pl-3 space-y-2">
+                      <p className="text-xs font-semibold text-gray-500">Sub-precios (detalles del servicio)</p>
+                      {(pricing[key].sub_prices || []).map((sp, j) => (
+                        <div key={j} className="flex items-center gap-2" data-testid={`sub-price-${key}-${j}`}>
+                          <Input
+                            type="text"
+                            placeholder="Nombre (ej: Hab. individual)"
+                            value={sp.name || ''}
+                            onChange={e => {
+                              const subs = [...(pricing[key].sub_prices || [])];
+                              subs[j] = { ...subs[j], name: e.target.value };
+                              setPricing(prev => ({ ...prev, [key]: { ...prev[key], sub_prices: subs } }));
+                            }}
+                            className="flex-1 text-sm"
+                          />
+                          <Input
+                            type="number"
+                            placeholder="Precio"
+                            value={sp.price || ''}
+                            onChange={e => {
+                              const subs = [...(pricing[key].sub_prices || [])];
+                              subs[j] = { ...subs[j], price: parseInt(e.target.value) || 0 };
+                              setPricing(prev => ({ ...prev, [key]: { ...prev[key], sub_prices: subs } }));
+                            }}
+                            className="w-32 text-sm"
+                          />
+                          <button
+                            onClick={() => {
+                              const subs = (pricing[key].sub_prices || []).filter((_, idx) => idx !== j);
+                              setPricing(prev => ({ ...prev, [key]: { ...prev[key], sub_prices: subs } }));
+                            }}
+                            className="text-red-400 text-sm hover:text-red-600 shrink-0 px-1"
+                          >x</button>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => {
+                          const subs = [...(pricing[key].sub_prices || []), { name: '', price: 0 }];
+                          setPricing(prev => ({ ...prev, [key]: { ...prev[key], sub_prices: subs } }));
+                        }}
+                        className="text-xs text-[#00e7ff] hover:underline font-medium"
+                        data-testid={`add-sub-price-${key}`}
+                      >
+                        + Agregar sub-precio
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
               <Button onClick={savePricing} disabled={savingPricing} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="save-pricing-btn">
@@ -316,7 +394,8 @@ const ProviderAccount = () => {
 
         {/* Galería */}
         {activeTab === 'gallery' && (
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
+          <div className="space-y-6">
+            <PremiumGallery isSubscribed={provider.is_subscribed} />
             <ProviderGallery providerId={provider.provider_id} />
           </div>
         )}

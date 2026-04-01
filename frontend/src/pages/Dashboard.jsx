@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, MessageCircle, CreditCard, PawPrint, Search, ChevronRight, Shield, Plus, X, Star, Calendar, History, Pencil, Check, Inbox, CheckCircle, XCircle, Loader2, Send, Dog, CalendarCheck } from 'lucide-react';
+import { Heart, MessageCircle, CreditCard, PawPrint, Search, ChevronRight, Shield, Plus, X, Star, Calendar, History, Pencil, Check, Inbox, CheckCircle, XCircle, Loader2, Send, Dog } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -17,7 +17,6 @@ const Dashboard = () => {
   const [favorites, setFavorites] = useState([]);
   const [pets, setPets] = useState([]);
   const [clientReviews, setClientReviews] = useState([]);
-  const [bookings, setBookings] = useState([]);
   const [contactRequestsSent, setContactRequestsSent] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('requests');
@@ -33,13 +32,12 @@ const Dashboard = () => {
 
   const loadData = async () => {
     try {
-      const [userRes, subRes, favRes, petRes, reviewRes, bookingRes] = await Promise.all([
+      const [userRes, subRes, favRes, petRes, reviewRes] = await Promise.all([
         api.get('/auth/me'),
         api.get('/subscription/my').catch(() => ({ data: { has_subscription: false } })),
         api.get('/favorites').catch(() => ({ data: [] })),
         api.get('/pets').catch(() => ({ data: [] })),
-        api.get('/reviews/client/me').catch(() => ({ data: [] })),
-        api.get('/bookings/my').catch(() => ({ data: [] }))
+        api.get('/reviews/client/me').catch(() => ({ data: [] }))
       ]);
       
       // Redirect providers to their dashboard
@@ -53,7 +51,6 @@ const Dashboard = () => {
       setFavorites(favRes.data);
       setPets(petRes.data);
       setClientReviews(reviewRes.data);
-      setBookings(bookingRes.data);
 
       // Load sent contact requests for premium clients
       if (subRes.data?.has_subscription) {
@@ -112,7 +109,7 @@ const Dashboard = () => {
               <p className="text-[#33404f] text-sm font-medium">Hola, {user.name}!</p>
             </div>
             <Link to="/search">
-              <Button className="bg-[#33404f] text-white hover:bg-[#4a5568]"><Search className="w-4 h-4 mr-2" /> Buscar</Button>
+              <Button className="bg-[#000000] text-white hover:bg-[#4a5568]"><Search className="w-4 h-4 mr-2" /> Buscar</Button>
             </Link>
           </div>
         </div>
@@ -122,7 +119,6 @@ const Dashboard = () => {
           {[
             { key: 'requests', label: 'Mis Solicitudes', icon: Inbox },
             { key: 'favorites', label: 'Favoritos', icon: Heart },
-            { key: 'bookings', label: 'Reservas', icon: CalendarCheck },
             { key: 'messages', label: 'Mensajes', icon: MessageCircle },
           ].map(({ key, label, icon: Icon }) => (
             <button
@@ -177,44 +173,6 @@ const Dashboard = () => {
                     </div>
                     <ChevronRight className="w-5 h-5 text-gray-400" />
                   </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Tab Content: Reservas */}
-        {activeTab === 'bookings' && (
-          <div className="bg-white rounded-xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <CalendarCheck className="w-5 h-5 text-[#00e7ff]" />
-              Mis Reservas
-            </h2>
-            {bookings.length === 0 ? (
-              <div className="text-center py-12 text-gray-500">
-                <CalendarCheck className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                <p>No tienes reservas activas</p>
-                <Link to="/search" className="text-[#00e7ff] hover:underline text-sm">Buscar residencias</Link>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {bookings.map(booking => (
-                  <div key={booking.booking_id} className="border rounded-xl p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-bold">{booking.provider_name || 'Servicio'}</h4>
-                        <p className="text-sm text-gray-500">{booking.service_type}</p>
-                        <p className="text-xs text-gray-400">{new Date(booking.start_date).toLocaleDateString('es-CL')}</p>
-                      </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        booking.status === 'confirmed' ? 'bg-green-100 text-green-700' :
-                        booking.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-gray-100 text-gray-700'
-                      }`}>
-                        {booking.status === 'confirmed' ? 'Confirmada' : booking.status === 'pending' ? 'Pendiente' : booking.status}
-                      </span>
-                    </div>
-                  </div>
                 ))}
               </div>
             )}

@@ -55,7 +55,7 @@ const Favorites = () => {
             <p className="text-gray-600 text-lg mb-4">No tienes favoritos aún</p>
             <Link to="/search">
               <Button className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]">
-                Buscar Residencias
+                Buscar Cuidadores
               </Button>
             </Link>
           </div>

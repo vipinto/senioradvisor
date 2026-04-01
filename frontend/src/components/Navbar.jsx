@@ -51,20 +51,20 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link to="/search" className="text-[#33404f] hover:text-[#00b8c9] text-lg font-semibold transition-colors">
+            <Link to="/search" className="text-[#33404f] hover:text-[#00c4d4] text-lg font-semibold transition-colors">
               Buscar Servicios
             </Link>
             
             {user ? (
               <>
-                <Link to="/favoritos" className="text-[#33404f] hover:text-[#00b8c9] p-2">
+                <Link to="/favoritos" className="text-[#33404f] hover:text-[#00c4d4] p-2">
                   <Heart className="w-7 h-7" />
                 </Link>
-                <Link to="/chat" className="text-[#33404f] hover:text-[#00b8c9] p-2">
+                <Link to="/chat" className="text-[#33404f] hover:text-[#00c4d4] p-2">
                   <MessageCircle className="w-7 h-7" />
                 </Link>
                 <div className="relative group">
-                  <button className="flex items-center space-x-2 text-[#33404f] hover:text-[#00b8c9] py-2">
+                  <button className="flex items-center space-x-2 text-[#33404f] hover:text-[#00c4d4] py-2">
                     {user.picture ? (
                       <img src={user.picture} alt={user.name} className="w-10 h-10 rounded-full" />
                     ) : (
@@ -119,7 +119,7 @@ const Navbar = () => {
               !loading && (
                 <>
                   <Link to="/login">
-                    <Button variant="outline" className="border-2 border-[#33404f] text-[#33404f] hover:bg-gray-100 text-lg px-6 py-3 h-auto font-semibold">
+                    <Button variant="outline" className="border-2 border-[#000000] text-[#33404f] hover:bg-gray-100 text-lg px-6 py-3 h-auto font-semibold">
                       Iniciar Sesión
                     </Button>
                   </Link>
@@ -136,7 +136,7 @@ const Navbar = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-[#33404f] hover:text-[#00b8c9] p-2"
+            className="md:hidden text-[#33404f] hover:text-[#00c4d4] p-2"
             data-testid="mobile-menu-button"
           >
             {isOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}

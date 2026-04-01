@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Star, Shield, Eye, MapPin, Users, CheckCircle, X, FileText, Building2, Plus, Loader2 } from 'lucide-react';
+import { Star, Shield, Eye, MapPin, Users, CheckCircle, X, FileText, Building2, Plus, Loader2, MessageCircle, Clock, Check, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -21,16 +21,19 @@ const ProviderDashboard = () => {
   const [branchForm, setBranchForm] = useState({ business_name: '', phone: '', address: '', comuna: '', region: '' });
   const [savingBranch, setSavingBranch] = useState(false);
 
+  // Contact Requests Received
+  const [contactRequests, setContactRequests] = useState([]);
+  const [loadingCR, setLoadingCR] = useState(false);
+  const [respondingCR, setRespondingCR] = useState(null);
+
   useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
     try {
       const profileRes = await api.get('/providers/my-profile');
       setProvider(profileRes.data);
-      try {
-        const subRes = await api.get('/subscriptions/status');
-        setHasSubscription(subRes.data?.has_active_subscription || false);
-      } catch {}
+      // Use is_subscribed from profile (includes admin override)
+      setHasSubscription(profileRes.data?.is_subscribed || profileRes.data?.has_active_subscription || false);
       try {
         const brRes = await api.get('/providers/my-branches');
         setBranches(brRes.data);
@@ -39,6 +42,25 @@ const ProviderDashboard = () => {
       if (error.response?.status === 401) navigate('/login');
       else if (error.response?.status === 404) navigate('/registrar-residencia');
     } finally { setLoading(false); }
+  };
+
+  const loadContactRequests = async () => {
+    setLoadingCR(true);
+    try {
+      const res = await api.get('/contact-requests/received');
+      setContactRequests(res.data || []);
+    } catch {} finally { setLoadingCR(false); }
+  };
+
+  const handleRespondCR = async (requestId, action) => {
+    setRespondingCR(requestId);
+    try {
+      await api.put(`/contact-requests/${requestId}/${action}`);
+      toast.success(action === 'accept' ? 'Solicitud aceptada. Chat desbloqueado.' : 'Solicitud rechazada.');
+      loadContactRequests();
+    } catch (e) {
+      toast.error(e.response?.data?.detail || 'Error al responder');
+    } finally { setRespondingCR(null); }
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-12 h-12 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin" /></div>;
@@ -70,10 +92,16 @@ const ProviderDashboard = () => {
         <div className="flex gap-2 mb-6 border-b overflow-x-auto">
           {[
             { key: 'requests', label: 'Solicitudes Publicadas', icon: Users },
+            { key: 'inbox', label: 'Solicitudes Recibidas', icon: MessageCircle },
             { key: 'branches', label: 'Sucursales', icon: MapPin },
           ].map(({ key, label, icon: Icon }) => (
-            <button key={key} onClick={() => setActiveTab(key)} className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === key ? 'border-[#00e7ff] text-[#00e7ff]' : 'border-transparent text-gray-500 hover:text-gray-700'}`} data-testid={`tab-${key}`}>
+            <button key={key} onClick={() => { setActiveTab(key); if (key === 'inbox' && contactRequests.length === 0) loadContactRequests(); }} className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === key ? 'border-[#00e7ff] text-[#00e7ff]' : 'border-transparent text-gray-500 hover:text-gray-700'}`} data-testid={`tab-${key}`}>
               <Icon className="w-4 h-4" />{label}
+              {key === 'inbox' && contactRequests.filter(r => r.status === 'pending').length > 0 && (
+                <span className="ml-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                  {contactRequests.filter(r => r.status === 'pending').length}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -81,6 +109,103 @@ const ProviderDashboard = () => {
         {/* Solicitudes Publicadas */}
         {activeTab === 'requests' && (
           <CareRequestsProvider hasSubscription={hasSubscription} />
+        )}
+
+        {/* Solicitudes Recibidas */}
+        {activeTab === 'inbox' && (
+          <div className="bg-white rounded-2xl p-6 shadow-sm border" data-testid="tab-inbox-content">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-bold text-xl flex items-center gap-2">
+                <MessageCircle className="w-5 h-5 text-[#00e7ff]" />
+                Solicitudes de Contacto Recibidas
+                <span className="text-sm font-normal text-gray-500">({contactRequests.length})</span>
+              </h2>
+              <Button variant="outline" size="sm" onClick={loadContactRequests} disabled={loadingCR} data-testid="refresh-inbox">
+                {loadingCR ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Actualizar'}
+              </Button>
+            </div>
+
+            {loadingCR ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="w-10 h-10 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : contactRequests.length === 0 ? (
+              <div className="text-center py-12">
+                <MessageCircle className="w-16 h-16 text-gray-200 mx-auto mb-4" />
+                <p className="text-gray-500 font-medium">No tienes solicitudes de contacto</p>
+                <p className="text-sm text-gray-400 mt-1">Cuando una familia quiera contactarte, aparecera aqui</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {contactRequests.map(cr => (
+                  <div key={cr.request_id} className={`p-4 rounded-xl border transition-colors ${cr.status === 'pending' ? 'bg-yellow-50/50 border-yellow-200' : cr.status === 'accepted' ? 'bg-green-50/50 border-green-200' : 'bg-gray-50 border-gray-200'}`} data-testid={`contact-request-${cr.request_id}`}>
+                    <div className="flex items-start gap-4">
+                      {/* Client avatar */}
+                      <div className="flex-shrink-0">
+                        {cr.client_picture ? (
+                          <img src={cr.client_picture.startsWith('http') ? cr.client_picture : `${process.env.REACT_APP_BACKEND_URL}${cr.client_picture}`} alt={cr.client_name} className="w-12 h-12 rounded-full object-cover" />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-[#00e7ff]/10 flex items-center justify-center text-lg font-bold text-[#00e7ff]">
+                            {(cr.client_name || 'C')[0]}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-bold text-[#33404f]">{cr.client_name || 'Cliente'}</span>
+                          <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${cr.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : cr.status === 'accepted' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {cr.status === 'pending' ? 'Pendiente' : cr.status === 'accepted' ? 'Aceptada' : 'Rechazada'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-700 mb-2">{cr.message || 'Sin mensaje'}</p>
+                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                          <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{new Date(cr.created_at).toLocaleDateString('es-CL')}</span>
+                          {cr.responded_at && <span>Respondida: {new Date(cr.responded_at).toLocaleDateString('es-CL')}</span>}
+                        </div>
+
+                        {/* Actions */}
+                        {cr.status === 'pending' && (
+                          <div className="flex gap-2 mt-3">
+                            <Button
+                              size="sm"
+                              className="bg-green-500 hover:bg-green-600 text-white text-xs"
+                              disabled={respondingCR === cr.request_id}
+                              onClick={() => handleRespondCR(cr.request_id, 'accept')}
+                              data-testid={`accept-cr-${cr.request_id}`}
+                            >
+                              {respondingCR === cr.request_id ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Check className="w-3 h-3 mr-1" />}
+                              Aceptar
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-red-500 border-red-200 hover:bg-red-50 text-xs"
+                              disabled={respondingCR === cr.request_id}
+                              onClick={() => handleRespondCR(cr.request_id, 'reject')}
+                              data-testid={`reject-cr-${cr.request_id}`}
+                            >
+                              <XCircle className="w-3 h-3 mr-1" />Rechazar
+                            </Button>
+                          </div>
+                        )}
+
+                        {cr.status === 'accepted' && (
+                          <div className="mt-3">
+                            <Link to={`/chat?user=${cr.client_user_id}`}>
+                              <Button size="sm" className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-xs" data-testid={`chat-cr-${cr.request_id}`}>
+                                <MessageCircle className="w-3 h-3 mr-1" />Ir al Chat
+                              </Button>
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
 
         {/* Sucursales */}

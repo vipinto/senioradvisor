@@ -79,7 +79,7 @@ export default function SearchBar({ onSearch, initialService, initialAddress }) 
               <Search className="w-5 h-5 text-[#33404f] shrink-0" />
               <input
                 type="text"
-                placeholder="Buscar por nombre, dirección o comuna"
+                placeholder="Buscar por nombre, comuna o region"
                 value={address}
                 onChange={e => handleInputChange(e.target.value)}
                 onFocus={() => {

@@ -39,6 +39,7 @@ import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
 import '@/App.css';
 import GoogleAuthSuccess from '@/pages/GoogleAuthSuccess';
+import Destacados from '@/pages/Destacados';
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -66,6 +67,7 @@ function AppRouter() {
         <Route path="/auth/google/callback" element={<GoogleCallback />} />
         <Route path="/auth/google-success" element={<GoogleAuthSuccess />} />
         <Route path="/search" element={<SearchSimple />} />
+        <Route path="/destacados" element={<Destacados />} />
         <Route path="/planes" element={<Plans />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogArticle />} />
@@ -126,7 +128,7 @@ function App() {
   return (
     <div className="App">
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-        <BrowserRouter>
+        <BrowserRouter basename={process.env.PUBLIC_URL || '/'}>
           <AppRouter />
           <CookieConsent />
         </BrowserRouter>

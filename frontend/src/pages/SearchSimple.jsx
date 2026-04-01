@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, Component } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { MapPin, Star, Shield, Navigation, Search, X, ChevronRight, Home, Crown } from 'lucide-react';
+import { MapPin, Star, Shield, Navigation, Search, X, ChevronRight, Home, Crown, DollarSign, SlidersHorizontal, Heart } from 'lucide-react';
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
@@ -8,6 +8,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { es } from 'date-fns/locale';
 import { format } from 'date-fns';
 import api from '@/lib/api';
+import { toast } from 'sonner';
 
 class MapErrorBoundary extends Component {
   constructor(props) { super(props); this.state = { hasError: false }; }
@@ -32,6 +33,22 @@ const LIBRARIES = ['places'];
 const DEFAULT_CENTER = { lat: -33.4489, lng: -70.6693 };
 const DEFAULT_ZOOM = 12;
 const mapStyles = [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }];
+
+// Ocultar errores de Google Maps
+if (typeof document !== 'undefined') {
+  const s = document.createElement('style');
+  s.textContent = '.gm-err-container,.gm-err-message,.gm-err-title,.dismissButton,.gm-style-pbc{display:none!important}.gm-style iframe+div{display:none!important}';
+  document.head.appendChild(s);
+  const obs = new MutationObserver(() => {
+    document.querySelectorAll('div').forEach(el => {
+      if (el.textContent === 'Oops! Something went wrong.' && el.children.length <= 2) {
+        let parent = el.closest('.gm-style') || el.parentElement;
+        if (parent) parent.style.display = 'none';
+      }
+    });
+  });
+  obs.observe(document.body, { childList: true, subtree: true });
+}
 
 const SERVICE_TABS = [
   { id: 'residencias', label: 'Residencias' },
@@ -77,6 +94,9 @@ const SearchPage = () => {
   const [totalResults, setTotalResults] = useState(0);
   const PAGE_SIZE = 20;
 
+  // Filters
+  const [minRating, setMinRating] = useState('');
+
   // Autocomplete
   const [comunas, setComunas] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -85,15 +105,54 @@ const SearchPage = () => {
   const mapRef = useRef(null);
   const autocompleteRef = useRef(null);
   const inputRef = useRef(null);
+  const searchInputRef = useRef(null);
   const boundsTimeoutRef = useRef(null);
 
-  // Google Maps disabled - API key requires billing account activation
-  const isLoaded = false;
-  const loadError = true;
+  // User & Favorites
+  const [currentUser, setCurrentUser] = useState(null);
+  const [favoriteIds, setFavoriteIds] = useState(new Set());
+
+  // Google Maps
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: GOOGLE_MAPS_KEY,
+    libraries: LIBRARIES,
+  });
 
   useEffect(() => {
     loadProviders();
-  }, [activeService, currentPage]);
+  }, [activeService, currentPage, minRating]);
+
+  useEffect(() => {
+    // Load user and favorites
+    api.get('/auth/me').then(res => {
+      setCurrentUser(res.data);
+      if (res.data.role !== 'admin' && res.data.role !== 'provider') {
+        api.get('/favorites').then(favRes => {
+          const ids = new Set((favRes.data || []).map(p => p.provider_id));
+          setFavoriteIds(ids);
+        }).catch(() => {});
+      }
+    }).catch(() => {});
+  }, []);
+
+  const toggleFavorite = async (e, providerId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!currentUser) return;
+    try {
+      if (favoriteIds.has(providerId)) {
+        await api.delete(`/favorites/${providerId}`);
+        setFavoriteIds(prev => { const n = new Set(prev); n.delete(providerId); return n; });
+        toast.success('Eliminado de favoritos');
+      } else {
+        await api.post(`/favorites/${providerId}`);
+        setFavoriteIds(prev => new Set(prev).add(providerId));
+        toast.success('Añadido a favoritos');
+      }
+    } catch {
+      toast.error('Error al actualizar favoritos');
+    }
+  };
 
   useEffect(() => {
     // Load comunas for autocomplete
@@ -101,7 +160,7 @@ const SearchPage = () => {
   }, []);
 
   useEffect(() => {
-    if (isLoaded && inputRef.current && !autocompleteRef.current && window.google?.maps?.places) {
+    if (isLoaded && !loadError && inputRef.current && !autocompleteRef.current && window.google?.maps?.places) {
       autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
         componentRestrictions: { country: 'cl' },
         fields: ['geometry', 'formatted_address']
@@ -133,6 +192,8 @@ const SearchPage = () => {
       if (searchAddress.trim()) params.set('q', searchAddress.trim());
       params.set('skip', ((currentPage - 1) * PAGE_SIZE).toString());
       params.set('limit', PAGE_SIZE.toString());
+
+      if (minRating) params.set('min_rating', minRating);
 
       let datesStr = '';
       if (activeService === 'alojamiento' && dateRange.from) {
@@ -266,14 +327,16 @@ const SearchPage = () => {
       const geocoder = new window.google.maps.Geocoder();
       geocoder.geocode({ address: searchAddress, region: 'cl' }, (results, status) => {
         if (status === 'OK' && results[0]) {
-          const newCenter = {
-            lat: results[0].geometry.location.lat(),
-            lng: results[0].geometry.location.lng()
-          };
-          setMapCenter(newCenter);
-          filterProvidersByLocation(newCenter, searchRadius);
-          if (mapRef.current) {
-            mapRef.current.panTo(newCenter);
+          const lat = results[0].geometry.location.lat();
+          const lng = results[0].geometry.location.lng();
+          // Only apply geo filter if location is in Chile (lat -17 to -56, lng -75 to -66)
+          if (lat >= -56 && lat <= -17 && lng >= -76 && lng <= -66) {
+            const newCenter = { lat, lng };
+            setMapCenter(newCenter);
+            filterProvidersByLocation(newCenter, searchRadius);
+            if (mapRef.current) {
+              mapRef.current.panTo(newCenter);
+            }
           }
         }
       });
@@ -352,7 +415,8 @@ const SearchPage = () => {
     <div className="min-h-screen bg-gray-50" data-testid="search-page">
       <div className="bg-white border-b shadow-sm sticky top-24 z-40">
         <div className="max-w-screen-2xl mx-auto px-4 py-4">
-          <div className="flex flex-wrap gap-3 mb-4">
+          {/* Categorias - Select en mobile, botones en desktop */}
+          <div className="hidden sm:flex flex-wrap gap-3 mb-4">
             <button
               onClick={() => { setActiveService(''); setFilteredProviders(providers); }}
               className={`px-6 py-3 rounded-xl text-lg font-bold transition-all ${!activeService ? 'bg-[#00e7ff] text-[#33404f] shadow-lg' : 'bg-gray-100 text-[#33404f] hover:bg-gray-200 border-2 border-gray-300'}`}
@@ -382,14 +446,41 @@ const SearchPage = () => {
               </button>
             ))}
           </div>
+          <div className="sm:hidden mb-3">
+            <select
+              value={activeService}
+              onChange={(e) => {
+                const val = e.target.value;
+                setActiveService(val);
+                setCurrentPage(1);
+                setDateRange({ from: undefined, to: undefined });
+                setSelectedDates([]);
+                if (!val) {
+                  setFilteredProviders(providers);
+                } else if (searchAddress) {
+                  filterProvidersByLocation(mapCenter, searchRadius);
+                } else {
+                  setFilteredProviders(providers.filter(p => p.services?.some(s => s.service_type === val)));
+                }
+              }}
+              className="w-full h-12 px-4 border-2 border-gray-300 rounded-xl text-base font-bold text-[#33404f] bg-white focus:ring-2 focus:ring-[#00e7ff] focus:border-[#00e7ff]"
+              data-testid="service-select-mobile"
+            >
+              <option value="">Todos los servicios</option>
+              <option value="residencias">Residencias</option>
+              <option value="cuidado-domicilio">Cuidado a Domicilio</option>
+              <option value="salud-mental">Salud Mental</option>
+            </select>
+          </div>
 
-          <form onSubmit={handleSearch} className="flex items-center gap-3">
-            <div className="flex-1 relative">
+          <form onSubmit={handleSearch} className="space-y-3 sm:space-y-0">
+            <div className="flex items-center gap-3 sm:flex-row">
+              <div className="flex-1 relative">
               <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#33404f]" />
               <input
-                ref={inputRef}
+                ref={searchInputRef}
                 type="text"
-                placeholder="Buscar por nombre, dirección o comuna..."
+                placeholder="Buscar por nombre, comuna o region..."
                 value={searchAddress}
                 onChange={(e) => {
                   const val = e.target.value;
@@ -440,65 +531,88 @@ const SearchPage = () => {
               )}
             </div>
 
-            {activeService && (
-              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    className="flex items-center gap-3 px-4 h-14 border-2 border-gray-300 rounded-xl hover:bg-gray-50 min-w-[180px]"
-                    data-testid="search-date-trigger"
-                  >
-                    <Search className="w-5 h-5 text-[#33404f]" />
-                    <span className={`text-base truncate ${(dateRange.from || selectedDates.length > 0) ? 'text-[#33404f] font-semibold' : 'text-gray-500'}`}>
-                      {getDateLabel()}
-                    </span>
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 z-50" align="start">
-                  {activeService === 'cuidado-domicilio' ? (
-                    <Calendar
-                      mode="range"
-                      selected={dateRange}
-                      onSelect={r => setDateRange(r || { from: undefined, to: undefined })}
-                      locale={es}
-                      numberOfMonths={2}
-                      disabled={{ before: new Date() }}
-                    />
-                  ) : (
-                    <Calendar
-                      mode="multiple"
-                      selected={selectedDates}
-                      onSelect={d => setSelectedDates(d || [])}
-                      locale={es}
-                      numberOfMonths={2}
-                      disabled={{ before: new Date() }}
-                    />
-                  )}
-                </PopoverContent>
-              </Popover>
-            )}
+            {/* Botones en desktop: inline con input */}
+            <div className="hidden sm:flex items-center gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={getCurrentLocation}
+                disabled={locationLoading}
+                className="h-14 px-5 border-2 border-gray-300 hover:bg-gray-50 text-[#33404f] text-base font-semibold"
+                data-testid="location-button"
+              >
+                <Navigation className={`w-6 h-6 ${locationLoading ? 'animate-pulse' : ''}`} />
+                <span className="ml-2">Mi ubicacion</span>
+              </Button>
 
-            <Button
-              type="button"
-              variant="outline"
-              onClick={getCurrentLocation}
-              disabled={locationLoading}
-              className="h-14 px-5 border-2 border-gray-300 hover:bg-gray-50 text-[#33404f] text-base font-semibold"
-              data-testid="location-button"
-            >
-              <Navigation className={`w-6 h-6 ${locationLoading ? 'animate-pulse' : ''}`} />
-              <span className="hidden sm:inline ml-2">Mi ubicación</span>
-            </Button>
+              <Button
+                type="submit"
+                className="h-14 px-8 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-lg font-bold"
+                data-testid="search-submit"
+              >
+                <Search className="w-6 h-6" />
+                <span className="ml-2">Buscar</span>
+              </Button>
+            </div>
+            </div>
 
-            <Button
-              type="submit"
-              className="h-14 px-8 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-lg font-bold"
-              data-testid="search-submit"
-            >
-              <Search className="w-6 h-6" />
-              <span className="hidden sm:inline ml-2">Buscar</span>
-            </Button>
+            {/* Botones en mobile: debajo del input */}
+            <div className="flex sm:hidden gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={getCurrentLocation}
+                disabled={locationLoading}
+                className="flex-1 h-12 border-2 border-gray-300 hover:bg-gray-50 text-[#33404f] text-sm font-semibold"
+                data-testid="location-button-mobile"
+              >
+                <Navigation className={`w-5 h-5 ${locationLoading ? 'animate-pulse' : ''}`} />
+                <span className="ml-2">Mi ubicacion</span>
+              </Button>
+
+              <Button
+                type="submit"
+                className="flex-1 h-12 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-sm font-bold"
+                data-testid="search-submit-mobile"
+              >
+                <Search className="w-5 h-5" />
+                <span className="ml-2">Buscar</span>
+              </Button>
+            </div>
           </form>
+
+          {/* Filters Row */}
+          <div className="flex flex-wrap items-center gap-2 mt-3">
+            <span className="text-sm font-medium text-gray-500 flex items-center gap-1">
+              <SlidersHorizontal className="w-4 h-4" /> Filtros:
+            </span>
+
+            {/* Rating Filter */}
+            <select
+              value={minRating}
+              onChange={(e) => { setMinRating(e.target.value); setCurrentPage(1); }}
+              className="h-10 px-3 pr-8 border-2 border-gray-200 rounded-lg text-sm font-medium text-[#33404f] bg-white focus:ring-2 focus:ring-[#00e7ff] focus:border-[#00e7ff] cursor-pointer"
+              data-testid="filter-rating"
+            >
+              <option value="">Rating</option>
+              <option value="3">3+ estrellas</option>
+              <option value="3.5">3.5+ estrellas</option>
+              <option value="4">4+ estrellas</option>
+              <option value="4.5">4.5+ estrellas</option>
+            </select>
+
+            {/* Clear Filters */}
+            {minRating && (
+              <button
+                onClick={() => { setMinRating(''); setCurrentPage(1); }}
+                className="h-10 px-3 text-sm text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1"
+                data-testid="clear-filters"
+              >
+                <X className="w-4 h-4" />
+                Limpiar filtros
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -506,10 +620,10 @@ const SearchPage = () => {
         <div className="w-full lg:w-1/2 h-[400px] lg:h-full relative">
           <MapErrorBoundary>
           {loadError ? (
-            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center">
-              <MapPin className="w-16 h-16 text-gray-400 mb-4" />
-              <p className="text-gray-500 font-medium">Mapa no disponible</p>
-              <p className="text-gray-400 text-sm mt-1">Usa la lista para encontrar servicios</p>
+            <div className="w-full h-full bg-gradient-to-br from-[#e8f7f9] to-[#d1f0f4] flex flex-col items-center justify-center">
+              <MapPin className="w-16 h-16 text-[#00e7ff]/40 mb-3" />
+              <p className="text-[#33404f]/60 font-medium text-sm">Mapa en mantenimiento</p>
+              <p className="text-gray-400 text-xs mt-1">Usa el buscador para encontrar servicios</p>
             </div>
           ) : !isLoaded ? (
             <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -694,9 +808,19 @@ const SearchPage = () => {
                         <h3 className="font-bold text-[#33404f] truncate">
                           {provider.business_name}
                         </h3>
-                        {provider.is_featured && (
-                          <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap" data-testid="featured-badge">
-                            <Crown className="w-3 h-3" />Destacado
+                        {provider.is_featured && provider.provider_is_subscribed && (
+                          <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap font-bold" data-testid="featured-subscribed-badge">
+                            <Crown className="w-3 h-3" />Premium
+                          </span>
+                        )}
+                        {provider.is_featured && !provider.provider_is_subscribed && (
+                          <span className="bg-[#000000] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap" data-testid="featured-badge">
+                            <Star className="w-3 h-3" />Destacado
+                          </span>
+                        )}
+                        {!provider.is_featured && provider.provider_is_subscribed && (
+                          <span className="bg-[#00e7ff] text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap font-bold" data-testid="subscribed-badge">
+                            <Crown className="w-3 h-3" />Suscrito
                           </span>
                         )}
                         {provider.verified && (
@@ -753,7 +877,17 @@ const SearchPage = () => {
                       )}
                     </div>
 
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-1">
+                      {currentUser && currentUser.role !== 'admin' && currentUser.role !== 'provider' && (
+                        <button
+                          onClick={(e) => toggleFavorite(e, provider.provider_id)}
+                          className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                          data-testid={`favorite-btn-${provider.provider_id}`}
+                          title={favoriteIds.has(provider.provider_id) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                        >
+                          <Heart className={`w-5 h-5 transition-colors ${favoriteIds.has(provider.provider_id) ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-400'}`} />
+                        </button>
+                      )}
                       <ChevronRight className="w-5 h-5 text-gray-400" />
                     </div>
                   </div>

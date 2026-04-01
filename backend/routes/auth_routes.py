@@ -75,8 +75,17 @@ async def email_register(data: EmailRegisterRequest):
 @router.post("/login")
 async def email_login(data: EmailLoginRequest):
     """Login with email and password"""
-    result = await login_user(data.email, data.password, db)
-    return result
+    import traceback
+    import logging
+    logger = logging.getLogger(__name__)
+    try:
+        result = await login_user(data.email, data.password, db)
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Login error: {str(e)}\n{traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
 
 
 #@router.post("/google")
@@ -206,25 +215,6 @@ async def select_role(request: Request):
     return {"message": "Rol seleccionado", "user": updated_user}
 
 
-@router.put("/profile/update")
-async def update_profile(request: Request):
-    """Update current user's profile"""
-    user = await get_current_user(request, db)
-    data = await request.json()
-    
-    allowed_fields = ['name', 'phone', 'address', 'comuna', 'emergency_contact', 'emergency_phone', 
-                      'housing_type', 'has_yard', 'yard_description', 'has_own_pets', 
-                      'own_pets_description', 'additional_info']
-    update_data = {k: v for k, v in data.items() if k in allowed_fields}
-    
-    if update_data:
-        await db.users.update_one(
-            {"user_id": user["user_id"]},
-            {"$set": update_data}
-        )
-    
-    return {"message": "Perfil actualizado"}
-
 
 @router.post("/profile/photos")
 async def upload_client_photo(request: Request, file: UploadFile = File(...), photo_type: str = Form(...)):
@@ -318,7 +308,7 @@ async def register_provider_public(data: ProviderRegistrationRequest):
     """Public registration for a new residence/provider. Requires admin approval."""
     import uuid
     from datetime import datetime, timezone
-    from passlib.hash import bcrypt
+    import bcrypt as bcrypt_lib
 
     if len(data.password) < 6:
         raise HTTPException(status_code=400, detail="La contraseña debe tener al menos 6 caracteres")
@@ -341,7 +331,7 @@ async def register_provider_public(data: ProviderRegistrationRequest):
         "email": data.email,
         "name": data.business_name,
         "role": "provider",
-        "hashed_password": bcrypt.hash(data.password),
+        "hashed_password": bcrypt_lib.hashpw(data.password.encode('utf-8'), bcrypt_lib.gensalt()).decode('utf-8'),
         "auth_type": "email",
         "created_at": now,
         "active": True,

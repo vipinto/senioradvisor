@@ -13,7 +13,8 @@ const Home = () => {
 
   useEffect(() => {
     api.get('/providers?featured=true').then(res => {
-      const sorted = res.data.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      const data = res.data.results || res.data;
+      const sorted = Array.isArray(data) ? data.sort((a, b) => (b.rating || 0) - (a.rating || 0)) : [];
       setFeatured(sorted);
     }).catch(() => {});
     api.get('/blog/articles?limit=6').then(res => {
@@ -73,7 +74,7 @@ const Home = () => {
       <section className="py-12 bg-white" data-testid="senior-club-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link to="/seniorclub" className="block">
-            <div className="bg-[#33404f] rounded-2xl hover:bg-[#3a4a5c] transition-colors cursor-pointer group overflow-hidden">
+            <div className="bg-[#000000] rounded-2xl hover:bg-[#3a4a5c] transition-colors cursor-pointer group overflow-hidden">
               <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 px-8 py-8 md:py-6">
                 <div className="shrink-0">
                   <img
@@ -104,12 +105,12 @@ const Home = () => {
       )}
 
       {/* Como usar SeniorAdvisor */}
-      <section className="bg-[#00e7ff]" data-testid="cta-banner">
+      <section className="bg-white" data-testid="cta-banner">
         <div className="flex flex-col md:flex-row items-stretch">
           <div className="md:w-4/12 relative min-h-[350px] md:min-h-0">
             <img
-              src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=800"
-              alt="Adulto mayor feliz"
+              src="https://SeniorAdvisor.cl/como-usar-senior.jpeg"
+              alt="Cómo usar SeniorAdvisor"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
           </div>
@@ -123,25 +124,25 @@ const Home = () => {
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-[#00e7ff] flex items-center justify-center mb-3">
+                    <div className="w-20 h-20 rounded-full border-2 border-[#000000] bg-white flex items-center justify-center mb-3">
                       <MapPin className="w-9 h-9 text-[#33404f]" />
                     </div>
-                    <p className="font-bold text-xl mb-1.5">Busca un servicio</p>
-                    <p className="opacity-85 text-sm leading-relaxed">Explora los distintos servicios, y ayúdanos a filtrar los mejores.</p>
+                    <p className="font-bold text-2xl md:text-3xl mb-2">Busca un servicio</p>
+                    <p className="opacity-85 text-base md:text-lg leading-relaxed">Explora los distintos servicios, y ayúdanos a filtrar los mejores.</p>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-[#00e7ff] flex items-center justify-center mb-3">
+                    <div className="w-20 h-20 rounded-full border-2 border-[#000000] bg-white flex items-center justify-center mb-3">
                       <MessageSquareText className="w-9 h-9 text-[#33404f]" />
                     </div>
-                    <p className="font-bold text-xl mb-1.5">Deja tu reseña</p>
-                    <p className="opacity-85 text-sm leading-relaxed">Escribe tu experiencia y otorga una valoración con estrellas.</p>
+                    <p className="font-bold text-2xl md:text-3xl mb-2">Deja tu reseña</p>
+                    <p className="opacity-85 text-base md:text-lg leading-relaxed">Escribe tu experiencia y otorga una valoración con estrellas.</p>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-[#00e7ff] flex items-center justify-center mb-3">
+                    <div className="w-20 h-20 rounded-full border-2 border-[#000000] bg-white flex items-center justify-center mb-3">
                       <Users className="w-9 h-9 text-[#33404f]" />
                     </div>
-                    <p className="font-bold text-xl mb-1.5">Ayuda a otros</p>
-                    <p className="opacity-85 text-sm leading-relaxed">Tu opinión orienta a más personas a tomar una mejor decisión.</p>
+                    <p className="font-bold text-2xl md:text-3xl mb-2">Ayuda a otros</p>
+                    <p className="opacity-85 text-base md:text-lg leading-relaxed">Tu opinión orienta a más personas a tomar una mejor decisión.</p>
                   </div>
                 </div>
               </div>
@@ -158,9 +159,10 @@ const Home = () => {
               <div className="relative w-full" style={{ maxWidth: '500px' }}>
                 <div className="aspect-video rounded-2xl shadow-lg overflow-hidden">
                   <iframe
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                    src="https://www.youtube.com/embed/2kU-gj4jHtc?si=fvILhF75aJ-EARqc"
                     title="SeniorAdvisor"
                     className="w-full h-full"
+                    loading="lazy"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
@@ -179,13 +181,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Actualidad Mayor - Blog */}
+      {/* Actualidad Senior - Blog */}
       {blogArticles.length > 0 && (
         <section className="py-16 bg-white" data-testid="blog-section">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-10">
-              <h2 className="text-3xl font-bold text-[#33404f] mb-2">Actualidad Mayor</h2>
-              <p className="text-gray-500 text-sm">Noticias, beneficios y recomendaciones para inspirarte</p>
+              <h2 className="text-4xl font-bold text-[#33404f] mb-2">Actualidad Senior</h2>
+              <p className="text-gray-500 text-lg">Noticias, beneficios y recomendaciones para inspirarte</p>
             </div>
             <div className="grid md:grid-cols-3 gap-4">
               {blogArticles.slice(0, 6).map((article) => (
@@ -209,7 +211,7 @@ const Home = () => {
             </div>
             <div className="text-center mt-10">
               <Link to="/blog">
-                <Button className="bg-[#33404f] text-white hover:bg-[#4a5568] px-8 py-4 text-base font-bold rounded-xl">
+                <Button className="bg-[#000000] text-white hover:bg-[#4a5568] px-8 py-4 text-base font-bold rounded-xl">
                   Ver Toda la Actualidad <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
@@ -224,7 +226,7 @@ const Home = () => {
           <h2 className="text-4xl font-bold mb-4">¿Ofreces servicios para adultos mayores?</h2>
           <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">Únete a SeniorAdvisor y conecta con miles de familias que buscan servicios de calidad como el tuyo.</p>
           <Link to="/provider/register">
-            <Button className="bg-[#33404f] text-white hover:bg-[#4a5568] px-12 py-6 text-lg font-bold rounded-xl">
+            <Button className="bg-[#000000] text-white hover:bg-[#4a5568] px-12 py-6 text-lg font-bold rounded-xl">
               Registrar mi Servicio Gratis
             </Button>
           </Link>
@@ -232,7 +234,7 @@ const Home = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#33404f] py-8">
+      <footer className="bg-[#000000] py-8">
         <div className="max-w-7xl mx-auto px-4 text-center text-white text-sm opacity-80">
           SeniorAdvisor - Todos los derechos reservados
         </div>
@@ -250,7 +252,6 @@ const FeaturedSlider = ({ featured }) => {
   });
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
-  const [showAll, setShowAll] = useState(false);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -294,19 +295,18 @@ const FeaturedSlider = ({ featured }) => {
   );
 
   return (
-    <section className="py-16 bg-white" data-testid="featured-section">
+    <section className="py-16 bg-[#00e7ff]" data-testid="featured-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-[#33404f] mb-1">Residencias Destacadas</h2>
-            <p className="text-gray-500 text-sm">Los servicios mejor evaluados por las familias</p>
+            <h2 className="text-4xl font-bold text-[#33404f] mb-1">Residencias Destacadas</h2>
+            <p className="text-gray-500 text-lg">Los servicios mejor evaluados por las familias</p>
           </div>
-          {!showAll && (
-            <div className="flex gap-2">
+          <div className="flex gap-2">
               <button
                 onClick={() => emblaApi?.scrollPrev()}
                 disabled={!canScrollPrev}
-                className="w-10 h-10 rounded-full bg-[#33404f] text-white flex items-center justify-center hover:bg-[#4a5568] disabled:opacity-30 transition-all"
+                className="w-10 h-10 rounded-full bg-[#000000] text-white flex items-center justify-center hover:bg-[#4a5568] disabled:opacity-30 transition-all"
                 data-testid="slider-prev"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -314,42 +314,34 @@ const FeaturedSlider = ({ featured }) => {
               <button
                 onClick={() => emblaApi?.scrollNext()}
                 disabled={!canScrollNext}
-                className="w-10 h-10 rounded-full bg-[#33404f] text-white flex items-center justify-center hover:bg-[#4a5568] disabled:opacity-30 transition-all"
+                className="w-10 h-10 rounded-full bg-[#000000] text-white flex items-center justify-center hover:bg-[#4a5568] disabled:opacity-30 transition-all"
                 data-testid="slider-next"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
-          )}
         </div>
 
-        {showAll ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex gap-6">
             {featured.map((p) => (
-              <FeaturedCard key={p.provider_id} p={p} />
+              <div key={p.provider_id} className="flex-[0_0_280px]">
+                <FeaturedCard p={p} />
+              </div>
             ))}
           </div>
-        ) : (
-          <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex gap-6">
-              {featured.map((p) => (
-                <div key={p.provider_id} className="flex-[0_0_280px]">
-                  <FeaturedCard p={p} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        </div>
 
         <div className="text-center mt-10">
-          <Button 
-            onClick={() => setShowAll(!showAll)}
-            className="bg-[#33404f] text-white hover:bg-[#4a5568] px-8 py-4 text-base font-bold rounded-xl"
-            data-testid="toggle-all-featured"
-          >
-            {showAll ? 'Ver Menos' : 'Ver Todas las Destacadas'} 
-            <ArrowRight className={`w-5 h-5 ml-2 transition-transform ${showAll ? 'rotate-90' : ''}`} />
-          </Button>
+          <Link to="/destacados">
+            <Button 
+              className="bg-[#000000] text-white hover:bg-[#4a5568] px-8 py-4 text-base font-bold rounded-xl"
+              data-testid="toggle-all-featured"
+            >
+              Ver Todas las Destacadas
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
