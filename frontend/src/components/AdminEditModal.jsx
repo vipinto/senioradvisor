@@ -517,22 +517,44 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
             <>
               <p className="text-sm text-gray-500">Galeria estandar (max 3 fotos)</p>
               <div className="grid grid-cols-2 gap-3">
-                {(provider.gallery || []).map((photo, i) => (
+                {(provider.gallery || []).map((photo, i) => {
+                  const photoUrl = typeof photo === 'string' ? photo : photo.url;
+                  const isProfilePhoto = provider.profile_photo && getPhotoUrl(provider.profile_photo) === getPhotoUrl(photoUrl);
+                  return (
                   <div key={i} className="relative group rounded-lg overflow-hidden border">
                     <img
-                      src={getPhotoUrl(typeof photo === 'string' ? photo : photo.url)}
+                      src={getPhotoUrl(photoUrl)}
                       alt={`Foto ${i + 1}`}
                       className="w-full h-32 object-cover"
                     />
-                    <button
-                      onClick={() => handleDeleteGalleryPhoto(photo)}
-                      className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      data-testid={`delete-gallery-${i}`}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    {isProfilePhoto && (
+                      <span className="absolute top-1 left-1 bg-[#00e7ff] text-[#33404f] text-xs font-bold px-2 py-0.5 rounded-full">Perfil</span>
+                    )}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center gap-1 pb-2">
+                      <button
+                        onClick={async () => {
+                          try {
+                            await api.put(`/admin/providers/${provider.provider_id}/profile`, { profile_photo: photoUrl });
+                            toast.success('Foto de perfil actualizada');
+                            onSaved();
+                          } catch { toast.error('Error al actualizar'); }
+                        }}
+                        className="bg-[#00e7ff] text-[#33404f] text-xs font-bold px-2 py-1 rounded-lg"
+                        data-testid={`set-profile-photo-${i}`}
+                      >
+                        Foto de perfil
+                      </button>
+                      <button
+                        onClick={() => handleDeleteGalleryPhoto(photo)}
+                        className="bg-red-500 text-white p-1 rounded-lg"
+                        data-testid={`delete-gallery-${i}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
               {(provider.gallery || []).length < 3 && (
                 <div>
