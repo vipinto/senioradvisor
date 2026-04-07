@@ -30,7 +30,7 @@ export default function Destacados() {
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm font-medium">Volver al inicio</span>
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold text-[#33404f]" data-testid="destacados-title">Residencias Destacadas</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#33404f]" data-testid="destacados-title">Residencias y Cuidados Domiciliarios Destacados</h1>
           <p className="text-[#33404f]/70 text-lg mt-2">Los servicios mejor evaluados por las familias</p>
         </div>
       </div>
