@@ -417,7 +417,7 @@ export default function ProviderProfile() {
               className="px-3 py-1 text-xs font-bold bg-[#00e7ff] text-[#33404f] rounded-full hover:bg-white transition-colors"
               data-testid="admin-settings-btn"
             >
-              Destacado / Suscripción / Place ID
+              Destacado / Plan / Place ID
             </button>
           </div>
         </div>
@@ -505,19 +505,19 @@ export default function ProviderProfile() {
                 <div className="flex flex-wrap items-center gap-2">
                   <h1 className="text-3xl font-bold text-[#33404f]">{provider.business_name}</h1>
                   {provider.verified && <Shield className="w-6 h-6 text-yellow-300" />}
-                  {provider.is_featured && provider.provider_is_subscribed && (
+                  {provider.plan_type === 'premium_plus' && (
                     <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 font-bold">
-                      <Crown className="w-3 h-3" />Premium
+                      <Crown className="w-3 h-3" />Premium+
                     </span>
                   )}
-                  {provider.is_featured && !provider.provider_is_subscribed && (
+                  {provider.plan_type === 'premium' && (
+                    <span className="bg-[#00e7ff] text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 font-bold">
+                      Premium
+                    </span>
+                  )}
+                  {provider.plan_type === 'destacado' && (
                     <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
                       <Star className="w-3 h-3" />Destacado
-                    </span>
-                  )}
-                  {!provider.is_featured && provider.provider_is_subscribed && (
-                    <span className="bg-[#00e7ff] text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 font-bold">
-                      <Crown className="w-3 h-3" />Suscrito
                     </span>
                   )}
                   {isClient && (
@@ -540,8 +540,8 @@ export default function ProviderProfile() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
 
-            {/* Premium Slider - Only for subscribed providers */}
-            {(provider.provider_is_subscribed && provider.premium_gallery?.length > 0) || isAdmin ? (
+            {/* Premium Slider - Only for Premium+ providers */}
+            {(provider.plan_type === 'premium_plus' && provider.premium_gallery?.length > 0) || isAdmin ? (
               <div className="relative">
                 {isAdmin && (
                   <div className="flex justify-end mb-2">
@@ -567,8 +567,8 @@ export default function ProviderProfile() {
               </div>
             )}
 
-            {/* YouTube Video - Only for subscribed providers */}
-            {provider.provider_is_subscribed && provider.youtube_video_url ? (
+            {/* YouTube Video - Only for Premium+ providers */}
+            {provider.plan_type === 'premium_plus' && provider.youtube_video_url ? (
               <div className="relative w-full rounded-2xl overflow-hidden shadow-lg" data-testid="provider-youtube-video">
                 {isAdmin && <div className="absolute top-2 right-2 z-10"><EditBtn section="youtube" /></div>}
                 <div className="relative w-full aspect-[16/9]">
@@ -964,25 +964,25 @@ export default function ProviderProfile() {
                         <span className="text-sm text-gray-700">{provider.address}</span>
                       </div>
                     )}
-                    {provider.phone && (provider.provider_is_subscribed || isAdmin) && (
+                    {provider.phone && (['premium', 'premium_plus'].includes(provider.plan_type) || isAdmin) && (
                       <a href={`tel:${provider.phone}`} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                         <Phone className="w-5 h-5 text-[#00e7ff]" />
                         <span className="text-sm font-medium">{provider.phone}</span>
                       </a>
                     )}
-                    {provider.phone && !provider.provider_is_subscribed && !isAdmin && (
+                    {provider.phone && !['premium', 'premium_plus'].includes(provider.plan_type) && !isAdmin && (
                       <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl opacity-60">
                         <Lock className="w-5 h-5 text-gray-400" />
                         <span className="text-sm text-gray-400">Telefono disponible solo para premium</span>
                       </div>
                     )}
-                    {provider.whatsapp && (provider.provider_is_subscribed || isAdmin) && (
+                    {provider.whatsapp && (['premium', 'premium_plus'].includes(provider.plan_type) || isAdmin) && (
                       <a href={`https://wa.me/${provider.whatsapp}`} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
                         <MessageSquare className="w-5 h-5 text-green-600" />
                         <span className="text-sm font-medium text-green-700">WhatsApp</span>
                       </a>
                     )}
-                    {provider.whatsapp && !provider.provider_is_subscribed && !isAdmin && (
+                    {provider.whatsapp && !['premium', 'premium_plus'].includes(provider.plan_type) && !isAdmin && (
                       <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl opacity-60">
                         <Lock className="w-5 h-5 text-gray-400" />
                         <span className="text-sm text-gray-400">WhatsApp disponible solo para premium</span>

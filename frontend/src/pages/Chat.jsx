@@ -282,11 +282,8 @@ const Chat = () => {
       {user?.role === 'provider' && !user?.has_subscription && (
         <div className="bg-amber-50 border-b border-amber-200 px-4 py-3 flex items-center justify-between" data-testid="free-provider-chat-banner">
           <p className="text-sm text-amber-800">
-            <strong>Cuenta gratuita:</strong> Puedes responder mensajes de clientes que te contacten. Para enviar propuestas e iniciar conversaciones, actualiza a Premium.
+            <strong>Cuenta gratuita:</strong> Puedes responder mensajes de clientes que te contacten. Para enviar propuestas e iniciar conversaciones, contacta a <a href="mailto:hola@senioradvisor.cl" className="text-[#00e7ff] underline font-medium">hola@senioradvisor.cl</a>
           </p>
-          <Link to="/provider/dashboard" className="text-sm font-bold text-[#00e7ff] hover:underline whitespace-nowrap ml-4">
-            Ver Premium
-          </Link>
         </div>
       )}
       <div className="max-w-6xl mx-auto h-[calc(100vh-64px)] flex">

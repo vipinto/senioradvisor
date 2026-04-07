@@ -13,7 +13,6 @@ const PET_SIZE_LABEL = { pequeno: 'Pequeño', mediano: 'Mediano', grande: 'Grand
 const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [subscription, setSubscription] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [pets, setPets] = useState([]);
   const [clientReviews, setClientReviews] = useState([]);
@@ -32,9 +31,8 @@ const Dashboard = () => {
 
   const loadData = async () => {
     try {
-      const [userRes, subRes, favRes, petRes, reviewRes] = await Promise.all([
+      const [userRes, favRes, petRes, reviewRes] = await Promise.all([
         api.get('/auth/me'),
-        api.get('/subscription/my').catch(() => ({ data: { has_subscription: false } })),
         api.get('/favorites').catch(() => ({ data: [] })),
         api.get('/pets').catch(() => ({ data: [] })),
         api.get('/reviews/client/me').catch(() => ({ data: [] }))
@@ -47,18 +45,15 @@ const Dashboard = () => {
       }
       
       setUser(userRes.data);
-      setSubscription(subRes.data);
       setFavorites(favRes.data);
       setPets(petRes.data);
       setClientReviews(reviewRes.data);
 
-      // Load sent contact requests for premium clients
-      if (subRes.data?.has_subscription) {
-        try {
-          const crRes = await api.get('/contact-requests/sent');
-          setContactRequestsSent(crRes.data);
-        } catch {}
-      }
+      // Load sent contact requests
+      try {
+        const crRes = await api.get('/contact-requests/sent');
+        setContactRequestsSent(crRes.data);
+      } catch {}
     } catch { navigate('/login'); }
     finally { setLoading(false); }
   };
