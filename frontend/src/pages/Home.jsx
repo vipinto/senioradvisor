@@ -370,7 +370,7 @@ const FeaturedSlider = ({ featured }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-4xl font-bold text-[#33404f] mb-1">Residencias Destacadas</h2>
+            <h2 className="text-4xl font-bold text-[#33404f] mb-1">Residencias y Cuidados Domiciliarios Destacados</h2>
             <p className="text-gray-500 text-lg">Los servicios mejor evaluados por las familias</p>
           </div>
           <div className="flex gap-2">
