@@ -33,6 +33,7 @@ import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
 import Seguridad from '@/pages/Seguridad';
 import HogaresSociales from '@/pages/HogaresSociales';
+import Podcast from '@/pages/Podcast';
 import MyBookings from '@/pages/MyBookings';
 import ServiceHistory from '@/pages/ServiceHistory';
 import SelectRole from '@/pages/SelectRole';
@@ -119,6 +120,7 @@ function AppRouter() {
         <Route path="/privacidad" element={<Privacy />} />
         <Route path="/seguridad" element={<Seguridad />} />
         <Route path="/hogares-sociales" element={<HogaresSociales />} />
+        <Route path="/podcast" element={<Podcast />} />
       </Routes>
       {!hideNavbar && <Footer />}
       <Toaster position="top-right" richColors />

@@ -134,6 +134,12 @@ export default function AdminPanel() {
   const [showBlogModal, setShowBlogModal] = useState(false);
   const [editingArticle, setEditingArticle] = useState(null);
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [podcastCategories, setPodcastCategories] = useState([]);
+  const [podcastEpisodes, setPodcastEpisodes] = useState([]);
+  const [showPodcastModal, setShowPodcastModal] = useState(false);
+  const [editingEpisode, setEditingEpisode] = useState(null);
+  const [podcastForm, setPodcastForm] = useState({ title: '', description: '', youtube_url: '', category: '' });
+  const [newPodcastCatName, setNewPodcastCatName] = useState('');
   const [partnerLeads, setPartnerLeads] = useState([]);
   const [convenios, setConvenios] = useState([]);
   const [showConvenioModal, setShowConvenioModal] = useState(false);
@@ -186,6 +192,12 @@ export default function AdminPanel() {
         setBlogArticles(blogRes.data);
         const catRes = await api.get('/blog/categories');
         setBlogCategories(catRes.data);
+      } catch {}
+      try {
+        const pcRes = await api.get('/podcast/categories');
+        setPodcastCategories(pcRes.data);
+        const peRes = await api.get('/podcast/episodes');
+        setPodcastEpisodes(peRes.data);
       } catch {}
       try {
         const leadsRes = await api.get('/partners/leads');
@@ -425,6 +437,9 @@ export default function AdminPanel() {
             </button>
             <button onClick={() => setActiveTab('blog')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'blog' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-blog">
               <Newspaper className="w-4 h-4 inline mr-1" />Blog
+            </button>
+            <button onClick={() => setActiveTab('podcast')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'podcast' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-podcast">
+              <Newspaper className="w-4 h-4 inline mr-1" />Podcast
             </button>
             <button onClick={() => setActiveTab('leads')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'leads' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-leads">
               <Handshake className="w-4 h-4 inline mr-1" />Leads ({partnerLeads.length})
@@ -981,6 +996,77 @@ export default function AdminPanel() {
               </div>
             )}
 
+            {activeTab === 'podcast' && (
+              <div className="space-y-4" data-testid="podcast-tab">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold text-[#33404f]">SeniorPodcast</h3>
+                  <Button onClick={() => { setPodcastForm({ title: '', description: '', youtube_url: '', category: podcastCategories[0]?.category_id || '' }); setEditingEpisode(null); setShowPodcastModal(true); }} className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="new-episode-btn">
+                    <Plus className="w-4 h-4 mr-1" /> Nuevo Episodio
+                  </Button>
+                </div>
+
+                {/* Podcast category management */}
+                <div className="p-4 bg-gray-50 rounded-xl">
+                  <p className="text-sm font-bold text-[#33404f] mb-3">Podcasts (Categorias)</p>
+                  <div className="space-y-2 mb-3">
+                    {podcastCategories.map(c => (
+                      <div key={c.category_id} className="flex items-start gap-2 bg-white border rounded-xl p-3">
+                        <div className="flex-1 space-y-1">
+                          <input type="text" defaultValue={c.name} className="w-full text-sm font-bold text-[#33404f] border-b border-transparent hover:border-gray-300 focus:border-[#00e7ff] focus:outline-none px-1 py-0.5" onBlur={async (e) => {
+                            const val = e.target.value.trim();
+                            if (val && val !== c.name) { try { const res = await api.put(`/podcast/categories/${c.category_id}`, { name: val }); setPodcastCategories(prev => prev.map(x => x.category_id === c.category_id ? res.data : x)); toast.success('Nombre actualizado'); } catch { toast.error('Error'); e.target.value = c.name; } }
+                          }} />
+                          <input type="text" defaultValue={c.description || ''} placeholder="Descripcion..." className="w-full text-xs text-gray-500 border-b border-transparent hover:border-gray-300 focus:border-[#00e7ff] focus:outline-none px-1 py-0.5" onBlur={async (e) => {
+                            const val = e.target.value.trim();
+                            if (val !== (c.description || '')) { try { const res = await api.put(`/podcast/categories/${c.category_id}`, { description: val }); setPodcastCategories(prev => prev.map(x => x.category_id === c.category_id ? res.data : x)); toast.success('Actualizado'); } catch { toast.error('Error'); } }
+                          }} />
+                        </div>
+                        <button onClick={async () => {
+                          if (!window.confirm(`Eliminar podcast "${c.name}" y todos sus episodios?`)) return;
+                          try { await api.delete(`/podcast/categories/${c.category_id}`); setPodcastCategories(prev => prev.filter(x => x.category_id !== c.category_id)); setPodcastEpisodes(prev => prev.filter(x => x.category !== c.category_id)); toast.success('Eliminado'); } catch { toast.error('Error'); }
+                        }} className="p-1 text-gray-400 hover:text-red-500 mt-1"><X className="w-4 h-4" /></button>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <input type="text" value={newPodcastCatName} onChange={e => setNewPodcastCatName(e.target.value)} placeholder="Nuevo podcast..." className="flex-1 border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="new-podcast-cat-input" />
+                    <Button size="sm" className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-xs" data-testid="add-podcast-cat-btn" onClick={async () => {
+                      if (!newPodcastCatName.trim()) return;
+                      try { const res = await api.post('/podcast/categories', { name: newPodcastCatName.trim() }); setPodcastCategories(prev => [...prev, res.data]); setNewPodcastCatName(''); toast.success('Podcast creado'); } catch (e) { toast.error(e.response?.data?.detail || 'Error'); }
+                    }}>Agregar</Button>
+                  </div>
+                </div>
+
+                {/* Episodes list grouped by category */}
+                {podcastCategories.map(cat => {
+                  const catEps = podcastEpisodes.filter(e => e.category === cat.category_id);
+                  return (
+                    <div key={cat.category_id} className="mt-4">
+                      <h4 className="font-bold text-[#33404f] text-sm mb-2">{cat.name} ({catEps.length} episodios)</h4>
+                      {catEps.length === 0 ? (
+                        <p className="text-xs text-gray-400 ml-2">Sin episodios</p>
+                      ) : catEps.map(ep => (
+                        <div key={ep.episode_id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl mb-2" data-testid={`podcast-row-${ep.episode_id}`}>
+                          <div className="w-20 h-12 rounded-lg bg-gray-200 overflow-hidden flex-shrink-0">
+                            {(() => { const ytId = ep.youtube_url?.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([^?&\s]+)/)?.[1]; return ytId ? <img src={`https://img.youtube.com/vi/${ytId}/mqdefault.jpg`} className="w-full h-full object-cover" alt="" /> : null; })()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h5 className="font-bold text-[#33404f] text-sm truncate">{ep.title}</h5>
+                            <p className="text-xs text-gray-400 truncate">{ep.description}</p>
+                          </div>
+                          <button onClick={() => { setPodcastForm({ title: ep.title, description: ep.description || '', youtube_url: ep.youtube_url, category: ep.category }); setEditingEpisode(ep); setShowPodcastModal(true); }} className="p-2 hover:bg-gray-200 rounded-lg"><Pencil className="w-4 h-4 text-gray-500" /></button>
+                          <button onClick={async () => {
+                            if (!window.confirm('Eliminar episodio?')) return;
+                            try { await api.delete(`/podcast/episodes/${ep.episode_id}`); setPodcastEpisodes(prev => prev.filter(x => x.episode_id !== ep.episode_id)); toast.success('Eliminado'); } catch { toast.error('Error'); }
+                          }} className="p-2 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4 text-red-400" /></button>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
             {activeTab === 'leads' && (
               <div className="space-y-4" data-testid="leads-tab">
                 <div className="flex items-center justify-between mb-4">
@@ -1478,6 +1564,55 @@ export default function AdminPanel() {
                 {editingArticle ? 'Actualizar' : 'Publicar'}
               </Button>
               <Button variant="outline" onClick={() => setShowBlogModal(false)} className="flex-1">Cancelar</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Podcast Episode Modal */}
+      {showPodcastModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
+            <h3 className="text-lg font-bold text-[#33404f] mb-4">{editingEpisode ? 'Editar Episodio' : 'Nuevo Episodio'}</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium mb-1">Podcast</label>
+                <select value={podcastForm.category} onChange={e => setPodcastForm(p => ({ ...p, category: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="podcast-form-category">
+                  <option value="">Seleccionar podcast...</option>
+                  {podcastCategories.map(c => <option key={c.category_id} value={c.category_id}>{c.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">URL YouTube</label>
+                <input type="text" value={podcastForm.youtube_url} onChange={e => setPodcastForm(p => ({ ...p, youtube_url: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="https://www.youtube.com/watch?v=..." data-testid="podcast-form-youtube" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Titulo</label>
+                <input type="text" value={podcastForm.title} onChange={e => setPodcastForm(p => ({ ...p, title: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="podcast-form-title" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Bajada / Descripcion</label>
+                <textarea value={podcastForm.description} onChange={e => setPodcastForm(p => ({ ...p, description: e.target.value }))} rows={3} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="podcast-form-description" />
+              </div>
+            </div>
+            <div className="flex gap-3 mt-4">
+              <Button onClick={async () => {
+                try {
+                  if (editingEpisode) {
+                    const res = await api.put(`/podcast/episodes/${editingEpisode.episode_id}`, podcastForm);
+                    setPodcastEpisodes(prev => prev.map(x => x.episode_id === editingEpisode.episode_id ? res.data : x));
+                    toast.success('Episodio actualizado');
+                  } else {
+                    const res = await api.post('/podcast/episodes', podcastForm);
+                    setPodcastEpisodes(prev => [res.data, ...prev]);
+                    toast.success('Episodio creado');
+                  }
+                  setShowPodcastModal(false);
+                } catch { toast.error('Error al guardar'); }
+              }} className="flex-1 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold" data-testid="podcast-form-save">
+                {editingEpisode ? 'Actualizar' : 'Publicar'}
+              </Button>
+              <Button variant="outline" onClick={() => setShowPodcastModal(false)} className="flex-1">Cancelar</Button>
             </div>
           </div>
         </div>
