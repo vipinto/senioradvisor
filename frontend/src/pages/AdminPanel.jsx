@@ -127,11 +127,13 @@ export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState('pending');
   const [editPlan, setEditPlan] = useState(null);
   const [showPlanModal, setShowPlanModal] = useState(false);
-  const [blogForm, setBlogForm] = useState({ title: '', excerpt: '', content: '', image: '' });
+  const [blogForm, setBlogForm] = useState({ title: '', excerpt: '', content: '', image: '', youtube_url: '', category: '' });
   const [viewingDocs, setViewingDocs] = useState(null);
   const [blogArticles, setBlogArticles] = useState([]);
+  const [blogCategories, setBlogCategories] = useState([]);
   const [showBlogModal, setShowBlogModal] = useState(false);
   const [editingArticle, setEditingArticle] = useState(null);
+  const [newCategoryName, setNewCategoryName] = useState('');
   const [partnerLeads, setPartnerLeads] = useState([]);
   const [convenios, setConvenios] = useState([]);
   const [showConvenioModal, setShowConvenioModal] = useState(false);
@@ -182,6 +184,8 @@ export default function AdminPanel() {
       try {
         const blogRes = await api.get('/blog/articles?published_only=false');
         setBlogArticles(blogRes.data);
+        const catRes = await api.get('/blog/categories');
+        setBlogCategories(catRes.data);
       } catch {}
       try {
         const leadsRes = await api.get('/partners/leads');
@@ -887,29 +891,62 @@ export default function AdminPanel() {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-bold text-[#33404f]">Actualidad Senior - Blog</h3>
                   <Button
-                    onClick={() => { setBlogForm({ title: '', excerpt: '', content: '', image: '' }); setEditingArticle(null); setShowBlogModal(true); }}
+                    onClick={() => { setBlogForm({ title: '', excerpt: '', content: '', image: '', youtube_url: '', category: blogCategories[0]?.name || '' }); setEditingArticle(null); setShowBlogModal(true); }}
                     className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]"
                     data-testid="new-article-btn"
                   >
-                    <Plus className="w-4 h-4 mr-1" /> Nuevo Artículo
+                    <Plus className="w-4 h-4 mr-1" /> Nuevo Articulo
                   </Button>
                 </div>
 
+                {/* Category management */}
+                <div className="p-4 bg-gray-50 rounded-xl">
+                  <p className="text-sm font-bold text-[#33404f] mb-2">Categorias</p>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {blogCategories.map(c => (
+                      <span key={c.category_id} className="inline-flex items-center gap-1 text-xs bg-white border px-3 py-1.5 rounded-full">
+                        {c.name}
+                        <button onClick={async () => {
+                          if (!window.confirm(`Eliminar categoria "${c.name}"?`)) return;
+                          try { await api.delete(`/blog/categories/${c.category_id}`); setBlogCategories(prev => prev.filter(x => x.category_id !== c.category_id)); toast.success('Categoria eliminada'); } catch { toast.error('Error'); }
+                        }} className="ml-1 text-gray-400 hover:text-red-500">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <input type="text" value={newCategoryName} onChange={e => setNewCategoryName(e.target.value)} placeholder="Nueva categoria..." className="flex-1 border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="new-category-input" />
+                    <Button size="sm" className="bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-xs" data-testid="add-category-btn" onClick={async () => {
+                      if (!newCategoryName.trim()) return;
+                      try { const res = await api.post('/blog/categories', { name: newCategoryName.trim() }); setBlogCategories(prev => [...prev, res.data]); setNewCategoryName(''); toast.success('Categoria creada'); } catch (e) { toast.error(e.response?.data?.detail || 'Error'); }
+                    }}>Agregar</Button>
+                  </div>
+                </div>
+
                 {blogArticles.length === 0 ? (
-                  <p className="text-gray-500 text-center py-8">No hay artículos</p>
+                  <p className="text-gray-500 text-center py-8">No hay articulos</p>
                 ) : (
                   blogArticles.map(a => (
                     <div key={a.article_id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl" data-testid={`blog-row-${a.article_id}`}>
-                      <img src={a.image} alt="" className="w-20 h-14 rounded-lg object-cover shrink-0" />
+                      {a.image ? (
+                        <img src={a.image} alt="" className="w-20 h-14 rounded-lg object-cover shrink-0" />
+                      ) : (
+                        <div className="w-20 h-14 rounded-lg bg-gray-200 flex items-center justify-center shrink-0 text-gray-400 text-xs">Sin img</div>
+                      )}
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-[#33404f] text-sm truncate">{a.title}</h4>
                         <p className="text-xs text-gray-500 truncate">{a.excerpt}</p>
+                        <div className="flex gap-2 mt-1">
+                          {a.category && <span className="text-[10px] bg-[#00e7ff]/10 text-[#33404f] px-2 py-0.5 rounded-full font-medium">{a.category}</span>}
+                          {a.youtube_url && <span className="text-[10px] bg-red-50 text-red-600 px-2 py-0.5 rounded-full font-medium">YouTube</span>}
+                        </div>
                       </div>
                       <span className={`text-xs px-2 py-1 rounded-full shrink-0 ${a.published ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500'}`}>
                         {a.published ? 'Publicado' : 'Borrador'}
                       </span>
                       <button
-                        onClick={() => { setBlogForm({ title: a.title, excerpt: a.excerpt, content: a.content, image: a.image }); setEditingArticle(a); setShowBlogModal(true); }}
+                        onClick={() => { setBlogForm({ title: a.title, excerpt: a.excerpt, content: a.content, image: a.image || '', youtube_url: a.youtube_url || '', category: a.category || '' }); setEditingArticle(a); setShowBlogModal(true); }}
                         className="p-2 hover:bg-gray-200 rounded-lg"
                         data-testid={`edit-article-${a.article_id}`}
                       >
@@ -917,11 +954,11 @@ export default function AdminPanel() {
                       </button>
                       <button
                         onClick={async () => {
-                          if (!window.confirm('¿Eliminar este artículo?')) return;
+                          if (!window.confirm('Eliminar este articulo?')) return;
                           try {
                             await api.delete(`/blog/articles/${a.article_id}`);
                             setBlogArticles(prev => prev.filter(x => x.article_id !== a.article_id));
-                            toast.success('Artículo eliminado');
+                            toast.success('Articulo eliminado');
                           } catch { toast.error('Error al eliminar'); }
                         }}
                         className="p-2 hover:bg-red-50 rounded-lg"
@@ -1359,10 +1396,17 @@ export default function AdminPanel() {
       {showBlogModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
-            <h3 className="text-lg font-bold text-[#33404f] mb-4">{editingArticle ? 'Editar Artículo' : 'Nuevo Artículo'}</h3>
+            <h3 className="text-lg font-bold text-[#33404f] mb-4">{editingArticle ? 'Editar Articulo' : 'Nuevo Articulo'}</h3>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium mb-1">Título</label>
+                <label className="block text-sm font-medium mb-1">Categoria</label>
+                <select value={blogForm.category} onChange={e => setBlogForm(p => ({ ...p, category: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="blog-form-category">
+                  <option value="">Sin categoria</option>
+                  {blogCategories.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Titulo</label>
                 <input type="text" value={blogForm.title} onChange={e => setBlogForm(p => ({ ...p, title: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="blog-form-title" />
               </div>
               <div>
@@ -1370,66 +1414,49 @@ export default function AdminPanel() {
                 <input type="text" value={blogForm.excerpt} onChange={e => setBlogForm(p => ({ ...p, excerpt: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="blog-form-excerpt" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Imagen</label>
+                <label className="block text-sm font-medium mb-1">Imagen (opcional)</label>
                 <div className="flex gap-2 mb-2">
-                  <button
-                    type="button"
-                    onClick={() => setBlogForm(p => ({ ...p, _imageMode: 'url' }))}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium ${!blogForm._imageMode || blogForm._imageMode === 'url' ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-200 text-gray-600'}`}
-                  >URL</button>
-                  <button
-                    type="button"
-                    onClick={() => setBlogForm(p => ({ ...p, _imageMode: 'upload' }))}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium ${blogForm._imageMode === 'upload' ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-200 text-gray-600'}`}
-                  >Subir Imagen</button>
+                  <button type="button" onClick={() => setBlogForm(p => ({ ...p, _imageMode: 'url' }))} className={`px-3 py-1 rounded-lg text-xs font-medium ${!blogForm._imageMode || blogForm._imageMode === 'url' ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-200 text-gray-600'}`}>URL</button>
+                  <button type="button" onClick={() => setBlogForm(p => ({ ...p, _imageMode: 'upload' }))} className={`px-3 py-1 rounded-lg text-xs font-medium ${blogForm._imageMode === 'upload' ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-200 text-gray-600'}`}>Subir Imagen</button>
                 </div>
                 {(!blogForm._imageMode || blogForm._imageMode === 'url') ? (
                   <input type="text" value={blogForm.image} onChange={e => setBlogForm(p => ({ ...p, image: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="https://..." data-testid="blog-form-image" />
                 ) : (
                   <div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      data-testid="blog-form-image-upload"
-                      className="w-full border rounded-xl p-3 text-sm"
-                      onChange={async (e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        const formData = new FormData();
-                        formData.append('file', file);
-                        formData.append('folder', 'blog');
-                        try {
-                          toast.loading('Subiendo imagen...');
-                          const res = await api.post('/cloudinary/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-                          setBlogForm(p => ({ ...p, image: res.data.url }));
-                          toast.dismiss();
-                          toast.success('Imagen subida');
-                        } catch {
-                          toast.dismiss();
-                          toast.error('Error al subir imagen. Verifica que Cloudinary esté configurado.');
-                        }
-                      }}
-                    />
+                    <input type="file" accept="image/*" data-testid="blog-form-image-upload" className="w-full border rounded-xl p-3 text-sm" onChange={async (e) => {
+                      const file = e.target.files[0];
+                      if (!file) return;
+                      const formData = new FormData();
+                      formData.append('file', file);
+                      formData.append('folder', 'blog');
+                      try { toast.loading('Subiendo imagen...'); const res = await api.post('/cloudinary/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }); setBlogForm(p => ({ ...p, image: res.data.url })); toast.dismiss(); toast.success('Imagen subida'); } catch { toast.dismiss(); toast.error('Error al subir imagen.'); }
+                    }} />
                     <p className="text-xs text-gray-400 mt-1">Max 10MB. Se guarda en Cloudinary.</p>
                   </div>
                 )}
                 {blogForm.image && <img src={blogForm.image} alt="" className="mt-2 h-24 rounded-lg object-cover" />}
               </div>
               <div>
+                <label className="block text-sm font-medium mb-1">Video YouTube (opcional)</label>
+                <input type="text" value={blogForm.youtube_url} onChange={e => setBlogForm(p => ({ ...p, youtube_url: e.target.value }))} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="https://www.youtube.com/watch?v=..." data-testid="blog-form-youtube" />
+                <p className="text-xs text-gray-400 mt-1">Puedes agregar imagen, video o ambos.</p>
+              </div>
+              <div>
                 <label className="block text-sm font-medium mb-1">Contenido</label>
-                <textarea value={blogForm.content} onChange={e => setBlogForm(p => ({ ...p, content: e.target.value }))} rows={8} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Separa los párrafos con doble salto de línea" data-testid="blog-form-content" />
+                <textarea value={blogForm.content} onChange={e => setBlogForm(p => ({ ...p, content: e.target.value }))} rows={8} className="w-full border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Separa los parrafos con doble salto de linea" data-testid="blog-form-content" />
               </div>
             </div>
             <div className="flex gap-3 mt-4">
               <Button
                 onClick={async () => {
+                  const { _imageMode, ...payload } = blogForm;
                   try {
                     if (editingArticle) {
-                      await api.put(`/blog/articles/${editingArticle.article_id}`, blogForm);
-                      toast.success('Artículo actualizado');
+                      await api.put(`/blog/articles/${editingArticle.article_id}`, payload);
+                      toast.success('Articulo actualizado');
                     } else {
-                      await api.post('/blog/articles', blogForm);
-                      toast.success('Artículo creado');
+                      await api.post('/blog/articles', payload);
+                      toast.success('Articulo creado');
                     }
                     setShowBlogModal(false);
                     const res = await api.get('/blog/articles?published_only=false');
