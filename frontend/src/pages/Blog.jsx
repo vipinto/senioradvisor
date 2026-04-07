@@ -16,10 +16,10 @@ const ArticleCard = ({ article }) => {
   return (
     <Link
       to={`/blog/${article.slug}`}
-      className="group flex-shrink-0 w-[280px] bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
+      className="group flex-shrink-0 w-[340px] bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
       data-testid={`blog-card-${article.slug}`}
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+      <div className="relative aspect-[16/9] overflow-hidden bg-gray-100">
         {thumb ? (
           <img src={thumb} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
@@ -166,13 +166,13 @@ const Blog = () => {
       {categories.length > 0 && (
         <div className="sticky top-0 z-30 bg-white border-b shadow-sm" data-testid="blog-category-nav">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-1 overflow-x-auto py-3" style={{ scrollbarWidth: 'none' }}>
-              <span className="text-xs text-gray-400 font-medium uppercase tracking-wider mr-3 flex-shrink-0">Ir a seccion:</span>
+            <div className="flex items-center justify-center gap-2 overflow-x-auto py-4" style={{ scrollbarWidth: 'none' }}>
+              <span className="text-sm text-gray-400 font-medium uppercase tracking-wider mr-4 flex-shrink-0">Ir a seccion:</span>
               {categories.map(c => (
                 <button
                   key={c.name}
                   onClick={() => scrollToSection(c.name)}
-                  className={`px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-all ${
+                  className={`px-5 py-2.5 text-base font-medium rounded-full whitespace-nowrap transition-all ${
                     activeSection === c.name
                       ? 'bg-[#33404f] text-white'
                       : 'text-[#33404f] hover:bg-gray-100'
