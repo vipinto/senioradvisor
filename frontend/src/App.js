@@ -32,6 +32,7 @@ import FAQ from '@/pages/FAQ';
 import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
 import Seguridad from '@/pages/Seguridad';
+import HogaresSociales from '@/pages/HogaresSociales';
 import MyBookings from '@/pages/MyBookings';
 import ServiceHistory from '@/pages/ServiceHistory';
 import SelectRole from '@/pages/SelectRole';
@@ -117,6 +118,7 @@ function AppRouter() {
         <Route path="/terminos" element={<Terms />} />
         <Route path="/privacidad" element={<Privacy />} />
         <Route path="/seguridad" element={<Seguridad />} />
+        <Route path="/hogares-sociales" element={<HogaresSociales />} />
       </Routes>
       {!hideNavbar && <Footer />}
       <Toaster position="top-right" richColors />

@@ -56,6 +56,7 @@ const Footer = () => {
             <Link to="/terminos" className="hover:text-white transition-colors">Términos y Condiciones</Link>
             <Link to="/privacidad" className="hover:text-white transition-colors">Política de Privacidad</Link>
             <Link to="/seguridad" className="hover:text-white transition-colors">Seguridad</Link>
+            <Link to="/hogares-sociales" className="hover:text-white transition-colors">Hogares Sociales</Link>
           </div>
         </div>
       </div>
