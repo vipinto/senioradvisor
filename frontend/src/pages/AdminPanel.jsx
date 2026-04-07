@@ -1013,10 +1013,17 @@ export default function AdminPanel() {
                       <div key={c.category_id} className="flex items-start gap-3 bg-white border rounded-xl p-3">
                         <div className="flex-shrink-0">
                           {c.logo ? <img src={c.logo} alt="" className="w-12 h-12 rounded-lg object-cover" /> : <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 text-[10px]">Logo</div>}
-                          <input type="text" defaultValue={c.logo || ''} placeholder="URL logo..." className="w-20 text-[10px] text-gray-400 border-b border-transparent hover:border-gray-300 focus:border-[#00e7ff] focus:outline-none mt-1" onBlur={async (e) => {
-                            const val = e.target.value.trim();
-                            if (val !== (c.logo || '')) { try { const res = await api.put(`/podcast/categories/${c.category_id}`, { logo: val }); setPodcastCategories(prev => prev.map(x => x.category_id === c.category_id ? res.data : x)); toast.success('Logo actualizado'); } catch { toast.error('Error'); } }
-                          }} />
+                          <label className="block mt-1 cursor-pointer text-center">
+                            <span className="text-[10px] text-[#00e7ff] hover:underline">Subir</span>
+                            <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                              const file = e.target.files[0];
+                              if (!file) return;
+                              const formData = new FormData();
+                              formData.append('file', file);
+                              formData.append('folder', 'podcast');
+                              try { toast.loading('Subiendo...'); const res = await api.post('/cloudinary/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }); const upd = await api.put(`/podcast/categories/${c.category_id}`, { logo: res.data.url }); setPodcastCategories(prev => prev.map(x => x.category_id === c.category_id ? upd.data : x)); toast.dismiss(); toast.success('Logo subido'); } catch { toast.dismiss(); toast.error('Error al subir'); }
+                            }} />
+                          </label>
                         </div>
                         <div className="flex-1 space-y-1">
                           <input type="text" defaultValue={c.name} className="w-full text-sm font-bold text-[#33404f] border-b border-transparent hover:border-gray-300 focus:border-[#00e7ff] focus:outline-none px-1 py-0.5" onBlur={async (e) => {
