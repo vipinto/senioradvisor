@@ -98,18 +98,23 @@ const ProviderDashboard = () => {
         <div className="flex gap-2 mb-6 border-b overflow-x-auto">
           {[
             { key: 'requests', label: 'Solicitudes Publicadas', icon: Users },
-            { key: 'inbox', label: 'Solicitudes Recibidas', icon: MessageCircle },
+            { key: 'inbox', label: 'Solicitudes Recibidas', icon: MessageCircle, requiresPlan: ['premium', 'premium_plus'] },
             { key: 'branches', label: 'Sucursales', icon: MapPin },
-          ].map(({ key, label, icon: Icon }) => (
-            <button key={key} onClick={() => { setActiveTab(key); if (key === 'inbox' && contactRequests.length === 0) loadContactRequests(); }} className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === key ? 'border-[#00e7ff] text-[#00e7ff]' : 'border-transparent text-gray-500 hover:text-gray-700'}`} data-testid={`tab-${key}`}>
-              <Icon className="w-4 h-4" />{label}
-              {key === 'inbox' && contactRequests.filter(r => r.status === 'pending').length > 0 && (
-                <span className="ml-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
-                  {contactRequests.filter(r => r.status === 'pending').length}
-                </span>
-              )}
-            </button>
-          ))}
+          ].map(({ key, label, icon: Icon, requiresPlan }) => {
+            const plan = provider?.plan_active ? (provider?.plan_type || '') : '';
+            const blocked = requiresPlan && !requiresPlan.includes(plan);
+            return (
+              <button key={key} onClick={() => { if (blocked) return; setActiveTab(key); if (key === 'inbox' && contactRequests.length === 0) loadContactRequests(); }} className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === key ? 'border-[#00e7ff] text-[#00e7ff]' : blocked ? 'border-transparent text-gray-300 cursor-not-allowed' : 'border-transparent text-gray-500 hover:text-gray-700'}`} data-testid={`tab-${key}`} disabled={blocked}>
+                <Icon className="w-4 h-4" />{label}
+                {blocked && <span className="text-[10px] bg-gray-200 text-gray-400 px-1 rounded ml-1">Premium</span>}
+                {!blocked && key === 'inbox' && contactRequests.filter(r => r.status === 'pending').length > 0 && (
+                  <span className="ml-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                    {contactRequests.filter(r => r.status === 'pending').length}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {/* Solicitudes Publicadas */}
