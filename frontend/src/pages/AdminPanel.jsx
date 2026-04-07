@@ -901,18 +901,27 @@ export default function AdminPanel() {
 
                 {/* Category management */}
                 <div className="p-4 bg-gray-50 rounded-xl">
-                  <p className="text-sm font-bold text-[#33404f] mb-2">Categorias</p>
-                  <div className="flex flex-wrap gap-2 mb-3">
+                  <p className="text-sm font-bold text-[#33404f] mb-3">Categorias</p>
+                  <div className="space-y-2 mb-3">
                     {blogCategories.map(c => (
-                      <span key={c.category_id} className="inline-flex items-center gap-1 text-xs bg-white border px-3 py-1.5 rounded-full">
-                        {c.name}
+                      <div key={c.category_id} className="flex items-start gap-2 bg-white border rounded-xl p-3">
+                        <div className="flex-1 space-y-1">
+                          <input type="text" defaultValue={c.name} className="w-full text-sm font-bold text-[#33404f] border-b border-transparent hover:border-gray-300 focus:border-[#00e7ff] focus:outline-none px-1 py-0.5" onBlur={async (e) => {
+                            const val = e.target.value.trim();
+                            if (val && val !== c.name) { try { const res = await api.put(`/blog/categories/${c.category_id}`, { name: val }); setBlogCategories(prev => prev.map(x => x.category_id === c.category_id ? res.data : x)); toast.success('Nombre actualizado'); } catch { toast.error('Error'); e.target.value = c.name; } }
+                          }} data-testid={`cat-name-${c.category_id}`} />
+                          <input type="text" defaultValue={c.description || ''} placeholder="Descripcion de la categoria..." className="w-full text-xs text-gray-500 border-b border-transparent hover:border-gray-300 focus:border-[#00e7ff] focus:outline-none px-1 py-0.5" onBlur={async (e) => {
+                            const val = e.target.value.trim();
+                            if (val !== (c.description || '')) { try { const res = await api.put(`/blog/categories/${c.category_id}`, { description: val }); setBlogCategories(prev => prev.map(x => x.category_id === c.category_id ? res.data : x)); toast.success('Descripcion actualizada'); } catch { toast.error('Error'); } }
+                          }} data-testid={`cat-desc-${c.category_id}`} />
+                        </div>
                         <button onClick={async () => {
                           if (!window.confirm(`Eliminar categoria "${c.name}"?`)) return;
                           try { await api.delete(`/blog/categories/${c.category_id}`); setBlogCategories(prev => prev.filter(x => x.category_id !== c.category_id)); toast.success('Categoria eliminada'); } catch { toast.error('Error'); }
-                        }} className="ml-1 text-gray-400 hover:text-red-500">
-                          <X className="w-3 h-3" />
+                        }} className="p-1 text-gray-400 hover:text-red-500 mt-1">
+                          <X className="w-4 h-4" />
                         </button>
-                      </span>
+                      </div>
                     ))}
                   </div>
                   <div className="flex gap-2">

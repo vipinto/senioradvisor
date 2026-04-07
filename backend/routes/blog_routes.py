@@ -93,10 +93,10 @@ async def get_categories():
     cats = await db.blog_categories.find({}, {"_id": 0}).sort("order", 1).to_list(50)
     if not cats:
         defaults = [
-            {"category_id": str(uuid.uuid4()), "name": "Editorial", "order": 0},
-            {"category_id": str(uuid.uuid4()), "name": "Actualidad", "order": 1},
-            {"category_id": str(uuid.uuid4()), "name": "Beneficios", "order": 2},
-            {"category_id": str(uuid.uuid4()), "name": "Formación", "order": 3},
+            {"category_id": str(uuid.uuid4()), "name": "Editorial", "description": "Conoce los lineamientos que guían a SeniorAdvisor, donde abordamos problemáticas actuales de las personas mayores.", "order": 0},
+            {"category_id": str(uuid.uuid4()), "name": "Actualidad", "description": "Mantente informado con las últimas noticias y tendencias del mundo de la tercera edad.", "order": 1},
+            {"category_id": str(uuid.uuid4()), "name": "Beneficios", "description": "Guía completa de beneficios, ayudas estatales y actualizaciones legislativas para la tercera edad en Chile.", "order": 2},
+            {"category_id": str(uuid.uuid4()), "name": "Formación", "description": "Descubre una selección curada de talleres, cursos y oportunidades de capacitación para las personas mayores.", "order": 3},
         ]
         await db.blog_categories.insert_many(defaults)
         for d in defaults:
@@ -114,9 +114,24 @@ async def create_category(data: dict):
         raise HTTPException(status_code=400, detail="Categoria ya existe")
     max_order = await db.blog_categories.find({}).sort("order", -1).to_list(1)
     order = (max_order[0]["order"] + 1) if max_order else 0
-    cat = {"category_id": str(uuid.uuid4()), "name": name, "order": order}
+    cat = {"category_id": str(uuid.uuid4()), "name": name, "description": data.get("description", ""), "order": order}
     await db.blog_categories.insert_one(cat)
     del cat["_id"]
+    return cat
+
+@router.put("/categories/{category_id}")
+async def update_category(category_id: str, data: dict):
+    update = {}
+    if "name" in data:
+        update["name"] = data["name"].strip()
+    if "description" in data:
+        update["description"] = data["description"].strip()
+    if not update:
+        raise HTTPException(status_code=400, detail="Nada que actualizar")
+    result = await db.blog_categories.update_one({"category_id": category_id}, {"$set": update})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Categoria no encontrada")
+    cat = await db.blog_categories.find_one({"category_id": category_id}, {"_id": 0})
     return cat
 
 @router.delete("/categories/{category_id}")

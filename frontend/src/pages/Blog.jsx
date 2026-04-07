@@ -47,7 +47,7 @@ const ArticleCard = ({ article }) => {
   );
 };
 
-const CategorySection = ({ name, articles, id }) => {
+const CategorySection = ({ name, description, articles, id }) => {
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -76,9 +76,12 @@ const CategorySection = ({ name, articles, id }) => {
 
   return (
     <section id={id} className="py-10" data-testid={`blog-section-${id}`}>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-[#33404f]">{name}</h2>
-        <span className="text-sm text-gray-400">{articles.length} articulo{articles.length !== 1 ? 's' : ''}</span>
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-[#33404f]">{name}</h2>
+          {description && <p className="text-sm text-gray-400 mt-1 max-w-xl">{description}</p>}
+        </div>
+        <span className="text-sm text-gray-400 flex-shrink-0 mt-1">{articles.length} articulo{articles.length !== 1 ? 's' : ''}</span>
       </div>
       <div className="relative group/carousel">
         {canScrollLeft && (
@@ -199,6 +202,7 @@ const Blog = () => {
               <CategorySection
                 key={c.name}
                 name={c.name}
+                description={c.description}
                 id={catId(c.name)}
                 articles={articlesByCategory[c.name] || []}
               />
