@@ -808,19 +808,19 @@ const SearchPage = () => {
                         <h3 className="font-bold text-[#33404f] truncate">
                           {provider.business_name}
                         </h3>
-                        {provider.is_featured && provider.provider_is_subscribed && (
-                          <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap font-bold" data-testid="featured-subscribed-badge">
-                            <Crown className="w-3 h-3" />Premium
+                        {provider.plan_type === 'premium_plus' && (
+                          <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap font-bold" data-testid="premium-plus-badge">
+                            <Crown className="w-3 h-3" />Premium+
                           </span>
                         )}
-                        {provider.is_featured && !provider.provider_is_subscribed && (
-                          <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap" data-testid="featured-badge">
+                        {provider.plan_type === 'premium' && (
+                          <span className="bg-[#00e7ff] text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap font-bold" data-testid="premium-badge">
+                            Premium
+                          </span>
+                        )}
+                        {provider.plan_type === 'destacado' && (
+                          <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap" data-testid="destacado-badge">
                             <Star className="w-3 h-3" />Destacado
-                          </span>
-                        )}
-                        {!provider.is_featured && provider.provider_is_subscribed && (
-                          <span className="bg-[#00e7ff] text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap font-bold" data-testid="subscribed-badge">
-                            <Crown className="w-3 h-3" />Suscrito
                           </span>
                         )}
                         {provider.verified && (

@@ -19,7 +19,6 @@ Buscador de residencias para adultos mayores en Chile. Las familias buscan resid
 - Mi Cuenta: Perfil, Precios, Servicios/Amenidades, Galeria, Redes Sociales
 - Admin: Crear Residencia con PlaceID - obtiene coordenadas, rating y resenas automaticamente
 - Admin panel completo con 9 tabs (Pendientes, Residencias, Planes, Metricas, Trafico/Leads, Blog, Leads, Convenios, Resenas)
-- Toggle Destacado/Premium: is_featured -> is_featured_admin en DB
 - Favoritos: boton Heart para clientes, pagina /favoritos
 - Premium Gallery component
 - Pagina Destacados
@@ -30,51 +29,63 @@ Buscador de residencias para adultos mayores en Chile. Las familias buscan resid
 - Cloudinary routes (pendiente config de variables)
 - Emails de contacto: hola@senioradvisor.cl
 
+## Sistema de Planes (Abril 2026)
+- Eliminada gestion de suscripciones self-managed (MercadoPago)
+- 3 planes comerciales manejados por admin via AdminEditModal:
+  - **Premium+**: Corona dorada, todas las funciones (YouTube, Slider Premium, Redes Sociales)
+  - **Premium**: Badge cyan, funciones intermedias (Chat Directo, Amenidades, Presencia Destacados)
+  - **Destacado**: Badge gris, funciones basicas (Galeria, Precios, Ubicacion, Sobre mi)
+- Orden de aparicion: Premium+ -> Premium -> Destacado -> resto
+- Admin puede cambiar email y password de residencias desde AdminEditModal
+- Campos no habilitados por plan estan bloqueados/read-only en ProviderAccount
+- /auth/me devuelve has_subscription basado en plan_type (Premium/Premium+ = true)
+- Estadisticas admin muestran "Planes Activos" en vez de "Suscripciones"
+
 ## Credenciales
 - Admin: admin@senioradvisor.cl / EmiLuci2$$$
 - Cliente: demo@senioradvisor.cl / demo123
-- Proveedor: proveedor1@senioradvisor.cl / demo123
 
-## Alineacion con PetAdvisor (Abril 2026)
-- Todos los archivos alineados funcionalmente con PetAdvisor
-- Solo diferencias de branding: colores (#00e7ff/#33404f vs #ffff00/#000000) y nombre
-- 39 archivos actualizados
+## Permisos por Plan
+| Funcion | Destacado | Premium | Premium+ |
+|---|---|---|---|
+| Galeria | Si | Si | Si |
+| Precios | Si | Si | Si |
+| Sobre mi / Ubicacion | Si | Si | Si |
+| Amenidades | No | Si | Si |
+| Chat Directo (tel/whatsapp) | No | Si | Si |
+| Presencia Destacados (Home) | No | Si | Si |
+| Sello Verificado | No | Si | Si |
+| Video YouTube | No | No | Si |
+| Slider Premium | No | No | Si |
+| Redes Sociales | No | No | Si |
 
-## Bugs Resueltos (Abril 2026)
-1. Toggle Destacado/Premium no guardaba - FIXED (is_featured -> is_featured_admin)
-2. Categorias Home horizontales en movil - FIXED (grid + flex responsive)
-3. Boton favoritos faltante y texto incorrecto - FIXED
-4. Metricas admin faltantes - FIXED (5 cards)
-5. Fotos guardando localmente - CONFIRMADO
-6. Aurum Senior Living sin rating/resenas - FIXED (4.7, 31 resenas de Google)
-7. Emails de contacto actualizados a hola@senioradvisor.cl
+## Key API Endpoints
+- GET /api/providers - {results, total, skip, limit} (ordenado por plan_type)
+- GET /api/providers/{id} - incluye google_reviews, google_rating
+- PUT /api/admin/providers/{id}/profile - plan_type, plan_active, verified, etc.
+- PUT /api/admin/providers/{id}/credentials - email, password
+- POST /api/admin/providers/{id}/toggle-featured
+- GET /api/admin/stats - incluye active_subscriptions (ahora cuenta planes activos)
+- POST/DELETE /api/favorites/{provider_id}
+- GET /api/favorites
+
+## Data Model - providers collection
+- plan_type: '' | 'destacado' | 'premium' | 'premium_plus'
+- plan_active: boolean
+- verified: boolean
+- google_rating, google_total_reviews, google_reviews
+- latitude, longitude, place_id
+- is_featured_admin
+- services: array of {service_type, price_from, description}
 
 ## Pendiente / P1
 - Configurar variables Cloudinary (CLOUDINARY_CLOUD_NAME, API_KEY, API_SECRET)
 
 ## Pendiente / P2
+- Purgar rutas de suscripcion del backend (MercadoPago routes, subscription endpoints)
+- Limpiar ServiceHistory.jsx y PlansSimple.jsx (obsoletos)
 - Filtros avanzados de busqueda (precio, amenidades, rating minimo)
 
 ## Futuro / Backlog
 - Refactorizar AdminPanel.jsx en componentes mas pequenos
-
-## Key API Endpoints
-- GET /api/providers - {results, total, skip, limit}
-- GET /api/providers/{id} - incluye google_reviews, google_rating
-- PUT /api/admin/providers/{id}/profile - allowed fields incluye is_featured, is_subscribed
-- POST /api/admin/providers/{id}/toggle-featured
-- POST /api/admin/providers/{id}/toggle-subscribed
-- GET /api/admin/stats
-- GET /api/admin/reviews
-- GET /api/admin/leads
-- GET /api/admin/leads/metrics
-- GET /api/diagnostics
-- POST/DELETE /api/favorites/{provider_id}
-- GET /api/favorites
-
-## Data Model - providers collection
-- google_rating, google_total_reviews, google_reviews
-- latitude, longitude, place_id
-- is_featured_admin, is_subscribed, provider_is_subscribed
-- verified, status
-- services: array of {service_type, price_from, description}
+- Eliminar SubscriptionCard.jsx

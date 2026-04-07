@@ -172,7 +172,7 @@ async def get_admin_stats(request: Request):
     total_providers = await db.providers.count_documents({"approved": True})
     pending_providers = await db.providers.count_documents({"approved": False})
     verified_providers = await db.providers.count_documents({"verified": True})
-    active_subscriptions = await db.subscriptions.count_documents({"status": "active"})
+    active_subscriptions = await db.providers.count_documents({"plan_active": True, "plan_type": {"$in": ["destacado", "premium", "premium_plus"]}})
     total_reviews = await db.reviews.count_documents({})
 
     return {

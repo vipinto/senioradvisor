@@ -398,7 +398,7 @@ export default function AdminPanel() {
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Residencias</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-providers">{stats.total_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Pendientes</p><p className="text-3xl font-bold text-orange-500" data-testid="stat-pending">{stats.pending_providers}</p></div>
             <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Verificados</p><p className="text-3xl font-bold text-green-600" data-testid="stat-verified">{stats.verified_providers}</p></div>
-            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Suscripciones</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-subscriptions">{stats.active_subscriptions}</p></div>
+            <div className="bg-white rounded-xl p-5 shadow-sm"><p className="text-gray-500 text-sm">Planes Activos</p><p className="text-3xl font-bold text-[#00e7ff]" data-testid="stat-subscriptions">{stats.active_subscriptions}</p></div>
           </div>
         )}
 
@@ -529,15 +529,14 @@ export default function AdminPanel() {
                         }} data-testid={`toggle-featured-${p.provider_id}`}>
                           <Star className="w-4 h-4" />{p.is_featured_admin ? '' : ''}
                         </Button>
-                        <Button size="sm" variant={p.is_subscribed ? "default" : "outline"} className={p.is_subscribed ? "bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" : ""} onClick={async () => {
-                          try {
-                            const res = await api.post(`/admin/providers/${p.provider_id}/toggle-subscribed`);
-                            setAllProviders(prev => prev.map(x => x.provider_id === p.provider_id ? {...x, is_subscribed: res.data.is_subscribed} : x));
-                            toast.success(res.data.is_subscribed ? 'Premium activado' : 'Premium desactivado');
-                          } catch { toast.error('Error'); }
-                        }} data-testid={`toggle-subscribed-${p.provider_id}`}>
-                          <Crown className="w-4 h-4" />
-                        </Button>
+                        <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full font-bold ${
+                          p.plan_type === 'premium_plus' ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f]' :
+                          p.plan_type === 'premium' ? 'bg-[#00e7ff] text-[#33404f]' :
+                          p.plan_type === 'destacado' ? 'bg-[#33404f] text-white' : 'bg-gray-100 text-gray-400'
+                        }`} data-testid={`plan-badge-${p.provider_id}`}>
+                          {p.plan_type === 'premium_plus' && <Crown className="w-3 h-3" />}
+                          {p.plan_type === 'premium_plus' ? 'P+' : p.plan_type === 'premium' ? 'P' : p.plan_type === 'destacado' ? 'D' : '-'}
+                        </span>
                         {p.verified ? (
                           <Button size="sm" variant="outline" onClick={() => unverifyProvider(p.provider_id)}>Quitar Badge</Button>
                         ) : (
@@ -607,7 +606,7 @@ export default function AdminPanel() {
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between"><span className="text-gray-500">Usuarios totales</span><span className="font-bold">{stats?.total_users || 0}</span></div>
                       <div className="flex justify-between"><span className="text-gray-500">Residencias activas</span><span className="font-bold">{stats?.total_providers || 0}</span></div>
-                      <div className="flex justify-between"><span className="text-gray-500">Suscripciones activas</span><span className="font-bold text-[#00e7ff]">{stats?.active_subscriptions || 0}</span></div>
+                      <div className="flex justify-between"><span className="text-gray-500">Planes activos</span><span className="font-bold text-[#00e7ff]">{stats?.active_subscriptions || 0}</span></div>
                       <div className="flex justify-between"><span className="text-gray-500">Reseñas totales</span><span className="font-bold">{stats?.total_reviews || 0}</span></div>
                     </div>
                   </div>
@@ -714,7 +713,9 @@ export default function AdminPanel() {
                                   <td className="py-3 px-3">
                                     <div className="flex items-center gap-2">
                                       <span className="font-medium text-[#33404f]">{r.business_name}</span>
-                                      {r.is_subscribed && <span className="text-[9px] px-1.5 py-0.5 bg-[#00e7ff]/20 text-[#33404f] rounded-full font-bold">Premium</span>}
+                                      {r.plan_type === 'premium_plus' && <span className="text-[9px] px-1.5 py-0.5 bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] rounded-full font-bold">Premium+</span>}
+                                      {r.plan_type === 'premium' && <span className="text-[9px] px-1.5 py-0.5 bg-[#00e7ff]/20 text-[#33404f] rounded-full font-bold">Premium</span>}
+                                      {r.plan_type === 'destacado' && <span className="text-[9px] px-1.5 py-0.5 bg-gray-200 text-[#33404f] rounded-full font-bold">Destacado</span>}
                                     </div>
                                   </td>
                                   <td className="py-3 px-2 text-gray-500">{r.comuna}</td>
