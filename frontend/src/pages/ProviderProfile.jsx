@@ -506,17 +506,17 @@ export default function ProviderProfile() {
                   <h1 className="text-3xl font-bold text-[#33404f]">{provider.business_name}</h1>
                   {provider.verified && <Shield className="w-6 h-6 text-yellow-300" />}
                   {provider.plan_type === 'premium_plus' && (
-                    <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 font-bold">
+                    <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 font-bold shadow-md">
                       <Crown className="w-3 h-3" />Premium+
                     </span>
                   )}
                   {provider.plan_type === 'premium' && (
-                    <span className="bg-[#00e7ff] text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 font-bold">
+                    <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1 font-bold shadow-md">
                       Premium
                     </span>
                   )}
                   {provider.plan_type === 'destacado' && (
-                    <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
                       <Star className="w-3 h-3" />Destacado
                     </span>
                   )}
