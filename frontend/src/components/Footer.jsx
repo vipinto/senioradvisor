@@ -21,10 +21,10 @@ const Footer = () => {
               <li><Link to="/blog" className="hover:text-white transition-colors">Actualidad Senior</Link></li>
               <li><Link to="/search" className="hover:text-white transition-colors">Buscar Servicios</Link></li>
               <li><Link to="/hogares-sociales" className="hover:text-white transition-colors">Hogares Sociales</Link></li>
-              <li><Link to="/podcast" className="hover:text-white transition-colors">Podcast</Link></li>
               <li><Link to="/faq" className="hover:text-white transition-colors">Preguntas Frecuentes</Link></li>
               <li><Link to="/register" className="hover:text-white transition-colors">Registrar Servicio</Link></li>
               <li><Link to="/seniorclub" className="hover:text-white transition-colors">SeniorClub</Link></li>
+              <li><Link to="/podcast" className="hover:text-white transition-colors">SeniorPodcast</Link></li>
             </ul>
           </div>
 
