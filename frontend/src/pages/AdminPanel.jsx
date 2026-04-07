@@ -1010,7 +1010,14 @@ export default function AdminPanel() {
                   <p className="text-sm font-bold text-[#33404f] mb-3">Podcasts (Categorias)</p>
                   <div className="space-y-2 mb-3">
                     {podcastCategories.map(c => (
-                      <div key={c.category_id} className="flex items-start gap-2 bg-white border rounded-xl p-3">
+                      <div key={c.category_id} className="flex items-start gap-3 bg-white border rounded-xl p-3">
+                        <div className="flex-shrink-0">
+                          {c.logo ? <img src={c.logo} alt="" className="w-12 h-12 rounded-lg object-cover" /> : <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 text-[10px]">Logo</div>}
+                          <input type="text" defaultValue={c.logo || ''} placeholder="URL logo..." className="w-20 text-[10px] text-gray-400 border-b border-transparent hover:border-gray-300 focus:border-[#00e7ff] focus:outline-none mt-1" onBlur={async (e) => {
+                            const val = e.target.value.trim();
+                            if (val !== (c.logo || '')) { try { const res = await api.put(`/podcast/categories/${c.category_id}`, { logo: val }); setPodcastCategories(prev => prev.map(x => x.category_id === c.category_id ? res.data : x)); toast.success('Logo actualizado'); } catch { toast.error('Error'); } }
+                          }} />
+                        </div>
                         <div className="flex-1 space-y-1">
                           <input type="text" defaultValue={c.name} className="w-full text-sm font-bold text-[#33404f] border-b border-transparent hover:border-gray-300 focus:border-[#00e7ff] focus:outline-none px-1 py-0.5" onBlur={async (e) => {
                             const val = e.target.value.trim();

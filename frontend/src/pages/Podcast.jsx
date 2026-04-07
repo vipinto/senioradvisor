@@ -20,7 +20,10 @@ const PodcastCategory = ({ category, episodes }) => {
 
   return (
     <section className="mb-14" data-testid={`podcast-section-${category.category_id}`}>
-      <h2 className="text-2xl font-bold text-[#33404f] mb-1">{category.name}</h2>
+      <div className="flex items-center gap-4 mb-1">
+        {category.logo && <img src={category.logo} alt={category.name} className="w-12 h-12 rounded-lg object-cover" />}
+        <h2 className="text-2xl font-bold text-[#33404f]">{category.name}</h2>
+      </div>
       {category.description && <p className="text-sm text-gray-400 mb-5">{category.description}</p>}
 
       <div className="flex flex-col lg:flex-row gap-5">
