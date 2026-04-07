@@ -156,17 +156,17 @@ const Home = () => {
 
       {/* SeniorPodcast Banner + Preview */}
       {podcastCategories.length > 0 && podcastEpisodes.length > 0 && (
-        <section className="bg-gradient-to-br from-[#1a1a2e] to-[#16213e] py-14" data-testid="podcast-home-section">
+        <section className="bg-[#00e7ff] py-14" data-testid="podcast-home-section">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Banner */}
             <div className="flex flex-col md:flex-row items-center justify-between mb-10">
               <div className="flex items-center gap-5 mb-4 md:mb-0">
                 <img src="/logo-senior-podcast.svg" alt="SeniorPodcast" className="h-12" />
                 <div>
-                  <p className="text-white/70 text-sm">Escucha conversaciones sobre bienestar y actualidad para adultos mayores.</p>
+                  <p className="text-[#33404f]/70 text-sm">Escucha conversaciones sobre bienestar y actualidad para adultos mayores.</p>
                 </div>
               </div>
-              <Link to="/podcast" className="px-6 py-3 bg-[#00e7ff] text-[#1a1a2e] font-bold rounded-xl hover:bg-[#00d4ea] transition-colors text-sm">
+              <Link to="/podcast" className="px-6 py-3 bg-[#33404f] text-white font-bold rounded-xl hover:bg-[#2a3540] transition-colors text-sm">
                 Ver Podcast <ArrowRight className="inline w-4 h-4 ml-1" />
               </Link>
             </div>
@@ -180,16 +180,16 @@ const Home = () => {
               const latestYtId = latest.youtube_url?.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([^?&\s]+)/)?.[1] || '';
               return (
                 <div key={cat.category_id} className="mb-10 last:mb-0">
-                  <h3 className="text-lg font-bold text-white mb-1">{cat.name}</h3>
-                  {cat.description && <p className="text-white/40 text-xs mb-4">{cat.description}</p>}
+                  <h3 className="text-lg font-bold text-[#33404f] mb-1">{cat.name}</h3>
+                  {cat.description && <p className="text-[#33404f]/50 text-xs mb-4">{cat.description}</p>}
                   <div className="flex flex-col lg:flex-row gap-4">
                     {/* Main */}
                     <div className="flex-1">
                       <div className="relative w-full rounded-xl overflow-hidden bg-black aspect-video">
                         <iframe src={`https://www.youtube.com/embed/${latestYtId}`} title={latest.title} className="absolute inset-0 w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                       </div>
-                      <h4 className="font-bold text-white mt-3">{latest.title}</h4>
-                      {latest.description && <p className="text-white/50 text-sm mt-1">{latest.description}</p>}
+                      <h4 className="font-bold text-[#33404f] mt-3">{latest.title}</h4>
+                      {latest.description && <p className="text-[#33404f]/60 text-sm mt-1">{latest.description}</p>}
                     </div>
                     {/* Side list */}
                     {rest.length > 0 && (
@@ -197,16 +197,16 @@ const Home = () => {
                         {rest.map(ep => {
                           const ytId = ep.youtube_url?.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([^?&\s]+)/)?.[1] || '';
                           return (
-                            <Link to="/podcast" key={ep.episode_id} className="flex gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors">
-                              <div className="relative w-[120px] h-[68px] rounded-lg overflow-hidden flex-shrink-0 bg-gray-800">
+                            <Link to="/podcast" key={ep.episode_id} className="flex gap-3 p-2 rounded-lg hover:bg-[#33404f]/10 transition-colors">
+                              <div className="relative w-[120px] h-[68px] rounded-lg overflow-hidden flex-shrink-0 bg-[#33404f]/20">
                                 <img src={`https://img.youtube.com/vi/${ytId}/mqdefault.jpg`} alt="" className="w-full h-full object-cover" />
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                  <div className="w-6 h-6 bg-black/60 rounded-full flex items-center justify-center"><Play className="w-3 h-3 text-white ml-0.5" fill="white" /></div>
+                                  <div className="w-6 h-6 bg-[#33404f]/60 rounded-full flex items-center justify-center"><Play className="w-3 h-3 text-white ml-0.5" fill="white" /></div>
                                 </div>
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h5 className="text-sm font-bold text-white line-clamp-2 leading-tight">{ep.title}</h5>
-                                {ep.description && <p className="text-xs text-white/40 mt-1 line-clamp-1">{ep.description}</p>}
+                                <h5 className="text-sm font-bold text-[#33404f] line-clamp-2 leading-tight">{ep.title}</h5>
+                                {ep.description && <p className="text-xs text-[#33404f]/50 mt-1 line-clamp-1">{ep.description}</p>}
                               </div>
                             </Link>
                           );
