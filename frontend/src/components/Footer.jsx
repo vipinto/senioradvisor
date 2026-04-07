@@ -18,11 +18,12 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-semibold mb-4">Plataforma</h4>
             <ul className="space-y-2 text-sm">
+              <li><Link to="/blog" className="hover:text-white transition-colors">Actualidad Senior</Link></li>
               <li><Link to="/search" className="hover:text-white transition-colors">Buscar Servicios</Link></li>
-              <li><Link to="/seniorclub" className="hover:text-white transition-colors">SeniorClub</Link></li>
-              <li><Link to="/planes" className="hover:text-white transition-colors">Planes</Link></li>
-              <li><Link to="/register" className="hover:text-white transition-colors">Registrar Servicio</Link></li>
+              <li><Link to="/hogares-sociales" className="hover:text-white transition-colors">Hogares Sociales</Link></li>
               <li><Link to="/faq" className="hover:text-white transition-colors">Preguntas Frecuentes</Link></li>
+              <li><Link to="/register" className="hover:text-white transition-colors">Registrar Servicio</Link></li>
+              <li><Link to="/seniorclub" className="hover:text-white transition-colors">SeniorClub</Link></li>
             </ul>
           </div>
 
@@ -53,10 +54,9 @@ const Footer = () => {
           <p className="text-xs text-gray-500">&copy; {new Date().getFullYear()} SeniorAdvisor. Todos los derechos reservados.</p>
           <div className="flex gap-4 text-xs text-gray-500">
             <Link to="/faq" className="hover:text-white transition-colors">FAQ</Link>
-            <Link to="/terminos" className="hover:text-white transition-colors">Términos y Condiciones</Link>
-            <Link to="/privacidad" className="hover:text-white transition-colors">Política de Privacidad</Link>
+            <Link to="/privacidad" className="hover:text-white transition-colors">Politica de Privacidad</Link>
             <Link to="/seguridad" className="hover:text-white transition-colors">Seguridad</Link>
-            <Link to="/hogares-sociales" className="hover:text-white transition-colors">Hogares Sociales</Link>
+            <Link to="/terminos" className="hover:text-white transition-colors">Terminos y Condiciones</Link>
           </div>
         </div>
       </div>
