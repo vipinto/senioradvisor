@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Star, Shield, Eye, MapPin, Users, CheckCircle, X, FileText, Building2, Plus, Loader2, MessageCircle, Clock, Check, XCircle } from 'lucide-react';
+import { Star, Shield, Eye, MapPin, Users, CheckCircle, X, FileText, Building2, Plus, Loader2, MessageCircle, Clock, Check, XCircle, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import CareRequestsProvider from '@/components/CareRequestsProvider';
-import SubscriptionCard from '@/components/SubscriptionCard';
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
   const [provider, setProvider] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('requests');
-  const [hasSubscription, setHasSubscription] = useState(false);
 
   // Branches
   const [branches, setBranches] = useState([]);
@@ -32,8 +30,6 @@ const ProviderDashboard = () => {
     try {
       const profileRes = await api.get('/providers/my-profile');
       setProvider(profileRes.data);
-      // Use is_subscribed from profile (includes admin override)
-      setHasSubscription(profileRes.data?.is_subscribed || profileRes.data?.has_active_subscription || false);
       try {
         const brRes = await api.get('/providers/my-branches');
         setBranches(brRes.data);
@@ -86,7 +82,17 @@ const ProviderDashboard = () => {
         </div>
 
         {/* Subscription Card */}
-        <div className="mb-6"><SubscriptionCard hasSubscription={hasSubscription} /></div>
+        <div className="mb-6 p-4 bg-gray-50 border rounded-xl">
+          <p className="text-sm text-gray-600">
+            <span className="font-medium text-[#33404f]">Tu plan: </span>
+            {provider?.plan_type === 'premium_plus' ? 'Premium+' : provider?.plan_type === 'premium' ? 'Premium' : provider?.plan_type === 'destacado' ? 'Destacado' : 'Sin plan'}
+            {provider?.plan_active ? ' (Activo)' : provider?.plan_type ? ' (Inactivo)' : ''}
+          </p>
+          <p className="text-xs text-gray-400 mt-1">
+            <Mail className="w-3 h-3 inline mr-1" />
+            Para cambiar tu plan contacta a <a href="mailto:hola@senioradvisor.cl" className="text-[#00e7ff] underline">hola@senioradvisor.cl</a>
+          </p>
+        </div>
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6 border-b overflow-x-auto">
@@ -108,7 +114,7 @@ const ProviderDashboard = () => {
 
         {/* Solicitudes Publicadas */}
         {activeTab === 'requests' && (
-          <CareRequestsProvider hasSubscription={hasSubscription} />
+          <CareRequestsProvider />
         )}
 
         {/* Solicitudes Recibidas */}

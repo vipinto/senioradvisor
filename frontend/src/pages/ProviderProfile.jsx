@@ -450,19 +450,19 @@ export default function ProviderProfile() {
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                  {provider.is_featured && provider.provider_is_subscribed && (
+                  {provider.plan_type === 'premium_plus' && (
                     <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-xs px-3 py-1 rounded-full flex items-center gap-1 font-bold shadow-md">
-                      <Crown className="w-3.5 h-3.5" />Premium
+                      <Crown className="w-3.5 h-3.5" />Premium+
                     </span>
                   )}
-                  {provider.is_featured && !provider.provider_is_subscribed && (
+                  {provider.plan_type === 'premium' && (
+                    <span className="bg-[#00e7ff] text-[#33404f] text-xs px-3 py-1 rounded-full flex items-center gap-1 font-bold shadow-md">
+                      Premium
+                    </span>
+                  )}
+                  {provider.plan_type === 'destacado' && (
                     <span className="bg-[#33404f] text-white text-xs px-3 py-1 rounded-full flex items-center gap-1">
                       <Star className="w-3 h-3" />Destacado
-                    </span>
-                  )}
-                  {!provider.is_featured && provider.provider_is_subscribed && (
-                    <span className="bg-white text-[#33404f] text-xs px-3 py-1 rounded-full flex items-center gap-1 font-bold shadow-md">
-                      <Crown className="w-3.5 h-3.5" />Suscrito
                     </span>
                   )}
                   {isClient && (

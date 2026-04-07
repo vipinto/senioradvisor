@@ -159,24 +159,50 @@ const ProviderAccount = () => {
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-12 h-12 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin" /></div>;
   if (!provider) return <div className="min-h-screen flex items-center justify-center"><p className="text-gray-500">No tienes un perfil de proveedor</p></div>;
 
+  const plan = provider.plan_active ? (provider.plan_type || '') : '';
+  
+  // Permission map per plan
+  const canEdit = {
+    profile: !!plan, // sobre mí, más info
+    pricing: !!plan, // precios
+    gallery: !!plan, // galería
+    amenities: plan === 'premium' || plan === 'premium_plus',
+    social: plan === 'premium_plus',
+    youtube: plan === 'premium_plus',
+  };
+
+  // Filter visible tabs based on plan
+  const allTabs = [
+    { key: 'profile', label: 'Mi Perfil', icon: Settings },
+    { key: 'pricing', label: 'Precios', icon: DollarSign },
+    { key: 'amenities', label: 'Servicios', icon: ListChecks },
+    { key: 'gallery', label: 'Galería', icon: Camera },
+    { key: 'social', label: 'Redes Sociales', icon: Globe },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <h1 className="text-3xl font-bold mb-6 text-[#33404f]">Mi Cuenta</h1>
 
+        {/* Plan info */}
+        {!plan && (
+          <div className="mb-4 p-4 bg-gray-50 border rounded-xl">
+            <p className="text-sm text-gray-600">No tienes un plan activo. Para acceder a funciones de edición, contacta a <a href="mailto:hola@senioradvisor.cl" className="text-[#00e7ff] underline font-medium">hola@senioradvisor.cl</a></p>
+          </div>
+        )}
+
         {/* Tabs */}
         <div className="flex gap-2 mb-6 border-b overflow-x-auto">
-          {[
-            { key: 'profile', label: 'Mi Perfil', icon: Settings },
-            { key: 'pricing', label: 'Precios', icon: DollarSign },
-            { key: 'amenities', label: 'Servicios', icon: ListChecks },
-            { key: 'gallery', label: 'Galería', icon: Camera },
-            { key: 'social', label: 'Redes Sociales', icon: Globe },
-          ].map(({ key, label, icon: Icon }) => (
-            <button key={key} onClick={() => setActiveTab(key)} className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === key ? 'border-[#00e7ff] text-[#00e7ff]' : 'border-transparent text-gray-500 hover:text-gray-700'}`} data-testid={`tab-${key}`}>
-              <Icon className="w-4 h-4" />{label}
-            </button>
-          ))}
+          {allTabs.map(({ key, label, icon: Icon }) => {
+            const allowed = canEdit[key];
+            return (
+              <button key={key} onClick={() => allowed && setActiveTab(key)} className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === key ? 'border-[#00e7ff] text-[#00e7ff]' : allowed ? 'border-transparent text-gray-500 hover:text-gray-700' : 'border-transparent text-gray-300 cursor-not-allowed'}`} data-testid={`tab-${key}`} disabled={!allowed}>
+                <Icon className="w-4 h-4" />{label}
+                {!allowed && <span className="text-[10px] bg-gray-200 text-gray-400 px-1 rounded ml-1">Bloqueado</span>}
+              </button>
+            );
+          })}
         </div>
 
         {/* Mi Perfil */}
@@ -216,7 +242,7 @@ const ProviderAccount = () => {
               </div>
 
               {/* YouTube Video - Only for subscribed */}
-              {provider.is_subscribed ? (
+              {canEdit.youtube ? (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
                     <Youtube className="w-4 h-4 text-red-500" />
@@ -236,7 +262,7 @@ const ProviderAccount = () => {
                   <Lock className="w-5 h-5 text-gray-400 flex-shrink-0" />
                   <div>
                     <p className="text-sm font-medium text-gray-500">Video de YouTube</p>
-                    <p className="text-xs text-gray-400">Suscríbete para agregar un video a tu perfil</p>
+                    <p className="text-xs text-gray-400">Plan Premium+ requerido. Contacta a <a href="mailto:hola@senioradvisor.cl" className="text-[#00e7ff] underline">hola@senioradvisor.cl</a></p>
                   </div>
                 </div>
               )}
@@ -293,7 +319,7 @@ const ProviderAccount = () => {
                     </div>
                   </div>
                   {/* Sub-prices */}
-                  {provider?.is_subscribed && (
+                  {canEdit.youtube && (
                     <div className="mt-3 ml-2 border-l-2 border-[#00e7ff]/30 pl-3 space-y-2">
                       <p className="text-xs font-semibold text-gray-500">Sub-precios (detalles del servicio)</p>
                       {(pricing[key].sub_prices || []).map((sp, j) => (
@@ -395,7 +421,7 @@ const ProviderAccount = () => {
         {/* Galería */}
         {activeTab === 'gallery' && (
           <div className="space-y-6">
-            <PremiumGallery isSubscribed={provider.is_subscribed} />
+            <PremiumGallery isSubscribed={plan === 'premium_plus'} />
             <ProviderGallery providerId={provider.provider_id} />
           </div>
         )}

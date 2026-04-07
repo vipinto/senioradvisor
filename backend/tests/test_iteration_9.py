@@ -10,7 +10,7 @@ import requests
 import os
 import io
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://senior-care-fixes.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://provider-plan-system.preview.emergentagent.com').rstrip('/')
 
 
 class TestProviderInfoGating:

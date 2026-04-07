@@ -122,7 +122,7 @@ class TestAuthEndpoints:
         """POST /api/auth/google with fake code returns error"""
         response = api_client.post(f"{BASE_URL}/api/auth/google", json={
             "code": "fake_code_12345",
-            "redirect_uri": "https://senior-care-fixes.preview.emergentagent.com/auth/google/callback"
+            "redirect_uri": "https://provider-plan-system.preview.emergentagent.com/auth/google/callback"
         })
         # Should return 401 for invalid code (expected behavior)
         assert response.status_code in [400, 401]

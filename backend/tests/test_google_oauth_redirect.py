@@ -39,7 +39,7 @@ class TestGoogleOAuthRedirectFlow:
             f"{BASE_URL}/api/auth/google",
             json={
                 "code": "fake_auth_code_12345",
-                "redirect_uri": "https://senior-care-fixes.preview.emergentagent.com/auth/google/callback"
+                "redirect_uri": "https://provider-plan-system.preview.emergentagent.com/auth/google/callback"
             },
             headers={"Content-Type": "application/json"}
         )

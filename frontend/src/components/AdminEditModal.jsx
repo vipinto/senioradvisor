@@ -84,9 +84,12 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
         };
       case 'settings':
         return {
-          is_featured: provider.is_featured_admin || false,
-          is_subscribed: provider.is_subscribed || provider.provider_is_subscribed || false,
+          plan_type: provider.plan_type || '',
+          plan_active: provider.plan_active || false,
+          verified: provider.verified || false,
           place_id: provider.place_id || '',
+          _email: '',
+          _password: '',
         };
       case 'gallery':
       case 'premium_gallery':
@@ -103,7 +106,19 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
   const handleSave = async () => {
     setSaving(true);
     try {
-      await api.put(`/admin/providers/${provider.provider_id}/profile`, formData);
+      // Separate credentials from profile data
+      const { _email, _password, ...profileData } = formData;
+      
+      await api.put(`/admin/providers/${provider.provider_id}/profile`, profileData);
+      
+      // Update credentials if provided
+      if (_email || _password) {
+        const creds = {};
+        if (_email) creds.email = _email;
+        if (_password) creds.password = _password;
+        await api.put(`/admin/providers/${provider.provider_id}/credentials`, creds);
+      }
+      
       toast.success('Cambios guardados');
       onSaved();
       onClose();
@@ -439,24 +454,40 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
           {/* Settings */}
           {section === 'settings' && (
             <>
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span className="text-sm font-medium">Destacado</span>
-                <input
-                  type="checkbox"
-                  checked={formData.is_featured}
-                  onChange={e => updateField('is_featured', e.target.checked)}
-                  className="w-5 h-5 accent-[#00e7ff]"
-                  data-testid="edit-is-featured"
-                />
+              <div>
+                <label className="text-sm font-medium text-gray-600">Tipo de Plan</label>
+                <select
+                  value={formData.plan_type}
+                  onChange={e => updateField('plan_type', e.target.value)}
+                  className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:outline-none"
+                  data-testid="edit-plan-type"
+                >
+                  <option value="">Sin plan</option>
+                  <option value="destacado">Destacado</option>
+                  <option value="premium">Premium</option>
+                  <option value="premium_plus">Premium+</option>
+                </select>
               </div>
+              {formData.plan_type && (
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <span className="text-sm font-medium">Plan Activo</span>
+                  <input
+                    type="checkbox"
+                    checked={formData.plan_active}
+                    onChange={e => updateField('plan_active', e.target.checked)}
+                    className="w-5 h-5 accent-[#00e7ff]"
+                    data-testid="edit-plan-active"
+                  />
+                </div>
+              )}
               <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span className="text-sm font-medium">Suscrito (Premium)</span>
+                <span className="text-sm font-medium">Verificado (Resolución Sanitaria)</span>
                 <input
                   type="checkbox"
-                  checked={formData.is_subscribed}
-                  onChange={e => updateField('is_subscribed', e.target.checked)}
+                  checked={formData.verified}
+                  onChange={e => updateField('verified', e.target.checked)}
                   className="w-5 h-5 accent-[#00e7ff]"
-                  data-testid="edit-is-subscribed"
+                  data-testid="edit-verified"
                 />
               </div>
               <div>
@@ -467,6 +498,30 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
                   onChange={e => updateField('place_id', e.target.value)}
                   className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:outline-none"
                   data-testid="edit-place-id"
+                />
+              </div>
+              <hr className="my-3" />
+              <p className="text-xs text-gray-400 mb-2">Credenciales de acceso de la residencia</p>
+              <div>
+                <label className="text-sm font-medium text-gray-600">Cambiar Email</label>
+                <input
+                  type="email"
+                  value={formData._email}
+                  onChange={e => updateField('_email', e.target.value)}
+                  placeholder={provider.email || 'Email actual'}
+                  className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:outline-none"
+                  data-testid="edit-provider-email"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-600">Nueva Contraseña</label>
+                <input
+                  type="text"
+                  value={formData._password}
+                  onChange={e => updateField('_password', e.target.value)}
+                  placeholder="Dejar vacío para no cambiar"
+                  className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:outline-none"
+                  data-testid="edit-provider-password"
                 />
               </div>
             </>
