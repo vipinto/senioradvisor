@@ -96,7 +96,7 @@ async def get_categories():
             {"category_id": str(uuid.uuid4()), "name": "Editorial", "order": 0},
             {"category_id": str(uuid.uuid4()), "name": "Actualidad", "order": 1},
             {"category_id": str(uuid.uuid4()), "name": "Beneficios", "order": 2},
-            {"category_id": str(uuid.uuid4()), "name": "Formacion", "order": 3},
+            {"category_id": str(uuid.uuid4()), "name": "Formación", "order": 3},
         ]
         await db.blog_categories.insert_many(defaults)
         for d in defaults:
