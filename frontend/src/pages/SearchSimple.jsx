@@ -511,7 +511,7 @@ const SearchPage = () => {
 
       <div className="max-w-screen-2xl mx-auto flex gap-5 px-4 py-5">
         {/* Left Sidebar Filters */}
-        <aside className={`${showFilters ? 'fixed inset-0 z-50 bg-white overflow-y-auto pt-4 px-4 pb-20' : 'hidden'} lg:block lg:static lg:w-[280px] lg:flex-shrink-0 lg:bg-white lg:border lg:border-gray-200 lg:rounded-2xl lg:overflow-y-auto lg:px-6 lg:py-6 lg:self-start lg:sticky lg:top-[72px]`} style={{ maxHeight: 'calc(100vh - 90px)' }} data-testid="filters-sidebar">
+        <aside className={`${showFilters ? 'fixed inset-0 z-50 bg-white overflow-y-auto pt-4 px-4 pb-20' : 'hidden'} lg:block lg:static lg:w-[280px] lg:flex-shrink-0 lg:bg-white lg:border lg:border-gray-200 lg:rounded-2xl lg:overflow-y-auto lg:px-6 lg:py-6 lg:self-start lg:sticky lg:top-[72px]`} style={{ maxHeight: 'calc(100vh - 90px)', scrollbarWidth: 'thin', scrollbarColor: '#cbd5e1 transparent' }} data-testid="filters-sidebar">
           {/* Mobile close */}
           <div className="lg:hidden flex items-center justify-between mb-4">
             <h3 className="font-bold text-lg text-[#33404f]">Filtros</h3>
@@ -522,9 +522,9 @@ const SearchPage = () => {
           <div className="mb-8">
             <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Tipo de Servicio</h4>
             <div className="space-y-1">
-              <button onClick={() => { setActiveService(''); setCurrentPage(1); }} className={`w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-colors ${!activeService ? 'bg-[#00e7ff]/10 text-[#00e7ff]' : 'text-[#33404f] hover:bg-gray-50'}`} data-testid="filter-service-all">Todos</button>
+              <button onClick={() => { setActiveService(''); setCurrentPage(1); }} className={`w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-colors ${!activeService ? 'bg-[#33404f] text-white' : 'text-[#33404f] hover:bg-gray-50'}`} data-testid="filter-service-all">Todos</button>
               {SERVICE_TABS.map(tab => (
-                <button key={tab.id} onClick={() => { setActiveService(tab.id); setCurrentPage(1); }} className={`w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-colors ${activeService === tab.id ? 'bg-[#00e7ff]/10 text-[#00e7ff]' : 'text-[#33404f] hover:bg-gray-50'}`} data-testid={`filter-service-${tab.id}`}>{tab.label}</button>
+                <button key={tab.id} onClick={() => { setActiveService(tab.id); setCurrentPage(1); }} className={`w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-colors ${activeService === tab.id ? 'bg-[#33404f] text-white' : 'text-[#33404f] hover:bg-gray-50'}`} data-testid={`filter-service-${tab.id}`}>{tab.label}</button>
               ))}
             </div>
           </div>
