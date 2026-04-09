@@ -509,9 +509,9 @@ const SearchPage = () => {
         </div>
       </div>
 
-      <div className="max-w-screen-2xl mx-auto flex">
+      <div className="max-w-screen-2xl mx-auto flex gap-6 px-4 py-5">
         {/* Left Sidebar Filters */}
-        <aside className={`${showFilters ? 'fixed inset-0 z-50 bg-white overflow-y-auto pt-4 px-4 pb-20' : 'hidden'} lg:block lg:static lg:w-[300px] lg:flex-shrink-0 lg:border-r lg:bg-white lg:overflow-y-auto lg:px-6 lg:py-6`} style={{ maxHeight: 'calc(100vh - 60px)' }} data-testid="filters-sidebar">
+        <aside className={`${showFilters ? 'fixed inset-0 z-50 bg-white overflow-y-auto pt-4 px-4 pb-20' : 'hidden'} lg:block lg:static lg:w-[280px] lg:flex-shrink-0 lg:bg-white lg:border lg:border-gray-200 lg:rounded-2xl lg:overflow-y-auto lg:px-6 lg:py-6 lg:self-start lg:sticky lg:top-[72px]`} style={{ maxHeight: 'calc(100vh - 90px)' }} data-testid="filters-sidebar">
           {/* Mobile close */}
           <div className="lg:hidden flex items-center justify-between mb-4">
             <h3 className="font-bold text-lg text-[#33404f]">Filtros</h3>

@@ -16,8 +16,8 @@ U-CAN es una plataforma web que conecta dueños de mascotas con cuidadores profe
 
 | Entorno | URL |
 |---------|-----|
-| **Producción/Preview** | https://provider-plan-system.preview.emergentagent.com |
-| **API Backend** | https://provider-plan-system.preview.emergentagent.com/api |
+| **Producción/Preview** | https://search-sidebar-ui.preview.emergentagent.com |
+| **API Backend** | https://search-sidebar-ui.preview.emergentagent.com/api |
 
 ---
 
