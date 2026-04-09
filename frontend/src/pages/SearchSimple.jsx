@@ -692,7 +692,7 @@ const SearchPage = () => {
                       >
                         <div className="flex gap-5">
                           {/* Image */}
-                          <div className="w-48 h-36 sm:w-56 sm:h-40 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 relative">
+                          <div className="w-56 h-40 sm:w-72 sm:h-48 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 relative">
                             {img ? <img src={img} alt={provider.business_name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><MapPin className="w-10 h-10 text-gray-300" /></div>}
                             {currentUser && currentUser.role !== 'admin' && currentUser.role !== 'provider' && (
                               <button onClick={(e) => toggleFavorite(e, provider.provider_id)} className="absolute top-2 right-2 p-2 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors" data-testid={`favorite-btn-${provider.provider_id}`}>
@@ -704,28 +704,28 @@ const SearchPage = () => {
                           {/* Info */}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <h3 className="font-bold text-[#33404f] text-lg">{provider.business_name}</h3>
+                              <h3 className="font-bold text-[#33404f] text-xl">{provider.business_name}</h3>
                               {provider.plan_type === 'premium_plus' && <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-xs px-2.5 py-0.5 rounded-full flex items-center gap-1 font-bold" data-testid="premium-plus-badge"><Crown className="w-3 h-3" />Premium+</span>}
                               {provider.plan_type === 'premium' && <span className="bg-[#33404f] text-white text-xs px-2.5 py-0.5 rounded-full font-bold" data-testid="premium-badge">Premium</span>}
                               {provider.plan_type === 'destacado' && <span className="bg-gray-200 text-[#33404f] text-xs px-2.5 py-0.5 rounded-full flex items-center gap-1" data-testid="destacado-badge"><Star className="w-3 h-3" />Destacado</span>}
                               {provider.verified && <Shield className="w-5 h-5 text-[#00e7ff]" />}
                             </div>
 
-                            <div className="flex items-center gap-2 text-gray-400 mt-1.5">
+                            <div className="flex items-center gap-2 text-gray-400 mt-2">
                               <MapPin className="w-4 h-4" />
-                              <span className="text-sm">{provider.comuna || provider.address}</span>
-                              {provider.distance_km && <span className="text-[#00e7ff] font-medium text-sm">({provider.distance_km} km)</span>}
+                              <span className="text-base">{provider.comuna || provider.address}</span>
+                              {provider.distance_km && <span className="text-[#00e7ff] font-medium text-base">({provider.distance_km} km)</span>}
                             </div>
 
                             <div className="flex items-center gap-4 mt-3">
                               {provider.rating > 0 && (
                                 <div className="flex items-center gap-1.5">
                                   <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                                  <span className="text-base font-bold text-[#33404f]">{provider.rating}</span>
-                                  <span className="text-sm text-gray-400">({provider.total_reviews})</span>
+                                  <span className="text-lg font-bold text-[#33404f]">{provider.rating}</span>
+                                  <span className="text-base text-gray-400">({provider.total_reviews})</span>
                                 </div>
                               )}
-                              {lowestPrice && <span className="text-base font-bold text-[#33404f]">Desde ${lowestPrice.toLocaleString('es-CL')}/mes</span>}
+                              {lowestPrice && <span className="text-lg font-bold text-[#33404f]">Desde ${lowestPrice.toLocaleString('es-CL')}/mes</span>}
                             </div>
 
                             {provider.services && provider.services.length > 0 && (
@@ -734,7 +734,7 @@ const SearchPage = () => {
                                   const names = { 'residencias': 'Residencias', 'cuidado-domicilio': 'Cuidado a Domicilio', 'salud-mental': 'Salud Mental' };
                                   const seen = new Set();
                                   return provider.services.filter(s => { if (seen.has(s.service_type)) return false; seen.add(s.service_type); return true; }).slice(0, 3).map((s, i) => (
-                                    <span key={i} className="px-3 py-1 bg-gray-100 text-[#33404f] text-sm rounded-lg font-medium">{names[s.service_type] || s.service_type}</span>
+                                    <span key={i} className="px-3 py-1.5 bg-gray-100 text-[#33404f] text-base rounded-lg font-medium">{names[s.service_type] || s.service_type}</span>
                                   ));
                                 })()}
                               </div>
