@@ -552,15 +552,6 @@ const SearchPage = () => {
             </div>
           </div>
 
-          {/* Verified */}
-          <div className="mb-8">
-            <label className="flex items-center gap-3 cursor-pointer" data-testid="filter-verified">
-              <input type="checkbox" checked={verifiedOnly} onChange={e => { setVerifiedOnly(e.target.checked); setCurrentPage(1); }} className="w-5 h-5 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]" />
-              <Shield className="w-5 h-5 text-[#00e7ff]" />
-              <span className="text-base font-medium text-[#33404f]">Solo verificados</span>
-            </label>
-          </div>
-
           {/* Amenities - Collapsible */}
           <div className="mb-8">
             <button onClick={() => setAmenitiesOpen(prev => !prev)} className="w-full flex items-center justify-between mb-3" data-testid="amenities-toggle">
