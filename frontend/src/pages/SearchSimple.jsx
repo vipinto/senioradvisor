@@ -511,7 +511,7 @@ const SearchPage = () => {
 
       <div className="max-w-screen-2xl mx-auto flex">
         {/* Left Sidebar Filters */}
-        <aside className={`${showFilters ? 'fixed inset-0 z-50 bg-white overflow-y-auto pt-4 px-4 pb-20' : 'hidden'} lg:block lg:static lg:w-[280px] lg:flex-shrink-0 lg:border-r lg:bg-white lg:overflow-y-auto lg:px-5 lg:py-5`} style={{ maxHeight: 'calc(100vh - 60px)' }} data-testid="filters-sidebar">
+        <aside className={`${showFilters ? 'fixed inset-0 z-50 bg-white overflow-y-auto pt-4 px-4 pb-20' : 'hidden'} lg:block lg:static lg:w-[300px] lg:flex-shrink-0 lg:border-r lg:bg-white lg:overflow-y-auto lg:px-6 lg:py-6`} style={{ maxHeight: 'calc(100vh - 60px)' }} data-testid="filters-sidebar">
           {/* Mobile close */}
           <div className="lg:hidden flex items-center justify-between mb-4">
             <h3 className="font-bold text-lg text-[#33404f]">Filtros</h3>
@@ -519,22 +519,22 @@ const SearchPage = () => {
           </div>
 
           {/* Service Type */}
-          <div className="mb-6">
-            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Tipo de Servicio</h4>
-            <div className="space-y-1.5">
-              <button onClick={() => { setActiveService(''); setCurrentPage(1); }} className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${!activeService ? 'bg-[#00e7ff]/10 text-[#00e7ff]' : 'text-[#33404f] hover:bg-gray-50'}`} data-testid="filter-service-all">Todos</button>
+          <div className="mb-8">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Tipo de Servicio</h4>
+            <div className="space-y-1">
+              <button onClick={() => { setActiveService(''); setCurrentPage(1); }} className={`w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-colors ${!activeService ? 'bg-[#00e7ff]/10 text-[#00e7ff]' : 'text-[#33404f] hover:bg-gray-50'}`} data-testid="filter-service-all">Todos</button>
               {SERVICE_TABS.map(tab => (
-                <button key={tab.id} onClick={() => { setActiveService(tab.id); setCurrentPage(1); }} className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeService === tab.id ? 'bg-[#00e7ff]/10 text-[#00e7ff]' : 'text-[#33404f] hover:bg-gray-50'}`} data-testid={`filter-service-${tab.id}`}>{tab.label}</button>
+                <button key={tab.id} onClick={() => { setActiveService(tab.id); setCurrentPage(1); }} className={`w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-colors ${activeService === tab.id ? 'bg-[#00e7ff]/10 text-[#00e7ff]' : 'text-[#33404f] hover:bg-gray-50'}`} data-testid={`filter-service-${tab.id}`}>{tab.label}</button>
               ))}
             </div>
           </div>
 
           {/* Rating */}
-          <div className="mb-6">
-            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Rating Minimo</h4>
-            <div className="flex gap-1.5">
+          <div className="mb-8">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Rating Minimo</h4>
+            <div className="flex gap-2">
               {['3', '3.5', '4', '4.5'].map(r => (
-                <button key={r} onClick={() => { setMinRating(minRating === r ? '' : r); setCurrentPage(1); }} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors ${minRating === r ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-100 text-[#33404f] hover:bg-gray-200'}`} data-testid={`filter-rating-${r}`}>
+                <button key={r} onClick={() => { setMinRating(minRating === r ? '' : r); setCurrentPage(1); }} className={`flex-1 py-3 rounded-xl text-sm font-bold transition-colors ${minRating === r ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-100 text-[#33404f] hover:bg-gray-200'}`} data-testid={`filter-rating-${r}`}>
                   {r}+
                 </button>
               ))}
@@ -542,36 +542,36 @@ const SearchPage = () => {
           </div>
 
           {/* Price Range */}
-          <div className="mb-6">
-            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Rango de Precio (CLP)</h4>
+          <div className="mb-8">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Rango de Precio (CLP)</h4>
             <div className="flex gap-2">
-              <input type="number" placeholder="Min" value={minPrice} onChange={e => { setMinPrice(e.target.value); setCurrentPage(1); }} className="flex-1 w-0 h-9 px-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-[#00e7ff]" data-testid="filter-price-min" />
-              <span className="text-gray-300 self-center">-</span>
-              <input type="number" placeholder="Max" value={maxPrice} onChange={e => { setMaxPrice(e.target.value); setCurrentPage(1); }} className="flex-1 w-0 h-9 px-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-[#00e7ff]" data-testid="filter-price-max" />
+              <input type="number" placeholder="Min" value={minPrice} onChange={e => { setMinPrice(e.target.value); setCurrentPage(1); }} className="flex-1 w-0 h-11 px-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="filter-price-min" />
+              <span className="text-gray-300 self-center text-lg">-</span>
+              <input type="number" placeholder="Max" value={maxPrice} onChange={e => { setMaxPrice(e.target.value); setCurrentPage(1); }} className="flex-1 w-0 h-11 px-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" data-testid="filter-price-max" />
             </div>
           </div>
 
           {/* Verified */}
-          <div className="mb-6">
-            <label className="flex items-center gap-2.5 cursor-pointer" data-testid="filter-verified">
-              <input type="checkbox" checked={verifiedOnly} onChange={e => { setVerifiedOnly(e.target.checked); setCurrentPage(1); }} className="w-4 h-4 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]" />
-              <Shield className="w-4 h-4 text-[#00e7ff]" />
-              <span className="text-sm font-medium text-[#33404f]">Solo verificados</span>
+          <div className="mb-8">
+            <label className="flex items-center gap-3 cursor-pointer" data-testid="filter-verified">
+              <input type="checkbox" checked={verifiedOnly} onChange={e => { setVerifiedOnly(e.target.checked); setCurrentPage(1); }} className="w-5 h-5 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]" />
+              <Shield className="w-5 h-5 text-[#00e7ff]" />
+              <span className="text-base font-medium text-[#33404f]">Solo verificados</span>
             </label>
           </div>
 
           {/* Amenities */}
-          <div className="mb-6">
-            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Amenidades</h4>
-            <div className="space-y-1.5 max-h-48 overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
+          <div className="mb-8">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Amenidades</h4>
+            <div className="space-y-2.5 max-h-64 overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
               {AMENITIES_LIST.map(a => (
-                <label key={a} className="flex items-center gap-2 cursor-pointer">
+                <label key={a} className="flex items-center gap-3 cursor-pointer">
                   <input type="checkbox" checked={selectedAmenities.includes(a)} onChange={e => {
                     if (e.target.checked) { setSelectedAmenities(prev => [...prev, a]); }
                     else { setSelectedAmenities(prev => prev.filter(x => x !== a)); }
                     setCurrentPage(1);
-                  }} className="w-3.5 h-3.5 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]" />
-                  <span className="text-xs text-[#33404f]">{a}</span>
+                  }} className="w-4.5 h-4.5 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]" />
+                  <span className="text-sm text-[#33404f]">{a}</span>
                 </label>
               ))}
             </div>
@@ -595,9 +595,9 @@ const SearchPage = () => {
         {/* Main Content */}
         <main className="flex-1 min-w-0">
           {/* Toolbar */}
-          <div className="flex items-center justify-between px-4 py-3 bg-white border-b">
+          <div className="flex items-center justify-between px-5 py-4 bg-white border-b">
             <div>
-              <h2 className="font-bold text-[#33404f]" data-testid="results-count">
+              <h2 className="font-bold text-[#33404f] text-lg" data-testid="results-count">
                 {loading ? 'Buscando...' : `${totalResults} servicios encontrados`}
               </h2>
               {searchAddress && !loading && <p className="text-xs text-gray-400">Cerca de: {searchAddress}</p>}
@@ -685,18 +685,18 @@ const SearchPage = () => {
                       <Link
                         key={provider.provider_id}
                         to={`/provider/${provider.provider_id}`}
-                        className={`block px-4 py-4 hover:bg-gray-50 transition-colors ${hoveredProvider?.provider_id === provider.provider_id ? 'bg-cyan-50' : ''}`}
+                        className={`block px-5 py-5 hover:bg-gray-50 transition-colors ${hoveredProvider?.provider_id === provider.provider_id ? 'bg-cyan-50' : ''}`}
                         onMouseEnter={() => setHoveredProvider(provider)}
                         onMouseLeave={() => setHoveredProvider(null)}
                         data-testid="provider-card"
                       >
-                        <div className="flex gap-4">
+                        <div className="flex gap-5">
                           {/* Image */}
-                          <div className="w-36 h-28 sm:w-44 sm:h-32 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 relative">
-                            {img ? <img src={img} alt={provider.business_name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><MapPin className="w-8 h-8 text-gray-300" /></div>}
+                          <div className="w-48 h-36 sm:w-56 sm:h-40 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 relative">
+                            {img ? <img src={img} alt={provider.business_name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><MapPin className="w-10 h-10 text-gray-300" /></div>}
                             {currentUser && currentUser.role !== 'admin' && currentUser.role !== 'provider' && (
-                              <button onClick={(e) => toggleFavorite(e, provider.provider_id)} className="absolute top-2 right-2 p-1.5 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors" data-testid={`favorite-btn-${provider.provider_id}`}>
-                                <Heart className={`w-4 h-4 ${favoriteIds.has(provider.provider_id) ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
+                              <button onClick={(e) => toggleFavorite(e, provider.provider_id)} className="absolute top-2 right-2 p-2 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors" data-testid={`favorite-btn-${provider.provider_id}`}>
+                                <Heart className={`w-5 h-5 ${favoriteIds.has(provider.provider_id) ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
                               </button>
                             )}
                           </div>
@@ -704,44 +704,44 @@ const SearchPage = () => {
                           {/* Info */}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <h3 className="font-bold text-[#33404f] text-sm sm:text-base">{provider.business_name}</h3>
-                              {provider.plan_type === 'premium_plus' && <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-[10px] px-2 py-0.5 rounded-full flex items-center gap-0.5 font-bold" data-testid="premium-plus-badge"><Crown className="w-3 h-3" />Premium+</span>}
-                              {provider.plan_type === 'premium' && <span className="bg-[#33404f] text-white text-[10px] px-2 py-0.5 rounded-full font-bold" data-testid="premium-badge">Premium</span>}
-                              {provider.plan_type === 'destacado' && <span className="bg-gray-200 text-[#33404f] text-[10px] px-2 py-0.5 rounded-full flex items-center gap-0.5" data-testid="destacado-badge"><Star className="w-3 h-3" />Destacado</span>}
-                              {provider.verified && <Shield className="w-4 h-4 text-[#00e7ff]" />}
+                              <h3 className="font-bold text-[#33404f] text-lg">{provider.business_name}</h3>
+                              {provider.plan_type === 'premium_plus' && <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-xs px-2.5 py-0.5 rounded-full flex items-center gap-1 font-bold" data-testid="premium-plus-badge"><Crown className="w-3 h-3" />Premium+</span>}
+                              {provider.plan_type === 'premium' && <span className="bg-[#33404f] text-white text-xs px-2.5 py-0.5 rounded-full font-bold" data-testid="premium-badge">Premium</span>}
+                              {provider.plan_type === 'destacado' && <span className="bg-gray-200 text-[#33404f] text-xs px-2.5 py-0.5 rounded-full flex items-center gap-1" data-testid="destacado-badge"><Star className="w-3 h-3" />Destacado</span>}
+                              {provider.verified && <Shield className="w-5 h-5 text-[#00e7ff]" />}
                             </div>
 
-                            <div className="flex items-center gap-1.5 text-gray-400 text-xs mt-1">
-                              <MapPin className="w-3 h-3" />
-                              <span>{provider.comuna || provider.address}</span>
-                              {provider.distance_km && <span className="text-[#00e7ff] font-medium">({provider.distance_km} km)</span>}
+                            <div className="flex items-center gap-2 text-gray-400 mt-1.5">
+                              <MapPin className="w-4 h-4" />
+                              <span className="text-sm">{provider.comuna || provider.address}</span>
+                              {provider.distance_km && <span className="text-[#00e7ff] font-medium text-sm">({provider.distance_km} km)</span>}
                             </div>
 
-                            <div className="flex items-center gap-3 mt-2">
+                            <div className="flex items-center gap-4 mt-3">
                               {provider.rating > 0 && (
-                                <div className="flex items-center gap-1">
-                                  <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-                                  <span className="text-sm font-bold text-[#33404f]">{provider.rating}</span>
-                                  <span className="text-xs text-gray-400">({provider.total_reviews})</span>
+                                <div className="flex items-center gap-1.5">
+                                  <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                                  <span className="text-base font-bold text-[#33404f]">{provider.rating}</span>
+                                  <span className="text-sm text-gray-400">({provider.total_reviews})</span>
                                 </div>
                               )}
-                              {lowestPrice && <span className="text-sm font-bold text-[#00e7ff]">Desde ${lowestPrice.toLocaleString('es-CL')}/mes</span>}
+                              {lowestPrice && <span className="text-base font-bold text-[#00e7ff]">Desde ${lowestPrice.toLocaleString('es-CL')}/mes</span>}
                             </div>
 
                             {provider.services && provider.services.length > 0 && (
-                              <div className="flex flex-wrap gap-1.5 mt-2">
+                              <div className="flex flex-wrap gap-2 mt-3">
                                 {(() => {
                                   const names = { 'residencias': 'Residencias', 'cuidado-domicilio': 'Cuidado a Domicilio', 'salud-mental': 'Salud Mental' };
                                   const seen = new Set();
                                   return provider.services.filter(s => { if (seen.has(s.service_type)) return false; seen.add(s.service_type); return true; }).slice(0, 3).map((s, i) => (
-                                    <span key={i} className="px-2 py-0.5 bg-gray-100 text-[#33404f] text-[11px] rounded-md font-medium">{names[s.service_type] || s.service_type}</span>
+                                    <span key={i} className="px-3 py-1 bg-gray-100 text-[#33404f] text-sm rounded-lg font-medium">{names[s.service_type] || s.service_type}</span>
                                   ));
                                 })()}
                               </div>
                             )}
                           </div>
 
-                          <ChevronRight className="w-5 h-5 text-gray-300 self-center flex-shrink-0 hidden sm:block" />
+                          <ChevronRight className="w-6 h-6 text-gray-300 self-center flex-shrink-0 hidden sm:block" />
                         </div>
                       </Link>
                     );
