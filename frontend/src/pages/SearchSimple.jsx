@@ -509,7 +509,7 @@ const SearchPage = () => {
         </div>
       </div>
 
-      <div className="max-w-screen-2xl mx-auto flex gap-6 px-4 py-5">
+      <div className="max-w-screen-2xl mx-auto flex gap-5 px-4 py-5">
         {/* Left Sidebar Filters */}
         <aside className={`${showFilters ? 'fixed inset-0 z-50 bg-white overflow-y-auto pt-4 px-4 pb-20' : 'hidden'} lg:block lg:static lg:w-[280px] lg:flex-shrink-0 lg:bg-white lg:border lg:border-gray-200 lg:rounded-2xl lg:overflow-y-auto lg:px-6 lg:py-6 lg:self-start lg:sticky lg:top-[72px]`} style={{ maxHeight: 'calc(100vh - 90px)' }} data-testid="filters-sidebar">
           {/* Mobile close */}
@@ -593,7 +593,7 @@ const SearchPage = () => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 bg-white border border-gray-200 rounded-2xl overflow-hidden">
           {/* Toolbar */}
           <div className="flex items-center justify-between px-5 py-4 bg-white border-b">
             <div>
