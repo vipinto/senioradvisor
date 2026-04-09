@@ -725,7 +725,7 @@ const SearchPage = () => {
                                   <span className="text-sm text-gray-400">({provider.total_reviews})</span>
                                 </div>
                               )}
-                              {lowestPrice && <span className="text-base font-bold text-[#00e7ff]">Desde ${lowestPrice.toLocaleString('es-CL')}/mes</span>}
+                              {lowestPrice && <span className="text-base font-bold text-[#33404f]">Desde ${lowestPrice.toLocaleString('es-CL')}/mes</span>}
                             </div>
 
                             {provider.services && provider.services.length > 0 && (
