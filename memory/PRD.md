@@ -41,6 +41,33 @@ Buscador de residencias para adultos mayores en Chile. Las familias buscan resid
 - /auth/me devuelve has_subscription basado en plan_type (Premium/Premium+ = true)
 - Estadisticas admin muestran "Planes Activos" en vez de "Suscripciones"
 
+## Blog (Actualidad Senior)
+- Categorias con nombre, descripcion
+- Articulos con YouTube URLs e imagenes
+- Layout horizontal con carousel
+- Admin management desde AdminPanel
+
+## Hogares Sociales
+- Pagina /hogares-sociales con directorio
+- Enlace en Footer
+
+## SeniorPodcast
+- Seccion en Home
+- Pagina dedicada /podcast
+- Admin management con upload de logos via Cloudinary
+- Categorias y episodios con YouTube
+
+## Busqueda Avanzada /search (Abril 2026)
+- Layout: sidebar izquierdo de filtros + tarjetas horizontales a la derecha
+- Filtros: Tipo de servicio, Rating minimo, Rango de precio, Solo verificados, Amenidades
+- Contenedores visuales separados con bordes para sidebar y resultados
+- Textos grandes y legibles para adultos mayores
+- Precios en color oscuro #33404f y bold
+- Filtro de precio corregido para buscar en services[].price_from
+- Vista lista y mapa con toggle
+- Paginacion funcional
+- Autocompletado de comunas
+
 ## Credenciales
 - Admin: admin@senioradvisor.cl / EmiLuci2$$$
 - Cliente: demo@senioradvisor.cl / demo123
@@ -60,14 +87,16 @@ Buscador de residencias para adultos mayores en Chile. Las familias buscan resid
 | Redes Sociales | No | No | Si |
 
 ## Key API Endpoints
-- GET /api/providers - {results, total, skip, limit} (ordenado por plan_type)
+- GET /api/providers - {results, total, skip, limit} (ordenado por plan_type, filtros: q, service_type, min_rating, min_price, max_price, verified_only, amenities)
 - GET /api/providers/{id} - incluye google_reviews, google_rating
 - PUT /api/admin/providers/{id}/profile - plan_type, plan_active, verified, etc.
 - PUT /api/admin/providers/{id}/credentials - email, password
 - POST /api/admin/providers/{id}/toggle-featured
-- GET /api/admin/stats - incluye active_subscriptions (ahora cuenta planes activos)
+- GET /api/admin/stats - incluye active_subscriptions (cuenta planes activos)
 - POST/DELETE /api/favorites/{provider_id}
 - GET /api/favorites
+- GET /api/podcast/categories & GET /api/podcast/episodes
+- GET /api/blog/categories & GET /api/blog/articles
 
 ## Data Model - providers collection
 - plan_type: '' | 'destacado' | 'premium' | 'premium_plus'
@@ -78,14 +107,11 @@ Buscador de residencias para adultos mayores en Chile. Las familias buscan resid
 - is_featured_admin
 - services: array of {service_type, price_from, description}
 
-## Pendiente / P1
-- Configurar variables Cloudinary (CLOUDINARY_CLOUD_NAME, API_KEY, API_SECRET)
-
 ## Pendiente / P2
 - Purgar rutas de suscripcion del backend (MercadoPago routes, subscription endpoints)
 - Limpiar ServiceHistory.jsx y PlansSimple.jsx (obsoletos)
-- Filtros avanzados de busqueda (precio, amenidades, rating minimo)
+- Configurar variables Cloudinary (CLOUDINARY_CLOUD_NAME, API_KEY, API_SECRET)
 
 ## Futuro / Backlog
-- Refactorizar AdminPanel.jsx en componentes mas pequenos
+- Refactorizar AdminPanel.jsx en componentes mas pequenos (extraer PlanModal, BlogModal, PodcastModal)
 - Eliminar SubscriptionCard.jsx

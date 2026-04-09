@@ -840,7 +840,7 @@ async def search_providers(
             price_filter["$gte"] = min_price
         if max_price:
             price_filter["$lte"] = max_price
-        query["price_from"] = price_filter
+        query["services.price_from"] = price_filter
 
     if all([bounds_south, bounds_west, bounds_north, bounds_east]):
         query["latitude"] = {"$gte": bounds_south, "$lte": bounds_north}
