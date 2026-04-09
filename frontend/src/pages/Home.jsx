@@ -395,7 +395,7 @@ const FeaturedSlider = ({ featured }) => {
 
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex gap-6">
-            {featured.map((p) => (
+            {featured.slice(0, 8).map((p) => (
               <div key={p.provider_id} className="flex-[0_0_280px]">
                 <FeaturedCard p={p} />
               </div>
