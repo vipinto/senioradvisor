@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, Component } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { MapPin, Star, Shield, Navigation, Search, X, ChevronRight, Home, Crown, DollarSign, SlidersHorizontal, Heart } from 'lucide-react';
+import { MapPin, Star, Shield, Navigation, Search, X, ChevronRight, Home, Crown, DollarSign, SlidersHorizontal, Heart, List, Map } from 'lucide-react';
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
@@ -96,6 +96,12 @@ const SearchPage = () => {
 
   // Filters
   const [minRating, setMinRating] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [viewMode, setViewMode] = useState('list');
+  const [showFilters, setShowFilters] = useState(false);
 
   // Autocomplete
   const [comunas, setComunas] = useState([]);
@@ -120,7 +126,7 @@ const SearchPage = () => {
 
   useEffect(() => {
     loadProviders();
-  }, [activeService, currentPage, minRating]);
+  }, [activeService, currentPage, minRating, minPrice, maxPrice, verifiedOnly, selectedAmenities]);
 
   useEffect(() => {
     // Load user and favorites
@@ -194,6 +200,10 @@ const SearchPage = () => {
       params.set('limit', PAGE_SIZE.toString());
 
       if (minRating) params.set('min_rating', minRating);
+      if (minPrice) params.set('min_price', minPrice);
+      if (maxPrice) params.set('max_price', maxPrice);
+      if (verifiedOnly) params.set('verified_only', 'true');
+      if (selectedAmenities.length > 0) params.set('amenities', selectedAmenities.join(','));
 
       let datesStr = '';
       if (activeService === 'alojamiento' && dateRange.from) {
@@ -411,76 +421,38 @@ const SearchPage = () => {
     return 'Selecciona fechas';
   };
 
+  const AMENITIES_LIST = [
+    'Acceso silla de ruedas', 'Acompañamiento', 'Aire acondicionado', 'Alimentación especial',
+    'Áreas verdes', 'Calefacción', 'Enfermería', 'Estacionamiento',
+    'Habitación privada', 'Jardín', 'Kinesiología', 'Lavandería',
+    'Sala de estar', 'Terapia ocupacional', 'Terraza', 'WiFi'
+  ];
+
+  const activeFiltersCount = [activeService, minRating, minPrice, maxPrice, verifiedOnly, selectedAmenities.length > 0].filter(Boolean).length;
+
+  const clearAllFilters = () => {
+    setActiveService('');
+    setMinRating('');
+    setMinPrice('');
+    setMaxPrice('');
+    setVerifiedOnly(false);
+    setSelectedAmenities([]);
+    setCurrentPage(1);
+    clearSearch();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50" data-testid="search-page">
-      <div className="bg-white border-b shadow-sm sticky top-24 z-40">
-        <div className="max-w-screen-2xl mx-auto px-4 py-4">
-          {/* Categorias - Select en mobile, botones en desktop */}
-          <div className="hidden sm:flex flex-wrap gap-3 mb-4">
-            <button
-              onClick={() => { setActiveService(''); setFilteredProviders(providers); }}
-              className={`px-6 py-3 rounded-xl text-lg font-bold transition-all ${!activeService ? 'bg-[#00e7ff] text-[#33404f] shadow-lg' : 'bg-gray-100 text-[#33404f] hover:bg-gray-200 border-2 border-gray-300'}`}
-              data-testid="service-tab-all"
-            >
-              Todos
-            </button>
-
-            {SERVICE_TABS.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => {
-                  setActiveService(tab.id);
-                  setCurrentPage(1);
-                  setDateRange({ from: undefined, to: undefined });
-                  setSelectedDates([]);
-                  if (searchAddress) {
-                    filterProvidersByLocation(mapCenter, searchRadius);
-                  } else {
-                    setFilteredProviders(providers.filter(p => p.services?.some(s => s.service_type === tab.id)));
-                  }
-                }}
-                className={`px-6 py-3 rounded-xl text-lg font-bold transition-all ${activeService === tab.id ? 'bg-[#00e7ff] text-[#33404f] shadow-lg' : 'bg-gray-100 text-[#33404f] hover:bg-gray-200 border-2 border-gray-300'}`}
-                data-testid={`service-tab-${tab.id}`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-          <div className="sm:hidden mb-3">
-            <select
-              value={activeService}
-              onChange={(e) => {
-                const val = e.target.value;
-                setActiveService(val);
-                setCurrentPage(1);
-                setDateRange({ from: undefined, to: undefined });
-                setSelectedDates([]);
-                if (!val) {
-                  setFilteredProviders(providers);
-                } else if (searchAddress) {
-                  filterProvidersByLocation(mapCenter, searchRadius);
-                } else {
-                  setFilteredProviders(providers.filter(p => p.services?.some(s => s.service_type === val)));
-                }
-              }}
-              className="w-full h-12 px-4 border-2 border-gray-300 rounded-xl text-base font-bold text-[#33404f] bg-white focus:ring-2 focus:ring-[#00e7ff] focus:border-[#00e7ff]"
-              data-testid="service-select-mobile"
-            >
-              <option value="">Todos los servicios</option>
-              <option value="residencias">Residencias</option>
-              <option value="cuidado-domicilio">Cuidado a Domicilio</option>
-              <option value="salud-mental">Salud Mental</option>
-            </select>
-          </div>
-
-          <form onSubmit={handleSearch} className="space-y-3 sm:space-y-0">
-            <div className="flex items-center gap-3 sm:flex-row">
-              <div className="flex-1 relative">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#33404f]" />
+      {/* Top Search Bar */}
+      <div className="bg-white border-b shadow-sm sticky top-0 z-40">
+        <div className="max-w-screen-2xl mx-auto px-4 py-3">
+          <form onSubmit={handleSearch} className="flex items-center gap-3">
+            <div className="flex-1 relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#33404f]" />
               <input
                 ref={searchInputRef}
                 type="text"
-                placeholder="Buscar por nombre, comuna o region..."
+                placeholder="Buscar por nombre, comuna o direccion..."
                 value={searchAddress}
                 onChange={(e) => {
                   const val = e.target.value;
@@ -501,450 +473,303 @@ const SearchPage = () => {
                   }
                 }}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                className="w-full pl-14 pr-10 h-14 text-lg border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00e7ff] focus:border-[#00e7ff] text-[#33404f] placeholder-gray-500"
+                className="w-full pl-10 pr-10 h-11 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00e7ff] text-[#33404f]"
                 data-testid="search-input"
               />
               {showSuggestions && filteredComunas.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-gray-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto" data-testid="comuna-suggestions">
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto" data-testid="comuna-suggestions">
                   {filteredComunas.map((comuna, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onMouseDown={(e) => { e.preventDefault(); setSearchAddress(comuna); setShowSuggestions(false); setCurrentPage(1); }}
-                      className="w-full text-left px-4 py-3 text-sm hover:bg-cyan-50 flex items-center gap-2 border-b border-gray-100 last:border-0 transition-colors"
-                      data-testid={`suggestion-${i}`}
-                    >
-                      <MapPin className="w-4 h-4 text-[#00e7ff] flex-shrink-0" />
+                    <button key={i} type="button" onMouseDown={(e) => { e.preventDefault(); setSearchAddress(comuna); setShowSuggestions(false); setCurrentPage(1); }} className="w-full text-left px-4 py-2.5 text-sm hover:bg-cyan-50 flex items-center gap-2 border-b border-gray-50 last:border-0" data-testid={`suggestion-${i}`}>
+                      <MapPin className="w-3 h-3 text-[#00e7ff] flex-shrink-0" />
                       <span className="text-[#33404f]">{comuna}</span>
                     </button>
                   ))}
                 </div>
               )}
               {searchAddress && (
-                <button
-                  type="button"
-                  onClick={() => { setSearchAddress(''); setShowSuggestions(false); clearSearch(); }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#33404f]"
-                >
-                  <X className="w-6 h-6" />
+                <button type="button" onClick={() => { setSearchAddress(''); setShowSuggestions(false); clearSearch(); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#33404f]">
+                  <X className="w-4 h-4" />
                 </button>
               )}
             </div>
-
-            {/* Botones en desktop: inline con input */}
-            <div className="hidden sm:flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={getCurrentLocation}
-                disabled={locationLoading}
-                className="h-14 px-5 border-2 border-gray-300 hover:bg-gray-50 text-[#33404f] text-base font-semibold"
-                data-testid="location-button"
-              >
-                <Navigation className={`w-6 h-6 ${locationLoading ? 'animate-pulse' : ''}`} />
-                <span className="ml-2">Mi ubicacion</span>
-              </Button>
-
-              <Button
-                type="submit"
-                className="h-14 px-8 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-lg font-bold"
-                data-testid="search-submit"
-              >
-                <Search className="w-6 h-6" />
-                <span className="ml-2">Buscar</span>
-              </Button>
-            </div>
-            </div>
-
-            {/* Botones en mobile: debajo del input */}
-            <div className="flex sm:hidden gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={getCurrentLocation}
-                disabled={locationLoading}
-                className="flex-1 h-12 border-2 border-gray-300 hover:bg-gray-50 text-[#33404f] text-sm font-semibold"
-                data-testid="location-button-mobile"
-              >
-                <Navigation className={`w-5 h-5 ${locationLoading ? 'animate-pulse' : ''}`} />
-                <span className="ml-2">Mi ubicacion</span>
-              </Button>
-
-              <Button
-                type="submit"
-                className="flex-1 h-12 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-sm font-bold"
-                data-testid="search-submit-mobile"
-              >
-                <Search className="w-5 h-5" />
-                <span className="ml-2">Buscar</span>
-              </Button>
-            </div>
+            <Button type="button" variant="outline" onClick={getCurrentLocation} disabled={locationLoading} className="h-11 px-4 border-gray-200 text-[#33404f] text-sm" data-testid="location-button">
+              <Navigation className={`w-4 h-4 ${locationLoading ? 'animate-pulse' : ''}`} />
+              <span className="ml-1.5 hidden sm:inline">Mi ubicacion</span>
+            </Button>
+            <Button type="submit" className="h-11 px-6 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] text-sm font-bold" data-testid="search-submit">
+              <Search className="w-4 h-4" />
+              <span className="ml-1.5">Buscar</span>
+            </Button>
+            {/* Mobile filter toggle */}
+            <button type="button" onClick={() => setShowFilters(!showFilters)} className="lg:hidden h-11 px-3 border border-gray-200 rounded-xl flex items-center gap-1.5 text-sm text-[#33404f] relative">
+              <SlidersHorizontal className="w-4 h-4" />
+              {activeFiltersCount > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#00e7ff] text-[#33404f] text-[10px] font-bold rounded-full flex items-center justify-center">{activeFiltersCount}</span>}
+            </button>
           </form>
-
-          {/* Filters Row */}
-          <div className="flex flex-wrap items-center gap-2 mt-3">
-            <span className="text-sm font-medium text-gray-500 flex items-center gap-1">
-              <SlidersHorizontal className="w-4 h-4" /> Filtros:
-            </span>
-
-            {/* Rating Filter */}
-            <select
-              value={minRating}
-              onChange={(e) => { setMinRating(e.target.value); setCurrentPage(1); }}
-              className="h-10 px-3 pr-8 border-2 border-gray-200 rounded-lg text-sm font-medium text-[#33404f] bg-white focus:ring-2 focus:ring-[#00e7ff] focus:border-[#00e7ff] cursor-pointer"
-              data-testid="filter-rating"
-            >
-              <option value="">Rating</option>
-              <option value="3">3+ estrellas</option>
-              <option value="3.5">3.5+ estrellas</option>
-              <option value="4">4+ estrellas</option>
-              <option value="4.5">4.5+ estrellas</option>
-            </select>
-
-            {/* Clear Filters */}
-            {minRating && (
-              <button
-                onClick={() => { setMinRating(''); setCurrentPage(1); }}
-                className="h-10 px-3 text-sm text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1"
-                data-testid="clear-filters"
-              >
-                <X className="w-4 h-4" />
-                Limpiar filtros
-              </button>
-            )}
-          </div>
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row" style={{ height: 'calc(100vh - 128px)' }}>
-        <div className="w-full lg:w-1/2 h-[400px] lg:h-full relative">
-          <MapErrorBoundary>
-          {loadError ? (
-            <div className="w-full h-full bg-gradient-to-br from-[#e8f7f9] to-[#d1f0f4] flex flex-col items-center justify-center">
-              <MapPin className="w-16 h-16 text-[#00e7ff]/40 mb-3" />
-              <p className="text-[#33404f]/60 font-medium text-sm">Mapa en mantenimiento</p>
-              <p className="text-gray-400 text-xs mt-1">Usa el buscador para encontrar servicios</p>
-            </div>
-          ) : !isLoaded ? (
-            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-              <div className="w-12 h-12 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          ) : (
-            <>
-              <GoogleMap
-                onLoad={onMapLoad}
-                center={mapCenter}
-                zoom={DEFAULT_ZOOM}
-                mapContainerStyle={{ width: '100%', height: '100%' }}
-                options={{
-                  styles: mapStyles,
-                  disableDefaultUI: false,
-                  zoomControl: true,
-                  mapTypeControl: false,
-                  streetViewControl: false,
-                  fullscreenControl: true
-                }}
-                onIdle={handleBoundsChanged}
-              >
-                {filteredProviders.map((provider) => (
-                  provider.latitude && provider.longitude && (
-                    <Marker
-                      key={provider.provider_id}
-                      position={{ lat: provider.latitude, lng: provider.longitude }}
-                      icon={createMarkerIcon(
-                        selectedProvider?.provider_id === provider.provider_id ||
-                        hoveredProvider?.provider_id === provider.provider_id
-                      )}
-                      onClick={() => setSelectedProvider(provider)}
-                      onMouseOver={() => setHoveredProvider(provider)}
-                      onMouseOut={() => setHoveredProvider(null)}
-                    />
-                  )
-                ))}
-
-                {userLocation && (
-                  <Marker
-                    position={userLocation}
-                    icon={createUserLocationIcon()}
-                    title="Tu ubicación"
-                  />
-                )}
-
-                {selectedProvider && (
-                  <InfoWindow
-                    position={{ lat: selectedProvider.latitude, lng: selectedProvider.longitude }}
-                    onCloseClick={() => setSelectedProvider(null)}
-                  >
-                    <div className="p-2 max-w-[250px]">
-                      <div className="flex items-start gap-3">
-                        <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
-                          {getProviderMainImage(selectedProvider) ? (
-                            <img
-                              src={getProviderMainImage(selectedProvider)}
-                              alt={selectedProvider.business_name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                              <MapPin className="w-6 h-6 text-gray-400" />
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-sm text-[#33404f] truncate">
-                            {selectedProvider.business_name}
-                          </h3>
-                          <p className="text-xs text-gray-500 truncate">{selectedProvider.comuna}</p>
-                          {selectedProvider.rating > 0 && (
-                            <div className="flex items-center gap-1 mt-1">
-                              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                              <span className="text-xs font-medium">{selectedProvider.rating}</span>
-                            </div>
-                          )}
-                          {selectedProvider.distance_km && (
-                            <p className="text-xs text-[#00e7ff] mt-1">
-                              {selectedProvider.distance_km} km
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      <Link
-                        to={`/provider/${selectedProvider.provider_id}`}
-                        className="mt-3 block w-full text-center py-2 bg-[#00e7ff] text-[#33404f] text-sm font-medium rounded-lg hover:bg-[#00c4d4]"
-                      >
-                        Ver perfil
-                      </Link>
-                    </div>
-                  </InfoWindow>
-                )}
-              </GoogleMap>
-
-              <button
-                onClick={() => setIsMapSearchActive(!isMapSearchActive)}
-                className={`absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full shadow-lg font-medium text-sm transition-all ${
-                  isMapSearchActive
-                    ? 'bg-[#00e7ff] text-[#33404f]'
-                    : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
-                }`}
-                data-testid="dynamic-search-toggle"
-              >
-                {isMapSearchActive ? (
-                  <>
-                    <span className="inline-block w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></span>
-                    Búsqueda dinámica activa
-                  </>
-                ) : (
-                  'Buscar al mover el mapa'
-                )}
-              </button>
-            </>
-          )}
-          </MapErrorBoundary>
-        </div>
-
-        <div className="w-full lg:w-1/2 h-full overflow-y-auto bg-white border-l">
-          <div className="p-4 border-b bg-gray-50 sticky top-0 z-10">
-            <h2 className="font-bold text-lg text-[#33404f]">
-              {loading ? 'Buscando...' : `${totalResults} Servicios encontrados`}
-            </h2>
-            {searchAddress && !loading && (
-              <p className="text-sm text-gray-500 mt-1">
-                Cerca de: {searchAddress}
-              </p>
-            )}
-            {totalResults > PAGE_SIZE && (
-              <p className="text-xs text-gray-400 mt-1">Página {currentPage} de {Math.ceil(totalResults / PAGE_SIZE)}</p>
-            )}
+      <div className="max-w-screen-2xl mx-auto flex">
+        {/* Left Sidebar Filters */}
+        <aside className={`${showFilters ? 'fixed inset-0 z-50 bg-white overflow-y-auto pt-4 px-4 pb-20' : 'hidden'} lg:block lg:static lg:w-[280px] lg:flex-shrink-0 lg:border-r lg:bg-white lg:overflow-y-auto lg:px-5 lg:py-5`} style={{ maxHeight: 'calc(100vh - 60px)' }} data-testid="filters-sidebar">
+          {/* Mobile close */}
+          <div className="lg:hidden flex items-center justify-between mb-4">
+            <h3 className="font-bold text-lg text-[#33404f]">Filtros</h3>
+            <button onClick={() => setShowFilters(false)} className="p-2"><X className="w-5 h-5" /></button>
           </div>
 
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="w-12 h-12 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          ) : filteredProviders.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 px-4">
-              <MapPin className="w-16 h-16 text-gray-300 mb-4" />
-              <p className="text-gray-600 text-center mb-4">
-                No se encontraron servicios en esta zona
-              </p>
-              <Button onClick={clearSearch} variant="outline">
-                Ver todos los servicios
-              </Button>
-            </div>
-          ) : (
-            <div className="divide-y">
-              {filteredProviders.map((provider) => (
-                <Link
-                  key={provider.provider_id}
-                  to={`/provider/${provider.provider_id}`}
-                  className={`block p-4 hover:bg-gray-50 transition-colors ${
-                    (hoveredProvider?.provider_id === provider.provider_id ||
-                      selectedProvider?.provider_id === provider.provider_id)
-                      ? 'bg-cyan-50' : ''
-                  }`}
-                  onMouseEnter={() => setHoveredProvider(provider)}
-                  onMouseLeave={() => setHoveredProvider(null)}
-                  data-testid="provider-card"
-                >
-                  <div className="flex gap-4">
-                    <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-gray-200">
-                      {getProviderMainImage(provider) ? (
-                        <img
-                          src={getProviderMainImage(provider)}
-                          alt={provider.business_name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <MapPin className="w-8 h-8 text-gray-400" />
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-[#33404f] truncate">
-                          {provider.business_name}
-                        </h3>
-                        {provider.plan_type === 'premium_plus' && (
-                          <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap font-bold" data-testid="premium-plus-badge">
-                            <Crown className="w-3 h-3" />Premium+
-                          </span>
-                        )}
-                        {provider.plan_type === 'premium' && (
-                          <span className="bg-[#00e7ff] text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap font-bold" data-testid="premium-badge">
-                            Premium
-                          </span>
-                        )}
-                        {provider.plan_type === 'destacado' && (
-                          <span className="bg-[#33404f] text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 whitespace-nowrap" data-testid="destacado-badge">
-                            <Star className="w-3 h-3" />Destacado
-                          </span>
-                        )}
-                        {provider.verified && (
-                          <Shield className="w-5 h-5 text-[#00e7ff] flex-shrink-0" />
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-2 text-gray-500 text-sm mt-1">
-                        <MapPin className="w-4 h-4" />
-                        <span className="truncate">{provider.comuna}</span>
-                        {provider.distance_km && (
-                          <span className="text-[#00e7ff] font-medium whitespace-nowrap">
-                            ({provider.distance_km} km)
-                          </span>
-                        )}
-                      </div>
-
-                      {provider.rating > 0 && (
-                        <div className="flex items-center gap-2 mt-2">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          <span className="font-semibold text-sm">{provider.rating}</span>
-                          <span className="text-gray-400 text-sm">
-                            ({provider.total_reviews} reseñas)
-                          </span>
-                        </div>
-                      )}
-
-                      {provider.services && provider.services.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {(() => {
-                            const formatServiceName = (type) => {
-                              const names = {
-                                'residencias': 'Residencias',
-                                'cuidado-domicilio': 'Cuidado a Domicilio',
-                                'salud-mental': 'Salud Mental'
-                              };
-                              return names[type] || type;
-                            };
-                            const seen = new Set();
-                            return provider.services.filter(s => {
-                              if (seen.has(s.service_type)) return false;
-                              seen.add(s.service_type);
-                              return true;
-                            }).slice(0, 3).map((service, idx) => (
-                              <span
-                                key={idx}
-                                className="px-4 py-2 bg-gray-200 border border-gray-300 text-[#33404f] text-sm rounded-lg font-semibold"
-                              >
-                                {formatServiceName(service.service_type)}
-                              </span>
-                            ));
-                          })()}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-1">
-                      {currentUser && currentUser.role !== 'admin' && currentUser.role !== 'provider' && (
-                        <button
-                          onClick={(e) => toggleFavorite(e, provider.provider_id)}
-                          className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                          data-testid={`favorite-btn-${provider.provider_id}`}
-                          title={favoriteIds.has(provider.provider_id) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
-                        >
-                          <Heart className={`w-5 h-5 transition-colors ${favoriteIds.has(provider.provider_id) ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-400'}`} />
-                        </button>
-                      )}
-                      <ChevronRight className="w-5 h-5 text-gray-400" />
-                    </div>
-                  </div>
-                </Link>
+          {/* Service Type */}
+          <div className="mb-6">
+            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Tipo de Servicio</h4>
+            <div className="space-y-1.5">
+              <button onClick={() => { setActiveService(''); setCurrentPage(1); }} className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${!activeService ? 'bg-[#00e7ff]/10 text-[#00e7ff]' : 'text-[#33404f] hover:bg-gray-50'}`} data-testid="filter-service-all">Todos</button>
+              {SERVICE_TABS.map(tab => (
+                <button key={tab.id} onClick={() => { setActiveService(tab.id); setCurrentPage(1); }} className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeService === tab.id ? 'bg-[#00e7ff]/10 text-[#00e7ff]' : 'text-[#33404f] hover:bg-gray-50'}`} data-testid={`filter-service-${tab.id}`}>{tab.label}</button>
               ))}
             </div>
+          </div>
+
+          {/* Rating */}
+          <div className="mb-6">
+            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Rating Minimo</h4>
+            <div className="flex gap-1.5">
+              {['3', '3.5', '4', '4.5'].map(r => (
+                <button key={r} onClick={() => { setMinRating(minRating === r ? '' : r); setCurrentPage(1); }} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors ${minRating === r ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-gray-100 text-[#33404f] hover:bg-gray-200'}`} data-testid={`filter-rating-${r}`}>
+                  {r}+
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Price Range */}
+          <div className="mb-6">
+            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Rango de Precio (CLP)</h4>
+            <div className="flex gap-2">
+              <input type="number" placeholder="Min" value={minPrice} onChange={e => { setMinPrice(e.target.value); setCurrentPage(1); }} className="flex-1 w-0 h-9 px-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-[#00e7ff]" data-testid="filter-price-min" />
+              <span className="text-gray-300 self-center">-</span>
+              <input type="number" placeholder="Max" value={maxPrice} onChange={e => { setMaxPrice(e.target.value); setCurrentPage(1); }} className="flex-1 w-0 h-9 px-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-[#00e7ff]" data-testid="filter-price-max" />
+            </div>
+          </div>
+
+          {/* Verified */}
+          <div className="mb-6">
+            <label className="flex items-center gap-2.5 cursor-pointer" data-testid="filter-verified">
+              <input type="checkbox" checked={verifiedOnly} onChange={e => { setVerifiedOnly(e.target.checked); setCurrentPage(1); }} className="w-4 h-4 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]" />
+              <Shield className="w-4 h-4 text-[#00e7ff]" />
+              <span className="text-sm font-medium text-[#33404f]">Solo verificados</span>
+            </label>
+          </div>
+
+          {/* Amenities */}
+          <div className="mb-6">
+            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Amenidades</h4>
+            <div className="space-y-1.5 max-h-48 overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
+              {AMENITIES_LIST.map(a => (
+                <label key={a} className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={selectedAmenities.includes(a)} onChange={e => {
+                    if (e.target.checked) { setSelectedAmenities(prev => [...prev, a]); }
+                    else { setSelectedAmenities(prev => prev.filter(x => x !== a)); }
+                    setCurrentPage(1);
+                  }} className="w-3.5 h-3.5 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]" />
+                  <span className="text-xs text-[#33404f]">{a}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Clear All */}
+          {activeFiltersCount > 0 && (
+            <button onClick={clearAllFilters} className="w-full py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 rounded-lg transition-colors" data-testid="clear-all-filters">
+              Limpiar todos los filtros
+            </button>
           )}
 
-          {/* Pagination */}
-          {totalResults > PAGE_SIZE && !loading && (
-            <div className="flex items-center justify-center gap-2 py-6 border-t bg-gray-50" data-testid="pagination">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={currentPage <= 1}
-                onClick={() => { setCurrentPage(p => p - 1); window.scrollTo(0, 0); }}
-                data-testid="prev-page"
-              >
-                Anterior
-              </Button>
-              {Array.from({ length: Math.min(Math.ceil(totalResults / PAGE_SIZE), 7) }, (_, i) => {
-                const totalPages = Math.ceil(totalResults / PAGE_SIZE);
-                let page;
-                if (totalPages <= 7) {
-                  page = i + 1;
-                } else if (currentPage <= 4) {
-                  page = i + 1;
-                } else if (currentPage >= totalPages - 3) {
-                  page = totalPages - 6 + i;
-                } else {
-                  page = currentPage - 3 + i;
-                }
-                return (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? 'default' : 'outline'}
-                    size="sm"
-                    className={currentPage === page ? 'bg-[#00e7ff] text-[#33404f] hover:bg-[#00c4d4]' : ''}
-                    onClick={() => { setCurrentPage(page); window.scrollTo(0, 0); }}
-                    data-testid={`page-${page}`}
+          {/* Mobile apply */}
+          <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white border-t shadow-lg">
+            <Button onClick={() => setShowFilters(false)} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold">
+              Ver {totalResults} resultados
+            </Button>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 min-w-0">
+          {/* Toolbar */}
+          <div className="flex items-center justify-between px-4 py-3 bg-white border-b">
+            <div>
+              <h2 className="font-bold text-[#33404f]" data-testid="results-count">
+                {loading ? 'Buscando...' : `${totalResults} servicios encontrados`}
+              </h2>
+              {searchAddress && !loading && <p className="text-xs text-gray-400">Cerca de: {searchAddress}</p>}
+            </div>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setViewMode('list')} className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-[#00e7ff]/10 text-[#00e7ff]' : 'text-gray-400 hover:bg-gray-100'}`} data-testid="view-list"><List className="w-5 h-5" /></button>
+              <button onClick={() => setViewMode('map')} className={`p-2 rounded-lg transition-colors ${viewMode === 'map' ? 'bg-[#00e7ff]/10 text-[#00e7ff]' : 'text-gray-400 hover:bg-gray-100'}`} data-testid="view-map"><Map className="w-5 h-5" /></button>
+            </div>
+          </div>
+
+          {viewMode === 'map' ? (
+            <div style={{ height: 'calc(100vh - 120px)' }}>
+              <MapErrorBoundary>
+              {loadError ? (
+                <div className="w-full h-full bg-gradient-to-br from-[#e8f7f9] to-[#d1f0f4] flex flex-col items-center justify-center">
+                  <MapPin className="w-16 h-16 text-[#00e7ff]/40 mb-3" />
+                  <p className="text-[#33404f]/60 font-medium text-sm">Mapa en mantenimiento</p>
+                </div>
+              ) : !isLoaded ? (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <div className="w-12 h-12 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : (
+                <>
+                  <GoogleMap
+                    onLoad={onMapLoad}
+                    center={mapCenter}
+                    zoom={DEFAULT_ZOOM}
+                    mapContainerStyle={{ width: '100%', height: '100%' }}
+                    options={{ styles: mapStyles, disableDefaultUI: false, zoomControl: true, mapTypeControl: false, streetViewControl: false, fullscreenControl: true }}
+                    onIdle={handleBoundsChanged}
                   >
-                    {page}
-                  </Button>
-                );
-              })}
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={currentPage >= Math.ceil(totalResults / PAGE_SIZE)}
-                onClick={() => { setCurrentPage(p => p + 1); window.scrollTo(0, 0); }}
-                data-testid="next-page"
-              >
-                Siguiente
-              </Button>
+                    {filteredProviders.map((provider) => (
+                      provider.latitude && provider.longitude && (
+                        <Marker key={provider.provider_id} position={{ lat: provider.latitude, lng: provider.longitude }} icon={createMarkerIcon(selectedProvider?.provider_id === provider.provider_id || hoveredProvider?.provider_id === provider.provider_id)} onClick={() => setSelectedProvider(provider)} onMouseOver={() => setHoveredProvider(provider)} onMouseOut={() => setHoveredProvider(null)} />
+                      )
+                    ))}
+                    {userLocation && <Marker position={userLocation} icon={createUserLocationIcon()} title="Tu ubicación" />}
+                    {selectedProvider && (
+                      <InfoWindow position={{ lat: selectedProvider.latitude, lng: selectedProvider.longitude }} onCloseClick={() => setSelectedProvider(null)}>
+                        <div className="p-2 max-w-[250px]">
+                          <div className="flex items-start gap-3">
+                            <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
+                              {getProviderMainImage(selectedProvider) ? <img src={getProviderMainImage(selectedProvider)} alt={selectedProvider.business_name} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gray-200 flex items-center justify-center"><MapPin className="w-6 h-6 text-gray-400" /></div>}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-bold text-sm text-[#33404f] truncate">{selectedProvider.business_name}</h3>
+                              <p className="text-xs text-gray-500 truncate">{selectedProvider.comuna}</p>
+                              {selectedProvider.rating > 0 && <div className="flex items-center gap-1 mt-1"><Star className="w-3 h-3 fill-yellow-400 text-yellow-400" /><span className="text-xs font-medium">{selectedProvider.rating}</span></div>}
+                            </div>
+                          </div>
+                          <Link to={`/provider/${selectedProvider.provider_id}`} className="mt-3 block w-full text-center py-2 bg-[#00e7ff] text-[#33404f] text-sm font-medium rounded-lg hover:bg-[#00c4d4]">Ver perfil</Link>
+                        </div>
+                      </InfoWindow>
+                    )}
+                  </GoogleMap>
+                  <button onClick={() => setIsMapSearchActive(!isMapSearchActive)} className={`absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full shadow-lg font-medium text-sm transition-all ${isMapSearchActive ? 'bg-[#00e7ff] text-[#33404f]' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'}`} data-testid="dynamic-search-toggle">
+                    {isMapSearchActive ? <><span className="inline-block w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></span>Busqueda dinamica activa</> : 'Buscar al mover el mapa'}
+                  </button>
+                </>
+              )}
+              </MapErrorBoundary>
+            </div>
+          ) : (
+            <div className="overflow-y-auto" style={{ maxHeight: 'calc(100vh - 120px)' }}>
+              {loading ? (
+                <div className="flex items-center justify-center py-20">
+                  <div className="w-12 h-12 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : filteredProviders.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20 px-4">
+                  <MapPin className="w-16 h-16 text-gray-300 mb-4" />
+                  <p className="text-gray-600 text-center mb-4">No se encontraron servicios</p>
+                  <Button onClick={clearAllFilters} variant="outline">Limpiar filtros</Button>
+                </div>
+              ) : (
+                <div className="divide-y">
+                  {filteredProviders.map((provider) => {
+                    const img = getProviderMainImage(provider);
+                    const lowestPrice = provider.services?.reduce((min, s) => {
+                      const p = parseInt(s.price_from);
+                      return p && (!min || p < min) ? p : min;
+                    }, null);
+                    return (
+                      <Link
+                        key={provider.provider_id}
+                        to={`/provider/${provider.provider_id}`}
+                        className={`block px-4 py-4 hover:bg-gray-50 transition-colors ${hoveredProvider?.provider_id === provider.provider_id ? 'bg-cyan-50' : ''}`}
+                        onMouseEnter={() => setHoveredProvider(provider)}
+                        onMouseLeave={() => setHoveredProvider(null)}
+                        data-testid="provider-card"
+                      >
+                        <div className="flex gap-4">
+                          {/* Image */}
+                          <div className="w-36 h-28 sm:w-44 sm:h-32 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 relative">
+                            {img ? <img src={img} alt={provider.business_name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><MapPin className="w-8 h-8 text-gray-300" /></div>}
+                            {currentUser && currentUser.role !== 'admin' && currentUser.role !== 'provider' && (
+                              <button onClick={(e) => toggleFavorite(e, provider.provider_id)} className="absolute top-2 right-2 p-1.5 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors" data-testid={`favorite-btn-${provider.provider_id}`}>
+                                <Heart className={`w-4 h-4 ${favoriteIds.has(provider.provider_id) ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Info */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h3 className="font-bold text-[#33404f] text-sm sm:text-base">{provider.business_name}</h3>
+                              {provider.plan_type === 'premium_plus' && <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-[10px] px-2 py-0.5 rounded-full flex items-center gap-0.5 font-bold" data-testid="premium-plus-badge"><Crown className="w-3 h-3" />Premium+</span>}
+                              {provider.plan_type === 'premium' && <span className="bg-[#33404f] text-white text-[10px] px-2 py-0.5 rounded-full font-bold" data-testid="premium-badge">Premium</span>}
+                              {provider.plan_type === 'destacado' && <span className="bg-gray-200 text-[#33404f] text-[10px] px-2 py-0.5 rounded-full flex items-center gap-0.5" data-testid="destacado-badge"><Star className="w-3 h-3" />Destacado</span>}
+                              {provider.verified && <Shield className="w-4 h-4 text-[#00e7ff]" />}
+                            </div>
+
+                            <div className="flex items-center gap-1.5 text-gray-400 text-xs mt-1">
+                              <MapPin className="w-3 h-3" />
+                              <span>{provider.comuna || provider.address}</span>
+                              {provider.distance_km && <span className="text-[#00e7ff] font-medium">({provider.distance_km} km)</span>}
+                            </div>
+
+                            <div className="flex items-center gap-3 mt-2">
+                              {provider.rating > 0 && (
+                                <div className="flex items-center gap-1">
+                                  <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                                  <span className="text-sm font-bold text-[#33404f]">{provider.rating}</span>
+                                  <span className="text-xs text-gray-400">({provider.total_reviews})</span>
+                                </div>
+                              )}
+                              {lowestPrice && <span className="text-sm font-bold text-[#00e7ff]">Desde ${lowestPrice.toLocaleString('es-CL')}/mes</span>}
+                            </div>
+
+                            {provider.services && provider.services.length > 0 && (
+                              <div className="flex flex-wrap gap-1.5 mt-2">
+                                {(() => {
+                                  const names = { 'residencias': 'Residencias', 'cuidado-domicilio': 'Cuidado a Domicilio', 'salud-mental': 'Salud Mental' };
+                                  const seen = new Set();
+                                  return provider.services.filter(s => { if (seen.has(s.service_type)) return false; seen.add(s.service_type); return true; }).slice(0, 3).map((s, i) => (
+                                    <span key={i} className="px-2 py-0.5 bg-gray-100 text-[#33404f] text-[11px] rounded-md font-medium">{names[s.service_type] || s.service_type}</span>
+                                  ));
+                                })()}
+                              </div>
+                            )}
+                          </div>
+
+                          <ChevronRight className="w-5 h-5 text-gray-300 self-center flex-shrink-0 hidden sm:block" />
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Pagination */}
+              {totalResults > PAGE_SIZE && !loading && (
+                <div className="flex items-center justify-center gap-2 py-6 border-t bg-gray-50" data-testid="pagination">
+                  <Button variant="outline" size="sm" disabled={currentPage <= 1} onClick={() => { setCurrentPage(p => p - 1); }} data-testid="prev-page">Anterior</Button>
+                  {Array.from({ length: Math.min(Math.ceil(totalResults / PAGE_SIZE), 7) }, (_, i) => {
+                    const totalPages = Math.ceil(totalResults / PAGE_SIZE);
+                    let page;
+                    if (totalPages <= 7) page = i + 1;
+                    else if (currentPage <= 4) page = i + 1;
+                    else if (currentPage >= totalPages - 3) page = totalPages - 6 + i;
+                    else page = currentPage - 3 + i;
+                    return (
+                      <Button key={page} variant={currentPage === page ? 'default' : 'outline'} size="sm" className={currentPage === page ? 'bg-[#00e7ff] text-[#33404f] hover:bg-[#00c4d4]' : ''} onClick={() => setCurrentPage(page)} data-testid={`page-${page}`}>{page}</Button>
+                    );
+                  })}
+                  <Button variant="outline" size="sm" disabled={currentPage >= Math.ceil(totalResults / PAGE_SIZE)} onClick={() => { setCurrentPage(p => p + 1); }} data-testid="next-page">Siguiente</Button>
+                </div>
+              )}
             </div>
           )}
-        </div>
+        </main>
       </div>
     </div>
   );
