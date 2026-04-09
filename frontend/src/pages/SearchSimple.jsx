@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, Component } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { MapPin, Star, Shield, Navigation, Search, X, ChevronRight, Home, Crown, DollarSign, SlidersHorizontal, Heart, List, Map } from 'lucide-react';
+import { MapPin, Star, Shield, Navigation, Search, X, ChevronRight, ChevronDown, Home, Crown, DollarSign, SlidersHorizontal, Heart, List, Map } from 'lucide-react';
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
@@ -100,6 +100,7 @@ const SearchPage = () => {
   const [maxPrice, setMaxPrice] = useState('');
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [amenitiesOpen, setAmenitiesOpen] = useState(false);
   const [viewMode, setViewMode] = useState('list');
   const [showFilters, setShowFilters] = useState(false);
 
@@ -560,21 +561,29 @@ const SearchPage = () => {
             </label>
           </div>
 
-          {/* Amenities */}
+          {/* Amenities - Collapsible */}
           <div className="mb-8">
-            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Amenidades</h4>
-            <div className="space-y-2.5 max-h-64 overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
-              {AMENITIES_LIST.map(a => (
-                <label key={a} className="flex items-center gap-3 cursor-pointer">
-                  <input type="checkbox" checked={selectedAmenities.includes(a)} onChange={e => {
-                    if (e.target.checked) { setSelectedAmenities(prev => [...prev, a]); }
-                    else { setSelectedAmenities(prev => prev.filter(x => x !== a)); }
-                    setCurrentPage(1);
-                  }} className="w-4.5 h-4.5 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]" />
-                  <span className="text-sm text-[#33404f]">{a}</span>
-                </label>
-              ))}
-            </div>
+            <button onClick={() => setAmenitiesOpen(prev => !prev)} className="w-full flex items-center justify-between mb-3" data-testid="amenities-toggle">
+              <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Amenidades</h4>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${amenitiesOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {selectedAmenities.length > 0 && !amenitiesOpen && (
+              <p className="text-xs text-[#00e7ff] font-medium mb-2">{selectedAmenities.length} seleccionada{selectedAmenities.length > 1 ? 's' : ''}</p>
+            )}
+            {amenitiesOpen && (
+              <div className="space-y-2.5 max-h-64 overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: '#cbd5e1 transparent' }}>
+                {AMENITIES_LIST.map(a => (
+                  <label key={a} className="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" checked={selectedAmenities.includes(a)} onChange={e => {
+                      if (e.target.checked) { setSelectedAmenities(prev => [...prev, a]); }
+                      else { setSelectedAmenities(prev => prev.filter(x => x !== a)); }
+                      setCurrentPage(1);
+                    }} className="w-4.5 h-4.5 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]" />
+                    <span className="text-sm text-[#33404f]">{a}</span>
+                  </label>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Clear All */}
