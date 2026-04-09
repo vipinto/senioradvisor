@@ -446,7 +446,7 @@ const SearchPage = () => {
     <div className="min-h-screen bg-gray-50" data-testid="search-page">
       {/* Top Search Bar */}
       <div className="bg-white border-b shadow-sm sticky top-0 z-40">
-        <div className="max-w-screen-2xl mx-auto px-4 py-3">
+        <div className="max-w-7xl mx-auto px-4 py-3">
           <form onSubmit={handleSearch} className="flex items-center gap-3">
             <div className="flex-1 relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#33404f]" />
@@ -510,7 +510,7 @@ const SearchPage = () => {
         </div>
       </div>
 
-      <div className="max-w-screen-2xl mx-auto flex gap-5 px-4 py-5">
+      <div className="max-w-7xl mx-auto flex gap-5 px-4 py-5">
         {/* Left Sidebar Filters */}
         <aside className={`${showFilters ? 'fixed inset-0 z-50 bg-white overflow-y-auto pt-4 px-4 pb-20' : 'hidden'} lg:block lg:static lg:w-[280px] lg:flex-shrink-0 lg:bg-white lg:border lg:border-gray-200 lg:rounded-2xl lg:overflow-y-auto lg:px-6 lg:py-6 lg:self-start lg:sticky lg:top-[72px]`} style={{ maxHeight: 'calc(100vh - 90px)', scrollbarWidth: 'thin', scrollbarColor: '#cbd5e1 transparent' }} data-testid="filters-sidebar">
           {/* Mobile close */}
