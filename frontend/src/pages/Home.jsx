@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Home as HomeIcon, Heart, Brain, Star, MapPin, ArrowRight, ChevronLeft, ChevronRight, MessageSquareText, Users, Handshake, Play } from 'lucide-react';
 import SearchBar from '@/components/SearchBar';
-import useEmblaCarousel from 'embla-carousel-react';
 import api from '@/lib/api';
 
 const Home = () => {
@@ -105,7 +104,7 @@ const Home = () => {
 
       {/* Residencias Destacadas */}
       {featured.length > 0 && (
-        <FeaturedSlider featured={featured} />
+        <FeaturedGrid featured={featured} />
       )}
 
       {/* Como usar SeniorAdvisor */}
@@ -314,29 +313,7 @@ const Home = () => {
   );
 };
 
-const FeaturedSlider = ({ featured }) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
-    loop: true, 
-    align: 'start',
-    slidesToScroll: 1,
-    containScroll: 'trimSnaps'
-  });
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on('select', onSelect);
-    emblaApi.on('reInit', onSelect);
-  }, [emblaApi, onSelect]);
-
+const FeaturedGrid = ({ featured }) => {
   const FeaturedCard = ({ p }) => (
     <Link
       to={`/provider/${p.provider_id}`}
@@ -368,39 +345,15 @@ const FeaturedSlider = ({ featured }) => {
   return (
     <section className="py-16 bg-[#00e7ff]" data-testid="featured-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-4xl font-bold text-[#33404f] mb-1">Residencias y Cuidados Domiciliarios Destacados</h2>
-            <p className="text-gray-500 text-lg">Los servicios mejor evaluados por las familias</p>
-          </div>
-          <div className="flex gap-2">
-              <button
-                onClick={() => emblaApi?.scrollPrev()}
-                disabled={!canScrollPrev}
-                className="w-10 h-10 rounded-full bg-[#33404f] text-white flex items-center justify-center hover:bg-[#4a5568] disabled:opacity-30 transition-all"
-                data-testid="slider-prev"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => emblaApi?.scrollNext()}
-                disabled={!canScrollNext}
-                className="w-10 h-10 rounded-full bg-[#33404f] text-white flex items-center justify-center hover:bg-[#4a5568] disabled:opacity-30 transition-all"
-                data-testid="slider-next"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
+        <div className="mb-8">
+          <h2 className="text-4xl font-bold text-[#33404f] mb-1">Residencias y Cuidados Domiciliarios Destacados</h2>
+          <p className="text-gray-500 text-lg">Los servicios mejor evaluados por las familias</p>
         </div>
 
-        <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-6">
-            {featured.slice(0, 8).map((p) => (
-              <div key={p.provider_id} className="flex-[0_0_280px]">
-                <FeaturedCard p={p} />
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          {featured.slice(0, 8).map((p) => (
+            <FeaturedCard key={p.provider_id} p={p} />
+          ))}
         </div>
 
         <div className="text-center mt-10">
