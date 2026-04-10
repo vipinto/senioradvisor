@@ -160,6 +160,7 @@ const Home = () => {
                     src="/logo-senior-podcast.svg"
                     alt="SeniorPodcast"
                     className="h-16 md:h-20"
+                    style={{ filter: 'brightness(0) saturate(100%)' }}
                   />
                 </div>
                 <div className="flex-1 text-center md:text-left">
