@@ -69,27 +69,27 @@ const Home = () => {
         </div>
       </section>
 
-      {/* SeniorClub - Banner CTA */}
-      <section className="py-12 bg-white" data-testid="senior-club-section">
+      {/* SeniorPodcast - Banner CTA */}
+      <section className="py-12 bg-white" data-testid="podcast-home-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link to="/seniorclub" className="block">
+          <Link to="/podcast" className="block">
             <div className="bg-[#33404f] rounded-2xl hover:bg-[#3a4a5c] transition-colors cursor-pointer group overflow-hidden">
               <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 px-8 py-8 md:py-6">
                 <div className="shrink-0">
                   <img
-                    src="https://customer-assets.emergentagent.com/job_316c0f31-5a86-43b3-bcc3-d5c9be92d49a/artifacts/y9u1s2ae_seniorclub.svg"
-                    alt="SeniorClub"
+                    src="/logo-senior-podcast.svg"
+                    alt="SeniorPodcast"
                     className="h-16 md:h-20"
                     style={{ filter: 'brightness(0) invert(1)' }}
                   />
                 </div>
                 <div className="flex-1 text-center md:text-left">
-                  <h3 className="text-white text-xl md:text-2xl font-bold mb-1">Convenios exclusivos para el bienestar de nuestros mayores</h3>
-                  <p className="text-gray-300 text-sm">Accede a descuentos y servicios preferenciales con nuestros aliados</p>
+                  <h3 className="text-white text-xl md:text-2xl font-bold mb-1">Escucha nuestros podcasts sobre bienestar y actualidad senior</h3>
+                  <p className="text-gray-300 text-sm">Conversaciones, entrevistas y contenido exclusivo para adultos mayores y sus familias</p>
                 </div>
                 <div className="shrink-0">
                   <div className="bg-[#00e7ff] hover:bg-[#00d4e8] text-[#33404f] font-bold px-6 py-3 rounded-xl text-sm group-hover:scale-105 transition-transform flex items-center gap-2">
-                    Ver Convenios <ArrowRight className="w-4 h-4" />
+                    Ver Podcast <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
               </div>
@@ -149,27 +149,27 @@ const Home = () => {
           </div>
       </section>
 
-      {/* SeniorPodcast - Banner CTA */}
-      <section className="py-12 bg-white" data-testid="podcast-home-section">
+      {/* SeniorClub - Banner CTA */}
+      <section className="py-12 bg-white" data-testid="senior-club-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link to="/podcast" className="block">
+          <Link to="/seniorclub" className="block">
             <div className="bg-[#33404f] rounded-2xl hover:bg-[#3a4a5c] transition-colors cursor-pointer group overflow-hidden">
               <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 px-8 py-8 md:py-6">
                 <div className="shrink-0">
                   <img
-                    src="/logo-senior-podcast.svg"
-                    alt="SeniorPodcast"
+                    src="https://customer-assets.emergentagent.com/job_316c0f31-5a86-43b3-bcc3-d5c9be92d49a/artifacts/y9u1s2ae_seniorclub.svg"
+                    alt="SeniorClub"
                     className="h-16 md:h-20"
                     style={{ filter: 'brightness(0) invert(1)' }}
                   />
                 </div>
                 <div className="flex-1 text-center md:text-left">
-                  <h3 className="text-white text-xl md:text-2xl font-bold mb-1">Escucha nuestros podcasts sobre bienestar y actualidad senior</h3>
-                  <p className="text-gray-300 text-sm">Conversaciones, entrevistas y contenido exclusivo para adultos mayores y sus familias</p>
+                  <h3 className="text-white text-xl md:text-2xl font-bold mb-1">Convenios exclusivos para el bienestar de nuestros mayores</h3>
+                  <p className="text-gray-300 text-sm">Accede a descuentos y servicios preferenciales con nuestros aliados</p>
                 </div>
                 <div className="shrink-0">
                   <div className="bg-[#00e7ff] hover:bg-[#00d4e8] text-[#33404f] font-bold px-6 py-3 rounded-xl text-sm group-hover:scale-105 transition-transform flex items-center gap-2">
-                    Ver Podcast <ArrowRight className="w-4 h-4" />
+                    Ver Convenios <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
               </div>
