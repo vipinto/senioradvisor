@@ -692,8 +692,8 @@ const SearchPage = () => {
                       >
                         <div className="flex gap-5">
                           {/* Image */}
-                          <div className="w-56 h-40 sm:w-72 sm:h-48 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 relative">
-                            {img ? <img src={img} alt={provider.business_name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><MapPin className="w-10 h-10 text-gray-300" /></div>}
+                          <div className="w-56 h-40 sm:w-72 sm:h-48 rounded-xl overflow-hidden flex-shrink-0 bg-white border border-gray-100 relative">
+                            {img ? <img src={img} alt={provider.business_name} className="w-full h-full object-contain" /> : <div className="w-full h-full flex items-center justify-center bg-gray-100"><MapPin className="w-10 h-10 text-gray-300" /></div>}
                             {currentUser && currentUser.role !== 'admin' && currentUser.role !== 'provider' && (
                               <button onClick={(e) => toggleFavorite(e, provider.provider_id)} className="absolute top-2 right-2 p-2 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors" data-testid={`favorite-btn-${provider.provider_id}`}>
                                 <Heart className={`w-5 h-5 ${favoriteIds.has(provider.provider_id) ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
