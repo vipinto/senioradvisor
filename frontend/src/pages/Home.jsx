@@ -9,6 +9,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [featured, setFeatured] = useState([]);
   const [blogArticles, setBlogArticles] = useState([]);
+  const [latestEpisode, setLatestEpisode] = useState(null);
 
   useEffect(() => {
     api.get('/providers?featured=true').then(res => {
@@ -18,6 +19,10 @@ const Home = () => {
     }).catch(() => {});
     api.get('/blog/articles?limit=6').then(res => {
       setBlogArticles(res.data);
+    }).catch(() => {});
+    api.get('/podcast/episodes').then(res => {
+      const eps = res.data;
+      if (Array.isArray(eps) && eps.length > 0) setLatestEpisode(eps[0]);
     }).catch(() => {});
   }, []);
 
@@ -69,32 +74,43 @@ const Home = () => {
         </div>
       </section>
 
-      {/* SeniorPodcast - Banner CTA */}
-      <section className="py-12 bg-white" data-testid="podcast-home-section">
+      {/* SeniorPodcast - Section */}
+      <section className="py-20 bg-gray-50" data-testid="podcast-home-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link to="/podcast" className="block">
-            <div className="bg-[#33404f] rounded-2xl hover:bg-[#3a4a5c] transition-colors cursor-pointer group overflow-hidden">
-              <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 px-8 py-8 md:py-6">
-                <div className="shrink-0">
-                  <img
-                    src="/logo-senior-podcast.svg"
-                    alt="SeniorPodcast"
-                    className="h-16 md:h-20"
-                    style={{ filter: 'brightness(0) invert(1)' }}
-                  />
-                </div>
-                <div className="flex-1 text-center md:text-left">
-                  <h3 className="text-white text-xl md:text-2xl font-bold mb-1">Escucha nuestros podcasts sobre bienestar y actualidad senior</h3>
-                  <p className="text-gray-300 text-sm">Conversaciones, entrevistas y contenido exclusivo para adultos mayores y sus familias</p>
-                </div>
-                <div className="shrink-0">
-                  <div className="bg-[#00e7ff] hover:bg-[#00d4e8] text-[#33404f] font-bold px-6 py-3 rounded-xl text-sm group-hover:scale-105 transition-transform flex items-center gap-2">
-                    Ver Podcast <ArrowRight className="w-4 h-4" />
-                  </div>
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Video - ultimo episodio */}
+            <div className="flex justify-center">
+              <div className="relative w-full" style={{ maxWidth: '500px' }}>
+                <div className="aspect-video rounded-2xl shadow-lg overflow-hidden">
+                  {latestEpisode?.youtube_url ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${latestEpisode.youtube_url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([^?&\s]+)/)?.[1] || ''}`}
+                      title={latestEpisode.title}
+                      className="w-full h-full"
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-[#33404f] flex items-center justify-center">
+                      <img src="/logo-senior-podcast.svg" alt="SeniorPodcast" className="h-16 opacity-50" />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-          </Link>
+            {/* Text Content */}
+            <div className="space-y-5">
+              <img src="/logo-senior-podcast.svg" alt="SeniorPodcast" className="h-14" />
+              <h2 className="text-3xl md:text-4xl font-bold text-[#33404f]">Ve nuestros podcast sobre bienestar y actualidad Senior</h2>
+              <p className="text-gray-500 text-lg">Conversaciones, entrevistas y contenido exclusivo para adultos mayores y sus familias</p>
+              <Link to="/podcast">
+                <Button className="bg-[#00e7ff] hover:bg-[#00d4e8] text-[#33404f] font-bold px-6 py-3 rounded-xl text-sm mt-2">
+                  Ver Podcast <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
