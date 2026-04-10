@@ -100,15 +100,17 @@ const Home = () => {
               </div>
             </div>
             {/* Text Content */}
-            <div className="space-y-5">
+            <div className="space-y-3">
               <img src="/logo-senior-podcast.svg" alt="SeniorPodcast" className="h-20" style={{ filter: 'brightness(0) saturate(100%) invert(0.2)' }} />
               <h2 className="text-3xl md:text-4xl font-bold text-[#33404f]">Ve nuestros podcast sobre bienestar y actualidad Senior</h2>
-              <p className="text-gray-500 text-lg -mt-2">Conversaciones, entrevistas y contenido exclusivo para adultos mayores y sus familias</p>
-              <Link to="/podcast">
-                <Button className="bg-[#00e7ff] hover:bg-[#00d4e8] text-[#33404f] font-bold px-6 py-3 rounded-xl text-sm mt-2">
-                  Ver Podcast <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
+              <p className="text-gray-500 text-sm">Conversaciones, entrevistas y contenido exclusivo para adultos mayores y sus familias</p>
+              <div className="pt-3">
+                <Link to="/podcast">
+                  <Button className="bg-[#00e7ff] hover:bg-[#00d4e8] text-[#33404f] font-bold px-6 py-3 rounded-xl text-sm">
+                    Ver Podcast <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
