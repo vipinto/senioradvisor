@@ -110,7 +110,7 @@ const Podcast = () => {
           <div className="flex items-center gap-4">
             <img src="/logo-senior-podcast.svg" alt="SeniorPodcast" className="h-20" />
           </div>
-          <p className="text-gray-400 mt-3 max-w-xl">Escucha conversaciones sobre bienestar, actualidad y recomendaciones para adultos mayores.</p>
+          <p className="text-gray-400 mt-3 max-w-xl">Ve conversaciones sobre bienestar, actualidad y recomendaciones para adultos mayores.</p>
         </div>
       </div>
 
