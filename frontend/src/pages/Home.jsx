@@ -177,7 +177,6 @@ const Home = () => {
           </Link>
         </div>
       </section>
-      )}
 
       {/* About Section */}
       <section className="py-20 bg-gray-50">
