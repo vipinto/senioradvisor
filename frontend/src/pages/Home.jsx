@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home as HomeIcon, Heart, Brain, Star, MapPin, ArrowRight, ChevronLeft, ChevronRight, MessageSquareText, Users, Handshake, Play } from 'lucide-react';
+import { Home as HomeIcon, Heart, Brain, Star, MapPin, ArrowRight, ChevronRight, MessageSquareText, Users, Handshake } from 'lucide-react';
 import SearchBar from '@/components/SearchBar';
 import api from '@/lib/api';
 
@@ -9,8 +9,6 @@ const Home = () => {
   const navigate = useNavigate();
   const [featured, setFeatured] = useState([]);
   const [blogArticles, setBlogArticles] = useState([]);
-  const [podcastCategories, setPodcastCategories] = useState([]);
-  const [podcastEpisodes, setPodcastEpisodes] = useState([]);
 
   useEffect(() => {
     api.get('/providers?featured=true').then(res => {
@@ -21,8 +19,6 @@ const Home = () => {
     api.get('/blog/articles?limit=6').then(res => {
       setBlogArticles(res.data);
     }).catch(() => {});
-    api.get('/podcast/categories').then(res => setPodcastCategories(res.data)).catch(() => {});
-    api.get('/podcast/episodes').then(res => setPodcastEpisodes(res.data)).catch(() => {});
   }, []);
 
   return (
@@ -153,71 +149,33 @@ const Home = () => {
           </div>
       </section>
 
-      {/* SeniorPodcast Banner + Preview */}
-      {podcastCategories.length > 0 && podcastEpisodes.length > 0 && (
-        <section className="bg-[#00e7ff] py-14" data-testid="podcast-home-section">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Banner */}
-            <div className="flex flex-col md:flex-row items-center justify-between mb-10">
-              <div className="flex items-center gap-5 mb-4 md:mb-0">
-                <img src="/logo-senior-podcast.svg" alt="SeniorPodcast" className="h-12" />
-                <div>
-                  <p className="text-[#33404f]/70 text-sm">Escucha conversaciones sobre bienestar y actualidad para adultos mayores.</p>
+      {/* SeniorPodcast - Banner CTA */}
+      <section className="py-12 bg-white" data-testid="podcast-home-section">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Link to="/podcast" className="block">
+            <div className="bg-[#00e7ff] rounded-2xl hover:bg-[#00d4e8] transition-colors cursor-pointer group overflow-hidden">
+              <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 px-8 py-8 md:py-6">
+                <div className="shrink-0">
+                  <img
+                    src="/logo-senior-podcast.svg"
+                    alt="SeniorPodcast"
+                    className="h-16 md:h-20"
+                  />
                 </div>
-              </div>
-              <Link to="/podcast" className="px-6 py-3 bg-[#33404f] text-white font-bold rounded-xl hover:bg-[#2a3540] transition-colors text-sm">
-                Ver Podcast <ArrowRight className="inline w-4 h-4 ml-1" />
-              </Link>
-            </div>
-
-            {/* Podcast categories preview */}
-            {podcastCategories.map(cat => {
-              const catEps = podcastEpisodes.filter(e => e.category === cat.category_id);
-              if (catEps.length === 0) return null;
-              const latest = catEps[0];
-              const rest = catEps.slice(1, 4);
-              const latestYtId = latest.youtube_url?.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([^?&\s]+)/)?.[1] || '';
-              return (
-                <div key={cat.category_id} className="mb-10 last:mb-0">
-                  <h3 className="text-lg font-bold text-[#33404f] mb-1">{cat.name}</h3>
-                  {cat.description && <p className="text-[#33404f]/50 text-xs mb-4">{cat.description}</p>}
-                  <div className="flex flex-col lg:flex-row gap-4">
-                    {/* Main */}
-                    <div className="flex-1">
-                      <div className="relative w-full rounded-xl overflow-hidden bg-black aspect-video">
-                        <iframe src={`https://www.youtube.com/embed/${latestYtId}`} title={latest.title} className="absolute inset-0 w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                      </div>
-                      <h4 className="font-bold text-[#33404f] mt-3">{latest.title}</h4>
-                      {latest.description && <p className="text-[#33404f]/60 text-sm mt-1">{latest.description}</p>}
-                    </div>
-                    {/* Side list */}
-                    {rest.length > 0 && (
-                      <div className="lg:w-[300px] flex-shrink-0 space-y-3">
-                        {rest.map(ep => {
-                          const ytId = ep.youtube_url?.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([^?&\s]+)/)?.[1] || '';
-                          return (
-                            <Link to="/podcast" key={ep.episode_id} className="flex gap-3 p-2 rounded-lg hover:bg-[#33404f]/10 transition-colors">
-                              <div className="relative w-[120px] h-[68px] rounded-lg overflow-hidden flex-shrink-0 bg-[#33404f]/20">
-                                <img src={`https://img.youtube.com/vi/${ytId}/mqdefault.jpg`} alt="" className="w-full h-full object-cover" />
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                  <div className="w-6 h-6 bg-[#33404f]/60 rounded-full flex items-center justify-center"><Play className="w-3 h-3 text-white ml-0.5" fill="white" /></div>
-                                </div>
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <h5 className="text-sm font-bold text-[#33404f] line-clamp-2 leading-tight">{ep.title}</h5>
-                                {ep.description && <p className="text-xs text-[#33404f]/50 mt-1 line-clamp-1">{ep.description}</p>}
-                              </div>
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    )}
+                <div className="flex-1 text-center md:text-left">
+                  <h3 className="text-[#33404f] text-xl md:text-2xl font-bold mb-1">Escucha nuestros podcasts sobre bienestar y actualidad senior</h3>
+                  <p className="text-[#33404f]/60 text-sm">Conversaciones, entrevistas y contenido exclusivo para adultos mayores y sus familias</p>
+                </div>
+                <div className="shrink-0">
+                  <div className="bg-[#33404f] hover:bg-[#2a3540] text-white font-bold px-6 py-3 rounded-xl text-sm group-hover:scale-105 transition-transform flex items-center gap-2">
+                    Ver Podcast <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </section>
+              </div>
+            </div>
+          </Link>
+        </div>
+      </section>
       )}
 
       {/* About Section */}
