@@ -11,12 +11,11 @@ const extractYouTubeId = (url) => {
 
 const PodcastCategory = ({ category, episodes }) => {
   const [activeId, setActiveId] = useState(null);
-  const latest = episodes[0];
-  const rest = episodes.slice(1);
-  const active = activeId ? episodes.find(e => e.episode_id === activeId) || latest : latest;
+  const active = activeId ? episodes.find(e => e.episode_id === activeId) || episodes[0] : episodes[0];
+  const sidebarEpisodes = episodes.filter(ep => ep.episode_id !== active?.episode_id);
   const activeYtId = extractYouTubeId(active?.youtube_url);
 
-  if (!latest) return null;
+  if (!episodes[0]) return null;
 
   return (
     <section className="mb-14" data-testid={`podcast-section-${category.category_id}`}>
@@ -44,15 +43,15 @@ const PodcastCategory = ({ category, episodes }) => {
         </div>
 
         {/* Episode list */}
-        {rest.length > 0 && (
+        {sidebarEpisodes.length > 0 && (
           <div className="lg:w-[340px] flex-shrink-0 space-y-3 max-h-[480px] overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin' }}>
-            {rest.map(ep => {
+            {sidebarEpisodes.map(ep => {
               const ytId = extractYouTubeId(ep.youtube_url);
               return (
                 <button
                   key={ep.episode_id}
                   onClick={() => setActiveId(ep.episode_id)}
-                  className={`w-full flex gap-3 p-2 rounded-lg text-left transition-colors ${activeId === ep.episode_id ? 'bg-[#00e7ff]/10' : 'hover:bg-gray-50'}`}
+                  className="w-full flex gap-3 p-2 rounded-lg text-left transition-colors hover:bg-gray-50"
                   data-testid={`ep-${ep.episode_id}`}
                 >
                   <div className="relative w-[140px] h-[80px] rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
