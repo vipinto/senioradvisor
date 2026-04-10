@@ -101,7 +101,7 @@ const Home = () => {
             </div>
             {/* Text Content */}
             <div className="space-y-5">
-              <img src="/logo-senior-podcast.svg" alt="SeniorPodcast" className="h-14" />
+              <img src="/logo-senior-podcast.svg" alt="SeniorPodcast" className="h-14" style={{ filter: 'brightness(0) saturate(100%) invert(0.2)' }} />
               <h2 className="text-3xl md:text-4xl font-bold text-[#33404f]">Ve nuestros podcast sobre bienestar y actualidad Senior</h2>
               <p className="text-gray-500 text-lg">Conversaciones, entrevistas y contenido exclusivo para adultos mayores y sus familias</p>
               <Link to="/podcast">
