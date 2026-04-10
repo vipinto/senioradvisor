@@ -350,8 +350,8 @@ const FeaturedGrid = ({ featured }) => {
           <p className="text-gray-500 text-lg">Los servicios mejor evaluados por las familias</p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-          {featured.slice(0, 8).map((p) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+          {featured.slice(0, 6).map((p) => (
             <FeaturedCard key={p.provider_id} p={p} />
           ))}
         </div>
