@@ -20,9 +20,9 @@ const PodcastCategory = ({ category, episodes }) => {
 
   return (
     <section className="mb-14" data-testid={`podcast-section-${category.category_id}`}>
-      <div className="flex items-center gap-4 mb-1">
-        {category.logo && <img src={category.logo} alt={category.name} className="w-12 h-12 rounded-lg object-cover" />}
-        <h2 className="text-2xl font-bold text-[#33404f]">{category.name}</h2>
+      <div className="flex items-center gap-5 mb-2">
+        {category.logo && <img src={category.logo} alt={category.name} className="w-20 h-20 rounded-xl object-cover" />}
+        <h2 className="text-3xl font-bold text-[#33404f]">{category.name}</h2>
       </div>
       {category.description && <p className="text-sm text-gray-400 mb-5">{category.description}</p>}
 
@@ -109,7 +109,7 @@ const Podcast = () => {
             <ArrowLeft className="w-4 h-4" /> Volver al Inicio
           </Link>
           <div className="flex items-center gap-4">
-            <img src="/logo-senior-podcast.svg" alt="SeniorPodcast" className="h-14" />
+            <img src="/logo-senior-podcast.svg" alt="SeniorPodcast" className="h-20" />
           </div>
           <p className="text-gray-400 mt-3 max-w-xl">Escucha conversaciones sobre bienestar, actualidad y recomendaciones para adultos mayores.</p>
         </div>
