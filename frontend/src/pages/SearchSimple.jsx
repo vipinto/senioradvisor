@@ -105,6 +105,8 @@ const SearchPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterRegion, setFilterRegion] = useState(searchParams.get('region') || '');
   const [filterComuna, setFilterComuna] = useState(searchParams.get('comuna') || '');
+  const [filterRegions, setFilterRegions] = useState([]);
+  const [filterComunas, setFilterComunas] = useState([]);
 
   // Autocomplete
   const [comunas, setComunas] = useState([]);
@@ -116,6 +118,15 @@ const SearchPage = () => {
   const inputRef = useRef(null);
   const searchInputRef = useRef(null);
   const boundsTimeoutRef = useRef(null);
+
+  const handleSidebarRegionChange = (region) => {
+    setFilterRegion(region);
+    setFilterComuna('');
+    setCurrentPage(1);
+    api.get(`/providers/filters-options${region ? `?region=${encodeURIComponent(region)}` : ''}`).then(res => {
+      setFilterComunas(res.data.comunas || []);
+    }).catch(() => {});
+  };
 
   // User & Favorites
   const [currentUser, setCurrentUser] = useState(null);
@@ -166,6 +177,11 @@ const SearchPage = () => {
   useEffect(() => {
     // Load comunas for autocomplete
     api.get('/providers/comunas').then(res => setComunas(res.data)).catch(() => {});
+    // Load filter options (regions & comunas)
+    api.get('/providers/filters-options').then(res => {
+      setFilterRegions(res.data.regions || []);
+      setFilterComunas(res.data.comunas || []);
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -532,6 +548,34 @@ const SearchPage = () => {
                 <button key={tab.id} onClick={() => { setActiveService(tab.id); setCurrentPage(1); }} className={`w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-colors ${activeService === tab.id ? 'bg-[#33404f] text-white' : 'text-[#33404f] hover:bg-gray-50'}`} data-testid={`filter-service-${tab.id}`}>{tab.label}</button>
               ))}
             </div>
+          </div>
+
+          {/* Region */}
+          <div className="mb-8">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Region</h4>
+            <select
+              value={filterRegion}
+              onChange={e => handleSidebarRegionChange(e.target.value)}
+              className="w-full h-11 px-3 border border-gray-200 rounded-xl text-sm text-[#33404f] bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
+              data-testid="sidebar-filter-region"
+            >
+              <option value="">Todas las regiones</option>
+              {filterRegions.map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
+          </div>
+
+          {/* Comuna */}
+          <div className="mb-8">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Comuna</h4>
+            <select
+              value={filterComuna}
+              onChange={e => { setFilterComuna(e.target.value); setCurrentPage(1); }}
+              className="w-full h-11 px-3 border border-gray-200 rounded-xl text-sm text-[#33404f] bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#00e7ff]"
+              data-testid="sidebar-filter-comuna"
+            >
+              <option value="">Todas las comunas</option>
+              {filterComunas.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
           </div>
 
           {/* Rating */}
