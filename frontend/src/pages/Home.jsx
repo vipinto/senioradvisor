@@ -49,6 +49,11 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Residencias Destacadas */}
+      {featured.length > 0 && (
+        <FeaturedGrid featured={featured} />
+      )}
+
       {/* SeniorPodcast - Section */}
       <section className="py-20 bg-gray-50" data-testid="podcast-home-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -90,11 +95,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/* Residencias Destacadas */}
-      {featured.length > 0 && (
-        <FeaturedGrid featured={featured} />
-      )}
 
       {/* Como usar SeniorAdvisor */}
       <section className="bg-white" data-testid="cta-banner">
