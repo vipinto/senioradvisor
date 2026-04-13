@@ -836,7 +836,7 @@ async def search_providers(
     if min_rating:
         query["rating"] = {"$gte": min_rating}
     if region:
-        query["region"] = region
+        query["region"] = {"$regex": region, "$options": "i"}
     if comuna_filter:
         query["comuna"] = comuna_filter
 
@@ -982,13 +982,29 @@ async def get_comunas():
 @router.get("/providers/filters-options")
 async def get_filter_options(region: Optional[str] = None):
     """Get available regions and comunas from approved providers"""
-    query = {"approved": True}
-    regions = await db.providers.distinct("region", {"approved": True, "region": {"$exists": True, "$ne": ""}})
-    regions = sorted([r for r in regions if r and r.strip()])
+    raw_regions = await db.providers.distinct("region", {"approved": True, "region": {"$exists": True, "$ne": ""}})
+    
+    # Normalize regions: strip prefix, split combined entries, deduplicate
+    normalized = set()
+    for r in raw_regions:
+        if not r or not r.strip():
+            continue
+        # Split by comma or slash
+        parts = r.replace("/", ",").split(",")
+        for part in parts:
+            clean = part.strip()
+            # Remove "Región " or "Region " prefix
+            for prefix in ["Región ", "Region ", "Región de ", "Region de "]:
+                if clean.startswith(prefix):
+                    clean = clean[len(prefix):]
+            if clean:
+                normalized.add(clean)
+    regions = sorted(normalized)
 
     comuna_query = {"approved": True, "comuna": {"$exists": True, "$ne": ""}}
     if region:
-        comuna_query["region"] = region
+        # Match providers whose region field contains the selected region name
+        comuna_query["region"] = {"$regex": region, "$options": "i"}
     comunas = await db.providers.distinct("comuna", comuna_query)
     comunas = sorted([c for c in comunas if c and c.strip()])
 
