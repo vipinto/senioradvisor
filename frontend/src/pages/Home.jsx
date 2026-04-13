@@ -97,7 +97,7 @@ const Home = () => {
       </section>
 
       {/* Como usar SeniorAdvisor */}
-      <section className="bg-white" data-testid="cta-banner">
+      <section className="bg-[#00e7ff]" data-testid="cta-banner">
         <div className="flex flex-col md:flex-row items-stretch">
           <div className="md:w-4/12 relative min-h-[350px] md:min-h-0">
             <img
