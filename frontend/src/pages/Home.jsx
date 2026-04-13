@@ -116,25 +116,25 @@ const Home = () => {
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-white flex items-center justify-center mb-3">
-                      <MapPin className="w-9 h-9 text-[#33404f]" />
+                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-white flex items-center justify-center mb-3 shadow-md">
+                      <MapPin className="w-9 h-9 text-[#33404f]" strokeWidth={2.5} />
                     </div>
                     <p className="font-bold text-2xl md:text-3xl mb-2">Busca un servicio</p>
-                    <p className="opacity-85 text-base md:text-lg leading-relaxed">Explora los distintos servicios, y ayúdanos a filtrar los mejores.</p>
+                    <p className="text-[#33404f]/80 text-base md:text-lg leading-relaxed">Explora los distintos servicios, y ayúdanos a filtrar los mejores.</p>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-white flex items-center justify-center mb-3">
-                      <MessageSquareText className="w-9 h-9 text-[#33404f]" />
+                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-white flex items-center justify-center mb-3 shadow-md">
+                      <MessageSquareText className="w-9 h-9 text-[#33404f]" strokeWidth={2.5} />
                     </div>
                     <p className="font-bold text-2xl md:text-3xl mb-2">Deja tu reseña</p>
-                    <p className="opacity-85 text-base md:text-lg leading-relaxed">Escribe tu experiencia y otorga una valoración con estrellas.</p>
+                    <p className="text-[#33404f]/80 text-base md:text-lg leading-relaxed">Escribe tu experiencia y otorga una valoración con estrellas.</p>
                   </div>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-white flex items-center justify-center mb-3">
-                      <Users className="w-9 h-9 text-[#33404f]" />
+                    <div className="w-20 h-20 rounded-full border-2 border-[#33404f] bg-white flex items-center justify-center mb-3 shadow-md">
+                      <Users className="w-9 h-9 text-[#33404f]" strokeWidth={2.5} />
                     </div>
                     <p className="font-bold text-2xl md:text-3xl mb-2">Ayuda a otros</p>
-                    <p className="opacity-85 text-base md:text-lg leading-relaxed">Tu opinión orienta a más personas a tomar una mejor decisión.</p>
+                    <p className="text-[#33404f]/80 text-base md:text-lg leading-relaxed">Tu opinión orienta a más personas a tomar una mejor decisión.</p>
                   </div>
                 </div>
               </div>
