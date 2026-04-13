@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Home, Heart, Brain, Search, X, LayoutGrid } from 'lucide-react';
+import { Home, Heart, Brain, LayoutGrid } from 'lucide-react';
 import api from '@/lib/api';
 
 const SERVICE_TABS = [
@@ -10,46 +10,53 @@ const SERVICE_TABS = [
   { id: 'salud-mental', label: 'Salud Mental', icon: Brain },
 ];
 
-export default function SearchBar({ onSearch, initialService, initialAddress }) {
+export default function SearchBar() {
   const navigate = useNavigate();
-  const [activeService, setActiveService] = useState(initialService || '');
-  const [address, setAddress] = useState(initialAddress || '');
+  const [activeService, setActiveService] = useState('');
+  const [regions, setRegions] = useState([]);
   const [comunas, setComunas] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [filtered, setFiltered] = useState([]);
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const [selectedComuna, setSelectedComuna] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [minRating, setMinRating] = useState('');
 
   useEffect(() => {
-    api.get('/providers/comunas').then(res => setComunas(res.data)).catch(() => {});
+    api.get('/providers/filters-options').then(res => {
+      setRegions(res.data.regions || []);
+      setComunas(res.data.comunas || []);
+    }).catch(() => {});
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setShowSuggestions(false);
-    const params = new URLSearchParams();
-    if (address.trim()) params.set('q', address);
-    if (activeService) params.set('service', activeService);
-    if (onSearch) {
-      onSearch({ service: activeService, address });
+  const handleRegionChange = (region) => {
+    setSelectedRegion(region);
+    setSelectedComuna('');
+    if (region) {
+      api.get(`/providers/filters-options?region=${encodeURIComponent(region)}`).then(res => {
+        setComunas(res.data.comunas || []);
+      }).catch(() => {});
     } else {
-      navigate(`/search?${params.toString()}`);
+      api.get('/providers/filters-options').then(res => {
+        setComunas(res.data.comunas || []);
+      }).catch(() => {});
     }
   };
 
-  const handleInputChange = (val) => {
-    setAddress(val);
-    if (val.trim().length >= 1) {
-      const matches = comunas.filter(c => c.toLowerCase().includes(val.toLowerCase())).slice(0, 6);
-      setFiltered(matches);
-      setShowSuggestions(matches.length > 0);
-    } else {
-      setShowSuggestions(false);
-    }
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (activeService) params.set('service_type', activeService);
+    if (selectedRegion) params.set('region', selectedRegion);
+    if (selectedComuna) params.set('comuna', selectedComuna);
+    if (minPrice) params.set('min_price', minPrice);
+    if (maxPrice) params.set('max_price', maxPrice);
+    if (minRating) params.set('min_rating', minRating);
+    navigate(`/search?${params.toString()}`);
   };
 
   return (
     <div className="w-full" data-testid="search-bar-component">
-      {/* Category Tabs */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
+      {/* Service Tabs */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-5">
         {SERVICE_TABS.map(tab => {
           const Icon = tab.icon;
           const isActive = activeService === tab.id;
@@ -60,10 +67,10 @@ export default function SearchBar({ onSearch, initialService, initialAddress }) 
               onClick={() => setActiveService(tab.id)}
               className={`flex items-center justify-center gap-2.5 px-4 py-3 sm:px-6 sm:py-4 rounded-2xl font-bold text-sm sm:text-base transition-all shadow-md ${
                 isActive
-                  ? 'bg-[#00e7ff] text-[#33404f]'
+                  ? 'bg-[#33404f] text-white'
                   : 'bg-white text-[#33404f] border border-gray-200 hover:border-gray-300'
               }`}
-              data-testid={`service-tab-${tab.id}`}
+              data-testid={`service-tab-${tab.id || 'all'}`}
             >
               <Icon className="w-5 h-5" />
               {tab.label}
@@ -72,61 +79,92 @@ export default function SearchBar({ onSearch, initialService, initialAddress }) 
         })}
       </div>
 
-      {/* Search Bar */}
-      <form onSubmit={handleSubmit}>
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-3 relative">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <div className="flex items-center gap-3 pl-3 flex-1 min-w-0">
-              <Search className="w-5 h-5 text-[#33404f] shrink-0" />
-              <input
-                type="text"
-                placeholder="Buscar por nombre, comuna o region"
-                value={address}
-                onChange={e => handleInputChange(e.target.value)}
-                onFocus={() => {
-                  if (address.trim().length >= 1) {
-                    const matches = comunas.filter(c => c.toLowerCase().includes(address.toLowerCase())).slice(0, 6);
-                    setFiltered(matches);
-                    setShowSuggestions(matches.length > 0);
-                  }
-                }}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                className="w-full h-12 text-base sm:text-lg text-[#33404f] placeholder-gray-400 focus:outline-none bg-transparent"
-                data-testid="search-address-input"
-              />
-              {address && (
-                <button type="button" onClick={() => { setAddress(''); setShowSuggestions(false); }} className="text-gray-400 hover:text-gray-600 shrink-0">
-                  <X className="w-5 h-5" />
-                </button>
-              )}
-            </div>
-            <button
-              type="submit"
-              className="w-full sm:w-auto h-12 sm:h-14 px-10 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold text-base sm:text-lg rounded-xl transition-colors shrink-0"
-              data-testid="search-submit-button"
+      {/* Filter Bar */}
+      <div className="bg-white rounded-2xl shadow-xl border border-gray-200 px-4 py-4 sm:px-6 sm:py-5">
+        <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-3">
+          {/* Region */}
+          <div className="flex-1 min-w-0">
+            <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5" data-testid="label-region">Region</label>
+            <select
+              value={selectedRegion}
+              onChange={e => handleRegionChange(e.target.value)}
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-[#33404f] bg-gray-50 focus:outline-none focus:border-[#00e7ff] transition-colors"
+              data-testid="filter-region"
             >
-              Buscar
-            </button>
+              <option value="">Todas las regiones</option>
+              {regions.map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
           </div>
 
-          {showSuggestions && filtered.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-gray-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto" data-testid="home-comuna-suggestions">
-              {filtered.map((comuna, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onMouseDown={(e) => { e.preventDefault(); setAddress(comuna); setShowSuggestions(false); }}
-                  className="w-full text-left px-4 py-3 text-sm hover:bg-cyan-50 flex items-center gap-2 border-b border-gray-100 last:border-0 transition-colors"
-                  data-testid={`home-suggestion-${i}`}
-                >
-                  <MapPin className="w-4 h-4 text-[#00e7ff] flex-shrink-0" />
-                  <span className="text-[#33404f]">{comuna}</span>
-                </button>
-              ))}
+          <div className="hidden sm:block w-px h-10 bg-gray-200 flex-shrink-0"></div>
+
+          {/* Comuna */}
+          <div className="flex-1 min-w-0">
+            <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5" data-testid="label-comuna">Comuna</label>
+            <select
+              value={selectedComuna}
+              onChange={e => setSelectedComuna(e.target.value)}
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-[#33404f] bg-gray-50 focus:outline-none focus:border-[#00e7ff] transition-colors"
+              data-testid="filter-comuna"
+            >
+              <option value="">Todas las comunas</option>
+              {comunas.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+
+          <div className="hidden sm:block w-px h-10 bg-gray-200 flex-shrink-0"></div>
+
+          {/* Price */}
+          <div className="flex-1 min-w-0">
+            <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5" data-testid="label-precio">Precio</label>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                placeholder="Desde"
+                value={minPrice}
+                onChange={e => setMinPrice(e.target.value)}
+                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-[#33404f] bg-gray-50 focus:outline-none focus:border-[#00e7ff] transition-colors"
+                data-testid="filter-price-min"
+              />
+              <input
+                type="number"
+                placeholder="Hasta"
+                value={maxPrice}
+                onChange={e => setMaxPrice(e.target.value)}
+                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-[#33404f] bg-gray-50 focus:outline-none focus:border-[#00e7ff] transition-colors"
+                data-testid="filter-price-max"
+              />
             </div>
-          )}
+          </div>
+
+          <div className="hidden sm:block w-px h-10 bg-gray-200 flex-shrink-0"></div>
+
+          {/* Rating */}
+          <div className="min-w-0" style={{ maxWidth: '130px' }}>
+            <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5" data-testid="label-rating">Rating</label>
+            <select
+              value={minRating}
+              onChange={e => setMinRating(e.target.value)}
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-[#33404f] bg-gray-50 focus:outline-none focus:border-[#00e7ff] transition-colors"
+              data-testid="filter-rating"
+            >
+              <option value="">Todos</option>
+              <option value="3">3+ estrellas</option>
+              <option value="4">4+ estrellas</option>
+              <option value="5">5 estrellas</option>
+            </select>
+          </div>
+
+          {/* Search Button */}
+          <button
+            onClick={handleSearch}
+            className="h-[42px] px-8 bg-[#00e7ff] hover:bg-[#00d4e8] text-[#33404f] font-bold text-sm rounded-xl transition-colors flex-shrink-0"
+            data-testid="search-submit-button"
+          >
+            Buscar
+          </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

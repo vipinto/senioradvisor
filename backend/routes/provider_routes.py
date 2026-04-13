@@ -805,6 +805,8 @@ async def search_providers(
     max_price: Optional[int] = None,
     amenities: Optional[str] = None,
     has_gallery: bool = False,
+    region: Optional[str] = None,
+    comuna_filter: Optional[str] = None,
 ):
     """Search providers with filters"""
     user = await get_current_user_optional(request, db)
@@ -833,6 +835,10 @@ async def search_providers(
         query["verified"] = True
     if min_rating:
         query["rating"] = {"$gte": min_rating}
+    if region:
+        query["region"] = region
+    if comuna_filter:
+        query["comuna"] = comuna_filter
 
     if min_price or max_price:
         price_filter = {}
@@ -971,6 +977,22 @@ async def get_comunas():
     comunas = await db.providers.distinct("comuna", {"approved": True, "comuna": {"$exists": True, "$ne": ""}})
     comunas = sorted([c for c in comunas if c and c.strip()])
     return comunas
+
+
+@router.get("/providers/filters-options")
+async def get_filter_options(region: Optional[str] = None):
+    """Get available regions and comunas from approved providers"""
+    query = {"approved": True}
+    regions = await db.providers.distinct("region", {"approved": True, "region": {"$exists": True, "$ne": ""}})
+    regions = sorted([r for r in regions if r and r.strip()])
+
+    comuna_query = {"approved": True, "comuna": {"$exists": True, "$ne": ""}}
+    if region:
+        comuna_query["region"] = region
+    comunas = await db.providers.distinct("comuna", comuna_query)
+    comunas = sorted([c for c in comunas if c and c.strip()])
+
+    return {"regions": regions, "comunas": comunas}
 
 
 # ============= SUCURSALES (BRANCHES) =============

@@ -75,8 +75,8 @@ const SearchPage = () => {
   const [providers, setProviders] = useState([]);
   const [filteredProviders, setFilteredProviders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchAddress, setSearchAddress] = useState(searchParams.get('q') || searchParams.get('comuna') || '');
-  const [activeService, setActiveService] = useState(searchParams.get('service') || '');
+  const [searchAddress, setSearchAddress] = useState(searchParams.get('q') || searchParams.get('comuna') || searchParams.get('comuna_filter') || '');
+  const [activeService, setActiveService] = useState(searchParams.get('service') || searchParams.get('service_type') || '');
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [hoveredProvider, setHoveredProvider] = useState(null);
   const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
@@ -95,14 +95,16 @@ const SearchPage = () => {
   const PAGE_SIZE = 20;
 
   // Filters
-  const [minRating, setMinRating] = useState('');
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
+  const [minRating, setMinRating] = useState(searchParams.get('min_rating') || '');
+  const [minPrice, setMinPrice] = useState(searchParams.get('min_price') || '');
+  const [maxPrice, setMaxPrice] = useState(searchParams.get('max_price') || '');
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [amenitiesOpen, setAmenitiesOpen] = useState(false);
   const [viewMode, setViewMode] = useState('list');
   const [showFilters, setShowFilters] = useState(false);
+  const [filterRegion, setFilterRegion] = useState(searchParams.get('region') || '');
+  const [filterComuna, setFilterComuna] = useState(searchParams.get('comuna') || '');
 
   // Autocomplete
   const [comunas, setComunas] = useState([]);
@@ -127,7 +129,7 @@ const SearchPage = () => {
 
   useEffect(() => {
     loadProviders();
-  }, [activeService, currentPage, minRating, minPrice, maxPrice, verifiedOnly, selectedAmenities]);
+  }, [activeService, currentPage, minRating, minPrice, maxPrice, verifiedOnly, selectedAmenities, filterRegion, filterComuna]);
 
   useEffect(() => {
     // Load user and favorites
@@ -205,6 +207,8 @@ const SearchPage = () => {
       if (maxPrice) params.set('max_price', maxPrice);
       if (verifiedOnly) params.set('verified_only', 'true');
       if (selectedAmenities.length > 0) params.set('amenities', selectedAmenities.join(','));
+      if (filterRegion) params.set('region', filterRegion);
+      if (filterComuna) params.set('comuna_filter', filterComuna);
 
       let datesStr = '';
       if (activeService === 'alojamiento' && dateRange.from) {

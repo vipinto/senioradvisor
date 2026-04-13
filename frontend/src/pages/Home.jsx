@@ -49,31 +49,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Nuestros Servicios */}
-      <section className="py-12 bg-white" data-testid="services-section">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { id: 'residencias', title: 'Residencias', Icon: HomeIcon },
-              { id: 'cuidado-domicilio', title: 'Cuidado a Domicilio', Icon: Heart },
-              { id: 'salud-mental', title: 'Salud Mental', Icon: Brain },
-            ].map((service) => (
-              <div
-                key={service.id}
-                onClick={() => navigate(`/search?service=${service.id}`)}
-                className="group cursor-pointer bg-white border border-gray-200 rounded-xl px-5 py-3 flex items-center gap-4 hover:shadow-lg hover:border-[#00e7ff] transition-all"
-              >
-                <div className="w-10 h-10 rounded-full bg-[#00e7ff] flex items-center justify-center shrink-0">
-                  <service.Icon className="w-5 h-5 text-[#33404f]" />
-                </div>
-                <h3 className="text-base font-bold text-[#33404f] flex-1">{service.title}</h3>
-                <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* SeniorPodcast - Section */}
       <section className="py-20 bg-gray-50" data-testid="podcast-home-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
