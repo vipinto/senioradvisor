@@ -105,7 +105,7 @@ export default function SearchBar() {
         <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-3">
           {/* Region */}
           <div className="flex-1 min-w-0">
-            <label className="block text-[11px] font-bold text-[#33404f] uppercase tracking-wider mb-1.5">Region</label>
+            <label className="block text-xs font-bold text-[#33404f] uppercase tracking-wider mb-1.5">Region</label>
             <select
               value={selectedRegion}
               onChange={e => handleRegionChange(e.target.value)}
@@ -121,7 +121,7 @@ export default function SearchBar() {
 
           {/* Comuna */}
           <div className="flex-1 min-w-0">
-            <label className="block text-[11px] font-bold text-[#33404f] uppercase tracking-wider mb-1.5">Comuna</label>
+            <label className="block text-xs font-bold text-[#33404f] uppercase tracking-wider mb-1.5">Comuna</label>
             <select
               value={selectedComuna}
               onChange={e => setSelectedComuna(e.target.value)}
@@ -137,7 +137,7 @@ export default function SearchBar() {
 
           {/* Price */}
           <div className="flex-1 min-w-0">
-            <label className="block text-[11px] font-bold text-[#33404f] uppercase tracking-wider mb-1.5">Precio</label>
+            <label className="block text-xs font-bold text-[#33404f] uppercase tracking-wider mb-1.5">Precio</label>
             <div className="flex gap-2">
               <input
                 type="number"
@@ -162,7 +162,7 @@ export default function SearchBar() {
 
           {/* Rating */}
           <div className="min-w-0 sm:w-[130px] flex-shrink-0">
-            <label className="block text-[11px] font-bold text-[#33404f] uppercase tracking-wider mb-1.5">Rating</label>
+            <label className="block text-xs font-bold text-[#33404f] uppercase tracking-wider mb-1.5">Rating</label>
             <select
               value={minRating}
               onChange={e => setMinRating(e.target.value)}
