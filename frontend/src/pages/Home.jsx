@@ -49,6 +49,9 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Separador blanco */}
+      <div className="bg-white h-2"></div>
+
       {/* Residencias Destacadas */}
       {featured.length > 0 && (
         <FeaturedGrid featured={featured} />
@@ -294,11 +297,11 @@ const FeaturedGrid = ({ featured }) => {
   );
 
   return (
-    <section className="py-16 bg-[#33404f]" data-testid="featured-section">
+    <section className="py-16 bg-[#00e7ff]/60" data-testid="featured-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h2 className="text-4xl font-bold text-[#00e7ff] mb-1">Residencias y Cuidados Domiciliarios Destacados</h2>
-          <p className="text-gray-300 text-lg">Los servicios mejor evaluados por las familias</p>
+          <h2 className="text-4xl font-bold text-[#33404f] mb-1">Residencias y Cuidados Domiciliarios Destacados</h2>
+          <p className="text-[#33404f]/60 text-lg">Los servicios mejor evaluados por las familias</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
@@ -310,7 +313,7 @@ const FeaturedGrid = ({ featured }) => {
         <div className="text-center mt-10">
           <Link to="/destacados">
             <Button 
-              className="bg-[#00e7ff] text-[#33404f] hover:bg-[#00d4e8] px-8 py-4 text-base font-bold rounded-xl"
+              className="bg-[#33404f] text-[#00e7ff] hover:bg-[#4a5568] px-8 py-4 text-base font-bold rounded-xl"
               data-testid="toggle-all-featured"
             >
               Ver Todas las Destacadas
