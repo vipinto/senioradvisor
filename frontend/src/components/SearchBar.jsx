@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Home, Heart, Brain, LayoutGrid } from 'lucide-react';
+import { Home, Heart, Brain, LayoutGrid, Search } from 'lucide-react';
 import api from '@/lib/api';
 
 const SERVICE_TABS = [
@@ -20,6 +20,7 @@ export default function SearchBar() {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [minRating, setMinRating] = useState('');
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
     api.get('/providers/filters-options').then(res => {
@@ -50,6 +51,7 @@ export default function SearchBar() {
     if (minPrice) params.set('min_price', minPrice);
     if (maxPrice) params.set('max_price', maxPrice);
     if (minRating) params.set('min_rating', minRating);
+    if (searchText.trim()) params.set('q', searchText.trim());
     navigate(`/search?${params.toString()}`);
   };
 
@@ -164,6 +166,25 @@ export default function SearchBar() {
             Buscar
           </button>
         </div>
+      </div>
+
+      {/* Text Search Bar */}
+      <div className="mt-3 bg-white rounded-2xl shadow-xl border border-gray-200 px-4 py-3 sm:px-6 flex items-center gap-3">
+        <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
+        <input
+          type="text"
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') handleSearch(); }}
+          placeholder="Buscar por nombre, dirección o comuna..."
+          className="flex-1 text-sm text-[#33404f] placeholder-gray-400 focus:outline-none bg-transparent"
+          data-testid="search-text-input"
+        />
+        {searchText && (
+          <button onClick={() => setSearchText('')} className="text-gray-400 hover:text-gray-600">
+            <span className="text-lg leading-none">&times;</span>
+          </button>
+        )}
       </div>
     </div>
   );
