@@ -1474,6 +1474,11 @@ async def admin_update_provider_profile(provider_id: str, request: Request):
     # Map admin toggles to admin-specific fields
     if "is_featured" in update:
         update["is_featured_admin"] = update.pop("is_featured")
+    # Auto-activate plan when plan_type is set
+    if "plan_type" in update and update["plan_type"] in ("destacado", "premium", "premium_plus"):
+        update["plan_active"] = True
+    elif "plan_type" in update and not update["plan_type"]:
+        update["plan_active"] = False
     if update:
         await db.providers.update_one({"provider_id": provider_id}, {"$set": update})
 
