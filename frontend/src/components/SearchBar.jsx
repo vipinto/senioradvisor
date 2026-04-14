@@ -82,7 +82,7 @@ export default function SearchBar() {
       </div>
 
       {/* Text Search Bar */}
-      <div className="mt-3 bg-white rounded-2xl shadow-xl border border-gray-200 px-5 py-4 sm:px-6 flex items-center gap-3">
+      <div className="my-4 bg-white rounded-2xl shadow-xl border border-gray-200 px-5 py-4 sm:px-6 flex items-center gap-3">
         <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
         <input
           type="text"
