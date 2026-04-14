@@ -458,7 +458,11 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
                 <label className="text-sm font-medium text-gray-600">Tipo de Plan</label>
                 <select
                   value={formData.plan_type}
-                  onChange={e => updateField('plan_type', e.target.value)}
+                  onChange={e => {
+                    updateField('plan_type', e.target.value);
+                    if (e.target.value) updateField('plan_active', true);
+                    else updateField('plan_active', false);
+                  }}
                   className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#00e7ff] focus:outline-none"
                   data-testid="edit-plan-type"
                 >
