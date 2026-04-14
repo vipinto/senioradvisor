@@ -49,9 +49,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Separador blanco */}
-      <div className="bg-white h-2"></div>
-
       {/* Residencias Destacadas */}
       {featured.length > 0 && (
         <FeaturedGrid featured={featured} />
