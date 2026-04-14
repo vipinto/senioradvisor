@@ -243,6 +243,9 @@ export default function ProviderProfile() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [togglingFav, setTogglingFav] = useState(false);
   const [expandedServices, setExpandedServices] = useState({});
+  const [showOwnerContact, setShowOwnerContact] = useState(false);
+  const [ownerForm, setOwnerForm] = useState({ nombre: '', email: '', mensaje: '' });
+  const [sendingOwnerForm, setSendingOwnerForm] = useState(false);
   const isAdmin = user?.role === 'admin';
   const isClient = user && user.role !== 'admin' && user.role !== 'provider';
 
@@ -1082,13 +1085,13 @@ export default function ProviderProfile() {
               <p className="text-white/70 text-sm mb-4">
                 Si administras este servicio y deseas completar o actualizar la información de tu perfil, contáctanos y te ayudamos.
               </p>
-              <a
-                href="mailto:hola@senioradvisor.cl?subject=Quiero administrar mi residencia en SeniorAdvisor"
+              <button
+                onClick={() => setShowOwnerContact(true)}
                 className="inline-block w-full py-3 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f] font-bold rounded-xl transition-colors text-center"
                 data-testid="owner-cta-btn"
               >
                 Contáctanos
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -1104,6 +1107,58 @@ export default function ProviderProfile() {
             toast.success('Reserva enviada correctamente');
           }}
         />
+      )}
+
+      {/* Owner Contact Modal */}
+      {showOwnerContact && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4" onClick={() => setShowOwnerContact(false)}>
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 relative" onClick={e => e.stopPropagation()} data-testid="owner-contact-modal">
+            <button onClick={() => setShowOwnerContact(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-xl font-bold text-[#33404f] mb-1">Contáctanos</h3>
+            <p className="text-sm text-gray-400 mb-5">Completa el formulario y te contactaremos</p>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              setSendingOwnerForm(true);
+              try {
+                await api.post('/providers/owner-contact', {
+                  nombre: ownerForm.nombre,
+                  email: ownerForm.email,
+                  asunto: provider?.business_name || 'Residencia',
+                  mensaje: ownerForm.mensaje
+                });
+                toast.success('Mensaje enviado correctamente');
+                setShowOwnerContact(false);
+                setOwnerForm({ nombre: '', email: '', mensaje: '' });
+              } catch {
+                toast.error('Error al enviar el mensaje');
+              } finally {
+                setSendingOwnerForm(false);
+              }
+            }} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-[#33404f] mb-1">Nombre</label>
+                <input type="text" required value={ownerForm.nombre} onChange={e => setOwnerForm(p => ({...p, nombre: e.target.value}))} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="Tu nombre" data-testid="owner-contact-name" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#33404f] mb-1">Email</label>
+                <input type="email" required value={ownerForm.email} onChange={e => setOwnerForm(p => ({...p, email: e.target.value}))} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff]" placeholder="tu@email.com" data-testid="owner-contact-email" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#33404f] mb-1">Asunto</label>
+                <input type="text" readOnly value={provider?.business_name || ''} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 text-gray-500" data-testid="owner-contact-subject" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#33404f] mb-1">Mensaje</label>
+                <textarea required rows={4} value={ownerForm.mensaje} onChange={e => setOwnerForm(p => ({...p, mensaje: e.target.value}))} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e7ff] resize-none" placeholder="Escribe lo que necesitas..." data-testid="owner-contact-message" />
+              </div>
+              <button type="submit" disabled={sendingOwnerForm} className="w-full py-3 bg-[#00e7ff] hover:bg-[#00d4e8] text-[#33404f] font-bold rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2" data-testid="owner-contact-submit">
+                {sendingOwnerForm ? <><Loader2 className="w-4 h-4 animate-spin" /> Enviando...</> : 'Enviar'}
+              </button>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );
