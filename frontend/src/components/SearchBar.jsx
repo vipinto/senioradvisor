@@ -81,6 +81,25 @@ export default function SearchBar() {
         })}
       </div>
 
+      {/* Text Search Bar */}
+      <div className="mt-3 bg-white rounded-2xl shadow-xl border border-gray-200 px-5 py-4 sm:px-6 flex items-center gap-3">
+        <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
+        <input
+          type="text"
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') handleSearch(); }}
+          placeholder="Buscar por nombre, dirección o comuna..."
+          className="flex-1 text-base text-[#33404f] placeholder-gray-400 focus:outline-none bg-transparent"
+          data-testid="search-text-input"
+        />
+        {searchText && (
+          <button onClick={() => setSearchText('')} className="text-gray-400 hover:text-gray-600">
+            <span className="text-lg leading-none">&times;</span>
+          </button>
+        )}
+      </div>
+
       {/* Filter Bar */}
       <div className="bg-white rounded-2xl shadow-xl border border-gray-200 px-4 py-4 sm:px-6 sm:py-5">
         <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-3">
@@ -166,25 +185,6 @@ export default function SearchBar() {
             Buscar
           </button>
         </div>
-      </div>
-
-      {/* Text Search Bar */}
-      <div className="mt-3 bg-white rounded-2xl shadow-xl border border-gray-200 px-4 py-3 sm:px-6 flex items-center gap-3">
-        <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
-        <input
-          type="text"
-          value={searchText}
-          onChange={e => setSearchText(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter') handleSearch(); }}
-          placeholder="Buscar por nombre, dirección o comuna..."
-          className="flex-1 text-sm text-[#33404f] placeholder-gray-400 focus:outline-none bg-transparent"
-          data-testid="search-text-input"
-        />
-        {searchText && (
-          <button onClick={() => setSearchText('')} className="text-gray-400 hover:text-gray-600">
-            <span className="text-lg leading-none">&times;</span>
-          </button>
-        )}
       </div>
     </div>
   );
