@@ -57,6 +57,15 @@ Buscador de residencias para adultos mayores en Chile. Las familias buscan resid
 - Admin management con upload de logos via Cloudinary
 - Categorias y episodios con YouTube
 
+## Tipo de Cuidado (Feb 2026)
+- Filtro nuevo en Home SearchBar y /search sidebar: checkboxes multi-seleccion
+- Opciones: Autovalentes, Semi-dependientes, Dependientes
+- Backend: GET /api/providers?care_types=A,B usa $all (AND) - consistente con amenities
+- Admin puede editar via AdminEditModal seccion "Tipos de Cuidado" (boton Editar en card del perfil)
+- Excel bulk upload: columna `tipos_cuidado` o `tipo_cuidado` separados por coma
+- Display: badges cyan en card "Tipo de Cuidado" arriba de Redes Sociales en perfil
+- "Salud Mental" REMOVIDO de Home buscador, /search filtros y textos descriptivos de Home
+
 ## Busqueda Avanzada /search (Abril 2026)
 - Layout: sidebar izquierdo de filtros + tarjetas horizontales a la derecha
 - Filtros: Tipo de servicio, Rating minimo, Rango de precio, Solo verificados, Amenidades
@@ -87,7 +96,7 @@ Buscador de residencias para adultos mayores en Chile. Las familias buscan resid
 | Redes Sociales | No | No | Si |
 
 ## Key API Endpoints
-- GET /api/providers - {results, total, skip, limit} (ordenado por plan_type, filtros: q, service_type, min_rating, min_price, max_price, verified_only, amenities)
+- GET /api/providers - {results, total, skip, limit} (ordenado por plan_type, filtros: q, service_type, min_rating, min_price, max_price, verified_only, amenities, care_types)
 - GET /api/providers/{id} - incluye google_reviews, google_rating
 - PUT /api/admin/providers/{id}/profile - plan_type, plan_active, verified, etc.
 - PUT /api/admin/providers/{id}/credentials - email, password
@@ -106,6 +115,7 @@ Buscador de residencias para adultos mayores en Chile. Las familias buscan resid
 - latitude, longitude, place_id
 - is_featured_admin
 - services: array of {service_type, price_from, description}
+- care_types: array of strings ('Autovalentes' | 'Semi-dependientes' | 'Dependientes')
 
 ## Pendiente / P2
 - Purgar rutas de suscripcion del backend (MercadoPago routes, subscription endpoints)
