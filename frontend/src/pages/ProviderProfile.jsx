@@ -477,9 +477,14 @@ export default function ProviderProfile() {
               </div>
               <h1 className="text-2xl font-bold text-[#33404f] leading-tight mb-1" data-testid="provider-name">
                 {provider.business_name}
-                {provider.verified && <Shield className="w-5 h-5 text-yellow-300 inline ml-2" />}
                 <EditBtn section="general" />
               </h1>
+              {provider.verified && (
+                <span className="inline-flex items-center gap-1 bg-[#00e7ff] text-[#33404f] text-xs font-bold px-2.5 py-1 rounded-full mb-1" data-testid="verified-badge">
+                  <CheckCircle className="w-3.5 h-3.5" />
+                  Resolución Sanitaria
+                </span>
+              )}
               {provider.address && <p className="text-sm text-[#33404f]">{provider.address}</p>}
               <p className="text-sm font-bold text-[#33404f]">{provider.comuna}</p>
             </div>
@@ -507,7 +512,12 @@ export default function ProviderProfile() {
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <h1 className="text-3xl font-bold text-[#33404f]">{provider.business_name}</h1>
-                  {provider.verified && <Shield className="w-6 h-6 text-yellow-300" />}
+                  {provider.verified && (
+                    <span className="inline-flex items-center gap-1 bg-[#00e7ff] text-[#33404f] text-xs font-bold px-2.5 py-1 rounded-full" data-testid="verified-badge-desktop">
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      Resolución Sanitaria
+                    </span>
+                  )}
                   {provider.plan_type === 'premium_plus' && (
                     <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-xs px-2 py-0.5 rounded-full flex items-center gap-1 font-bold shadow-md">
                       <Crown className="w-3 h-3" />Premium+

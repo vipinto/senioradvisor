@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, Component } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { MapPin, Star, Shield, Navigation, Search, X, ChevronRight, ChevronDown, Home, Crown, DollarSign, SlidersHorizontal, Heart, List, Map } from 'lucide-react';
+import { MapPin, Star, Shield, Navigation, Search, X, ChevronRight, ChevronDown, Home, Crown, DollarSign, SlidersHorizontal, Heart, List, Map, CheckCircle } from 'lucide-react';
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
@@ -785,7 +785,12 @@ const SearchPage = () => {
                               {provider.plan_type === 'premium_plus' && <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#33404f] text-xs px-2.5 py-0.5 rounded-full flex items-center gap-1 font-bold" data-testid="premium-plus-badge"><Crown className="w-3 h-3" />Premium+</span>}
                               {provider.plan_type === 'premium' && <span className="bg-[#33404f] text-white text-xs px-2.5 py-0.5 rounded-full font-bold" data-testid="premium-badge">Premium</span>}
                               {provider.plan_type === 'destacado' && <span className="bg-gray-200 text-[#33404f] text-xs px-2.5 py-0.5 rounded-full flex items-center gap-1" data-testid="destacado-badge"><Star className="w-3 h-3" />Destacado</span>}
-                              {provider.verified && <Shield className="w-5 h-5 text-[#00e7ff]" />}
+                              {provider.verified && (
+                                <span className="inline-flex items-center gap-1 bg-[#00e7ff] text-[#33404f] text-xs font-bold px-2 py-0.5 rounded-full" data-testid="verified-badge-card">
+                                  <CheckCircle className="w-3 h-3" />
+                                  Resolución Sanitaria
+                                </span>
+                              )}
                             </div>
 
                             <div className="flex items-center gap-2 text-gray-400 mt-2">

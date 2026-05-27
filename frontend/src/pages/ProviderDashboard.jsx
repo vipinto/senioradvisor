@@ -73,7 +73,7 @@ const ProviderDashboard = () => {
               <p className="text-[#33404f] text-sm font-medium">{provider.business_name}</p>
             </div>
             <div className="flex items-center gap-3">
-              {provider.verified && <div className="flex items-center gap-1 bg-white/20 px-3 py-1.5 rounded-full text-sm font-medium"><Shield className="w-4 h-4" /> Verificado</div>}
+              {provider.verified && <div className="flex items-center gap-1 bg-white/20 px-3 py-1.5 rounded-full text-sm font-medium"><CheckCircle className="w-4 h-4" /> Resolución Sanitaria</div>}
               <div className="flex items-center gap-1 bg-white/20 px-3 py-1.5 rounded-full text-sm font-medium">
                 <Star className="w-4 h-4" /> {provider.rating?.toFixed(1) || '0.0'} ({provider.total_reviews || 0})
               </div>

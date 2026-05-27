@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Star, Shield, Heart } from 'lucide-react';
+import { MapPin, Star, Heart, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import api from '@/lib/api';
@@ -96,7 +96,12 @@ const Favorites = () => {
                   <div className="flex items-center gap-2 text-gray-600 mb-3">
                     <MapPin className="w-4 h-4" />
                     <span className="text-sm">{provider.comuna}</span>
-                    {provider.verified && <Shield className="w-4 h-4 text-[#00e7ff]" />}
+                    {provider.verified && (
+                      <span className="inline-flex items-center gap-1 bg-[#00e7ff] text-[#33404f] text-xs font-bold px-2 py-0.5 rounded-full">
+                        <CheckCircle className="w-3 h-3" />
+                        Resolución Sanitaria
+                      </span>
+                    )}
                   </div>
                   {provider.rating > 0 && (
                     <div className="flex items-center gap-2">
