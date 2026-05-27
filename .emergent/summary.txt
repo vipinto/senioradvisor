@@ -1,12 +1,152 @@
-<analysis>ProviderProfile.jsx379d6c6AdminEditModal.jsxProviderProfile.jsx379d6c6AdminEditModal.jsxProviderProfile.jsxbuild 36.zipPUT /api/admin/providers/{provider_id}/profileis_featuredis_subscribedallowedis_featuredis_subscribed/app/backend/routes/admin_routes.pyadmin_update_provider_profileis_featuredis_subscribedprovider_is_subscribedverifiedallowed/app/frontend/src/pages/Home.jsxflexgridflex-col md:flex-rowgrid-cols-1 md:grid-cols-3social_routes.pyProviderProfile.jsx/app/frontend/src/pages/ProviderProfile.jsx<Heart>/app/frontend/src/pages/Dashboard.jsx/app/frontend/src/pages/AdminPanel.jsxget_admin_statsUPLOADS_DIR/api/uploads/integration_playbook_expert_v2AdminPanel.jsx379d6c6AdminEditModal.jsxProviderProfile.jsx
-/app
-├── backend/
-│   ├── routes/ (admin_routes.py, provider_routes.py, social_routes.py, etc.)
-│   ├── models.py
-│   └── server.py
-├── frontend/
-│   ├── src/
-│   │   ├── components/ (AdminEditModal.jsx, AmenitiesDisplay.jsx)
-│   │   ├── pages/ (Home.jsx, ProviderProfile.jsx, AdminPanel.jsx)
-│   │   └── lib/api.js
-providersfavorites/app/backend/routes/admin_routes.py/app/frontend/src/components/AdminEditModal.jsx/app/frontend/src/pages/ProviderProfile.jsx/app/frontend/src/pages/Home.jsxAdminPanel.jsxPUT /api/admin/providers/{provider_id}/profilePOST /api/favorites/{provider_id}DELETE /api/favorites/{provider_id}379d6c6AdminEditModal.jsxProviderProfile.jsxintegration_playbook_expert_v2/app/test_reports/iteration_42.jsonProviderProfile.jsxbuild 36.zipProviderProfile.jsx/app/memory/test_credentials.mdadmin@senioradvisor.clEmiLuci2136$is_featuredadmin_routes.py</analysis>
+<analysis>**original_problem_statement**: 
+The application is a full-stack directory for senior residences in Chile. The user has requested extensive UI/UX improvements to the Home and Search pages to better serve older adults (larger fonts, specific color contrasts). The most recent request is to:
+1. Remove Salud Mental from the Home and Search tabs/categories.
+2. Implement a new filter called Tipos de Cuidado (Care Types) with checkboxes for: Autovalentes, Semi-dependientes, and Dependientes.
+3. Display the selected Care Types on the residence's profile page (above social links).
+4. Allow the Admin to edit these Care Types manually.
+5. Support adding these Care Types via the Excel bulk upload feature.
+
+PRODUCT REQUIREMENTS: Ensure high accessibility for seniors (large text, bold  for dark text,  for highlights). Ensure features work in harmony (e.g., text search + filters combined).
+
+**User's preferred language**: **Spanish** (INSTRUCT next agent to respond in Spanish only)
+
+**what currently exists?** 
+A React/FastAPI/MongoDB platform. The Home page features a dynamic SearchBar (region, comuna, price, rating, text), featured residences, podcast section, and informational sections.  has an advanced left-sidebar filter. Provider profiles include an interactive map and a recently added Contáctanos modal that sends direct emails to  using Resend.
+
+**Last working item**: 
+    - **Last item agent was working**: Implementing the Tipos de Cuidado () feature and removing Salud Mental. The agent successfully updated the Backend (, ) to handle  queries, admin updates, and Excel bulk uploads. The agent also just updated  to remove Salud Mental and add the  checkboxes.
+    - **Status**: IN PROGRESS
+    - **Agent Testing Done**: N
+    - **Which testing method agent to use?**:  (to test full E2E flow of the new filter) + screenshot tool (for UI validation of the checkboxes and profile display).
+    - **User Testing Done**: N
+
+**All Pending/In progress Issue list**:  
+  Issue 1: Complete Tipos de Cuidado Feature implementation & Remove Salud Mental (P0)
+  
+  Issues Detail:
+  - Issue 1: Complete Tipos de Cuidado Feature
+     - Attempted fixes: Backend is ready.  was just updated.
+     - Next debug checklist: 
+       1. Update  to remove Salud Mental from .
+       2. Update  to accept  from URL params, add the checkboxes to the sidebar, and send them in the  API call.
+       3. Update  to display  above the social links.
+       4. Update  to allow admins to check/uncheck these care types.
+     - Why fix this issue and what will be achieved with the fix? Completes the user's explicit request for the new core filtering mechanic.
+     - Status: IN PROGRESS
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix? both (using testing agent)
+     - Blocked on other issue: None
+
+**In progress Task List**: 
+None
+
+**Upcoming and Future Tasks**
+    Upcoming Tasks:
+    - Purge outdated subscription routes/models and deprecated pages (, , ) from the frontend and backend to reduce tech debt (P2).
+    Future Tasks:
+    - Refactor . It has grown to over 2000 lines. Extract , , and  into separate components in  (P2).
+
+**Completed work in this session**
+- Search page visual layout verified and corrected (borders, gaps, text sizes) (DONE)
+- Amenidades changed to collapsible dropdown (DONE)
+- Removed Solo Verificados filter (DONE)
+- Destacados on Home changed to a 3x2 grid with dark background  (DONE)
+- Podcast section on Home redesigned to match About Us format (inverted colors) (DONE)
+- Fixed  sidebar bug where active episode vanished (DONE)
+- Google Analytics added to  (DONE)
+- Redesigned  to include Tabs, Text Search, Region/Comuna dropdowns, Price, and Rating (DONE)
+- Added Contáctanos popup for owners in  using  (DONE)
+- Fixed Resend configuration to use verified domain  (DONE)
+- Added CC to  for partner/convenio emails (DONE)
+- Backend: Fuzzy matching / normalization for Amenities in Excel bulk upload (DONE)
+- Backend: Auto-activate  when Admin assigns Premium/Premium+ plan (DONE)
+- Created Migration PDF guides (HostGator to VPS) (DONE)
+
+**Earlier issues found/mentioned but not fixed**
+None.
+
+**Known issue recurrence from previous fork**
+  - Issue recurrence in previous fork: None
+  - Recurrence count: 0
+  - Status: RESOLVED
+
+**Code Architecture**
+
+
+**Key Technical Concepts**
+React, TailwindCSS, FastAPI, Motor (MongoDB), Shadcn UI, Resend (Emails). 
+
+**key DB schema**
+  - : {business_name, services, plan_type, verified, rating, amenities, **care_types** (Array of Strings - NEW), is_featured_admin}
+  - : {provider_id, provider_name, sender_name, sender_email, message, created_at}
+
+**changes in tech stack**
+  - **Resend** integration successfully implemented for transactional emails ().
+
+**All files of reference** 
+  -  (Recently edited to add care_types checkboxes).
+  -  (Updated with  filter).
+  -  (Updated for bulk upload).
+  -  (Needs update for care types & removing Salud Mental).
+  -  (Needs update to display care types).
+  -  (Needs update to edit care types).
+
+**Areas that need refactoring**: 
+ urgently needs refactoring. It is too large and manages too many complex states and modals.
+
+**key api endpoints**
+  -  (Now accepts  array).
+  -  (Gets distinct active regions and comunas).
+  -  (Sends email via Resend and saves to DB).
+
+**Critical Info for New Agent** 
+- The user writes in **Spanish**. **RESPOND IN SPANISH ONLY.**
+- The  exactly requested are: , , and . 
+- The user strictly wants Salud Mental completely removed as a category from the search tabs.
+- Resend is configured and working. It uses  as the verified sender. 
+
+**documents and test reports created in this job** 
+  -  & 
+  -  & 
+
+**Last 10 User Messages and any pending HUMAN messages** 
+1. User: Asked about convenience email CCs.
+2. Agent: Added CC to  for partner emails.
+3. User: Requested visual changes to Destacados background and separation line.
+4. Agent: Made background  and removed line.
+5. User: Asked to remove thin white line and make filter titles bold .
+6. Agent: Removed line and updated labels.
+7. User: Asked to make labels slightly larger.
+8. Agent: Increased label size to match category tabs.
+9. User: Asked questions about the Migration PDFs.
+10. Agent: Clarified how Nginx paths work.
+11. User: **PENDING TASK**: 1) Remove Salud Mental category. 2) Implement Tipos de Cuidado (Autovalentes, Semi-dependientes, Dependientes) as checkboxes in filters, Provider profile, Admin edit, and Excel upload.
+*(Note: Agent started implementing this but ran out of context while modifying )*
+
+**Project Health Check:**
+  - Broken:  has the  checkboxes, but  doesn't know how to receive or process them yet. The feature is half-implemented.
+
+**3rd Party Integrations** 
+  - Resend (Emails) — requires User API Key ( is present in backend ).
+  - Google Maps API — requires User API Key.
+  - Cloudinary — requires User API Key.
+
+**Testing status**
+  - Testing agent used after significant changes: NO (Pending until  feature is finished).
+  - Troubleshoot agent used after agent stuck in loop: NO.
+  - Test files created: None.
+  - Known regressions: None, but  flow is incomplete.
+
+**Credentials to test flow:**
+  - Check 
+  - Admin:  / 
+
+**What agent forgot to execute**
+The agent modified the backend and  for the new  requirement, but context ended before updating the main search page (), the provider profile (), and the admin edit modal ().
+
+**Debugging checklist for current issue**
+    Issue: Complete Tipos de Cuidado implementation
+    Frontend files to check: 
+    - : Remove Salud Mental from . Read  from . Add the checkboxes in the left sidebar filters. Pass  array to  API call.
+    - : Locate the section just above  and map over  (if it exists and has length > 0) to display badges/tags.
+    - : Add a section with 3 checkboxes for Autovalentes, Semi-dependientes, and Dependientes mapping to .</analysis>

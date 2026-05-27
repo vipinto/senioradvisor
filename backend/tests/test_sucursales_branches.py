@@ -9,7 +9,7 @@ import os
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 if not BASE_URL:
-    BASE_URL = "https://search-sidebar-ui.preview.emergentagent.com"
+    BASE_URL = "https://chile-residences.preview.emergentagent.com"
 
 # Test credentials
 PROVIDER_EMAIL = "proveedor1@senioradvisor.cl"

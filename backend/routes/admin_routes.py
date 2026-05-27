@@ -904,6 +904,18 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
         amenities_raw = [a.strip() for a in amenities_str.split(",") if a.strip()] if amenities_str else []
         amenities = normalize_amenities(amenities_raw)
 
+        care_types_str = get_val(row, "care_types") or get_val(row, "tipos_cuidado") or get_val(row, "tipo_cuidado")
+        care_types_raw = [c.strip() for c in care_types_str.split(",") if c.strip()] if care_types_str else []
+        VALID_CARE_TYPES = ["Autovalentes", "Semi-dependientes", "Dependientes"]
+        care_types_norm = []
+        for ct in care_types_raw:
+            ct_lower = ct.lower().strip()
+            for valid in VALID_CARE_TYPES:
+                if ct_lower in valid.lower() or valid.lower() in ct_lower:
+                    care_types_norm.append(valid)
+                    break
+        care_types_final = list(dict.fromkeys(care_types_norm))
+
         social_links = {}
         if website:
             social_links["website"] = website
@@ -956,6 +968,7 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
             if gallery: update_fields["gallery"] = gallery
             if premium_gallery: update_fields["premium_gallery"] = premium_gallery
             if amenities: update_fields["amenities"] = amenities
+            if care_types_final: update_fields["care_types"] = care_types_final
             if social_links: update_fields["social_links"] = social_links
             if latitude: update_fields["latitude"] = latitude
             if longitude: update_fields["longitude"] = longitude
@@ -1001,6 +1014,7 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
             if gallery: update_fields["gallery"] = gallery
             if premium_gallery: update_fields["premium_gallery"] = premium_gallery
             if amenities: update_fields["amenities"] = amenities
+            if care_types_final: update_fields["care_types"] = care_types_final
             if social_links: update_fields["social_links"] = social_links
             if latitude: update_fields["latitude"] = latitude
             if longitude: update_fields["longitude"] = longitude
@@ -1060,6 +1074,7 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
             "gallery": gallery,
             "premium_gallery": premium_gallery,
             "amenities": amenities,
+            "care_types": care_types_final,
             "social_links": social_links,
             "personal_info": {
                 "housing_type": housing_type,
@@ -1469,7 +1484,7 @@ async def admin_update_provider_profile(provider_id: str, request: Request):
                "social_links", "services", "amenities", "description", "youtube_video_url",
                "personal_info", "latitude", "longitude", "is_featured", "is_subscribed",
                "service_type", "service_comunas", "walking_zones", "coverage_radius_km",
-               "profile_photo", "plan_type", "plan_active", "verified"]
+               "profile_photo", "plan_type", "plan_active", "verified", "care_types"]
     update = {k: v for k, v in body.items() if k in allowed}
     # Map admin toggles to admin-specific fields
     if "is_featured" in update:

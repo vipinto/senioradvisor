@@ -814,6 +814,7 @@ async def search_providers(
     has_gallery: bool = False,
     region: Optional[str] = None,
     comuna_filter: Optional[str] = None,
+    care_types: Optional[str] = None,
 ):
     """Search providers with filters"""
     user = await get_current_user_optional(request, db)
@@ -863,6 +864,11 @@ async def search_providers(
         amenity_list = [a.strip() for a in amenities.split(",") if a.strip()]
         if amenity_list:
             query["amenities"] = {"$all": amenity_list}
+
+    if care_types:
+        care_type_list = [c.strip() for c in care_types.split(",") if c.strip()]
+        if care_type_list:
+            query["care_types"] = {"$all": care_type_list}
 
     if has_gallery:
         query["gallery"] = {"$exists": True, "$ne": []}

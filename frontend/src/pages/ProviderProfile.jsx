@@ -859,6 +859,27 @@ export default function ProviderProfile() {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Tipo de Cuidado */}
+            {((provider.care_types && provider.care_types.length > 0) || isAdmin) && (
+              <div className="bg-white rounded-2xl p-5 shadow-sm" data-testid="provider-care-types">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-bold text-base text-[#33404f]">Tipo de Cuidado</h3>
+                  {isAdmin && <EditBtn section="care_types" />}
+                </div>
+                {provider.care_types && provider.care_types.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {provider.care_types.map((ct, i) => (
+                      <span key={i} className="px-3 py-1.5 bg-[#00e7ff]/20 text-[#33404f] text-sm font-semibold rounded-full border border-[#00e7ff]/40" data-testid={`care-type-badge-${ct.toLowerCase()}`}>
+                        {ct}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-400">Sin tipos de cuidado definidos</p>
+                )}
+              </div>
+            )}
+
             {/* Redes Sociales */}
             {((provider.social_links && (provider.social_links.instagram || provider.social_links.facebook || provider.social_links.website)) || isAdmin) && (
               <div className="bg-white rounded-2xl p-5 shadow-sm" data-testid="provider-social-links">

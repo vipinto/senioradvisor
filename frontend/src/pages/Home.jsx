@@ -38,7 +38,7 @@ const Home = () => {
               para adultos mayores
             </h1>
             <p className="text-sm text-gray-500 max-w-2xl mx-auto mb-10">
-              Conectamos familias con <span className="font-bold text-[#33404f]">residencias</span>, <span className="font-bold">cuidado a domicilio</span> y servicios de <span className="font-bold text-[#33404f]">salud mental</span> de confianza.
+              Conectamos familias con <span className="font-bold text-[#33404f]">residencias</span> y <span className="font-bold">cuidado a domicilio</span> de confianza.
             </p>
           </div>
 
@@ -195,7 +195,7 @@ const Home = () => {
               <h2 className="text-4xl font-bold text-[#33404f]">Sobre Nosotros</h2>
               <div className="space-y-4 text-gray-700 leading-relaxed text-lg">
                 <p><span className="font-bold text-[#00e7ff]">SeniorAdvisor</span> es una <span className="font-semibold">plataforma innovadora</span> diseñada para ayudar a las familias a encontrar el mejor <span className="font-semibold text-[#00e7ff]">cuidado para adultos mayores</span>.</p>
-                <p>Conectamos a familias con <span className="font-semibold">residencias de calidad</span>, <span className="font-semibold text-[#00e7ff]">cuidado a domicilio</span> y profesionales de <span className="font-semibold">salud mental</span> verificados y confiables.</p>
+                <p>Conectamos a familias con <span className="font-semibold">residencias de calidad</span> y <span className="font-semibold text-[#00e7ff]">cuidado a domicilio</span> verificados y confiables.</p>
               </div>
             </div>
           </div>

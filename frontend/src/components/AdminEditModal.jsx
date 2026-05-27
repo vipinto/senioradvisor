@@ -98,6 +98,10 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
         return {
           amenities: provider.amenities || [],
         };
+      case 'care_types':
+        return {
+          care_types: provider.care_types || [],
+        };
       default:
         return {};
     }
@@ -252,6 +256,7 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
     gallery: 'Galeria de Fotos',
     premium_gallery: 'Slider Premium',
     amenities: 'Servicios y Amenidades',
+    care_types: 'Tipos de Cuidado',
   };
 
   const isPhotoSection = section === 'gallery' || section === 'premium_gallery';
@@ -568,6 +573,40 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
                   </div>
                 </div>
               ))}
+            </>
+          )}
+
+          {/* Care Types */}
+          {section === 'care_types' && (
+            <>
+              <p className="text-sm text-gray-500 mb-2">Selecciona los tipos de cuidado que ofrece esta residencia</p>
+              <div className="space-y-2">
+                {['Autovalentes', 'Semi-dependientes', 'Dependientes'].map(ct => {
+                  const isActive = formData.care_types.includes(ct);
+                  return (
+                    <label
+                      key={ct}
+                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${isActive ? 'bg-[#00e7ff]/10 border border-[#00e7ff]' : 'bg-gray-50 border border-transparent'}`}
+                      data-testid={`edit-care-type-${ct.toLowerCase()}`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isActive}
+                        onChange={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            care_types: isActive
+                              ? prev.care_types.filter(c => c !== ct)
+                              : [...prev.care_types, ct]
+                          }));
+                        }}
+                        className="w-4 h-4 accent-[#00e7ff]"
+                      />
+                      <span className="text-sm font-medium text-[#33404f]">{ct}</span>
+                    </label>
+                  );
+                })}
+              </div>
             </>
           )}
 

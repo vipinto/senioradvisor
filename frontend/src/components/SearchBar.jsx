@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Home, Heart, Brain, LayoutGrid, Search } from 'lucide-react';
+import { Home, Heart, LayoutGrid, Search } from 'lucide-react';
 import api from '@/lib/api';
 
 const SERVICE_TABS = [
   { id: '', label: 'Todos', icon: LayoutGrid },
   { id: 'residencias', label: 'Residencias', icon: Home },
   { id: 'cuidado-domicilio', label: 'Cuidado a Domicilio', icon: Heart },
-  { id: 'salud-mental', label: 'Salud Mental', icon: Brain },
 ];
+
+const CARE_TYPES = ['Autovalentes', 'Semi-dependientes', 'Dependientes'];
 
 export default function SearchBar() {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ export default function SearchBar() {
   const [maxPrice, setMaxPrice] = useState('');
   const [minRating, setMinRating] = useState('');
   const [searchText, setSearchText] = useState('');
+  const [selectedCareTypes, setSelectedCareTypes] = useState([]);
 
   useEffect(() => {
     api.get('/providers/filters-options').then(res => {
@@ -52,6 +54,7 @@ export default function SearchBar() {
     if (maxPrice) params.set('max_price', maxPrice);
     if (minRating) params.set('min_rating', minRating);
     if (searchText.trim()) params.set('q', searchText.trim());
+    if (selectedCareTypes.length > 0) params.set('care_types', selectedCareTypes.join(','));
     navigate(`/search?${params.toString()}`);
   };
 
@@ -184,6 +187,26 @@ export default function SearchBar() {
           >
             Buscar
           </button>
+        </div>
+
+        {/* Care Types */}
+        <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
+          <span className="text-sm font-bold text-[#33404f] flex-shrink-0">Tipo de Cuidado:</span>
+          {CARE_TYPES.map(ct => (
+            <label key={ct} className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={selectedCareTypes.includes(ct)}
+                onChange={e => {
+                  if (e.target.checked) setSelectedCareTypes(prev => [...prev, ct]);
+                  else setSelectedCareTypes(prev => prev.filter(x => x !== ct));
+                }}
+                className="w-4 h-4 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]"
+                data-testid={`care-type-${ct.toLowerCase()}`}
+              />
+              <span className="text-sm text-[#33404f]">{ct}</span>
+            </label>
+          ))}
         </div>
       </div>
     </div>

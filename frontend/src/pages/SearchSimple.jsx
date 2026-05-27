@@ -53,8 +53,9 @@ if (typeof document !== 'undefined') {
 const SERVICE_TABS = [
   { id: 'residencias', label: 'Residencias' },
   { id: 'cuidado-domicilio', label: 'Cuidado a Domicilio' },
-  { id: 'salud-mental', label: 'Salud Mental' },
 ];
+
+const CARE_TYPES = ['Autovalentes', 'Semi-dependientes', 'Dependientes'];
 
 
 const getPhotoUrl = (path) => {
@@ -107,6 +108,10 @@ const SearchPage = () => {
   const [filterComuna, setFilterComuna] = useState(searchParams.get('comuna') || '');
   const [filterRegions, setFilterRegions] = useState([]);
   const [filterComunas, setFilterComunas] = useState([]);
+  const [selectedCareTypes, setSelectedCareTypes] = useState(() => {
+    const ct = searchParams.get('care_types');
+    return ct ? ct.split(',').filter(Boolean) : [];
+  });
 
   // Autocomplete
   const [comunas, setComunas] = useState([]);
@@ -140,7 +145,7 @@ const SearchPage = () => {
 
   useEffect(() => {
     loadProviders();
-  }, [activeService, currentPage, minRating, minPrice, maxPrice, verifiedOnly, selectedAmenities, filterRegion, filterComuna]);
+  }, [activeService, currentPage, minRating, minPrice, maxPrice, verifiedOnly, selectedAmenities, filterRegion, filterComuna, selectedCareTypes]);
 
   useEffect(() => {
     // Load user and favorites
@@ -225,6 +230,7 @@ const SearchPage = () => {
       if (selectedAmenities.length > 0) params.set('amenities', selectedAmenities.join(','));
       if (filterRegion) params.set('region', filterRegion);
       if (filterComuna) params.set('comuna_filter', filterComuna);
+      if (selectedCareTypes.length > 0) params.set('care_types', selectedCareTypes.join(','));
 
       let datesStr = '';
       if (activeService === 'alojamiento' && dateRange.from) {
@@ -449,7 +455,7 @@ const SearchPage = () => {
     'Sala de estar', 'Terapia ocupacional', 'Terraza', 'WiFi'
   ];
 
-  const activeFiltersCount = [activeService, minRating, minPrice, maxPrice, verifiedOnly, selectedAmenities.length > 0].filter(Boolean).length;
+  const activeFiltersCount = [activeService, minRating, minPrice, maxPrice, verifiedOnly, selectedAmenities.length > 0, selectedCareTypes.length > 0].filter(Boolean).length;
 
   const clearAllFilters = () => {
     setActiveService('');
@@ -458,6 +464,7 @@ const SearchPage = () => {
     setMaxPrice('');
     setVerifiedOnly(false);
     setSelectedAmenities([]);
+    setSelectedCareTypes([]);
     setCurrentPage(1);
     clearSearch();
   };
@@ -576,6 +583,28 @@ const SearchPage = () => {
               <option value="">Todas las comunas</option>
               {filterComunas.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
+          </div>
+
+          {/* Tipo de Cuidado */}
+          <div className="mb-8">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Tipo de Cuidado</h4>
+            <div className="space-y-2.5">
+              {CARE_TYPES.map(ct => (
+                <label key={ct} className="flex items-center gap-3 cursor-pointer" data-testid={`sidebar-care-type-${ct.toLowerCase()}`}>
+                  <input
+                    type="checkbox"
+                    checked={selectedCareTypes.includes(ct)}
+                    onChange={e => {
+                      if (e.target.checked) setSelectedCareTypes(prev => [...prev, ct]);
+                      else setSelectedCareTypes(prev => prev.filter(x => x !== ct));
+                      setCurrentPage(1);
+                    }}
+                    className="w-4 h-4 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]"
+                  />
+                  <span className="text-sm text-[#33404f] font-medium">{ct}</span>
+                </label>
+              ))}
+            </div>
           </div>
 
           {/* Rating */}
