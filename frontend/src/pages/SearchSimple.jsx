@@ -557,6 +557,28 @@ const SearchPage = () => {
             </div>
           </div>
 
+          {/* Tipo de Cuidado */}
+          <div className="mb-8">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Tipo de Cuidado</h4>
+            <div className="space-y-2.5">
+              {CARE_TYPES.map(ct => (
+                <label key={ct} className="flex items-center gap-3 cursor-pointer" data-testid={`sidebar-care-type-${ct.toLowerCase()}`}>
+                  <input
+                    type="checkbox"
+                    checked={selectedCareTypes.includes(ct)}
+                    onChange={e => {
+                      if (e.target.checked) setSelectedCareTypes(prev => [...prev, ct]);
+                      else setSelectedCareTypes(prev => prev.filter(x => x !== ct));
+                      setCurrentPage(1);
+                    }}
+                    className="w-4 h-4 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]"
+                  />
+                  <span className="text-sm text-[#33404f] font-medium">{ct}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
           {/* Region */}
           <div className="mb-8">
             <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Region</h4>
@@ -583,28 +605,6 @@ const SearchPage = () => {
               <option value="">Todas las comunas</option>
               {filterComunas.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
-          </div>
-
-          {/* Tipo de Cuidado */}
-          <div className="mb-8">
-            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Tipo de Cuidado</h4>
-            <div className="space-y-2.5">
-              {CARE_TYPES.map(ct => (
-                <label key={ct} className="flex items-center gap-3 cursor-pointer" data-testid={`sidebar-care-type-${ct.toLowerCase()}`}>
-                  <input
-                    type="checkbox"
-                    checked={selectedCareTypes.includes(ct)}
-                    onChange={e => {
-                      if (e.target.checked) setSelectedCareTypes(prev => [...prev, ct]);
-                      else setSelectedCareTypes(prev => prev.filter(x => x !== ct));
-                      setCurrentPage(1);
-                    }}
-                    className="w-4 h-4 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]"
-                  />
-                  <span className="text-sm text-[#33404f] font-medium">{ct}</span>
-                </label>
-              ))}
-            </div>
           </div>
 
           {/* Rating */}
