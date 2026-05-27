@@ -7,7 +7,7 @@ const faqs = [
     questions: [
       {
         q: '¿Qué es SeniorAdvisor?',
-        a: 'SeniorAdvisor es una plataforma que conecta familias con residencias de adultos mayores, servicios de cuidado a domicilio y profesionales de salud mental verificados en Chile. Puedes buscar, comparar y contactar servicios con la tranquilidad de ver reseñas y perfiles detallados.'
+        a: 'SeniorAdvisor es una plataforma que conecta familias con residencias de adultos mayores y servicios de cuidado a domicilio verificados en Chile. Puedes buscar, comparar y contactar servicios con la tranquilidad de ver reseñas y perfiles detallados.'
       },
       {
         q: '¿Es gratis usar SeniorAdvisor?',
@@ -24,11 +24,11 @@ const faqs = [
     questions: [
       {
         q: '¿Cómo encuentro una residencia para un adulto mayor?',
-        a: 'Usa nuestro buscador en la página principal. Puedes filtrar por comuna, tipo de servicio (residencias, cuidado a domicilio, salud mental) y calificación. Cada perfil muestra fotos, amenidades, precios y reseñas de otras familias.'
+        a: 'Usa nuestro buscador en la página principal. Puedes filtrar por comuna, tipo de servicio (residencias, cuidado a domicilio) y calificación. Cada perfil muestra fotos, servicios, precios y reseñas de otras familias.'
       },
       {
         q: '¿Cómo sé si una residencia es de confianza?',
-        a: 'Revisa las reseñas de otras familias, verifica si la residencia tiene el badge de verificación (significa que pasó una revisión de nuestro equipo), y consulta las amenidades y servicios que ofrece. También puedes contactar directamente a la residencia para agendar una visita.'
+        a: 'Revisa las reseñas de otras familias, verifica si la residencia tiene el badge de verificación (significa que pasó una revisión de nuestro equipo), y consulta los servicios que ofrece. También puedes contactar directamente a la residencia para agendar una visita.'
       },
       {
         q: '¿Puedo visitar una residencia antes de tomar una decisión?',
@@ -36,7 +36,7 @@ const faqs = [
       },
       {
         q: '¿Qué tipos de servicios puedo encontrar?',
-        a: 'En SeniorAdvisor encontrarás tres categorías principales: Residencias (estadía permanente con cuidado integral), Cuidado a Domicilio (atención profesional en el hogar del adulto mayor), y Salud Mental (apoyo psicológico, terapias y acompañamiento emocional).'
+        a: 'En SeniorAdvisor encontrarás dos categorías principales: Residencias (estadía permanente con cuidado integral) y Cuidado a Domicilio (atención profesional en el hogar del adulto mayor).'
       },
     ]
   },
@@ -45,7 +45,7 @@ const faqs = [
     questions: [
       {
         q: '¿Cómo registro mi residencia en SeniorAdvisor?',
-        a: 'Puedes registrar tu residencia de forma gratuita a través de nuestro formulario de registro en 6 sencillos pasos. Completa los datos de tu residencia, servicios, precios y amenidades. Un administrador revisará tu perfil y lo aprobará para que aparezca en el directorio.'
+        a: 'Puedes registrar tu residencia de forma gratuita a través de nuestro formulario de registro en 6 sencillos pasos. Completa los datos de tu residencia, servicios y precios. Un administrador revisará tu perfil y lo aprobará para que aparezca en el directorio.'
       },
       {
         q: '¿Cuánto tiempo tarda la aprobación de mi registro?',
@@ -57,11 +57,11 @@ const faqs = [
       },
       {
         q: '¿Cómo puedo mejorar mi perfil?',
-        a: 'Completa toda la información de tu perfil: sube fotos de calidad de las instalaciones, detalla los servicios y amenidades que ofreces, indica precios claros, y anima a las familias satisfechas a dejar reseñas. Los perfiles completos y con buenas reseñas aparecen primero en las búsquedas.'
+        a: 'Completa toda la información de tu perfil: sube fotos de calidad de las instalaciones, detalla los servicios que ofreces, indica precios claros, y anima a las familias satisfechas a dejar reseñas. Los perfiles completos y con buenas reseñas aparecen primero en las búsquedas.'
       },
       {
         q: '¿Puedo editar mi perfil después de registrarme?',
-        a: 'Sí, una vez aprobado tu registro, puedes acceder a tu panel de administración donde podrás actualizar fotos, precios, amenidades, datos de contacto y toda la información de tu residencia en cualquier momento.'
+        a: 'Sí, una vez aprobado tu registro, puedes acceder a tu panel de administración donde podrás actualizar fotos, precios, servicios, datos de contacto y toda la información de tu residencia en cualquier momento.'
       },
     ]
   },

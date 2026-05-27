@@ -26,7 +26,7 @@ export default function Privacy() {
             <h2 className="text-xl font-bold text-[#33404f] mb-3">2. Datos que Recopilamos</h2>
             <ul className="list-disc pl-5 text-gray-600 space-y-2">
               <li><strong>Datos de registro:</strong> Nombre, correo electrónico, teléfono, dirección.</li>
-              <li><strong>Datos de residencia (proveedores):</strong> Nombre de la residencia, dirección, comuna, región, servicios, precios, fotos, amenidades.</li>
+              <li><strong>Datos de residencia (proveedores):</strong> Nombre de la residencia, dirección, comuna, región, servicios, precios, fotos.</li>
               <li><strong>Datos de navegación:</strong> Información técnica como IP, navegador, páginas visitadas.</li>
             </ul>
           </section>

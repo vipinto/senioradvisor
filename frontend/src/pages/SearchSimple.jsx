@@ -632,7 +632,7 @@ const SearchPage = () => {
           {/* Amenities - Collapsible */}
           <div className="mb-8">
             <button onClick={() => setAmenitiesOpen(prev => !prev)} className="w-full flex items-center justify-between mb-3" data-testid="amenities-toggle">
-              <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Amenidades</h4>
+              <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Servicios</h4>
               <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${amenitiesOpen ? 'rotate-180' : ''}`} />
             </button>
             {selectedAmenities.length > 0 && !amenitiesOpen && (

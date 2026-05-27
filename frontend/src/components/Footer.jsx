@@ -10,7 +10,7 @@ const Footer = () => {
           <div className="md:col-span-1">
             <img src="/logo-senior.svg" alt="SeniorAdvisor" className="h-10 brightness-0 invert" />
             <p className="text-sm text-gray-400 leading-relaxed mt-4">
-              La plataforma para encontrar residencias, cuidado a domicilio y servicios de salud mental para adultos mayores.
+              La plataforma para encontrar residencias y cuidado a domicilio para adultos mayores.
             </p>
           </div>
 

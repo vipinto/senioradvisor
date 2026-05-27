@@ -598,7 +598,7 @@ export default function ProviderProfile() {
               <AmenitiesDisplay amenities={provider.amenities} />
               {isAdmin && (!provider.amenities || provider.amenities.length === 0) && (
                 <div className="bg-white rounded-2xl p-4 shadow-sm border-2 border-dashed border-gray-300 text-center">
-                  <p className="text-sm text-gray-400 mb-2">Sin servicios/amenidades</p>
+                  <p className="text-sm text-gray-400 mb-2">Sin servicios definidos</p>
                   <EditBtn section="amenities" label="Agregar Servicios" />
                 </div>
               )}

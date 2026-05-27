@@ -17,7 +17,7 @@ export default function Terms() {
 
           <section>
             <h2 className="text-xl font-bold text-[#33404f] mb-3">2. Descripción del Servicio</h2>
-            <p className="text-gray-600 leading-relaxed">SeniorAdvisor es una plataforma que conecta familias con residencias de adultos mayores, servicios de cuidado a domicilio y profesionales de salud mental. SeniorAdvisor actúa únicamente como intermediario y no es responsable directo de los servicios prestados por los proveedores.</p>
+            <p className="text-gray-600 leading-relaxed">SeniorAdvisor es una plataforma que conecta familias con residencias de adultos mayores y servicios de cuidado a domicilio. SeniorAdvisor actúa únicamente como intermediario y no es responsable directo de los servicios prestados por los proveedores.</p>
           </section>
 
           <section>

@@ -255,7 +255,7 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
     settings: 'Configuracion Admin',
     gallery: 'Galeria de Fotos',
     premium_gallery: 'Slider Premium',
-    amenities: 'Servicios y Amenidades',
+    amenities: 'Servicios',
     care_types: 'Tipos de Valencia',
   };
 

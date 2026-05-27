@@ -274,7 +274,7 @@ const ProviderDashboard = () => {
                   </div>
                 </div>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
-                  La sucursal heredará los servicios, amenidades y galería de la sede principal.
+                  La sucursal heredará los servicios y galería de la sede principal.
                 </div>
                 <Button
                   onClick={async () => {

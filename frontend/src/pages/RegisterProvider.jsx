@@ -11,7 +11,7 @@ const STEPS = [
   { id: 2, title: 'Contacto', icon: Phone },
   { id: 3, title: 'Redes Sociales', icon: Globe },
   { id: 4, title: 'Servicios y Precios', icon: DollarSign },
-  { id: 5, title: 'Amenidades', icon: Heart },
+  { id: 5, title: 'Servicios', icon: Heart },
   { id: 6, title: 'Confirmación', icon: Check },
 ];
 
@@ -305,7 +305,7 @@ export default function RegisterProvider() {
     <div className="space-y-5" data-testid="step-5-content">
       <div className="text-center mb-6">
         <Heart className="w-12 h-12 text-[#00e7ff] mx-auto mb-3" />
-        <h2 className="text-2xl font-bold text-[#33404f]">Amenidades</h2>
+        <h2 className="text-2xl font-bold text-[#33404f]">Servicios</h2>
         <p className="text-gray-500 mt-1">Selecciona los servicios que ofrece tu residencia</p>
       </div>
       {AMENITY_CATEGORIES.map(cat => (
@@ -398,7 +398,7 @@ export default function RegisterProvider() {
 
           {amenities.length > 0 && (
             <div className="bg-white border rounded-xl p-4">
-              <h4 className="font-bold text-sm text-gray-500 mb-2">Amenidades ({amenities.length})</h4>
+              <h4 className="font-bold text-sm text-gray-500 mb-2">Servicios ({amenities.length})</h4>
               <div className="flex flex-wrap gap-1.5">
                 {amenities.map(a => (
                   <span key={a} className="bg-[#00e7ff]/10 text-[#33404f] text-xs px-2 py-1 rounded-full">{formatAmenity(a)}</span>
