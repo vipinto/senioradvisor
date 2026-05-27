@@ -111,7 +111,7 @@ export default function SearchBar() {
           >
             <Users className="w-5 h-5" />
             <span className="whitespace-nowrap">
-              Tipo de Cuidado{selectedCareTypes.length > 0 ? ` (${selectedCareTypes.length})` : ''}
+              Tipo de Valencia{selectedCareTypes.length > 0 ? ` (${selectedCareTypes.length})` : ''}
             </span>
             <ChevronDown className={`w-4 h-4 transition-transform ${careOpen ? 'rotate-180' : ''}`} />
           </button>

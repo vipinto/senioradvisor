@@ -863,7 +863,7 @@ export default function ProviderProfile() {
             {((provider.care_types && provider.care_types.length > 0) || isAdmin) && (
               <div className="bg-white rounded-2xl p-5 shadow-sm" data-testid="provider-care-types">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-bold text-base text-[#33404f]">Tipo de Cuidado</h3>
+                  <h3 className="font-bold text-base text-[#33404f]">Tipo de Valencia</h3>
                   {isAdmin && <EditBtn section="care_types" />}
                 </div>
                 {provider.care_types && provider.care_types.length > 0 ? (
@@ -875,7 +875,7 @@ export default function ProviderProfile() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-400">Sin tipos de cuidado definidos</p>
+                  <p className="text-sm text-gray-400">Sin tipos de valencia definidos</p>
                 )}
               </div>
             )}

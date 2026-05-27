@@ -256,7 +256,7 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
     gallery: 'Galeria de Fotos',
     premium_gallery: 'Slider Premium',
     amenities: 'Servicios y Amenidades',
-    care_types: 'Tipos de Cuidado',
+    care_types: 'Tipos de Valencia',
   };
 
   const isPhotoSection = section === 'gallery' || section === 'premium_gallery';
@@ -579,7 +579,7 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
           {/* Care Types */}
           {section === 'care_types' && (
             <>
-              <p className="text-sm text-gray-500 mb-2">Selecciona los tipos de cuidado que ofrece esta residencia</p>
+              <p className="text-sm text-gray-500 mb-2">Selecciona los tipos de valencia que ofrece esta residencia</p>
               <div className="space-y-2">
                 {['Autovalentes', 'Semi-dependientes', 'Dependientes'].map(ct => {
                   const isActive = formData.care_types.includes(ct);

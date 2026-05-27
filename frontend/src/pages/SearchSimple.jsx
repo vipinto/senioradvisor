@@ -559,7 +559,7 @@ const SearchPage = () => {
 
           {/* Tipo de Cuidado */}
           <div className="mb-8">
-            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Tipo de Cuidado</h4>
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Tipo de Valencia</h4>
             <div className="space-y-2.5">
               {CARE_TYPES.map(ct => (
                 <label key={ct} className="flex items-center gap-3 cursor-pointer" data-testid={`sidebar-care-type-${ct.toLowerCase()}`}>
