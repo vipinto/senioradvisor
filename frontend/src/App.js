@@ -40,6 +40,7 @@ import ServiceHistory from '@/pages/ServiceHistory';
 import SelectRole from '@/pages/SelectRole';
 import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
+import QuickMenu from '@/components/QuickMenu';
 import '@/App.css';
 import GoogleAuthSuccess from '@/pages/GoogleAuthSuccess';
 import Destacados from '@/pages/Destacados';
@@ -126,6 +127,7 @@ function AppRouter() {
         <Route path="/podcast" element={<Podcast />} />
       </Routes>
       {!hideNavbar && <Footer />}
+      {!hideNavbar && <QuickMenu />}
       <Toaster position="top-right" richColors />
     </>
   );

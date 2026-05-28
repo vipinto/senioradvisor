@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShieldCheck, CheckCircle, XCircle, Badge, Eye, CreditCard, Plus, Pencil, Trash2, ToggleLeft, ToggleRight, BarChart3, Camera, FileText, User, Newspaper, Handshake, Upload, Download, Crown, Star, X } from 'lucide-react';
+import { ShieldCheck, CheckCircle, XCircle, Badge, Eye, CreditCard, Plus, Pencil, Trash2, ToggleLeft, ToggleRight, BarChart3, Camera, FileText, User, Newspaper, Handshake, Upload, Download, Crown, Star, X, Menu as MenuIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -163,6 +163,10 @@ export default function AdminPanel() {
   const [pendingReviews, setPendingReviews] = useState([]);
   const [reviewFilter, setReviewFilter] = useState('pending');
   const [loadingReviews, setLoadingReviews] = useState(false);
+  const [quickMenuItems, setQuickMenuItems] = useState([]);
+  const [showQuickMenuModal, setShowQuickMenuModal] = useState(false);
+  const [editingQuickItem, setEditingQuickItem] = useState(null);
+  const [quickMenuForm, setQuickMenuForm] = useState({ name: '', icon: 'Link', url: '', order: 0, active: true, custom_icon_url: '' });
   const [trafficData, setTrafficData] = useState(null);
   const [trafficMetrics, setTrafficMetrics] = useState(null);
   const [loadingTraffic, setLoadingTraffic] = useState(false);
@@ -223,6 +227,74 @@ export default function AdminPanel() {
       console.error('Error loading reviews:', e);
     } finally {
       setLoadingReviews(false);
+    }
+  };
+
+  // ============ QUICK MENU (Menú Flotante) ============
+  const loadQuickMenuItems = async () => {
+    try {
+      const res = await api.get('/quick-menu/admin');
+      setQuickMenuItems(res.data || []);
+    } catch (e) {
+      console.error('Error loading quick menu:', e);
+    }
+  };
+
+  const openQuickMenuModal = (item) => {
+    if (item) {
+      setEditingQuickItem(item);
+      setQuickMenuForm({
+        name: item.name || '',
+        icon: item.icon || 'Link',
+        url: item.url || '',
+        order: item.order ?? 0,
+        active: item.active !== false,
+        custom_icon_url: item.custom_icon_url || '',
+      });
+    } else {
+      setEditingQuickItem(null);
+      setQuickMenuForm({ name: '', icon: 'Link', url: '', order: (quickMenuItems.length || 0), active: true, custom_icon_url: '' });
+    }
+    setShowQuickMenuModal(true);
+  };
+
+  const saveQuickMenuItem = async () => {
+    if (!quickMenuForm.name.trim() || !quickMenuForm.url.trim()) {
+      toast.error('Nombre y URL son obligatorios');
+      return;
+    }
+    try {
+      if (editingQuickItem) {
+        await api.put(`/quick-menu/admin/${editingQuickItem.item_id}`, quickMenuForm);
+        toast.success('Ítem actualizado');
+      } else {
+        await api.post('/quick-menu/admin', quickMenuForm);
+        toast.success('Ítem creado');
+      }
+      setShowQuickMenuModal(false);
+      await loadQuickMenuItems();
+    } catch (e) {
+      toast.error(e.response?.data?.detail || 'Error al guardar');
+    }
+  };
+
+  const deleteQuickMenuItem = async (item) => {
+    if (!window.confirm(`¿Eliminar "${item.name}"?`)) return;
+    try {
+      await api.delete(`/quick-menu/admin/${item.item_id}`);
+      toast.success('Ítem eliminado');
+      await loadQuickMenuItems();
+    } catch (e) {
+      toast.error('Error al eliminar');
+    }
+  };
+
+  const toggleQuickMenuActive = async (item) => {
+    try {
+      await api.put(`/quick-menu/admin/${item.item_id}`, { active: !item.active });
+      await loadQuickMenuItems();
+    } catch (e) {
+      toast.error('Error');
     }
   };
 
@@ -452,6 +524,9 @@ export default function AdminPanel() {
             </button>
             <button onClick={() => setActiveTab('crear-residencia')} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'crear-residencia' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-crear-residencia">
               <Plus className="w-4 h-4 inline mr-1" />Crear Residencias
+            </button>
+            <button onClick={() => { setActiveTab('quick-menu'); loadQuickMenuItems(); }} className={`px-6 py-4 font-medium whitespace-nowrap ${activeTab === 'quick-menu' ? 'text-[#00e7ff] border-b-2 border-[#00e7ff]' : 'text-gray-500'}`} data-testid="tab-quick-menu">
+              <MenuIcon className="w-4 h-4 inline mr-1" />Menú Flotante
             </button>
           </div>
 
@@ -1366,6 +1441,64 @@ export default function AdminPanel() {
                 </div>
               </div>
             )}
+
+            {activeTab === 'quick-menu' && (
+              <div data-testid="quick-menu-admin">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-[#33404f]">Menú Flotante</h3>
+                    <p className="text-sm text-gray-500">Gestiona los ítems del menú lateral fijo (visible en todo el sitio)</p>
+                  </div>
+                  <Button onClick={() => openQuickMenuModal(null)} className="bg-[#00e7ff] hover:bg-[#00d4e8] text-[#33404f]" data-testid="add-quick-menu-btn">
+                    <Plus className="w-4 h-4 mr-1" /> Nuevo Ítem
+                  </Button>
+                </div>
+                {quickMenuItems.length === 0 ? (
+                  <p className="text-gray-400 text-center py-8">No hay ítems. Crea el primero.</p>
+                ) : (
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr className="text-left text-xs font-bold text-gray-500 uppercase">
+                          <th className="px-4 py-3">Orden</th>
+                          <th className="px-4 py-3">Ícono</th>
+                          <th className="px-4 py-3">Nombre</th>
+                          <th className="px-4 py-3">URL</th>
+                          <th className="px-4 py-3">Estado</th>
+                          <th className="px-4 py-3 text-right">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {quickMenuItems.map(item => (
+                          <tr key={item.item_id} className="hover:bg-gray-50" data-testid={`quick-menu-row-${item.item_id}`}>
+                            <td className="px-4 py-3 text-sm text-gray-600">{item.order}</td>
+                            <td className="px-4 py-3 text-sm font-mono text-gray-700">{item.icon}{item.custom_icon_url && ' (custom)'}</td>
+                            <td className="px-4 py-3 text-sm font-semibold text-[#33404f]">{item.name}</td>
+                            <td className="px-4 py-3 text-sm text-gray-500 break-all max-w-xs">{item.url}</td>
+                            <td className="px-4 py-3">
+                              <button onClick={() => toggleQuickMenuActive(item)} className="text-[#00e7ff]" data-testid={`toggle-${item.item_id}`}>
+                                {item.active ? <ToggleRight className="w-6 h-6" /> : <ToggleLeft className="w-6 h-6 text-gray-300" />}
+                              </button>
+                            </td>
+                            <td className="px-4 py-3 text-right">
+                              <button onClick={() => openQuickMenuModal(item)} className="p-1.5 text-gray-500 hover:text-[#00e7ff]" data-testid={`edit-${item.item_id}`}>
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                              <button onClick={() => deleteQuickMenuItem(item)} className="p-1.5 text-gray-500 hover:text-red-500" data-testid={`delete-${item.item_id}`}>
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                <p className="text-xs text-gray-400 mt-3">
+                  Tip: los íconos usan nombres de <a href="https://lucide.dev/icons/" target="_blank" rel="noreferrer" className="text-[#00e7ff] underline">Lucide</a> (ej: <code>Users</code>, <code>Mic</code>, <code>BookOpen</code>, <code>Newspaper</code>, <code>Heart</code>, <code>Star</code>, <code>Phone</code>). También puedes pegar una URL de SVG/PNG en "Ícono personalizado" para reemplazar.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -2086,6 +2219,91 @@ export default function AdminPanel() {
                 ))}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Quick Menu Modal */}
+      {showQuickMenuModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" data-testid="quick-menu-modal">
+          <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-5 border-b">
+              <h3 className="text-lg font-bold text-[#33404f]">
+                {editingQuickItem ? 'Editar Ítem' : 'Nuevo Ítem'} del Menú Flotante
+              </h3>
+              <button onClick={() => setShowQuickMenuModal(false)} className="text-gray-500 hover:text-gray-700">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-[#33404f] mb-1">Nombre *</label>
+                <Input
+                  value={quickMenuForm.name}
+                  onChange={e => setQuickMenuForm(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Ej: SeniorClub"
+                  data-testid="quick-menu-name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-[#33404f] mb-1">URL / Ruta *</label>
+                <Input
+                  value={quickMenuForm.url}
+                  onChange={e => setQuickMenuForm(prev => ({ ...prev, url: e.target.value }))}
+                  placeholder="/editorial o https://..."
+                  data-testid="quick-menu-url"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-[#33404f] mb-1">Ícono Lucide</label>
+                <Input
+                  value={quickMenuForm.icon}
+                  onChange={e => setQuickMenuForm(prev => ({ ...prev, icon: e.target.value }))}
+                  placeholder="Users, Mic, BookOpen, Newspaper, Heart..."
+                  data-testid="quick-menu-icon"
+                />
+                <p className="text-xs text-gray-400 mt-1">Nombre exacto (PascalCase) de <a href="https://lucide.dev/icons/" target="_blank" rel="noreferrer" className="text-[#00e7ff] underline">lucide.dev/icons</a></p>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-[#33404f] mb-1">Ícono personalizado (URL SVG/PNG) — opcional</label>
+                <Input
+                  value={quickMenuForm.custom_icon_url}
+                  onChange={e => setQuickMenuForm(prev => ({ ...prev, custom_icon_url: e.target.value }))}
+                  placeholder="https://.../mi-icono.svg"
+                  data-testid="quick-menu-custom-icon"
+                />
+                <p className="text-xs text-gray-400 mt-1">Si pegas una URL aquí, reemplaza al ícono Lucide.</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-[#33404f] mb-1">Orden</label>
+                  <Input
+                    type="number"
+                    value={quickMenuForm.order}
+                    onChange={e => setQuickMenuForm(prev => ({ ...prev, order: parseInt(e.target.value) || 0 }))}
+                    data-testid="quick-menu-order"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <label className="flex items-center gap-2 cursor-pointer mb-2">
+                    <input
+                      type="checkbox"
+                      checked={quickMenuForm.active}
+                      onChange={e => setQuickMenuForm(prev => ({ ...prev, active: e.target.checked }))}
+                      className="w-4 h-4 accent-[#00e7ff]"
+                      data-testid="quick-menu-active"
+                    />
+                    <span className="text-sm font-semibold text-[#33404f]">Activo</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-2 p-5 border-t">
+              <Button onClick={() => setShowQuickMenuModal(false)} variant="outline">Cancelar</Button>
+              <Button onClick={saveQuickMenuItem} className="bg-[#00e7ff] hover:bg-[#00d4e8] text-[#33404f]" data-testid="save-quick-menu-btn">
+                {editingQuickItem ? 'Guardar Cambios' : 'Crear Ítem'}
+              </Button>
+            </div>
           </div>
         </div>
       )}
