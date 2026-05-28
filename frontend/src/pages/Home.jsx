@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home as HomeIcon, Heart, Brain, Star, MapPin, ArrowRight, ChevronRight, MessageSquareText, Users, Handshake } from 'lucide-react';
+import { Home as HomeIcon, Heart, Brain, Star, MapPin, ArrowRight, ChevronRight, MessageSquareText, Users, Handshake, BookOpen } from 'lucide-react';
 import SearchBar from '@/components/SearchBar';
 import api from '@/lib/api';
 
@@ -199,6 +199,30 @@ const Home = () => {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Editorial - Banner CTA (inverted colors from SeniorClub) */}
+      <section className="py-12 bg-white" data-testid="editorial-banner-section">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Link to="/editorial" className="block">
+            <div className="bg-[#00e7ff] rounded-2xl hover:bg-[#00d4e8] transition-colors cursor-pointer group overflow-hidden">
+              <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 px-8 py-8 md:py-6">
+                <div className="shrink-0 flex items-center justify-center w-20 h-20 bg-[#33404f] rounded-2xl">
+                  <BookOpen className="w-10 h-10 text-[#00e7ff]" strokeWidth={2.2} />
+                </div>
+                <div className="flex-1 text-center md:text-left">
+                  <h3 className="text-[#33404f] text-xl md:text-2xl font-bold mb-1">Editorial SeniorAdvisor</h3>
+                  <p className="text-[#33404f]/70 text-sm">Reflexiones, novedades y consejos para una vida plena en la tercera edad</p>
+                </div>
+                <div className="shrink-0">
+                  <div className="bg-[#33404f] hover:bg-[#3a4a5c] text-white font-bold px-6 py-3 rounded-xl text-sm group-hover:scale-105 transition-transform flex items-center gap-2" data-testid="editorial-banner-cta">
+                    Ver Editorial <ArrowRight className="w-4 h-4" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Link>
         </div>
       </section>
 

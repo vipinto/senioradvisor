@@ -26,6 +26,7 @@ import GoogleCallback from '@/pages/GoogleCallback';
 import PetSetup from '@/pages/PetSetup';
 import Blog from '@/pages/Blog';
 import BlogArticle from '@/pages/BlogArticle';
+import Editorial from '@/pages/Editorial';
 import HelpRescatePage from '@/pages/HelpRescatePage';
 import SeniorClubPage from '@/pages/SeniorClubPage';
 import FAQ from '@/pages/FAQ';
@@ -73,6 +74,8 @@ function AppRouter() {
         <Route path="/planes" element={<Plans />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogArticle />} />
+        <Route path="/editorial" element={<Editorial />} />
+        <Route path="/editorial/:slug" element={<BlogArticle />} />
         <Route path="/convenio/help-rescate" element={<HelpRescatePage />} />
         <Route path="/seniorclub" element={<SeniorClubPage />} />
         <Route path="/provider/:providerId" element={<ProviderProfile />} />
