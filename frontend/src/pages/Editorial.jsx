@@ -23,8 +23,8 @@ const ArticleCard = ({ article }) => {
         {thumb ? (
           <img src={thumb} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#00e7ff]/20 to-gray-100">
-            <span className="text-5xl font-bold text-[#00e7ff]/40">{article.title?.[0]}</span>
+          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+            <span className="text-5xl font-bold text-gray-300">{article.title?.[0]}</span>
           </div>
         )}
         {ytId && (
@@ -64,7 +64,7 @@ const Editorial = () => {
   return (
     <div className="min-h-screen bg-white" data-testid="editorial-page">
       {/* Header */}
-      <div className="bg-gradient-to-b from-[#00e7ff]/10 to-white border-b">
+      <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
           <Link to="/" className="inline-flex items-center gap-2 text-[#33404f] hover:text-[#00e7ff] mb-6 font-medium text-sm">
             <ArrowLeft className="w-4 h-4" /> Volver al Inicio
