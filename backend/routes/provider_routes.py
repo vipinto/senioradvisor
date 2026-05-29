@@ -235,7 +235,7 @@ async def update_my_provider_profile(request: Request):
         "business_name", "description", "phone", "whatsapp", "address",
         "comuna", "region", "services", "always_active", "available_dates",
         "latitude", "longitude", "amenities", "social_links", "place_id",
-        "price_from", "youtube_video_url"
+        "price_from", "youtube_video_url", "care_types", "stay_types"
     ]
     update_data = {k: v for k, v in data.items() if k in allowed_fields}
     update_data["updated_at"] = datetime.now(timezone.utc)

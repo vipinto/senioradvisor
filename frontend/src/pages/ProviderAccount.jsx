@@ -61,6 +61,11 @@ const ProviderAccount = () => {
   const [social, setSocial] = useState({ instagram: '', facebook: '', website: '' });
   const [savingSocial, setSavingSocial] = useState(false);
 
+  // Cuidados y Estadía
+  const [careTypes, setCareTypes] = useState([]);
+  const [stayTypes, setStayTypes] = useState([]);
+  const [savingCare, setSavingCare] = useState(false);
+
   useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
@@ -87,6 +92,8 @@ const ProviderAccount = () => {
       });
       setPricing(pricingObj);
       setAmenities(p.amenities || []);
+      setCareTypes(p.care_types || []);
+      setStayTypes(p.stay_types || []);
       setSocial({
         instagram: p.social_links?.instagram || '',
         facebook: p.social_links?.facebook || '',
@@ -156,6 +163,16 @@ const ProviderAccount = () => {
     finally { setSavingSocial(false); }
   };
 
+  const saveCareStayTypes = async () => {
+    setSavingCare(true);
+    try {
+      await api.put('/providers/my-profile', { care_types: careTypes, stay_types: stayTypes });
+      setProvider(prev => ({ ...prev, care_types: careTypes, stay_types: stayTypes }));
+      toast.success('Cuidados y estadía actualizados');
+    } catch { toast.error('Error al guardar'); }
+    finally { setSavingCare(false); }
+  };
+
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-12 h-12 border-4 border-[#00e7ff] border-t-transparent rounded-full animate-spin" /></div>;
   if (!provider) return <div className="min-h-screen flex items-center justify-center"><p className="text-gray-500">No tienes un perfil de proveedor</p></div>;
 
@@ -169,6 +186,7 @@ const ProviderAccount = () => {
     amenities: plan === 'premium' || plan === 'premium_plus',
     social: plan === 'premium_plus',
     youtube: plan === 'premium_plus',
+    care: true, // Tipo de Valencia y Tipo de Estadía - editable para todos
   };
 
   // Filter visible tabs based on plan
@@ -176,6 +194,7 @@ const ProviderAccount = () => {
     { key: 'profile', label: 'Mi Perfil', icon: Settings },
     { key: 'pricing', label: 'Precios', icon: DollarSign },
     { key: 'amenities', label: 'Servicios', icon: ListChecks },
+    { key: 'care', label: 'Cuidados y Estadía', icon: Heart },
     { key: 'gallery', label: 'Galería', icon: Camera },
     { key: 'social', label: 'Redes Sociales', icon: Globe },
   ];
@@ -414,6 +433,65 @@ const ProviderAccount = () => {
 
             <Button onClick={saveAmenities} disabled={savingAmenities} className="w-full mt-6 bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="save-amenities-btn">
               {savingAmenities ? 'Guardando...' : 'Guardar Servicios'}
+            </Button>
+          </div>
+        )}
+
+        {/* Cuidados y Estadía */}
+        {activeTab === 'care' && (
+          <div className="bg-white rounded-2xl p-6 shadow-sm space-y-8" data-testid="care-stay-section">
+            <div>
+              <h2 className="text-xl font-bold text-[#33404f] mb-1">Tipo de Valencia</h2>
+              <p className="text-sm text-gray-500 mb-4">Selecciona los niveles de dependencia que atiende tu residencia</p>
+              <div className="space-y-2">
+                {['Autovalentes', 'Semi-dependientes', 'Dependientes'].map(ct => {
+                  const isActive = careTypes.includes(ct);
+                  return (
+                    <label
+                      key={ct}
+                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${isActive ? 'bg-[#00e7ff]/10 border border-[#00e7ff]' : 'bg-gray-50 border border-transparent hover:bg-gray-100'}`}
+                      data-testid={`account-care-${ct.toLowerCase()}`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isActive}
+                        onChange={() => setCareTypes(prev => isActive ? prev.filter(c => c !== ct) : [...prev, ct])}
+                        className="w-4 h-4 accent-[#00e7ff]"
+                      />
+                      <span className="text-sm font-medium text-[#33404f]">{ct}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-bold text-[#33404f] mb-1">Tipo de Estadía</h2>
+              <p className="text-sm text-gray-500 mb-4">Selecciona las modalidades de estadía que ofreces</p>
+              <div className="space-y-2">
+                {['Estadía Completa', 'Atención Diurna'].map(st => {
+                  const isActive = stayTypes.includes(st);
+                  return (
+                    <label
+                      key={st}
+                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${isActive ? 'bg-[#00e7ff]/10 border border-[#00e7ff]' : 'bg-gray-50 border border-transparent hover:bg-gray-100'}`}
+                      data-testid={`account-stay-${st.toLowerCase().replace(/\s/g, '-').replace(/í/g, 'i')}`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isActive}
+                        onChange={() => setStayTypes(prev => isActive ? prev.filter(s => s !== st) : [...prev, st])}
+                        className="w-4 h-4 accent-[#00e7ff]"
+                      />
+                      <span className="text-sm font-medium text-[#33404f]">{st}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            <Button onClick={saveCareStayTypes} disabled={savingCare} className="w-full bg-[#00e7ff] hover:bg-[#00c4d4] text-[#33404f]" data-testid="save-care-stay-btn">
+              {savingCare ? 'Guardando...' : 'Guardar Cambios'}
             </Button>
           </div>
         )}
