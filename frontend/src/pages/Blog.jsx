@@ -125,9 +125,13 @@ const Blog = () => {
       api.get('/blog/articles').catch(() => ({ data: [] })),
       api.get('/blog/categories').catch(() => ({ data: [] })),
     ]).then(([artRes, catRes]) => {
-      setArticles(artRes.data);
-      setCategories(catRes.data);
-      if (catRes.data.length > 0) setActiveSection(catRes.data[0].name);
+      // Exclude Editorial articles from the Blog page (they live on /editorial)
+      const filtered = (artRes.data || []).filter(a => a.category !== 'Editorial');
+      setArticles(filtered);
+      // Exclude "Editorial" from the category nav as well
+      const visibleCategories = (catRes.data || []).filter(c => c.name !== 'Editorial');
+      setCategories(visibleCategories);
+      if (visibleCategories.length > 0) setActiveSection(visibleCategories[0].name);
     }).finally(() => setLoading(false));
   }, []);
 

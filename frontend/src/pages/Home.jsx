@@ -17,8 +17,10 @@ const Home = () => {
       const sorted = Array.isArray(data) ? data.sort((a, b) => (b.rating || 0) - (a.rating || 0)) : [];
       setFeatured(sorted);
     }).catch(() => {});
-    api.get('/blog/articles?limit=6').then(res => {
-      setBlogArticles(res.data);
+    api.get('/blog/articles?limit=20').then(res => {
+      // Exclude Editorial articles from Actualidad Senior section
+      const filtered = (res.data || []).filter(a => a.category !== 'Editorial').slice(0, 6);
+      setBlogArticles(filtered);
     }).catch(() => {});
     api.get('/podcast/episodes').then(res => {
       const eps = res.data;
@@ -212,8 +214,8 @@ const Home = () => {
                   <BookOpen className="w-10 h-10 text-[#00e7ff]" strokeWidth={2.2} />
                 </div>
                 <div className="flex-1 text-center md:text-left">
-                  <h3 className="text-[#33404f] text-xl md:text-2xl font-bold mb-1">Editorial SeniorAdvisor</h3>
-                  <p className="text-[#33404f]/70 text-sm">Reflexiones, novedades y consejos para una vida plena en la tercera edad</p>
+                  <h3 className="text-[#33404f] text-3xl md:text-4xl font-bold mb-2 leading-tight">Editorial SeniorAdvisor</h3>
+                  <p className="text-[#33404f]/70 text-base">Reflexiones, novedades y consejos para una vida plena en la tercera edad</p>
                 </div>
                 <div className="shrink-0">
                   <div className="bg-[#33404f] hover:bg-[#3a4a5c] text-white font-bold px-6 py-3 rounded-xl text-sm group-hover:scale-105 transition-transform flex items-center gap-2" data-testid="editorial-banner-cta">
