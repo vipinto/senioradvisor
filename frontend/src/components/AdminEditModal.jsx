@@ -102,6 +102,10 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
         return {
           care_types: provider.care_types || [],
         };
+      case 'stay_types':
+        return {
+          stay_types: provider.stay_types || [],
+        };
       default:
         return {};
     }
@@ -257,6 +261,7 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
     premium_gallery: 'Slider Premium',
     amenities: 'Servicios',
     care_types: 'Tipos de Valencia',
+    stay_types: 'Tipo de Estadía',
   };
 
   const isPhotoSection = section === 'gallery' || section === 'premium_gallery';
@@ -603,6 +608,40 @@ export default function AdminEditModal({ section, provider, onClose, onSaved }) 
                         className="w-4 h-4 accent-[#00e7ff]"
                       />
                       <span className="text-sm font-medium text-[#33404f]">{ct}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {/* Stay Types */}
+          {section === 'stay_types' && (
+            <>
+              <p className="text-sm text-gray-500 mb-2">Selecciona los tipos de estadía que ofrece esta residencia</p>
+              <div className="space-y-2">
+                {['Estadía Completa', 'Atención Diurna'].map(st => {
+                  const isActive = formData.stay_types.includes(st);
+                  return (
+                    <label
+                      key={st}
+                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${isActive ? 'bg-[#00e7ff]/10 border border-[#00e7ff]' : 'bg-gray-50 border border-transparent'}`}
+                      data-testid={`edit-stay-type-${st.toLowerCase().replace(/\s/g, '-').replace(/í/g, 'i')}`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isActive}
+                        onChange={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            stay_types: isActive
+                              ? prev.stay_types.filter(s => s !== st)
+                              : [...prev.stay_types, st]
+                          }));
+                        }}
+                        className="w-4 h-4 accent-[#00e7ff]"
+                      />
+                      <span className="text-sm font-medium text-[#33404f]">{st}</span>
                     </label>
                   );
                 })}

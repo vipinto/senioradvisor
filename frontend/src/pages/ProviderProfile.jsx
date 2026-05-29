@@ -972,6 +972,27 @@ export default function ProviderProfile() {
               </div>
             )}
 
+            {/* Tipo de Estadía */}
+            {((provider.stay_types && provider.stay_types.length > 0) || isAdmin) && (
+              <div className="bg-white rounded-2xl p-5 shadow-sm" data-testid="provider-stay-types">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-bold text-base text-[#33404f]">Tipo de Estadía</h3>
+                  {isAdmin && <EditBtn section="stay_types" />}
+                </div>
+                {provider.stay_types && provider.stay_types.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {provider.stay_types.map((st, i) => (
+                      <span key={i} className="px-3 py-1.5 bg-[#00e7ff]/20 text-[#33404f] text-sm font-semibold rounded-full border border-[#00e7ff]/40" data-testid={`stay-type-badge-${i}`}>
+                        {st}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-400">Sin tipos de estadía definidos</p>
+                )}
+              </div>
+            )}
+
             {/* Contacto */}
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-lg mb-4">Contacto<EditBtn section="contact" /></h3>

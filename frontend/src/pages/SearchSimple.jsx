@@ -56,6 +56,7 @@ const SERVICE_TABS = [
 ];
 
 const CARE_TYPES = ['Autovalentes', 'Semi-dependientes', 'Dependientes'];
+const STAY_TYPES = ['Estadía Completa', 'Atención Diurna'];
 
 
 const getPhotoUrl = (path) => {
@@ -112,6 +113,10 @@ const SearchPage = () => {
     const ct = searchParams.get('care_types');
     return ct ? ct.split(',').filter(Boolean) : [];
   });
+  const [selectedStayTypes, setSelectedStayTypes] = useState(() => {
+    const st = searchParams.get('stay_types');
+    return st ? st.split(',').filter(Boolean) : [];
+  });
 
   // Autocomplete
   const [comunas, setComunas] = useState([]);
@@ -145,7 +150,7 @@ const SearchPage = () => {
 
   useEffect(() => {
     loadProviders();
-  }, [activeService, currentPage, minRating, minPrice, maxPrice, verifiedOnly, selectedAmenities, filterRegion, filterComuna, selectedCareTypes]);
+  }, [activeService, currentPage, minRating, minPrice, maxPrice, verifiedOnly, selectedAmenities, filterRegion, filterComuna, selectedCareTypes, selectedStayTypes]);
 
   useEffect(() => {
     // Load user and favorites
@@ -231,6 +236,7 @@ const SearchPage = () => {
       if (filterRegion) params.set('region', filterRegion);
       if (filterComuna) params.set('comuna_filter', filterComuna);
       if (selectedCareTypes.length > 0) params.set('care_types', selectedCareTypes.join(','));
+      if (selectedStayTypes.length > 0) params.set('stay_types', selectedStayTypes.join(','));
 
       let datesStr = '';
       if (activeService === 'alojamiento' && dateRange.from) {
@@ -455,7 +461,7 @@ const SearchPage = () => {
     'Sala de estar', 'Terapia ocupacional', 'Terraza', 'WiFi'
   ];
 
-  const activeFiltersCount = [activeService, minRating, minPrice, maxPrice, verifiedOnly, selectedAmenities.length > 0, selectedCareTypes.length > 0].filter(Boolean).length;
+  const activeFiltersCount = [activeService, minRating, minPrice, maxPrice, verifiedOnly, selectedAmenities.length > 0, selectedCareTypes.length > 0, selectedStayTypes.length > 0].filter(Boolean).length;
 
   const clearAllFilters = () => {
     setActiveService('');
@@ -465,6 +471,7 @@ const SearchPage = () => {
     setVerifiedOnly(false);
     setSelectedAmenities([]);
     setSelectedCareTypes([]);
+    setSelectedStayTypes([]);
     setCurrentPage(1);
     clearSearch();
   };
@@ -574,6 +581,28 @@ const SearchPage = () => {
                     className="w-4 h-4 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]"
                   />
                   <span className="text-sm text-[#33404f] font-medium">{ct}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Tipo de Estadía */}
+          <div className="mb-8">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Tipo de Estadía</h4>
+            <div className="space-y-2.5">
+              {STAY_TYPES.map(st => (
+                <label key={st} className="flex items-center gap-3 cursor-pointer" data-testid={`sidebar-stay-type-${st.toLowerCase().replace(/\s/g, '-').replace(/í/g, 'i')}`}>
+                  <input
+                    type="checkbox"
+                    checked={selectedStayTypes.includes(st)}
+                    onChange={e => {
+                      if (e.target.checked) setSelectedStayTypes(prev => [...prev, st]);
+                      else setSelectedStayTypes(prev => prev.filter(x => x !== st));
+                      setCurrentPage(1);
+                    }}
+                    className="w-4 h-4 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]"
+                  />
+                  <span className="text-sm text-[#33404f] font-medium">{st}</span>
                 </label>
               ))}
             </div>
