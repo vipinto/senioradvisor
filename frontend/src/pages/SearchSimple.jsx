@@ -53,6 +53,7 @@ if (typeof document !== 'undefined') {
 const SERVICE_TABS = [
   { id: 'residencias', label: 'Residencias' },
   { id: 'cuidado-domicilio', label: 'Cuidado a Domicilio' },
+  { id: 'salud-mental', label: 'Cuidado de Memoria' },
 ];
 
 const CARE_TYPES = ['Autovalentes', 'Semi-dependientes', 'Dependientes'];
