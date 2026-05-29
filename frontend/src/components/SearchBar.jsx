@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Home, Heart, LayoutGrid, Search, Users, ChevronDown } from 'lucide-react';
+import { Home, Heart, LayoutGrid, Search, Brain } from 'lucide-react';
 import api from '@/lib/api';
 
 const SERVICE_TABS = [
   { id: '', label: 'Todos', icon: LayoutGrid },
   { id: 'residencias', label: 'Residencias', icon: Home },
   { id: 'cuidado-domicilio', label: 'Cuidado a Domicilio', icon: Heart },
+  { id: 'salud-mental', label: 'Cuidado de Memoria', icon: Brain },
 ];
 
 const CARE_TYPES = ['Autovalentes', 'Semi-dependientes', 'Dependientes'];
@@ -23,8 +24,6 @@ export default function SearchBar() {
   const [minRating, setMinRating] = useState('');
   const [searchText, setSearchText] = useState('');
   const [selectedCareTypes, setSelectedCareTypes] = useState([]);
-  const [careOpen, setCareOpen] = useState(false);
-  const careRef = useRef(null);
 
   useEffect(() => {
     api.get('/providers/filters-options').then(res => {
@@ -32,17 +31,6 @@ export default function SearchBar() {
       setComunas(res.data.comunas || []);
     }).catch(() => {});
   }, []);
-
-  useEffect(() => {
-    if (!careOpen) return;
-    const handleClickOutside = (e) => {
-      if (careRef.current && !careRef.current.contains(e.target)) {
-        setCareOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [careOpen]);
 
   const handleRegionChange = (region) => {
     setSelectedRegion(region);
@@ -95,62 +83,6 @@ export default function SearchBar() {
             </button>
           );
         })}
-
-        {/* Tipo de Cuidado - dropdown tab */}
-        <div className="relative" ref={careRef}>
-          <button
-            type="button"
-            onClick={() => setCareOpen(o => !o)}
-            className={`w-full flex items-center justify-center gap-2.5 px-4 py-3 sm:px-6 sm:py-4 rounded-2xl font-bold text-sm sm:text-base transition-all shadow-md ${
-              selectedCareTypes.length > 0
-                ? 'bg-[#33404f] text-white'
-                : 'bg-white text-[#33404f] border border-gray-200 hover:border-gray-300'
-            }`}
-            data-testid="service-tab-care-types"
-            aria-expanded={careOpen}
-          >
-            <Users className="w-5 h-5" />
-            <span className="whitespace-nowrap">
-              Tipo de Valencia{selectedCareTypes.length > 0 ? ` (${selectedCareTypes.length})` : ''}
-            </span>
-            <ChevronDown className={`w-4 h-4 transition-transform ${careOpen ? 'rotate-180' : ''}`} />
-          </button>
-          {careOpen && (
-            <div
-              className="absolute left-0 right-0 sm:left-auto sm:right-0 sm:w-72 mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl p-4 z-50"
-              data-testid="care-types-dropdown"
-            >
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Selecciona uno o varios</p>
-              <div className="space-y-2.5">
-                {CARE_TYPES.map(ct => (
-                  <label key={ct} className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                    <input
-                      type="checkbox"
-                      checked={selectedCareTypes.includes(ct)}
-                      onChange={e => {
-                        if (e.target.checked) setSelectedCareTypes(prev => [...prev, ct]);
-                        else setSelectedCareTypes(prev => prev.filter(x => x !== ct));
-                      }}
-                      className="w-4 h-4 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]"
-                      data-testid={`care-type-${ct.toLowerCase()}`}
-                    />
-                    <span className="text-sm font-medium text-[#33404f]">{ct}</span>
-                  </label>
-                ))}
-              </div>
-              {selectedCareTypes.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setSelectedCareTypes([])}
-                  className="mt-3 w-full py-2 text-xs font-medium text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                  data-testid="care-types-clear"
-                >
-                  Limpiar selección
-                </button>
-              )}
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Text Search Bar */}
@@ -256,6 +188,26 @@ export default function SearchBar() {
           >
             Buscar
           </button>
+        </div>
+
+        {/* Tipo de Valencia - inline checkboxes */}
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 pt-4 border-t border-gray-100">
+          <span className="text-sm font-bold text-[#33404f] flex-shrink-0">Tipo de Valencia:</span>
+          {CARE_TYPES.map(ct => (
+            <label key={ct} className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={selectedCareTypes.includes(ct)}
+                onChange={e => {
+                  if (e.target.checked) setSelectedCareTypes(prev => [...prev, ct]);
+                  else setSelectedCareTypes(prev => prev.filter(x => x !== ct));
+                }}
+                className="w-4 h-4 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]"
+                data-testid={`care-type-${ct.toLowerCase()}`}
+              />
+              <span className="text-sm text-[#33404f] font-medium">{ct}</span>
+            </label>
+          ))}
         </div>
       </div>
     </div>
