@@ -904,7 +904,7 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
         amenities_raw = [a.strip() for a in amenities_str.split(",") if a.strip()] if amenities_str else []
         amenities = normalize_amenities(amenities_raw)
 
-        care_types_str = get_val(row, "care_types") or get_val(row, "tipos_cuidado") or get_val(row, "tipo_cuidado")
+        care_types_str = get_val(row, "care_types") or get_val(row, "tipos_cuidado") or get_val(row, "tipo_cuidado") or get_val(row, "tipos_valencia") or get_val(row, "tipo_valencia")
         care_types_raw = [c.strip() for c in care_types_str.split(",") if c.strip()] if care_types_str else []
         VALID_CARE_TYPES = ["Autovalentes", "Semi-dependientes", "Dependientes"]
         care_types_norm = []
@@ -915,6 +915,19 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
                     care_types_norm.append(valid)
                     break
         care_types_final = list(dict.fromkeys(care_types_norm))
+
+        stay_types_str = get_val(row, "stay_types") or get_val(row, "tipos_estadia") or get_val(row, "tipo_estadia") or get_val(row, "tipos_estadía") or get_val(row, "tipo_estadía")
+        stay_types_raw = [s.strip() for s in stay_types_str.split(",") if s.strip()] if stay_types_str else []
+        VALID_STAY_TYPES = ["Estadía Completa", "Atención Diurna"]
+        stay_types_norm = []
+        for st in stay_types_raw:
+            st_low = st.lower().strip().replace("í", "i").replace("ó", "o")
+            for valid in VALID_STAY_TYPES:
+                v_low = valid.lower().replace("í", "i").replace("ó", "o")
+                if st_low in v_low or v_low in st_low:
+                    stay_types_norm.append(valid)
+                    break
+        stay_types_final = list(dict.fromkeys(stay_types_norm))
 
         social_links = {}
         if website:
@@ -969,6 +982,7 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
             if premium_gallery: update_fields["premium_gallery"] = premium_gallery
             if amenities: update_fields["amenities"] = amenities
             if care_types_final: update_fields["care_types"] = care_types_final
+            if stay_types_final: update_fields["stay_types"] = stay_types_final
             if social_links: update_fields["social_links"] = social_links
             if latitude: update_fields["latitude"] = latitude
             if longitude: update_fields["longitude"] = longitude
@@ -1015,6 +1029,7 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
             if premium_gallery: update_fields["premium_gallery"] = premium_gallery
             if amenities: update_fields["amenities"] = amenities
             if care_types_final: update_fields["care_types"] = care_types_final
+            if stay_types_final: update_fields["stay_types"] = stay_types_final
             if social_links: update_fields["social_links"] = social_links
             if latitude: update_fields["latitude"] = latitude
             if longitude: update_fields["longitude"] = longitude
@@ -1075,6 +1090,7 @@ async def upload_excel_residencias(request: Request, file: UploadFile = File(...
             "premium_gallery": premium_gallery,
             "amenities": amenities,
             "care_types": care_types_final,
+            "stay_types": stay_types_final,
             "social_links": social_links,
             "personal_info": {
                 "housing_type": housing_type,
@@ -1202,6 +1218,7 @@ async def export_residencias_csv(request: Request):
         "descripcion", "tipo", "tipo_instalacion", "horario_atencion", "bio", "youtube",
         "place_id", "precio_residencias", "desc_residencias", "precio_cuidado_domicilio",
         "desc_cuidado_domicilio", "precio_salud_mental", "desc_salud_mental", "amenidades",
+        "tipos_valencia", "tipos_estadia",
         "website", "facebook", "instagram", "rating", "cant_resenas",
         "latitud", "longitud", "imagen_1", "imagen_2", "imagen_3"
     ]
@@ -1233,6 +1250,8 @@ async def export_residencias_csv(request: Request):
         personal = p.get("personal_info", {})
         gallery = p.get("gallery", [])
         amenities_str = ",".join(p.get("amenities", []))
+        care_types_str = ",".join(p.get("care_types", []) or [])
+        stay_types_str = ",".join(p.get("stay_types", []) or [])
 
         def get_gallery_url(gallery, idx):
             if len(gallery) <= idx:
@@ -1262,6 +1281,7 @@ async def export_residencias_csv(request: Request):
             precio_dom, desc_dom,
             precio_sal, desc_sal,
             amenities_str,
+            care_types_str, stay_types_str,
             social.get("website", ""),
             social.get("facebook", ""),
             social.get("instagram", ""),
