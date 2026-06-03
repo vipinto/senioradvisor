@@ -1372,14 +1372,31 @@ export default function AdminPanel() {
                             headers: { 'Authorization': `Bearer ${token}` },
                             body: formData
                           });
-                          const data = await res.json();
-                          if (!res.ok) throw new Error(data.detail || 'Error');
+                          // Read body once as text, then try JSON to avoid double-consumption errors
+                          const raw = await res.text();
+                          let data;
+                          try { data = JSON.parse(raw); } catch { data = null; }
+
+                          if (!res.ok || !data) {
+                            const msg = (data && data.detail) || (raw && raw.slice(0, 200)) || `Error ${res.status}`;
+                            if (res.status === 502 || res.status === 504) {
+                              toast.error('Tiempo de espera agotado. El archivo es muy grande o Nginx cortó la conexión. Sube en lotes más pequeños o aumenta el timeout de Nginx.');
+                            } else {
+                              toast.error(msg);
+                            }
+                            return;
+                          }
                           setBulkResults(data);
                           toast.success(`${data.created} creadas, ${data.updated || 0} actualizadas`);
                           if (data.errors > 0) toast.error(`${data.errors} errores`);
                           loadData();
                         } catch (err) {
-                          toast.error(String(err?.message || 'Error al subir archivo'));
+                          const m = String(err?.message || err);
+                          if (m.toLowerCase().includes('body is disturbed') || m.toLowerCase().includes('failed to fetch') || m.toLowerCase().includes('network')) {
+                            toast.error('Conexión cortada. Probablemente Nginx tuvo timeout. Aumenta proxy_read_timeout o sube el archivo en lotes más pequeños.');
+                          } else {
+                            toast.error(m || 'Error al subir archivo');
+                          }
                         } finally {
                           setUploading(false);
                           e.target.value = '';
