@@ -1548,6 +1548,11 @@ async def admin_update_provider_profile(provider_id: str, request: Request):
         update["plan_active"] = True
     elif "plan_type" in update and not update["plan_type"]:
         update["plan_active"] = False
+    # Sync is_subscribed with paid plan (so premium gallery is visible publicly)
+    if "plan_type" in update or "plan_active" in update:
+        pt = update.get("plan_type", provider.get("plan_type"))
+        pa = update.get("plan_active", provider.get("plan_active", True))
+        update["is_subscribed"] = bool(pt in ("premium", "premium_plus") and pa)
     if update:
         await db.providers.update_one({"provider_id": provider_id}, {"$set": update})
 
