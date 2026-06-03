@@ -10,8 +10,6 @@ const SERVICE_TABS = [
   { id: 'salud-mental', label: 'Cuidado de Memoria', icon: Brain },
 ];
 
-const CARE_TYPES = ['Autovalentes', 'Semi-dependientes', 'Dependientes'];
-
 export default function SearchBar() {
   const navigate = useNavigate();
   const [activeService, setActiveService] = useState('');
@@ -23,7 +21,6 @@ export default function SearchBar() {
   const [maxPrice, setMaxPrice] = useState('');
   const [minRating, setMinRating] = useState('');
   const [searchText, setSearchText] = useState('');
-  const [selectedCareTypes, setSelectedCareTypes] = useState([]);
 
   useEffect(() => {
     api.get('/providers/filters-options').then(res => {
@@ -55,7 +52,6 @@ export default function SearchBar() {
     if (maxPrice) params.set('max_price', maxPrice);
     if (minRating) params.set('min_rating', minRating);
     if (searchText.trim()) params.set('q', searchText.trim());
-    if (selectedCareTypes.length > 0) params.set('care_types', selectedCareTypes.join(','));
     navigate(`/search?${params.toString()}`);
   };
 
@@ -188,26 +184,6 @@ export default function SearchBar() {
           >
             Buscar
           </button>
-        </div>
-
-        {/* Tipo de Valencia - inline checkboxes */}
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 pt-4 border-t border-gray-100">
-          <span className="text-sm font-bold text-[#33404f] flex-shrink-0">Tipo de Valencia:</span>
-          {CARE_TYPES.map(ct => (
-            <label key={ct} className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={selectedCareTypes.includes(ct)}
-                onChange={e => {
-                  if (e.target.checked) setSelectedCareTypes(prev => [...prev, ct]);
-                  else setSelectedCareTypes(prev => prev.filter(x => x !== ct));
-                }}
-                className="w-4 h-4 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]"
-                data-testid={`care-type-${ct.toLowerCase()}`}
-              />
-              <span className="text-sm text-[#33404f] font-medium">{ct}</span>
-            </label>
-          ))}
         </div>
       </div>
     </div>
