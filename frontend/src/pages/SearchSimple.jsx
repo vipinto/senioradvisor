@@ -565,6 +565,20 @@ const SearchPage = () => {
             </div>
           </div>
 
+          {/* Resolución Sanitaria */}
+          <div className="mb-8">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Resolución Sanitaria</h4>
+            <label className="flex items-center gap-3 cursor-pointer" data-testid="sidebar-verified-only">
+              <input
+                type="checkbox"
+                checked={verifiedOnly}
+                onChange={e => { setVerifiedOnly(e.target.checked); setCurrentPage(1); }}
+                className="w-4 h-4 rounded border-gray-300 text-[#00e7ff] focus:ring-[#00e7ff]"
+              />
+              <span className="text-sm text-[#33404f] font-medium">Solo con Resolución Sanitaria</span>
+            </label>
+          </div>
+
           {/* Tipo de Cuidado */}
           <div className="mb-8">
             <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Tipo de Valencia</h4>
